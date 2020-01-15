@@ -1,4 +1,4 @@
-name: Java CI
+name: Gradle
 
 on:
   push:
@@ -16,5 +16,4 @@ jobs:
     - uses: actions/setup-java@v1
       with:
         java-version: 11
-    - name: Gradle Build
-      run: ./gradlew build
+    - run: ./gradlew build
