@@ -2,7 +2,6 @@ package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import com.spartronics4915.frc2020.Constants;
-import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.ControlMode;
