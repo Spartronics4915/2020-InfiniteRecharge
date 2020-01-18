@@ -10,12 +10,12 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;;
 
 public class Climber extends SpartronicsSubsystem {
 
-    private TalonSRX mClimber775PRO1;
-    private CANSparkMax mClimberNEO1;
+    private TalonSRX mClimber775PRO;
+    private CANSparkMax mClimberNEO;
     public Climber() {
         //Hardware Contructor (Add motors and such here when I get them)
-        mClimber775PRO1 = new TalonSRX(5);
-        mClimberNEO1 = new CANSparkMax(6, MotorType.kBrushless);
+        mClimber775PRO = new TalonSRX(5);
+        mClimberNEO = new CANSparkMax(6, MotorType.kBrushless);
         
     }
     
