@@ -8,7 +8,11 @@ public class Intake extends SpartronicsSubsystem {
 
     }
     
-    public static void intake() {
+    public static void mechvector() {
+
+    }
+
+    public static void prismroll() {
 
     }
 
