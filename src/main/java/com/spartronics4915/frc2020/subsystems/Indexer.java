@@ -4,11 +4,8 @@ import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
 public class Indexer extends SpartronicsSubsystem {
 
-    public int mSpinnerId = -1;
-    public int mLifterId = -1;
-
     public Indexer() {
-        // Construct your hardware here
+        
     }
 
     // Outline your API here by creating specific methods.
@@ -36,7 +33,7 @@ public class Indexer extends SpartronicsSubsystem {
         return 0;
     }
 
-    public int rotateFull() {}
+    public int rotateFull() {
         return 0;
     }
 
@@ -52,20 +49,17 @@ public class Indexer extends SpartronicsSubsystem {
         return 0;
     }
 
-    public void stop() 
-    {
-
+    public void liftUp() {
+        
     }
 
-    public void liftUp()
-    {
-
-    }
-
-    public void liftDown()
-    {
+    public void liftDown() {
 
     }
 
     // The exception to this is a general-functionality stop() method.
+
+    public void stop() {
+        
+    }
 }
