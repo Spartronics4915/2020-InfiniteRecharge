@@ -5,19 +5,19 @@ import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
 public class PanelRotator extends SpartronicsSubsystem {
 
-    public PanelRotator(){
+    public PanelRotator() {
         
     }
 
-    public void rotate(double number){
+    public void rotate(double number) {
 
     }
 
-    public String color(){
-
+    public String color() {
+        return "red but that's a lie";
     }
 
-    public void stop(){
+    public void stop() {
 
     }
 }
