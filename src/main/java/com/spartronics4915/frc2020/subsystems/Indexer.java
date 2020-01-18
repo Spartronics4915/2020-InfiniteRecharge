@@ -4,6 +4,9 @@ import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
 public class Indexer extends SpartronicsSubsystem {
 
+    public int mSpinnerId = -1;
+    public int mLifterId = -1;
+
     public Indexer() {
         // Construct your hardware here
     }
@@ -13,18 +16,15 @@ public class Indexer extends SpartronicsSubsystem {
     // - eg. instead of a setIntake method, control each intake motor individually
     // setIntake functionality should be implemented in a command.
 
-    public boolean getBallLoaded() 
-    {
+    public boolean getBallLoaded() {
         return false;
     }
 
-    public void rotateClockwiseOnce() 
-    {
+    public void rotateClockwiseOnce() {
 
     }
 
-    public void rotateCounterClockwiseOnce() 
-    {
+    public void rotateCounterClockwiseOnce() {
 
     }
 
@@ -36,8 +36,7 @@ public class Indexer extends SpartronicsSubsystem {
         return 0;
     }
 
-    public int rotateFull()
-    {
+    public int rotateFull() {}
         return 0;
     }
 
