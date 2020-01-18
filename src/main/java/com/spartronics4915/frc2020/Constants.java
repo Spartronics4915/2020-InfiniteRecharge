@@ -1,8 +1,8 @@
 package com.spartronics4915.frc2020;
 
 public final class Constants {
-    public static final int kFlywheelMasterID = -1;
-    public static final int kFlywheelFollowerID = -1;
-    public static final int kAngleAdjusterID = -1;
-    public static final int kTurretID = -1;
+    public static final int kLauncherFlywheelMasterID = -1;
+    public static final int kLauncherFlywheelFollowerID = -1;
+    public static final int kLauncherAngleAdjusterID = -1;
+    public static final int kLauncherTurretID = -1;
 }
