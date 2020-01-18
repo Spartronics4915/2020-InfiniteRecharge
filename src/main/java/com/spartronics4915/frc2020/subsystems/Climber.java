@@ -13,15 +13,15 @@ public class Climber extends SpartronicsSubsystem {
         
     }
 
-    public static void winch(){
+    public static void winch() {
 
     }
 
-    public static void reverse(){
+    public static void reverse() {
 
     }
 
-    public static void stop(){
+    public static void stop() {
 
     }
 
