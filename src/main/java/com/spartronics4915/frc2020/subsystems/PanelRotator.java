@@ -19,8 +19,19 @@ public class PanelRotator extends SpartronicsSubsystem {
     
     private final ColorSensorV3  mColorSensor;
 
-    private int[] mMinimumRed = {255, 0, 0};
-    private int[] mMaximumRed = {255, 0, 0};  
+    public int[] mMinimumRed = {200, 0, 0};
+    public int[] mMaximumRed = {255, 30, 30};
+
+    public int[] mMinimumGreen = {0, 200, 0};
+    public int[] mMaximumGreen = {30, 255, 30};
+
+    public int[] mMinimumBlue = {0, 200, 200};
+    public int[] mMaximumBlue = {30, 255, 255};
+
+    public int[] mMinimumYellow = {200, 200, 0};
+    public int[] mMaximumYellow = {255, 255, 30};
+
+    public String sensedColor;
     
     public int red;
     public int green;
@@ -51,14 +62,44 @@ public class PanelRotator extends SpartronicsSubsystem {
         return color;
     }
 
-    /*public String getClosestColor() {
+    public String getClosestColor() {
         red =  mColorSensor.getRed();
         green =  mColorSensor.getGreen();
         blue =  mColorSensor.getBlue();
-        
-    }*/
+        sensedColor = "sensor is not working";
+        if(mMinimumRed[0] <= red && red <= mMaximumRed[0]){
+            if(mMinimumRed[1] <= green && green <= mMaximumRed[1]){
+                if(mMinimumRed[2] <= blue && blue <= mMaximumRed[2]){
+                    sensedColor = "Red";
+                }
+            }
+        }
+        if(mMinimumBlue[0] <= red && red <= mMaximumBlue[0]){
+            if(mMinimumBlue[1] <= green && green <= mMaximumBlue[1]){
+                if(mMinimumBlue[2] <= blue && blue <= mMaximumBlue[2]){
+                    sensedColor = "Blue";
+                }
+            }
+        }
+        if(mMinimumYellow[0] <= red && red <= mMaximumYellow[0]){
+            if(mMinimumYellow[1] <= green && green <= mMaximumYellow[1]){
+                if(mMinimumYellow[2] <= blue && blue <= mMaximumYellow[2]){
+                    sensedColor = "Yellow";
+                }
+            }
+        }
+        if(mMinimumGreen[0] <= red && red <= mMaximumGreen[0]){
+            if(mMinimumGreen[1] <= green && green <= mMaximumGreen[1]){
+                if(mMinimumGreen[2] <= blue && blue <= mMaximumGreen[2]){
+                    sensedColor = "Green";
+                }
+            }
+        }
+        return sensedColor;
+    }
 
     public void stop() {
-
+        mSpinMotor.set(0);
+        mExtendMotor.set(0);
     }
 }
