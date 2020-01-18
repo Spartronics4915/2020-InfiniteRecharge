@@ -2,11 +2,9 @@ package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
-import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.spartronics4915.lib.hardware.motors.SensorModel;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class Climber extends SpartronicsSubsystem {
 
