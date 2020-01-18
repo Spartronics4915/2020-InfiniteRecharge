@@ -1,27 +1,28 @@
 package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.frc2020.Constants;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Launcher extends SpartronicsSubsystem {
-    CANSparkMax m_flywheelMasterMotor;
-    CANSparkMax m_flywheelFollowerMotor;
-    TalonSRX m_angleadjusterMotor;
-    TalonSRX m_turretMotor;
+    CANSparkMax mFlywheelMasterMotor;
+    CANSparkMax mFlywheelFollowerMotor;
+    TalonSRX mAngleAdjusterMotor;
+    TalonSRX mTurretMotor;
     public Launcher() {
         // Construct your hardware here
         logInitialized(true);
         //Two NEOs for flywheel (Master and follower, opposite directions)
-        m_flywheelMasterMotor = new CANSparkMax(Constants.kFlywheelMasterID,MotorType.kBrushless);
-        m_flywheelFollowerMotor = new CANSparkMax(Constants.kFlywheelFollowerID,MotorType.kBrushless);
-        m_flywheelFollowerMotor.follow(m_flywheelMasterMotor, true);
+        mFlywheelMasterMotor = new CANSparkMax(Constants.kFlywheelMasterID,MotorType.kBrushless);
+        mFlywheelFollowerMotor = new CANSparkMax(Constants.kFlywheelFollowerID,MotorType.kBrushless);
+        mFlywheelFollowerMotor.follow(mFlywheelMasterMotor, true);
         //One snowblower for angle adjustement
-        m_angleadjusterMotor = new TalonSRX(Constants.kAngleAdjusterID);
+        mAngleAdjusterMotor = new TalonSRX(Constants.kAngleAdjusterID);
         //One BAG motor for turret
-        m_turretMotor = new TalonSRX(Constants.kTurretID);
+        mTurretMotor = new TalonSRX(Constants.kTurretID);
     }
 
     // Outline your API here by creating specific methods.
