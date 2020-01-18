@@ -1,11 +1,21 @@
 package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
+import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.spartronics4915.lib.hardware.motors.SensorModel;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;;
 
 public class Climber extends SpartronicsSubsystem {
 
+    private TalonSRX mClimber775PRO1;
+    private CANSparkMax mClimberNEO1;
     public Climber() {
         //Hardware Contructor (Add motors and such here when I get them)
+        mClimber775PRO1 = new TalonSRX(5);
+        mClimberNEO1 = new CANSparkMax(6, MotorType.kBrushless);
         
     }
     
