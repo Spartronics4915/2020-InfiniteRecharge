@@ -7,10 +7,16 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 /**
- * This subsystem has two motors. A NEO using a Spark, while the other is a 775 PRO using a Talon.
- * The NEO motor winches the climber and the 775 PRO extends the climber
- * The four methods used are extend(), winch(), reverse(), and stop()
+ * Objective:
+ * Subsystem will provide necessary controls/APIs for climbing consistently. Use cases:
+ * 1. Accurately hitting the bar in order to climb with upmost efficiancy
+ * 2. Describing if the climber is functional or not during the match
+ * 3. Not causing any mechanical issues when climbing (battery falling out and the like)
+ * 
+ * Integrations:
+ * 
  */
 public class Climber extends SpartronicsSubsystem {
     private static TalonSRX mClimber775PRO;
