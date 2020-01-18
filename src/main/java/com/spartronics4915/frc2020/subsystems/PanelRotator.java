@@ -19,15 +19,19 @@ public class PanelRotator extends SpartronicsSubsystem {
     
     private final ColorSensorV3  mColorSensor;
 
+    //TODO: These are bad and will work in a way that will make you lose, which will be sad
     public int[] mMinimumRed = {200, 0, 0};
     public int[] mMaximumRed = {255, 30, 30};
 
+    //TODO: These are bad and will work in a way that will make you lose, which will be sad
     public int[] mMinimumGreen = {0, 200, 0};
     public int[] mMaximumGreen = {30, 255, 30};
 
+    //TODO: These are bad and will work in a way that will make you lose, which will be sad
     public int[] mMinimumBlue = {0, 200, 200};
     public int[] mMaximumBlue = {30, 255, 255};
 
+    //TODO: These are bad and will work in a way that will make you lose, which will be sad
     public int[] mMinimumYellow = {200, 200, 0};
     public int[] mMaximumYellow = {255, 255, 30};
 
