@@ -27,7 +27,10 @@ public class Climber extends SpartronicsSubsystem {
         mClimberNEO = new CANSparkMax(Constants.kClimberNEOID, MotorType.kBrushless);
         
     }
-    
+    public boolean isWinchFast() {
+        //TODO get this method fixed once we understand how the gearbox works
+        return true;
+    }
     public static void extend() {
         mClimber775PRO.set(ControlMode.PercentOutput, 0.0);
         mClimberNEO.set(0.0);
@@ -38,7 +41,7 @@ public class Climber extends SpartronicsSubsystem {
         mClimberNEO.set(0.0);
     }
 
-    public static void reverse() {
+    public static void extendReverse() {
         mClimber775PRO.set(ControlMode.PercentOutput, 0.0);
         mClimberNEO.set(0.0);
     }
@@ -46,6 +49,10 @@ public class Climber extends SpartronicsSubsystem {
     public static void stop() {
         mClimber775PRO.set(ControlMode.PercentOutput, 0.0);
         mClimberNEO.set(0.0);
+    }
+
+    public static void isWinchStalled() {
+
     }
 
 }
