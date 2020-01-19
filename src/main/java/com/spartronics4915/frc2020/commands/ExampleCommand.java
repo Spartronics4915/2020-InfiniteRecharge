@@ -1,14 +1,16 @@
 package com.spartronics4915.frc2020.commands;
 
-import com.spartronics4915.frc2020.subsystems.ExampleSubsystem;
+import com.spartronics4915.frc2020.subsystems.Climber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class ExampleCommand extends CommandBase {
 
+    private Climber mClimber;
     // You should only use one subsystem per command. If multiple are needed, use a CommandGroup.
-    public ExampleCommand(ExampleSubsystem mSubsystem) {
-
+    public ExampleCommand(Climber climber) {
+        mClimber = climber;
+        addRequirements(mClimber);
     }
 
     // Called when the command is initially scheduled.
