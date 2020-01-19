@@ -19,7 +19,8 @@ public class PanelRotator extends SpartronicsSubsystem {
     
     private final ColorSensorV3  mColorSensor;
 
-    //TODO: These are bad and will work in a way that will make you lose, which will be sad
+    //TODO: These are essentially random numbers, with the max value based on the images at
+    // https://www.andymark.com/products/infinite-recharge-control-panel-stickr
     public int[] mMinimumRed = {200, 0, 0};
     public int[] mMaximumRed = {255, 30, 30};
 
@@ -67,6 +68,7 @@ public class PanelRotator extends SpartronicsSubsystem {
     }
 
     public String getClosestColor() {
+        //TODO: convert to 0-255 for user convenience.
         red =  mColorSensor.getRed();
         green =  mColorSensor.getGreen();
         blue =  mColorSensor.getBlue();
