@@ -1,12 +1,18 @@
+import java.text.SimpleDateFormat;
+import java.io.ByteArrayOutputStream;
+
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2020.1.2"
+    id "edu.wpi.first.GradleRIO" version "2020.2.2"
+    id "maven"
+    id "maven-publish"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 def ROBOT_MAIN_CLASS = "com.spartronics4915.frc2020.Main"
+def includeDesktopSupport = true // Set this to true to enable desktop support.
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
@@ -18,6 +24,8 @@ deploy {
             // You can use getTeamOrDefault(team) instead of getTeamNumber if you
             // want to store a team number in this file.
             team = frc.getTeamNumber()
+            if(!project.hasProperty("discover"))
+                addresses = ["10.49.15.2"]
         }
     }
     artifacts {
@@ -38,12 +46,9 @@ deploy {
 }
 
 repositories {
-    mavenCentral()
+    mavenCentral() // needed for JUnit
     maven { url 'https://jitpack.io' }
 }
-
-// Set this to true to enable desktop support.
-def includeDesktopSupport = true
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
@@ -56,9 +61,17 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
-    implementation "com.github.Spartronics4915:SpartronicsLib:master-SNAPSHOT"
+    // implementation "com.github.Spartronics4915:SpartronicsLib:master-SNAPSHOT"
 
-    testImplementation 'junit:junit:4.12'
+    implementation("gov.nist.math:jama:1.0.3")
+    implementation("org.ejml:ejml-simple:0.38")
+    implementation("org.apache.commons:commons-math3:3.6.1")
+    implementation("com.fazecast:jSerialComm:2.4.1")
+
+    testImplementation("org.knowm.xchart:xchart:3.2.2")
+    //testImplementation 'junit:junit:4.12'
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.2")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.2")
 
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging
@@ -70,5 +83,35 @@ dependencies {
 // knows where to look for our Robot Class.
 jar {
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
-    manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
+    manifest {
+        String user = System.getProperty("user.name");
+        SimpleDateFormat fmt = new SimpleDateFormat("MMMMM dd, hh:mm a");
+        ByteArrayOutputStream gitinfo = new ByteArrayOutputStream();
+        exec {
+            ignoreExitValue true
+            commandLine 'git', 'describe', "--tags", "--dirty"
+            standardOutput = gitinfo
+        }
+        attributes (
+            "Built-By": user,
+            "Built-At": fmt.format(new Date()),
+            "Code-Version": gitinfo.toString().trim()
+        )
+    }
+    manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)    
+    // we could exclude source by subdir (see 2019-Deepspace/build.gradle)
+}
+
+test {
+    useJUnitPlatform {
+        // Some tests only work if you have the right stuff plugged in
+        // Pass -PallTests if you want tests with the excluded tags
+        if (!project.hasProperty("allTests")) {
+            excludeTags "hardwareDependant"
+        }
+    }
+    testLogging {
+        events "PASSED", "SKIPPED", "FAILED"
+        exceptionFormat "full"
+    }
 }
