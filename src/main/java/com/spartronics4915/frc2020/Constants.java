@@ -7,4 +7,9 @@ public final class Constants {
         public static final int kWinchMotorId = 6;
     }
 
+    public static final class OI {
+        public static final int kJoystickId = 0;
+        public static final int kButtonBoardId = 1;
+    }
+
 }
