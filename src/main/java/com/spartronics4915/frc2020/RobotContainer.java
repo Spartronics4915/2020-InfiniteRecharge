@@ -43,13 +43,13 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        Joystick mJoystick = new Joystick(Constants.OI.kJoystickId);
-        Joystick mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
+        final Joystick mJoystick = new Joystick(Constants.OI.kJoystickId);
+        final Joystick mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
 
-        Climber mClimber = new Climber();
-        Intake mIntake = new Intake();
-        Launcher mLauncher = new Launcher();
-        PanelRotator mPanelRotator = new PanelRotator();
+        final Climber mClimber = new Climber();
+        final Intake mIntake = new Intake();
+        final Launcher mLauncher = new Launcher();
+        final PanelRotator mPanelRotator = new PanelRotator();
 
         configureJoystickBindings();
         configureButtonBoardBindings();
