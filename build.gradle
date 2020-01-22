@@ -12,7 +12,6 @@ sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 def ROBOT_MAIN_CLASS = "com.spartronics4915.frc2020.Main"
-def includeDesktopSupport = true // Set this to true to enable desktop support.
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project EmbeddedTools.
@@ -45,10 +44,8 @@ deploy {
     }
 }
 
-repositories {
-    mavenCentral() // needed for JUnit
-    maven { url 'https://jitpack.io' }
-}
+// Set this to true to enable desktop support.
+def includeDesktopSupport = true 
 
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
@@ -69,8 +66,8 @@ dependencies {
     implementation("com.fazecast:jSerialComm:2.4.1")
 
     testImplementation("org.knowm.xchart:xchart:3.2.2")
-    //testImplementation 'junit:junit:4.12'
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.2")
+    // testImplementation 'junit:junit:4.12'
     testRuntime("org.junit.jupiter:junit-jupiter-engine:5.3.2")
 
     // Enable simulation gui support. Must check the box in vscode to enable support
@@ -102,6 +99,7 @@ jar {
     // we could exclude source by subdir (see 2019-Deepspace/build.gradle)
 }
 
+/*
 test {
     useJUnitPlatform {
         // Some tests only work if you have the right stuff plugged in
@@ -115,3 +113,4 @@ test {
         exceptionFormat "full"
     }
 }
+*/
