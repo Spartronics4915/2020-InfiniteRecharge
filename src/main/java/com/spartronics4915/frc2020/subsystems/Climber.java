@@ -26,22 +26,22 @@ public class Climber extends SpartronicsSubsystem {
         mClimberNEO = new CANSparkMax(Constants.Climber.kWinchMotorId, MotorType.kBrushless);
     }
 
-    public static void extend() {
+    public void extend() {
         mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
         mClimberNEO.set(0.0);
     }
 
-    public static void winch() {
+    public void winch() {
         mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
         mClimberNEO.set(0.0);
     }
 
-    public static void reverse() {
+    public void reverse() {
         mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
         mClimberNEO.set(0.0);
     }
 
-    public static void stop() {
+    public void stop() {
         mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
         mClimberNEO.set(0.0);
     }
