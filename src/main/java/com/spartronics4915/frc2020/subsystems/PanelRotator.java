@@ -43,23 +43,19 @@ public class PanelRotator extends SpartronicsSubsystem {
     public int blue;
 
     public PanelRotator() {
-        mBeamSensorUp = new DigitalInput(Constants.kPanelRotatorBeamSensorUpID);
-        mBeamSensorDown = new DigitalInput(Constants.kPanelRotatorBeamSensorDownID);
-        mSpinMotor = new CANSparkMax(Constants.kPanelRotatorSpinMotorID, MotorType.kBrushless);
-        mExtendMotor = new CANSparkMax(Constants.kPanelRotatorExtendMotorID, MotorType.kBrushless);
+        mBeamSensorUp = new DigitalInput(Constants.PanelRotator.kBeamSensorUpID);
+        mBeamSensorDown = new DigitalInput(Constants.PanelRotator.kBeamSensorDownID);
+        mSpinMotor = new CANSparkMax(Constants.PanelRotator.kSpinMotorID, MotorType.kBrushless);
+        mExtendMotor = new CANSparkMax(Constants.PanelRotator.kExtendMotorID, MotorType.kBrushless);
         mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     }
 
     public void raise() {
-        mExtendMotor.set(Constants.kPanelRotatorExtendMotorSpeed);
-        if(!mBeamSensorUp.get())
-            mExtendMotor.set(0);
+        mExtendMotor.set(Constants.PanelRotator.kExtendMotorSpeed);
     }
 
     public void lower() {
-        mExtendMotor.set(-Constants.kPanelRotatorExtendMotorSpeed);
-        if(mBeamSensorDown.get())
-            mExtendMotor.set(0);
+        mExtendMotor.set(-Constants.PanelRotator.kExtendMotorSpeed);
     }
 
     public String getTargetColor() {
@@ -67,9 +63,9 @@ public class PanelRotator extends SpartronicsSubsystem {
         return color;
     }
 
-    public String getClosestColor() {
+    public String getActualColor() {
         //TODO: convert to 0-255 for user convenience.
-        red =  mColorSensor.getRed();
+        /*red =  mColorSensor.getRed();
         green =  mColorSensor.getGreen();
         blue =  mColorSensor.getBlue();
         sensedColor = "sensor is not working";
@@ -101,9 +97,17 @@ public class PanelRotator extends SpartronicsSubsystem {
                 }
             }
         }
-        return sensedColor;
+        return sensedColor;*/
+        return "placeholder string for color sensing";
     }
 
+    public boolean getBeamSensorDown(){
+        return mBeamSensorDown.get();
+    }
+
+    public boolean getBeamSensorUp(){
+        return mBeamSensorUp.get();
+    }
 
     public void spin(double speed){
         mSpinMotor.set(speed);
