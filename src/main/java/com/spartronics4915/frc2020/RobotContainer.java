@@ -104,8 +104,8 @@ public class RobotContainer {
         new JoystickButton(mButtonBoard, 11).whileHeld(
             new StartEndCommand(mClimber::stop, mClimber::retract, mClimber::stop, mClimber)); // Retract the Climber elevator
         new JoystickButton(mButtonBoard, 14).whenHeld(
-            new ClimberWinchCommand(mClimber)); // Consists of a CommandGroup - ClimberWinchPrimary and ClimberWinchSecondary (which will be lambdas)
-
+            new FunctionalCommand(void, mClimber::winch(!Constants.Climber.kStalled), mClimber::stop, mClimber::isStalled, mClimber).andThen(
+                new StartEndCommand(mClimber::winch(Constants.Climber.kStalled), mClimber::stop, mClimber)); // Winches the Climber quickly until stalled, then winches slowly
         new JoystickButton(mButtonBoard, 15).whenHeld(
             new FunctionalCommand(void, mLauncher::raise, mLauncher::stop, mLauncher::isElevationStalled, mLauncher)); // Raises angle of elevation by lowering the hood
         new JoystickButton(mButtonBoard, 16).whenHeld(
