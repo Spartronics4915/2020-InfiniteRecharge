@@ -104,6 +104,11 @@ public class PanelRotator extends SpartronicsSubsystem {
         return sensedColor;
     }
 
+
+    public void spin(double speed){
+        mSpinMotor.set(speed);
+    }
+
     public void stop() {
         mSpinMotor.set(0);
         mExtendMotor.set(0);
