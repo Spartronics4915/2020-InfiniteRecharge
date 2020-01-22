@@ -8,31 +8,31 @@ public class Intake extends SpartronicsSubsystem {
 
     }
     
-    public static void mechvecintake() {
+    public void mechvecintake() {
 
     }
 
-    public static void prisrollintake() {
+    public void prisrollintake() {
 
     }
 
-    public static void prisrollreverse() {
+    public void prisrollreverse() {
 
     }
 
-    public static void mechvecreverse() {
+    public void mechvecreverse() {
 
     }
 
-    public static void prisrollstop() {
+    public void prisrollstop() {
 
     }
 
-    public static void mechvecstop() {
+    public void mechvecstop() {
 
     }
 
-    public static void stop() {
+    public void stop() {
         
     }
 }
