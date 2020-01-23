@@ -35,8 +35,8 @@ public class ExampleCommandFactory
 
     public CommandBase GetCommand(String nm)
     {
-        CommandBase result=null;
-        switch(nm)
+        CommandBase result = null;
+        switch (nm)
         {
         case "test1":
             result = new InstantCommand(() -> mSubsys.logInfo("running instant command test1"));
@@ -51,7 +51,9 @@ public class ExampleCommandFactory
 
     public class Test1 extends CommandBase
     {
+
         private int mCount = 0;
+
         public Test1()
         {
             addRequirements(mSubsys);
@@ -75,6 +77,7 @@ public class ExampleCommandFactory
 
     public class Test2 extends CommandGroupBase
     {
+
         Test2()
         {
             addRequirements(mSubsys);
