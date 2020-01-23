@@ -5,6 +5,8 @@ import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsEncoder;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX.SpartronicsSRXEncoder;
+import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANEncoder;
@@ -13,9 +15,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Launcher extends SpartronicsSubsystem {
-    private CANSparkMax mFlywheelMasterMotor;
-    private CANSparkMax mFlywheelFollowerMotor;
-    private CANEncoder mFlywheelEncoder;
+    private SpartronicsMax mFlywheelMasterMotor;
+    private SpartronicsMax mFlywheelFollowerMotor;
+    private SpartronicsEncoder mFlywheelEncoder;
     private SpartronicsSRX mAngleAdjusterMotor;
     private SpartronicsEncoder mAngleAdjusterEncoder;
     private SpartronicsSRX mTurretMotor;
@@ -27,9 +29,10 @@ public class Launcher extends SpartronicsSubsystem {
         boolean success=false;
         try {
             //Two NEOs for flywheel (Master and follower, opposite directions)
-            mFlywheelMasterMotor = new CANSparkMax(Constants.kLauncherFlywheelMasterID,MotorType.kBrushless);
-            mFlywheelFollowerMotor = new CANSparkMax(Constants.kLauncherFlywheelFollowerID,MotorType.kBrushless);
-            mFlywheelFollowerMotor.follow(mFlywheelMasterMotor, true);
+            mFlywheelMasterMotor = new SpartronicsMax(Constants.kLauncherFlywheelMasterID,null);
+            mFlywheelFollowerMotor = new SpartronicsMax(Constants.kLauncherFlywheelFollowerID,null);
+            mFlywheelFollowerMotor.follow(mFlywheelMasterMotor);
+            mFlywheelFollowerMotor.setOutputInverted(true);;
             mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
             //One snowblower for angle adjustement
             mAngleAdjusterMotor = new SpartronicsSRX(Constants.kLauncherAngleAdjusterID,null);
@@ -50,7 +53,9 @@ public class Launcher extends SpartronicsSubsystem {
     // Each method should perform a _singular action_
     // - eg. instead of a setIntake method, control each intake motor individually
     // setIntake functionality should be implemented in a command.
-    
+    public void runFlywheel() {
+        mFlywheelMasterMotor.setVelocity(targetRPM);
+    }
     /**
      * @param relativeAngle Angle in degrees you want to turn the turret relative to the current angle
      */
