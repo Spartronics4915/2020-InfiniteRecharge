@@ -79,30 +79,30 @@ public class PanelRotator extends SpartronicsSubsystem {
         green =  mColorSensor.getGreen();
         blue =  mColorSensor.getBlue();
         sensedColor = "sensor is not working";
-        if(mMinimumRed[0] <= red && red <= mMaximumRed[0]){
-            if(mMinimumRed[1] <= green && green <= mMaximumRed[1]){
-                if(mMinimumRed[2] <= blue && blue <= mMaximumRed[2]){
+        if(mMinimumRed[0] <= red && red <= mMaximumRed[0]) {
+            if(mMinimumRed[1] <= green && green <= mMaximumRed[1]) {
+                if(mMinimumRed[2] <= blue && blue <= mMaximumRed[2]) {
                     sensedColor = "Red";
                 }
             }
         }
-        if(mMinimumBlue[0] <= red && red <= mMaximumBlue[0]){
-            if(mMinimumBlue[1] <= green && green <= mMaximumBlue[1]){
-                if(mMinimumBlue[2] <= blue && blue <= mMaximumBlue[2]){
+        if(mMinimumBlue[0] <= red && red <= mMaximumBlue[0]) {
+            if(mMinimumBlue[1] <= green && green <= mMaximumBlue[1]) {
+                if(mMinimumBlue[2] <= blue && blue <= mMaximumBlue[2]) {
                     sensedColor = "Blue";
                 }
             }
         }
-        if(mMinimumYellow[0] <= red && red <= mMaximumYellow[0]){
-            if(mMinimumYellow[1] <= green && green <= mMaximumYellow[1]){
-                if(mMinimumYellow[2] <= blue && blue <= mMaximumYellow[2]){
+        if(mMinimumYellow[0] <= red && red <= mMaximumYellow[0]) {
+            if(mMinimumYellow[1] <= green && green <= mMaximumYellow[1]) {
+                if(mMinimumYellow[2] <= blue && blue <= mMaximumYellow[2]) {
                     sensedColor = "Yellow";
                 }
             }
         }
-        if(mMinimumGreen[0] <= red && red <= mMaximumGreen[0]){
-            if(mMinimumGreen[1] <= green && green <= mMaximumGreen[1]){
-                if(mMinimumGreen[2] <= blue && blue <= mMaximumGreen[2]){
+        if(mMinimumGreen[0] <= red && red <= mMaximumGreen[0]) {
+            if(mMinimumGreen[1] <= green && green <= mMaximumGreen[1]) {
+                if(mMinimumGreen[2] <= blue && blue <= mMaximumGreen[2]) {
                     sensedColor = "Green";
                 }
             }
@@ -112,24 +112,29 @@ public class PanelRotator extends SpartronicsSubsystem {
     }
 
     /** sees if the bottom beam sensor is triggered */
-    public boolean getBeamSensorDown(){
+    public boolean getBeamSensorDown() {
         //TODO: maybe backwards
         return mBeamSensorDown.get();
     }
 
     /** sees if the top beam sensor is triggered */
-    public boolean getBeamSensorUp(){
+    public boolean getBeamSensorUp() {
         //TODO: maybe backwards
         return mBeamSensorUp.get();
     }
 
     /** spins the wheel to move the control panel */
-    public void spin(double speed){
-        mSpinMotor.set(speed);
+    public void spin() {
+        mSpinMotor.set(Constants.PanelRotator.kSpinMotorSpeed);
+    }
+
+    /** get the number of times that the spinning */
+    public double getRotations() {
+        return -1;
     }
 
     /** stops the wheel */
-    public void spin(){
+    public void stopSpin() {
         mSpinMotor.set(0);
     }
 

@@ -27,19 +27,19 @@ public class SpinToColorCommand extends CommandBase {
         {
           case 'B' :
             if(mPanelRotator.getActualColor() != "Blue") {
-              mPanelRotator.spin(0.1);}
-            break;
+              mPanelRotator.spin();}
+          break;
           case 'G' :
-          if(mPanelRotator.getActualColor() != "Green") {
-            mPanelRotator.spin(0.1);}
-            break;
+            if(mPanelRotator.getActualColor() != "Green") {
+              mPanelRotator.spin();}
+          break;
           case 'R' :
-          if(mPanelRotator.getActualColor() != "Red") {
-            mPanelRotator.spin(0.1);}
+            if(mPanelRotator.getActualColor() != "Red") {
+              mPanelRotator.spin();}
             break;
           case 'Y' :
-          if(mPanelRotator.getActualColor() != "Yellow") {
-            mPanelRotator.spin(0.1);}
+            if(mPanelRotator.getActualColor() != "Yellow") {
+              mPanelRotator.spin();}
             break;
           default :
             //This is corrupt data
