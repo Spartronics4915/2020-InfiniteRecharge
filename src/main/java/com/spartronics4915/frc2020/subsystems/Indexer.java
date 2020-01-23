@@ -4,6 +4,8 @@ import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
 public class Indexer extends SpartronicsSubsystem {
 
+    // private SpartronicsMax mSpinner;
+
     public Indexer() {
         
     }
@@ -17,31 +19,11 @@ public class Indexer extends SpartronicsSubsystem {
         return false;
     }
 
-    public void rotateClockwiseOnce() {
+    public void rotateOnce() {
 
-    }
-
-    public void rotateCounterClockwiseOnce() {
-
-    }
-
-    public int rotateCounterClockwiseFull() {
-        return 0;
-    }
-
-    public int rotateClockwiseFull() {
-        return 0;
     }
 
     public int rotateFull() {
-        return 0;
-    }
-
-    public int rotateCounterClockwiseEmpty() {
-        return 0;
-    }
-
-    public int rotateClockwiseEmpty() {
         return 0;
     }
 
