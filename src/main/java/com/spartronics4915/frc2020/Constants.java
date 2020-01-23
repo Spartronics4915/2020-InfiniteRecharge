@@ -4,6 +4,11 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
 
 public final class Constants {
+    public static final class Indexer {
+        public static final int kSpinnerId = -1;
+        public static final int kLiftId = -1;
+        public static final int kProxSensorId = -1;
+    }   
 
     public static final class Climber {
         public static final int kLiftMotorId = 5;
