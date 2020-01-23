@@ -7,6 +7,7 @@ public final class Constants {
         public static final int kWinchMotorId = 6;
         public static final double kExtendSpeed = 1.0;
         public static final double kWinchSpeed = 1.0;
+        public static final boolean kStalled = true;
     }
     
     public static final class Indexer {
