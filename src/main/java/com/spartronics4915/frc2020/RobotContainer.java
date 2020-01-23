@@ -3,6 +3,7 @@ package com.spartronics4915.frc2020;
 import java.util.Set;
 
 import com.spartronics4915.frc2020.commands.*;
+import com.spartronics4915.frc2020.subsystems.Launcher;
 import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -59,6 +60,7 @@ public class RobotContainer {
         // new JoystickButton(mJoystick, 10).whenPressed();
         // new JoystickButton(mJoystick, 11).whenPressed();
         */
+        new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(new Launcher()));
     }
 
     private void configureButtonBoardBindings() {
