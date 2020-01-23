@@ -31,9 +31,12 @@ public class Climber extends SpartronicsSubsystem {
         mClimberNEO.set(0.0);
     }
 
-    public void winch() {
+    public void winch(boolean stalled) {
         mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
-        mClimberNEO.set(Constants.Climber.kWinchSpeed);
+        if (stalled)
+            mClimberNEO.set(Constants.Climber.kWinchSpeed);
+        else
+            mClimberNEO.set(-Constants.Climber.kWinchSpeed);
     }
 
     public void retract() {
@@ -48,10 +51,6 @@ public class Climber extends SpartronicsSubsystem {
 
     public double getWinchVoltage() {
         return mClimberNEO.getBusVoltage();
-    }
-
-    public boolean isWinchStalled() {
-        return false;
     }
 }
 
