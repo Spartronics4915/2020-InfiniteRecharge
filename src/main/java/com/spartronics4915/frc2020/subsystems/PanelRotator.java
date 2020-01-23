@@ -61,13 +61,18 @@ public class PanelRotator extends SpartronicsSubsystem {
         mExtendMotor.set(-Constants.PanelRotator.kExtendMotorSpeed);
     }
 
+    /** stops the extension motor */
+    public void stopExtendMotor () {
+        mExtendMotor.set(0);
+    }
+
     /** gets the color (Red, Blue, Yellow, or Green) through game specific messages that the robot needs to spin to */
     public String getTargetColor() {
         String color = DriverStation.getInstance().getGameSpecificMessage();
         return color;
     }
 
-    /** finds what color the color sensor is seeing  (Red, Blue, Yellow, or Green) */
+    /** finds what color the color sensor is seeing  (Red, Blue, Yellow, or Green); currently just a placeholder for output */
     public String getActualColor() {
         //TODO: convert to 0-255 for user convenience.
         /*red =  mColorSensor.getRed();
@@ -121,6 +126,11 @@ public class PanelRotator extends SpartronicsSubsystem {
     /** spins the wheel to move the control panel */
     public void spin(double speed){
         mSpinMotor.set(speed);
+    }
+
+    /** stops the wheel */
+    public void spin(){
+        mSpinMotor.set(0);
     }
 
     /** stops the two motors */

@@ -22,20 +22,24 @@ public class SpinToColorCommand extends CommandBase {
     @Override
     public void execute() {
         String targetColor = mPanelRotator.getTargetColor();
-        gameData = DriverStation.getInstance().getGameSpecificMessage();
-        switch (gameData.charAt(0))
+        targetColor = DriverStation.getInstance().getGameSpecificMessage();
+        switch (targetColor.charAt(0))
         {
           case 'B' :
-            mPanelRotator.spin(0.1);
+            if(mPanelRotator.getActualColor() != "Blue") {
+              mPanelRotator.spin(0.1);}
             break;
           case 'G' :
-            //Green case code
+          if(mPanelRotator.getActualColor() != "Green") {
+            mPanelRotator.spin(0.1);}
             break;
           case 'R' :
-            //Red case code
+          if(mPanelRotator.getActualColor() != "Red") {
+            mPanelRotator.spin(0.1);}
             break;
           case 'Y' :
-            //Yellow case code
+          if(mPanelRotator.getActualColor() != "Yellow") {
+            mPanelRotator.spin(0.1);}
             break;
           default :
             //This is corrupt data
