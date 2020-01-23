@@ -1,7 +1,7 @@
 /**
  * This subsystem has two motors. A NEO using a Spark, while the other is a 775 PRO using a Talon.
  * The NEO motor winches the climber and the 775 PRO extends the climber
- * The four methods used are extend(), winch(), reverse(), and stop()
+ * The four methods used are extend(), winch(), reverseExtend(), and stop()
  */
 
 package com.spartronics4915.frc2020.subsystems;
@@ -36,7 +36,7 @@ public class Climber extends SpartronicsSubsystem {
         mClimberNEO.set(0.0);
     }
 
-    public void reverse() {
+    public void reverseExtend() {
         mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
         mClimberNEO.set(0.0);
     }
