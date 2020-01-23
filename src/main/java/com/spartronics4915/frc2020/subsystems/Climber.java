@@ -20,6 +20,7 @@ public class Climber extends SpartronicsSubsystem {
 
     private static TalonSRX mClimber775Pro;
     private static CANSparkMax mClimberNEO;
+    private double winchVoltage;
 
     public Climber() {
         // Hardware Contructor (Add motors and such here when I get them)
@@ -28,17 +29,17 @@ public class Climber extends SpartronicsSubsystem {
     }
 
     public void extend() {
-        mClimber775Pro.set(ControlMode.PercentOutput, 1.0);
+        mClimber775Pro.set(ControlMode.PercentOutput, Constants.Climber.kExtendSpeed);
         mClimberNEO.set(0.0);
     }
 
     public void winch() {
         mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
-        mClimberNEO.set(1.0);
+        mClimberNEO.set(Constants.Climber.kWinchSpeed);
     }
 
     public void reverseExtend() {
-        mClimber775Pro.set(ControlMode.PercentOutput, -1.0);
+        mClimber775Pro.set(ControlMode.PercentOutput, -(Constants.Climber.kExtendSpeed));
         mClimberNEO.set(1.0);
     }
 
@@ -47,8 +48,14 @@ public class Climber extends SpartronicsSubsystem {
         mClimberNEO.set(0.0);
     }
 
-    public static void isWinchStalled() {
+    public double getWinchVoltage() {
+        
+        winchVoltage = mClimberNEO.getBusVoltage();
+        return winchVoltage;
+    }
 
+    public static boolean isWinchStalled() {
+        return false;
     }
 
 }
