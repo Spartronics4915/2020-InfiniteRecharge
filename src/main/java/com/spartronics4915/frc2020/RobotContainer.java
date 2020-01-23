@@ -65,27 +65,24 @@ public class RobotContainer {
     }
 
     private void configureJoystickBindings() {
-        // new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
-        new JoystickButton(mJoystick, 2).whenHeld(
-            new FunctionalCommand(() -> {}, mLauncher::raise, mLauncher::stop, mLauncher::isElevationStalled, mLauncher)); // Duplicate of below
-        new JoystickButton(mJoystick, 3).whenHeld(
-            new FunctionalCommand(() -> {}, mLauncher::lower, mLauncher::stop, mLauncher::isElevationStalled, mLauncher)); // Duplicate of below
-        new JoystickButton(mJoystick, 4).whenHeld(
-            new FunctionalCommand(() -> {}, mLauncher::left, mLauncher::stop, mLauncher::isRotationStalled, mLauncher)); // Duplicate of below
-        new JoystickButton(mJoystick, 5).whenHeld(
-            new FunctionalCommand(() -> {}, mLauncher::right, mLauncher::stop, mLauncher::isRotationStalled, mLauncher)); // Duplicate of below
+        /*
+        new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
+        new JoystickButton(mJoystick, 2).whenHeld(new TurretRaiseCommand(mLauncher));
+        new JoystickButton(mJoystick, 3).whenHeld(new TurretLowerCommand(mLauncher));
+        new JoystickButton(mJoystick, 4).whenHeld(new TurretLeftCommand(mLauncher));
+        new JoystickButton(mJoystick, 5).whenHeld(new TurretRightCommand(mLauncher));
+        */
 
         /* Switch Camera views
         new JoystickButton(mJoystick, 6).whenPressed(
-            new InstantCommand(mCamera::switch(Constants.Camera.kFrontId)));
+            new InstantCommand(() -> mCamera.switch(Constants.Camera.kFrontId)));
         new JoystickButton(mJoystick, 7).whenPressed(
-            new InstantCommand(mCamera::switch(Constants.Camera.kRearId)));
+            new InstantCommand(() -> mCamera.switch(Constants.Camera.kRearId)));
         new JoystickButton(mJoystick, 10).whenPressed(
-            new InstantCommand(mCamera::switch(Constants.Camera.kIntakeId)));
+            new InstantCommand(() -> mCamera.switch(Constants.Camera.kIntakeId)));
         new JoystickButton(mJoystick, 11).whenPressed(
-            new InstantCommand(mCamera::switch(Constants.Camera.kTurretId)));
+            new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
-        new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(new Launcher()));
     }
 
     private void configureButtonBoardBindings() {
@@ -93,20 +90,18 @@ public class RobotContainer {
             new StartEndCommand(mIntake::intake, mIntake::stop, mIntake));
         new JoystickButton(mButtonBoard, 1).whenPressed(
             new InstantCommand(mIntake::stop, mIntake));
-        new JoystickButton(mButtonBoard, 2).whileHeld( // Will reschedule itself
-            new UnjamCommand(mIntake));
+        // new JoystickButton(mButtonBoard, 2).whileHeld(new UnjamCommand(mIntake));
 
-        new JoystickButton(mButtonBoard, 3).whenPressed(
-            new AimLowCommand(mLauncher));
-        new JoystickButton(mButtonBoard, 4).whenPressed(
-            new LaunchCommand(mLauncher));
-        new JoystickButton(mButtonBoard, 5).whenPressed(
-            new AimHighCommand(mLauncher));
+        /*
+        new JoystickButton(mButtonBoard, 3).whenPressed(new AimLowCommand(mLauncher));
+        new JoystickButton(mButtonBoard, 4).whenPressed(new LaunchCommand(mLauncher));
+        new JoystickButton(mButtonBoard, 5).whenPressed(new AimHighCommand(mLauncher));
+        */
 
         new JoystickButton(mButtonBoard, 6).whenPressed(
-            new FunctionalCommand(() -> {}, mPanelRotator::raise, mPanelRotator::stop, mPanelRotator::getBeamSensorUp, mPanelRotator)); // Raise the PanMan
+            new FunctionalCommand(() -> {}, mPanelRotator::raise, (Boolean b) -> mPanelRotator.stop(), mPanelRotator::getBeamSensorUp, mPanelRotator));
         new JoystickButton(mButtonBoard, 7).whenPressed(
-            new FunctionalCommand(() -> {}, mPanelRotator::lower, mPanelRotator::stop, mPanelRotator::getBeamSensorDown, mPanelRotator)); // Lower the PanMan
+            new FunctionalCommand(() -> {}, mPanelRotator::lower, (Boolean b) -> mPanelRotator.stop(), mPanelRotator::getBeamSensorDown, mPanelRotator));
         new JoystickButton(mButtonBoard, 8).whenPressed(
             new SpinToColorCommand(mPanelRotator));
         new JoystickButton(mButtonBoard, 9).whenPressed(
@@ -117,16 +112,15 @@ public class RobotContainer {
         new JoystickButton(mButtonBoard, 11).whileHeld(
             new StartEndCommand(mClimber::retract, mClimber::stop, mClimber)); // Retract the Climber elevator
         new JoystickButton(mButtonBoard, 14).whenHeld(
-            new FunctionalCommand(() -> {}, () -> mClimber.winch(!Constants.Climber.kStalled), (Boolean b) -> mClimber.stop(b), mClimber::isStalled, mClimber).andThen(
-                new StartEndCommand(() -> {}, () -> mClimber.stop(false), mClimber))); // Winches the Climber quickly until stalled, then winches slowly
-        new JoystickButton(mButtonBoard, 15).whenHeld(
-            new FunctionalCommand(() -> {}, mLauncher::raise, mLauncher::stop, mLauncher::isElevationStalled, mLauncher)); // Raises angle of elevation by lowering the hood
-        new JoystickButton(mButtonBoard, 16).whenHeld(
-            new FunctionalCommand(() -> {}, mLauncher::lower, mLauncher::stop, mLauncher::isElevationStalled, mLauncher)); // Lowers the angle of elevation by raising the hood
-        new JoystickButton(mButtonBoard, 17).whenHeld(
-            new FunctionalCommand(() -> {}, mLauncher::left, mLauncher::stop, mLauncher::isRotationStalled, mLauncher)); // Rotates the turret left
-        new JoystickButton(mButtonBoard, 18).whenHeld(
-            new FunctionalCommand(() -> {}, mLauncher::right, () -> mLauncher.stop(false), mLauncher::isRotationStalled, mLauncher)); // Rotates the turret right
+            new FunctionalCommand(() -> {}, () -> mClimber.winch(!Constants.Climber.kStalled), (Boolean b) -> mClimber.stop(), mClimber::isStalled, mClimber).andThen(
+                new StartEndCommand(() -> mClimber.winch(Constants.Climber.kStalled), mClimber::stop, mClimber))); // Winches the Climber quickly until stalled, then winches slowly
+
+        /*
+        new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
+        new JoystickButton(mButtonBoard, 16).whenHeld(new TurretLowerCommand(mLauncher));
+        new JoystickButton(mButtonBoard, 17).whenHeld(new TurretLeftCommand(mLauncher));
+        new JoystickButton(mButtonBoard, 18).whenHeld(new TurretRightCommand(mLauncher));
+        */
     }
 
     /**
