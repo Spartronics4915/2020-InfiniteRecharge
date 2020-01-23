@@ -31,12 +31,8 @@ public class Indexer extends SpartronicsSubsystem {
         return 0;
     }
 
-    public void liftUp() {
+    public void loadBall() {
         
-    }
-
-    public void liftDown() {
-
     }
 
     // The exception to this is a general-functionality stop() method.
