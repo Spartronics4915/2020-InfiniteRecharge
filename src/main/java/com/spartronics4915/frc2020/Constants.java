@@ -1,14 +1,25 @@
 package com.spartronics4915.frc2020;
 
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.I2C.Port;
-
 public final class Constants {
 
     public static final class Climber {
         public static final int kLiftMotorId = 5;
         public static final int kWinchMotorId = 6;
-        public static final boolean kStalled = true;
+        public static final double kExtendSpeed = 1.0;
+        public static final double kWinchSpeed = 1.0;
+    }
+
+    public static final class Indexer {
+        public static final int kSpinnerId = -1;
+        public static final int kLiftId = -1;
+        public static final int kProxSensorId = -1;
+    }
+
+    public static final class Launcher {
+        public static final int kFlywheelMasterID = -1;
+        public static final int kFlywheelFollowerID = -1;
+        public static final int kAngleAdjusterID = -1;
+        public static final int kTurretID = -1;
     }
 
     public static final class OI {
@@ -23,12 +34,7 @@ public final class Constants {
         public static final int kExtendMotorID = -1;
         public static final int kSpinMotorID = -1;
 
-        //TODO:This is bad and does not work. Needs to be implemented in a functional way.
-        public static final Port kColorSensorLeftID = I2C.Port.kOnboard;
-        public static final Port kColorSensorRightID = I2C.Port.kOnboard;
-
         public static final double kExtendMotorSpeed = 0.5;
         public static final double kSpinMotorSpeed = 0.5;
     }
-
 }
