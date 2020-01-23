@@ -1,9 +1,3 @@
-/**
- * This subsystem has two motors. A NEO using a Spark, while the other is a 775 PRO using a Talon.
- * The NEO motor winches the climber and the 775 PRO extends the climber
- * The four methods used are extend(), winch(), reverseExtend(), and stop()
- */
-
 package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.frc2020.Constants;
@@ -16,11 +10,15 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 
+/**
+ * This subsystem has two motors. A NEO using a Spark, while the other is a 775 PRO using a Talon.
+ * The NEO motor winches the climber and the 775 PRO extends the climber
+ * The four methods used are extend(), winch(), reverseExtend(), and stop()
+ */
 public class Climber extends SpartronicsSubsystem {
 
     private static TalonSRX mClimber775Pro;
     private static CANSparkMax mClimberNEO;
-    private double winchVoltage;
 
     public Climber() {
         // Hardware Contructor (Add motors and such here when I get them)
@@ -38,9 +36,9 @@ public class Climber extends SpartronicsSubsystem {
         mClimberNEO.set(Constants.Climber.kWinchSpeed);
     }
 
-    public void reverseExtend() {
-        mClimber775Pro.set(ControlMode.PercentOutput, -(Constants.Climber.kExtendSpeed));
-        mClimberNEO.set(1.0);
+    public void retract() {
+        mClimber775Pro.set(ControlMode.PercentOutput, -Constants.Climber.kExtendSpeed);
+        mClimberNEO.set(0.0);
     }
 
     public void stop() {
@@ -49,14 +47,11 @@ public class Climber extends SpartronicsSubsystem {
     }
 
     public double getWinchVoltage() {
-        
-        winchVoltage = mClimberNEO.getBusVoltage();
-        return winchVoltage;
+        return mClimberNEO.getBusVoltage();
     }
 
-    public static boolean isWinchStalled() {
+    public boolean isWinchStalled() {
         return false;
     }
-
 }
 
