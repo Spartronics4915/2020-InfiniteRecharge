@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 
 public class Climber extends SpartronicsSubsystem {
 
@@ -27,18 +28,18 @@ public class Climber extends SpartronicsSubsystem {
     }
 
     public void extend() {
-        mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
+        mClimber775Pro.set(ControlMode.PercentOutput, 1.0);
         mClimberNEO.set(0.0);
     }
 
     public void winch() {
         mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
-        mClimberNEO.set(0.0);
+        mClimberNEO.set(1.0);
     }
 
     public void reverseExtend() {
-        mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
-        mClimberNEO.set(0.0);
+        mClimber775Pro.set(ControlMode.PercentOutput, -1.0);
+        mClimberNEO.set(1.0);
     }
 
     public void stop() {
