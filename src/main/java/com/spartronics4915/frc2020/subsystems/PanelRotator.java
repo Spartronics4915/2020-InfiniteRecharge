@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.DigitalInput;
 
+
 public class PanelRotator extends SpartronicsSubsystem {
     private final CANSparkMax mSpinMotor;
     private final CANSparkMax mExtendMotor;
@@ -50,19 +51,23 @@ public class PanelRotator extends SpartronicsSubsystem {
         mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     }
 
+    /** raises the arm holding the spinner at a set speed*/
     public void raise() {
         mExtendMotor.set(Constants.PanelRotator.kExtendMotorSpeed);
     }
 
+    /** lowers the arm holding the spinner at a set speed*/
     public void lower() {
         mExtendMotor.set(-Constants.PanelRotator.kExtendMotorSpeed);
     }
 
+    /** gets the color (Red, Blue, Yellow, or Green) through game specific messages that the robot needs to spin to */
     public String getTargetColor() {
         String color = DriverStation.getInstance().getGameSpecificMessage();
         return color;
     }
 
+    /** finds what color the color sensor is seeing  (Red, Blue, Yellow, or Green) */
     public String getActualColor() {
         //TODO: convert to 0-255 for user convenience.
         /*red =  mColorSensor.getRed();
@@ -101,18 +106,24 @@ public class PanelRotator extends SpartronicsSubsystem {
         return "placeholder string for color sensing";
     }
 
+    /** sees if the bottom beam sensor is triggered */
     public boolean getBeamSensorDown(){
+        //TODO: maybe backwards
         return mBeamSensorDown.get();
     }
 
+    /** sees if the top beam sensor is triggered */
     public boolean getBeamSensorUp(){
+        //TODO: maybe backwards
         return mBeamSensorUp.get();
     }
 
+    /** spins the wheel to move the control panel */
     public void spin(double speed){
         mSpinMotor.set(speed);
     }
 
+    /** stops the two motors */
     public void stop() {
         mSpinMotor.set(0);
         mExtendMotor.set(0);
