@@ -53,15 +53,30 @@ public class Launcher extends SpartronicsSubsystem {
     // Each method should perform a _singular action_
     // - eg. instead of a setIntake method, control each intake motor individually
     // setIntake functionality should be implemented in a command.
+
+
+
+
+    
     public void runFlywheel() {
         mFlywheelMasterMotor.setVelocity(targetRPM);
     }
+
+
+
+
+
     /**
      * @param relativeAngle Angle in degrees you want to turn the turret relative to the current angle
      */
     public void turnTurret(double relativeAngle) {
         //rotates turret a specific angle relative to its current angle
     }
+
+
+
+
+
     /**
      * @return Current angle in degrees the turret is facing relative to the home position (forwards)
      */
@@ -69,13 +84,22 @@ public class Launcher extends SpartronicsSubsystem {
         //returns the current angle the turret is facing relative to straight ahead/home position
         return mTurretEncoder.getPosition();
     }
+
+
+
+
+
     /**
      * @param angle Angle in degrees above horizontal you want the angle adjuster to go to
      */
-    public void setAngle(double angle) {
+    public void setPitch(double angle) {
         //sets target angle to given angle
         targetAngle=angle;
     }
+
+
+
+
 
     /**
      * @param rpm RPM you want the flywheel to target
@@ -84,13 +108,23 @@ public class Launcher extends SpartronicsSubsystem {
         //sets target rpm for flywheel to given rpm
         targetRPM=rpm;
     }
+
+
+
+
+
     /**
      * @return Angle in degrees above horizontal that the angle adjuster is targeting
      */
-    public double getTargetAngle() {
+    public double getTargetPitch() {
         //returns current target angle of angle adjuster
         return targetAngle;
     }
+
+
+
+
+
     /**
      * @return RPM that the flywheel is targeting
      */
@@ -98,15 +132,25 @@ public class Launcher extends SpartronicsSubsystem {
         //returns current target RPM of shooter
         return targetRPM;
     }
+
+
+
+
+
     /**
      * @return Current angle in degrees above horizontal of the angle adjuster
      */
-    public double getCurrentAngle() {
+    public double getCurrentPitch() {
         //returns current angle of angle adjuster
         //NEED ENC OR POT
         mAngleAdjusterEncoder.getPosition();
         return 0.0;
     }
+
+
+
+
+
     /**
      * @return The current RPM of the flywheel
      */
@@ -115,15 +159,23 @@ public class Launcher extends SpartronicsSubsystem {
         return mFlywheelEncoder.getVelocity();
     }
 
+
+
+
+
     /**
      * @param distance Horizontal distance in meters from the shooter to the target
      * @return The angle in degrees above horizontal that is calculated to be necessary to hit the target based off of the input distance
      */
-    public double calcAngle(double distance) {
+    public double calcPitch(double distance) {
         //computes and returns angle for angle adjuster based on input distance
         double angle=0.0;
         return angle;
     }
+
+
+
+
 
     /**
      * @param distance Horizontal distance in meters from the shooter to the target
@@ -134,14 +186,24 @@ public class Launcher extends SpartronicsSubsystem {
         double RPM=0.0;
         return RPM;
     }
+
+
+
+
+
     /**
      * @return True if the target is within the turret's range of rotation, else false
      */
-    public boolean inRotation() {
+    public boolean inFOV() {
         //returns whether or not the target is within the range that the turret can rotate to, used by driver
         boolean inRotationRange=true;
         return inRotationRange;
     }
+
+
+
+
+
     /**
      * @return True if the target is within the horizontal distance from the target the shooter is capable of shooting to, else false
      */
@@ -150,10 +212,18 @@ public class Launcher extends SpartronicsSubsystem {
         boolean inRange=true;
         return inRange;
     }
+
+
+
+
+
     public void reverse() {
         //reverses shooter motors
-        mFlywheelMasterMotor.setInverted(true);
     }
+
+
+
+
 
     public void reset() {
         //reset
