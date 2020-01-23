@@ -1,11 +1,12 @@
 package com.spartronics4915.frc2020.commands;
 
-import com.spartronics4915.frc2020.subsystems.ExampleSubsystem;
 import com.spartronics4915.frc2020.subsystems.Launcher;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class ShootBallTest extends CommandBase {
+
     Launcher mLauncher;
+
     // You should only use one subsystem per command. If multiple are needed, use a CommandGroup.
     public ShootBallTest(Launcher launcher) {
         mLauncher=launcher;
