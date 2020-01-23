@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 public class Launcher extends SpartronicsSubsystem {
     private SpartronicsMax mFlywheelMasterMotor;
     private SpartronicsMax mFlywheelFollowerMotor;
@@ -24,47 +25,37 @@ public class Launcher extends SpartronicsSubsystem {
     private SpartronicsEncoder mTurretEncoder;
     private double targetRPM;
     private double targetAngle;
+
     public Launcher() {
-        // Construct your hardware here
-        boolean success=false;
+        boolean success = false;
         try {
-            //Two NEOs for flywheel (Master and follower, opposite directions)
+            // Two NEOs for flywheel (Master and follower, opposite directions)
             mFlywheelMasterMotor = new SpartronicsMax(Constants.Launcher.kFlywheelMasterID,null);
             mFlywheelFollowerMotor = new SpartronicsMax(Constants.Launcher.kFlywheelFollowerID,null);
             mFlywheelFollowerMotor.follow(mFlywheelMasterMotor);
-            mFlywheelFollowerMotor.setOutputInverted(true);;
+            mFlywheelFollowerMotor.setOutputInverted(true);
             mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
-            //One snowblower for angle adjustement
+
+            // One snowblower for angle adjustement
             mAngleAdjusterMotor = new SpartronicsSRX(Constants.Launcher.kAngleAdjusterID,null);
             mAngleAdjusterEncoder = mAngleAdjusterMotor.getEncoder();
-            //One BAG motor for turret
+
+            // One BAG motor for turret
             mTurretMotor = new SpartronicsSRX(Constants.Launcher.kTurretID,null);
             mTurretEncoder = mTurretMotor.getEncoder();
+
             success = true;
-        } catch (Exception e) {
-            //TODO: handle exception
+        } 
+        catch (Exception e) {
             success = false;
             logException("Could not instantiate Launcher: ", e);
         }
         logInitialized(success);
     }
 
-    // Outline your API here by creating specific methods.
-    // Each method should perform a _singular action_
-    // - eg. instead of a setIntake method, control each intake motor individually
-    // setIntake functionality should be implemented in a command.
-
-
-
-
-    
     public void runFlywheel() {
         mFlywheelMasterMotor.setVelocity(targetRPM);
     }
-
-
-
-
 
     /**
      * @param relativeAngle Angle in degrees you want to turn the turret relative to the current angle
@@ -72,10 +63,6 @@ public class Launcher extends SpartronicsSubsystem {
     public void turnTurret(double relativeAngle) {
         //rotates turret a specific angle relative to its current angle
     }
-
-
-
-
 
     /**
      * @return Current angle in degrees the turret is facing relative to the home position (forwards)
@@ -85,33 +72,21 @@ public class Launcher extends SpartronicsSubsystem {
         return mTurretEncoder.getPosition();
     }
 
-
-
-
-
     /**
      * @param angle Angle in degrees above horizontal you want the angle adjuster to go to
      */
     public void setPitch(double angle) {
         //sets target angle to given angle
-        targetAngle=angle;
+        targetAngle = angle;
     }
-
-
-
-
 
     /**
      * @param rpm RPM you want the flywheel to target
      */
     public void setRPM(double rpm) {
         //sets target rpm for flywheel to given rpm
-        targetRPM=rpm;
+        targetRPM = rpm;
     }
-
-
-
-
 
     /**
      * @return Angle in degrees above horizontal that the angle adjuster is targeting
@@ -121,10 +96,6 @@ public class Launcher extends SpartronicsSubsystem {
         return targetAngle;
     }
 
-
-
-
-
     /**
      * @return RPM that the flywheel is targeting
      */
@@ -132,10 +103,6 @@ public class Launcher extends SpartronicsSubsystem {
         //returns current target RPM of shooter
         return targetRPM;
     }
-
-
-
-
 
     /**
      * @return Current angle in degrees above horizontal of the angle adjuster
@@ -147,10 +114,6 @@ public class Launcher extends SpartronicsSubsystem {
         return 0.0;
     }
 
-
-
-
-
     /**
      * @return The current RPM of the flywheel
      */
@@ -159,23 +122,15 @@ public class Launcher extends SpartronicsSubsystem {
         return mFlywheelEncoder.getVelocity();
     }
 
-
-
-
-
     /**
      * @param distance Horizontal distance in meters from the shooter to the target
      * @return The angle in degrees above horizontal that is calculated to be necessary to hit the target based off of the input distance
      */
     public double calcPitch(double distance) {
         //computes and returns angle for angle adjuster based on input distance
-        double angle=0.0;
+        double angle = 0.0;
         return angle;
     }
-
-
-
-
 
     /**
      * @param distance Horizontal distance in meters from the shooter to the target
@@ -183,50 +138,33 @@ public class Launcher extends SpartronicsSubsystem {
      */
     public double calcRPM(double distance) {
         //computes and returns RPM based on input distance
-        double RPM=0.0;
+        double RPM = 0.0;
         return RPM;
     }
-
-
-
-
 
     /**
      * @return True if the target is within the turret's range of rotation, else false
      */
     public boolean inFOV() {
         //returns whether or not the target is within the range that the turret can rotate to, used by driver
-        boolean inRotationRange=true;
+        boolean inRotationRange = true;
         return inRotationRange;
     }
-
-
-
-
 
     /**
      * @return True if the target is within the horizontal distance from the target the shooter is capable of shooting to, else false
      */
     public boolean inRange() {
         //returns whether or not the target is within the range that the shooter can shoot, used by driver
-        boolean inRange=true;
+        boolean inRange = true;
         return inRange;
     }
-
-
-
-
-
-    public void reverse() {
-        //reverses shooter motors
-    }
-
-
-
-
 
     public void reset() {
         //reset
     }
-    // The exception to this is a general-functionality stop() method.
+    
+    public void stop() { // Unlikely to be used
+        // stop all motors, including the flywheel
+    }
 }
