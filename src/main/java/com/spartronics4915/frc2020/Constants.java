@@ -13,8 +13,6 @@ public final class Constants {
     public static final class Climber {
         public static final int kLiftMotorId = 5;
         public static final int kWinchMotorId = 6;
-        public static final double kWinchSpeed = 1.0;
-        public static final double kExtendSpeed = 1.0;
     }
 
     public static final class OI {

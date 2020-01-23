@@ -1,3 +1,9 @@
+/**
+ * This subsystem has two motors. A NEO using a Spark, while the other is a 775 PRO using a Talon.
+ * The NEO motor winches the climber and the 775 PRO extends the climber
+ * The four methods used are extend(), winch(), reverse(), and stop()
+ */
+
 package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.frc2020.Constants;
@@ -8,13 +14,7 @@ import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 
-/**
- * This subsystem has two motors. A NEO using a Spark, while the other is a 775 PRO using a Talon.
- * The NEO motor winches the climber and the 775 PRO extends the climber
- * The four methods used are extend(), winch(), reverseExtend(), and stop()
- */
 public class Climber extends SpartronicsSubsystem {
 
     private static TalonSRX mClimber775Pro;
@@ -27,17 +27,17 @@ public class Climber extends SpartronicsSubsystem {
     }
 
     public void extend() {
-        mClimber775Pro.set(ControlMode.PercentOutput, Constants.Climber.kExtendSpeed);
+        mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
         mClimberNEO.set(0.0);
     }
 
     public void winch() {
         mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
-        mClimberNEO.set(Constants.Climber.kWinchSpeed);
+        mClimberNEO.set(0.0);
     }
 
-    public void retract() {
-        mClimber775Pro.set(ControlMode.PercentOutput, -Constants.Climber.kExtendSpeed);
+    public void reverse() {
+        mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
         mClimberNEO.set(0.0);
     }
 
@@ -46,12 +46,4 @@ public class Climber extends SpartronicsSubsystem {
         mClimberNEO.set(0.0);
     }
 
-    public double getWinchVoltage() {
-        return mClimberNEO.getBusVoltage();
-    }
-
-    public boolean isWinchStalled() {
-        return false;
-    }
 }
-
