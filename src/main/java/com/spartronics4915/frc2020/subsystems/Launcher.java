@@ -29,16 +29,16 @@ public class Launcher extends SpartronicsSubsystem {
         boolean success=false;
         try {
             //Two NEOs for flywheel (Master and follower, opposite directions)
-            mFlywheelMasterMotor = new SpartronicsMax(Constants.kLauncherFlywheelMasterID,null);
-            mFlywheelFollowerMotor = new SpartronicsMax(Constants.kLauncherFlywheelFollowerID,null);
+            mFlywheelMasterMotor = new SpartronicsMax(Constants.Launcher.kFlywheelMasterID,null);
+            mFlywheelFollowerMotor = new SpartronicsMax(Constants.Launcher.kFlywheelFollowerID,null);
             mFlywheelFollowerMotor.follow(mFlywheelMasterMotor);
             mFlywheelFollowerMotor.setOutputInverted(true);;
             mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
             //One snowblower for angle adjustement
-            mAngleAdjusterMotor = new SpartronicsSRX(Constants.kLauncherAngleAdjusterID,null);
+            mAngleAdjusterMotor = new SpartronicsSRX(Constants.Launcher.kAngleAdjusterID,null);
             mAngleAdjusterEncoder = mAngleAdjusterMotor.getEncoder();
             //One BAG motor for turret
-            mTurretMotor = new SpartronicsSRX(Constants.kLauncherTurretID,null);
+            mTurretMotor = new SpartronicsSRX(Constants.Launcher.kTurretID,null);
             mTurretEncoder = mTurretMotor.getEncoder();
             success = true;
         } catch (Exception e) {
