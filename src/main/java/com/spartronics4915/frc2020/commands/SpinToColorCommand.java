@@ -23,27 +23,12 @@ public class SpinToColorCommand extends CommandBase {
     public void execute() {
         String targetColor = mPanelRotator.getTargetColor();
         targetColor = DriverStation.getInstance().getGameSpecificMessage();
-        switch (targetColor.charAt(0)) {
-          case 'B' :
-            if(mPanelRotator.getActualColor() != "Blue") {
-              mPanelRotator.spin();}
-          break;
-          case 'G' :
-            if(mPanelRotator.getActualColor() != "Green") {
-              mPanelRotator.spin();}
-          break;
-          case 'R' :
-            if(mPanelRotator.getActualColor() != "Red") {
-              mPanelRotator.spin();}
-            break;
-          case 'Y' :
-            if(mPanelRotator.getActualColor() != "Yellow") {
-              mPanelRotator.spin();}
-            break;
-          default :
-            //This is corrupt data
-            break;
+        if(mPanelRotator.getActualColor() != targetColor && (targetColor == "Red" || targetColor == "Blue" || targetColor == "Green" || targetColor == "Yellow")) {
+          if(mPanelRotator.getActualColor() != targetColor)
+            mPanelRotator.spin();
         }
+        else
+          targetColor = "error";
     }
 
     // Returns true when the command should end.

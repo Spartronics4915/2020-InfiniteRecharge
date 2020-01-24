@@ -7,7 +7,7 @@ import com.spartronics4915.frc2020.subsystems.PanelRotator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class Spin4TimesCommand extends CommandBase {
+public class SpinOnceCommand extends CommandBase {
 
     private PanelRotator mPanelRotator;
     public double spins;
@@ -15,7 +15,7 @@ public class Spin4TimesCommand extends CommandBase {
     public String lastColor;
     public String currentColor;
     // You should only use one subsystem per command. If multiple are needed, use a CommandGroup.
-    public Spin4TimesCommand(PanelRotator mSubsystem) {
+    public SpinOnceCommand(PanelRotator mSubsystem) {
       mPanelRotator = mSubsystem;
     }
 
@@ -38,7 +38,7 @@ public class Spin4TimesCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-      if(spins == 4)
+      if(spins == 1)
         return true;
       else
         return false;
