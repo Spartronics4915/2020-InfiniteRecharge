@@ -23,8 +23,7 @@ public class SpinToColorCommand extends CommandBase {
     public void execute() {
         String targetColor = mPanelRotator.getTargetColor();
         targetColor = DriverStation.getInstance().getGameSpecificMessage();
-        switch (targetColor.charAt(0))
-        {
+        switch (targetColor.charAt(0)) {
           case 'B' :
             if(mPanelRotator.getActualColor() != "Blue") {
               mPanelRotator.spin();}
@@ -59,6 +58,6 @@ public class SpinToColorCommand extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end (boolean interrupted) {
-
+      mPanelRotator.stopSpin();
     }
 }
