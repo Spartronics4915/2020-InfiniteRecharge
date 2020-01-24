@@ -30,9 +30,8 @@ public class Spin4TimesCommand extends CommandBase {
     @Override
     public void execute() {
       currentColor = mPanelRotator.getActualColor();
-      if(currentColor == firstColor && currentColor != lastColor) {
+      if(currentColor == firstColor && currentColor != lastColor)
         spins += .5;
-      }
       lastColor = mPanelRotator.getActualColor();
     }
 
