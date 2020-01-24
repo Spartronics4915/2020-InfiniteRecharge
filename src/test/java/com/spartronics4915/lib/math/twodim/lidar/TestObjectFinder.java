@@ -34,28 +34,6 @@ public class TestObjectFinder {
 
     private final TargetTracker mTargetTracker = new TargetTracker();
 
-    @Test
-    public void testGeom() {
-        var poseOne = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
-        var poseTwo = new Pose2d(1, 1, Rotation2d.fromDegrees(90));
-        System.out.println(poseOne.distance(poseTwo) + ", " + ((1.0/4.0) * 2 * Math.PI) + ", "  + poseTwo.inverse().transformBy(poseOne).log() + ", " + poseOne.getTranslation().getDistance(poseTwo.getTranslation()));
-        // for (int i = 0; i < 20; i++) {
-        //     var poseOne = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
-        //     var poseTwo = new Pose2d(1, 0, Rotation2d.fromDegrees(180));
-        //     System.out.println(poseTwo.inFrameReferenceOf(poseOne) + ", " + poseTwo.inFrameReferenceOf(poseOne).log());
-        // }
-    }
-
-    @Test
-    public void testCoords() {
-        var point = new Pose2d(0, 1, new Rotation2d());
-
-        var fieldToVehicle = new Pose2d(0, 0, Rotation2d.fromDegrees(180));
-        var vehicleToLidar = new Pose2d(1, -1, Rotation2d.fromDegrees(-90));
-
-        System.out.println(fieldToVehicle.transformBy(vehicleToLidar).transformBy(point));
-    }
-
     @Tag("hardwareDependant")
     @Test
     public void interactivePointcloudTest() {
