@@ -30,7 +30,7 @@ public class Spin4TimesCommand extends CommandBase {
     @Override
     public void execute() {
       currentColor = mPanelRotator.getActualColor();
-      if(currentColor == firstColor && currentColor != lastColor){
+      if(currentColor == firstColor && currentColor != lastColor) {
         spins += .5;
       }
       lastColor = mPanelRotator.getActualColor();
@@ -39,9 +39,8 @@ public class Spin4TimesCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-      if(spins == 4){
+      if(spins == 4)
         return true;
-      }
       else
         return false;
     }
