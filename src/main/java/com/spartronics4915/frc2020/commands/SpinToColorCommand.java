@@ -45,12 +45,14 @@ public class SpinToColorCommand extends CommandBase {
             //This is corrupt data
             break;
         }
-
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
+      if(mPanelRotator.getActualColor() == DriverStation.getInstance().getGameSpecificMessage())
+        return true;
+      else
         return false;
     }
 
