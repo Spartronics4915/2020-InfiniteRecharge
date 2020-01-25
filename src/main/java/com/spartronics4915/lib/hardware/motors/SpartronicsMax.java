@@ -31,13 +31,14 @@
 | Shadow Legends                                 |
 \************************************************/
 
-
 package com.spartronics4915.lib.hardware.motors;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.RobotBase;
 
 public class SpartronicsMax implements SpartronicsMotor {
 
@@ -63,12 +64,12 @@ public class SpartronicsMax implements SpartronicsMotor {
 
         @Override
         public double getVelocity() {
-            return mSensorModel.toMeters(mSparkMax.getEncoder().getVelocity());
+            return mSensorModel.toCustomUnits(mSparkMax.getEncoder().getVelocity());
         }
 
         @Override
         public double getPosition() {
-            return mSensorModel.toMeters(mSparkMax.getEncoder().getPosition());
+            return mSensorModel.toCustomUnits(mSparkMax.getEncoder().getPosition());
         }
 
         @Override
@@ -77,18 +78,32 @@ public class SpartronicsMax implements SpartronicsMotor {
         }
     }
 
-    public SpartronicsMax(int deviceNumber, SensorModel sensorModel) {
-        this(new CANSparkMax(deviceNumber, MotorType.kBrushless), sensorModel);
+    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel) {
+        if (RobotBase.isSimulation()) {
+            return new SpartronicsSimulatedMotor();
+        }
+        return new SpartronicsMax(new CANSparkMax(deviceNumber, MotorType.kBrushless), sensorModel);
     }
 
-    public SpartronicsMax(CANSparkMax spark, SensorModel sensorModel) {
+    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel, int followerDeviceNumber) {
+        if (RobotBase.isSimulation()) {
+            return new SpartronicsSimulatedMotor();
+        }
+
+        // We only use SPARK MAXes for brushless motors
+        // If that changes we can make motor type configurable
+        var master = new CANSparkMax(deviceNumber, MotorType.kBrushless);
+        new CANSparkMax(deviceNumber, MotorType.kBrushless).follow(master);
+        return new SpartronicsMax(master, sensorModel);
+    }
+
+    private SpartronicsMax(CANSparkMax spark, SensorModel sensorModel) {
         mSparkMax = spark;
         mSensorModel = sensorModel;
         mEncoder = new SpartronicsMaxEncoder();
         mSparkMax.getEncoder().setPosition(0);
         mSparkMax.getEncoder().setVelocityConversionFactor(kRPMtoRPS); // Set conversion factor.
 
-        // mSparkMax.configFactoryDefault();
         mSparkMax.enableVoltageCompensation(mVoltageCompSaturation);
     }
 
@@ -136,7 +151,7 @@ public class SpartronicsMax implements SpartronicsMotor {
 
     @Override
     public double getMotionProfileCruiseVelocity() {
-        return mSensorModel.toMeters(mMotionProfileCruiseVelocity);
+        return mSensorModel.toCustomUnits(mMotionProfileCruiseVelocity);
     }
 
     @Override
@@ -148,7 +163,7 @@ public class SpartronicsMax implements SpartronicsMotor {
 
     @Override
     public double getMotionProfileMaxAcceleration() {
-        return mSensorModel.toMeters(mMotionProfileAcceleration);
+        return mSensorModel.toCustomUnits(mMotionProfileAcceleration);
     }
 
     @Override
@@ -196,8 +211,8 @@ public class SpartronicsMax implements SpartronicsMotor {
 
     @Override
     public void setPosition(double positionMeters) {
-        positionMeters = mSensorModel.toNativeUnits(positionMeters);
-        mSparkMax.getPIDController().setReference(positionMeters, mUseMotionProfileForPosition ? ControlType.kSmartMotion : ControlType.kPosition, kPositionSlotIdx);
+        double positionNativeUnits = mSensorModel.toNativeUnits(positionMeters);
+        mSparkMax.getPIDController().setReference(positionNativeUnits, mUseMotionProfileForPosition ? ControlType.kSmartMotion : ControlType.kPosition, kPositionSlotIdx);
     }
 
     @Override
@@ -211,10 +226,6 @@ public class SpartronicsMax implements SpartronicsMotor {
         mSparkMax.getPIDController().setI(kI, kPositionSlotIdx);
         mSparkMax.getPIDController().setD(kD, kPositionSlotIdx);
         mSparkMax.getPIDController().setFF(kF, kPositionSlotIdx);
-    }
-
-    public void follow(SpartronicsMax other) {
-        mSparkMax.follow(other.mSparkMax);
     }
 
     @Override

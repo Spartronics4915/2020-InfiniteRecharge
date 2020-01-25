@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.spartronics4915.lib.util.Logger;
 
+import edu.wpi.first.wpilibj.RobotBase;
+
 public class SpartronicsSRX implements SpartronicsMotor {
 
     private static final int kVelocitySlotIdx = 0;
@@ -37,12 +39,12 @@ public class SpartronicsSRX implements SpartronicsMotor {
 
         @Override
         public double getVelocity() {
-            return mSensorModel.toMeters(mTalonSRX.getSelectedSensorVelocity()) * kMetersPer100msToMetersPerSecond;
+            return mSensorModel.toCustomUnits(mTalonSRX.getSelectedSensorVelocity()) * kMetersPer100msToMetersPerSecond;
         }
 
         @Override
         public double getPosition() {
-            return mSensorModel.toMeters(mTalonSRX.getSelectedSensorPosition());
+            return mSensorModel.toCustomUnits(mTalonSRX.getSelectedSensorPosition());
         }
 
         @Override
@@ -51,11 +53,23 @@ public class SpartronicsSRX implements SpartronicsMotor {
         }
     }
 
-    public SpartronicsSRX(int deviceNumber, SensorModel sensorModel) {
-        this(new TalonSRX(deviceNumber), sensorModel);
+    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel) {
+        if (RobotBase.isSimulation()) {
+            return new SpartronicsSimulatedMotor();
+        }
+        return new SpartronicsSRX(new TalonSRX(deviceNumber), sensorModel);
     }
 
-    public SpartronicsSRX(TalonSRX talon, SensorModel sensorModel) {
+    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel, int followerDeviceNumber) {
+        if (RobotBase.isSimulation()) {
+            return new SpartronicsSimulatedMotor();
+        }
+        var master = new TalonSRX(deviceNumber);
+        new TalonSRX(followerDeviceNumber).follow(master);
+        return new SpartronicsSRX(master, sensorModel);
+    }
+
+    private SpartronicsSRX(TalonSRX talon, SensorModel sensorModel) {
         mTalonSRX = talon;
         mSensorModel = sensorModel;
 
@@ -118,7 +132,7 @@ public class SpartronicsSRX implements SpartronicsMotor {
 
     @Override
     public double getMotionProfileCruiseVelocity() {
-        return mSensorModel.toMeters(mMotionProfileCruiseVelocity) * kMetersPer100msToMetersPerSecond;
+        return mSensorModel.toCustomUnits(mMotionProfileCruiseVelocity) * kMetersPer100msToMetersPerSecond;
     }
 
     @Override
@@ -130,7 +144,7 @@ public class SpartronicsSRX implements SpartronicsMotor {
 
     @Override
     public double getMotionProfileMaxAcceleration() {
-        return mSensorModel.toMeters(mMotionProfileAcceleration) * kMetersPer100msToMetersPerSecond;
+        return mSensorModel.toCustomUnits(mMotionProfileAcceleration) * kMetersPer100msToMetersPerSecond;
     }
 
     @Override
@@ -189,8 +203,8 @@ public class SpartronicsSRX implements SpartronicsMotor {
             mLastControlMode = ControlMode.Position;
         }
 
-        positionMeters = mSensorModel.toNativeUnits(positionMeters);
-        mTalonSRX.set(mUseMotionProfileForPosition ? ControlMode.MotionMagic : ControlMode.Position, positionMeters);
+        double positionNative = mSensorModel.toNativeUnits(positionMeters);
+        mTalonSRX.set(mUseMotionProfileForPosition ? ControlMode.MotionMagic : ControlMode.Position, positionNative);
     }
 
     @Override
@@ -204,10 +218,6 @@ public class SpartronicsSRX implements SpartronicsMotor {
         mTalonSRX.config_kI(kPositionSlotIdx, kI);
         mTalonSRX.config_kD(kPositionSlotIdx, kD);
         mTalonSRX.config_kF(kPositionSlotIdx, kF);
-    }
-
-    public void follow(SpartronicsSRX other) {
-        mTalonSRX.follow(other.mTalonSRX);
     }
 
     @Override
