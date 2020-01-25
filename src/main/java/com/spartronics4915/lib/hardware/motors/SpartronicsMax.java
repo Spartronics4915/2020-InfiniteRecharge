@@ -75,6 +75,13 @@ public class SpartronicsMax implements SpartronicsMotor {
         public void setPhase(boolean isReversed) {
             mSparkMax.setInverted(isReversed);
         }
+
+        @Override
+        public void setPosition(double position) {
+            mSparkMax.getEncoder().setPosition(position);
+        }
+
+        
     }
 
     public SpartronicsMax(int deviceNumber, SensorModel sensorModel) {

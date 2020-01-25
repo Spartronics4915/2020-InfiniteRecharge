@@ -49,6 +49,11 @@ public class SpartronicsSRX implements SpartronicsMotor {
         public void setPhase(boolean isReversed) {
             mTalonSRX.setSensorPhase(isReversed);
         }
+
+        @Override
+        public void setPosition(double position) {
+            mTalonSRX.getSensorCollection().setQuadraturePosition((int) mSensorModel.toNativeUnits(position), 0);
+        }
     }
 
     public SpartronicsSRX(int deviceNumber, SensorModel sensorModel) {

@@ -1,22 +1,25 @@
 package com.spartronics4915.frc2020.subsystems;
 
-// import com.spartronics4915.frc2020.Constants;
-// import com.spartronics4915.lib.hardware.motors.SensorModel;
-// import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
-// import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
+import com.spartronics4915.lib.hardware.motors.SensorModel;
+import com.spartronics4915.frc2020.Constants;
+import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
 public class Indexer extends SpartronicsSubsystem {
 
-    // private SpartronicsMax mSpinner;
-    // private SpartronicsSRX mLoader;
+    private SpartronicsMax mSpinner;
+    private SpartronicsSRX mLoader;
 
-    // private SensorModel mSpinnerModel;
-    // private SensorModel mLoaderModel;
+    private SensorModel mSpinnerModel;
+    private SensorModel mLoaderModel;
 
     public Indexer() {
-        // mSpinnerModel = SensorModel
-        // mSpinner = new SpartronicsMax(Constants.Indexer.kSpinnerId);
+        mSpinnerModel = SensorModel.fromMultiplier(Constants.Indexer.kSpinnerConversionRatio);
+        mSpinner = new SpartronicsMax(Constants.Indexer.kSpinnerId, mSpinnerModel);
+
+        mLoaderModel = SensorModel.fromMultiplier(Constants.Indexer.kLoaderConversationRatio);
+        mLoader = new SpartronicsSRX(Constants.Indexer.kLoaderId, mLoaderModel);
     }
 
     // Outline your API here by creating specific methods.

@@ -14,6 +14,8 @@ public final class Constants {
         public static final int kSpinnerId = -1;
         public static final int kLoaderId = -1;
         public static final int kProxSensorId = -1;
+        public static final double kSpinnerConversionRatio = 1;
+        public static final double kLoaderConversationRatio = 1;
     }   
 
     public static final class Launcher {
