@@ -1,13 +1,21 @@
 package com.spartronics4915.frc2020.subsystems;
 
+import com.spartronics4915.frc2020.Constants;
+import com.spartronics4915.lib.hardware.motors.SensorModel;
+import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
 public class Indexer extends SpartronicsSubsystem {
 
-    // private SpartronicsMax mSpinner;
+    private SpartronicsMax mSpinner;
+    private SpartronicsSRX mLoader;
+
+    private SensorModel mSpinnerModel;
+    private SensorModel mLoaderModel;
 
     public Indexer() {
-        
+        mSpinner = new SpartronicsMax(Constants.Indexer.kSpinnerId);
     }
 
     // Outline your API here by creating specific methods.
@@ -33,6 +41,10 @@ public class Indexer extends SpartronicsSubsystem {
 
     public void loadBall() {
 
+    }
+
+    public void unloadBall() {
+        
     }
 
     // The exception to this is a general-functionality stop() method.

@@ -12,7 +12,7 @@ public final class Constants {
     
     public static final class Indexer {
         public static final int kSpinnerId = -1;
-        public static final int kLiftId = -1;
+        public static final int kLoaderId = -1;
         public static final int kProxSensorId = -1;
     }   
 
