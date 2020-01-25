@@ -38,4 +38,8 @@ public final class Constants {
         public static final double kExtendMotorSpeed = 0.5;
         public static final double kSpinMotorSpeed = 0.5;
     }
+
+    public static final class Drive {
+        
+    }
 }
