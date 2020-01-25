@@ -25,6 +25,8 @@
                 "activityBar.foreground": "#bbff00",
                 "activityBar.inactiveForeground": "#ff8046",
                 "editor.background": "#f3f3f3",
+                "gitDecoration.modifiedResourceForeground": "#ff0000",
+                "gitDecoration.addedResourceForeground": "#ff0000",
                 /*"sideBarTitle.foreground": "#00FFFF",
                 "editor.background": "#0000ee",*/
                 /*"editor.foreground": "#aaaaaa",
@@ -38,5 +40,5 @@
                 "editor.lineHighlightBackground": "#ccffff",
                 ■
                 */
-            }
+        }
 }

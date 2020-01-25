@@ -1,6 +1,8 @@
 // I'm bad at naming things. Please come up with a better name...
 package com.spartronics4915.frc2020.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -13,7 +15,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 public class PanelRotator extends SpartronicsSubsystem {
     private final CANSparkMax mSpinMotor;
-    private final CANSparkMax mExtendMotor;
+    private final TalonSRX mExtendMotor;
     
     private final DigitalInput mBeamSensorUp;
     private final DigitalInput mBeamSensorDown;
@@ -47,23 +49,23 @@ public class PanelRotator extends SpartronicsSubsystem {
         mBeamSensorUp = new DigitalInput(Constants.PanelRotator.kBeamSensorUpID);
         mBeamSensorDown = new DigitalInput(Constants.PanelRotator.kBeamSensorDownID);
         mSpinMotor = new CANSparkMax(Constants.PanelRotator.kSpinMotorID, MotorType.kBrushless);
-        mExtendMotor = new CANSparkMax(Constants.PanelRotator.kExtendMotorID, MotorType.kBrushless);
+        mExtendMotor = new TalonSRX(Constants.PanelRotator.kExtendMotorID);
         mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     }
 
     /** raises the arm holding the spinner at a set speed*/
     public void raise() {
-        mExtendMotor.set(Constants.PanelRotator.kExtendMotorSpeed);
+        mExtendMotor.set(ControlMode.PercentOutput, Constants.PanelRotator.kExtendMotorSpeed);
     }
 
     /** lowers the arm holding the spinner at a set speed*/
     public void lower() {
-        mExtendMotor.set(-Constants.PanelRotator.kExtendMotorSpeed);
+        mExtendMotor.set(ControlMode.PercentOutput, -Constants.PanelRotator.kExtendMotorSpeed);
     }
 
     /** stops the extension motor */
     public void stopExtendMotor () {
-        mExtendMotor.set(0);
+        mExtendMotor.set(ControlMode.PercentOutput, 0);
     }
 
     /** gets the color (Red, Blue, Yellow, or Green) through game specific messages that the robot needs to spin to */
@@ -140,6 +142,6 @@ public class PanelRotator extends SpartronicsSubsystem {
     /** stops the two motors */
     public void stop() {
         mSpinMotor.set(0);
-        mExtendMotor.set(0);
+        mExtendMotor.set(ControlMode.PercentOutput, 0);
     }
 }
