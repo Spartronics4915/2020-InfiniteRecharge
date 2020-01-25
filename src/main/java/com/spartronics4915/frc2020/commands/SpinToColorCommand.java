@@ -7,42 +7,46 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class SpinToColorCommand extends CommandBase {
 
-    private PanelRotator mPanelRotator;
-    // You should only use one subsystem per command. If multiple are needed, use a CommandGroup.
-    public SpinToColorCommand(PanelRotator mSubsystem) {
-      mPanelRotator = mSubsystem;
-    }
+  private PanelRotator mPanelRotator;
+  private String targetColor;
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-    }
+  // You should only use one subsystem per command. If multiple are needed, use a
+  // CommandGroup.
+  public SpinToColorCommand(PanelRotator mSubsystem) {
+    mPanelRotator = mSubsystem;
+  }
 
-    // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {
-        String targetColor = mPanelRotator.getTargetColor();
-        targetColor = DriverStation.getInstance().getGameSpecificMessage();
-        if(mPanelRotator.getActualColor() != targetColor && targetColor.length() > 0) {
-          if(mPanelRotator.getActualColor() != targetColor)
-            mPanelRotator.spin();
-        }
-        else
-          targetColor = "error";
-    }
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+  }
 
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-      if(mPanelRotator.getActualColor() == DriverStation.getInstance().getGameSpecificMessage())
-        return true;
-      else
-        return false;
-    }
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    targetColor = mPanelRotator.getTargetColor();
+    if (mPanelRotator.getActualColor() != targetColor && targetColor.length() > 0)
+      mPanelRotator.spin();
+    else
+      targetColor = "error";
+  }
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end (boolean interrupted) {
-      mPanelRotator.stopSpin();
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    if (mPanelRotator.getActualColor() == DriverStation.getInstance().getGameSpecificMessage()) {
+      return true;
+    } else if (targetColor == "error") {
+      System.out.println("error: no target color given. SpinToColorCommand terminated.");
+      return true;
+    } else {
+      return false;
     }
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    mPanelRotator.stopSpin();
+  }
 }
