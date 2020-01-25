@@ -1,5 +1,7 @@
 package com.spartronics4915.frc2020;
 
+import edu.wpi.first.wpilibj.util.Units;
+
 public final class Constants {
 
     public static final class Climber {
@@ -40,6 +42,25 @@ public final class Constants {
     }
 
     public static final class Drive {
+        public static final int kRightDriveMaster = 1;
+        public static final int kRightDriveFollower = 2;
+        public static final int kLeftDriveMaster = 3;
+        public static final int kLeftDriveFollower = 4;
+
+        public static final double kWheelDiameter = Units.inchesToMeters(8);
+        public static final double kTrackWidthMeters = 1;
+        public static final int kNativeUnitsPerRevolution = 1; //TODO: get ratio
+
+        public static final double kRobotMassKg = 1;
+        public static final double kMoi = 1;
+
+        //TODO: characterize
+        public static final double kRightS = 1;
+        public static final double kRightV = 1;
+        public static final double kRightA = 1;
         
+        public static final double kLeftS = 1;
+        public static final double kLeftV = 1;
+        public static final double kLeftA = 1;
     }
 }
