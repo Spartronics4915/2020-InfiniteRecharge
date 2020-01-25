@@ -22,7 +22,7 @@ public class Climber extends SpartronicsSubsystem {
 
     public Climber() {
         // Hardware Contructor (Add motors and such here when I get them)
-        mClimber775Pro = new TalonSRX(Constants.Climber.kLiftMotorId);
+        mClimber775Pro = new TalonSRX(Constants.Climber.kLiftMotorId); 
         mClimberNEO = new CANSparkMax(Constants.Climber.kWinchMotorId, MotorType.kBrushless);
     }
 
