@@ -1,6 +1,7 @@
 package com.spartronics4915.frc2020.commands;
 
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
+import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -20,11 +21,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
  *
  * usage:
  *  in RobotContainer():
+ *     mCamera = new CameraSubsystem();
  *     this.mExampleCmdFactory = new ExampleCommandFactory(mCamera);
  *
  *  in RobotContainer::configureJoystickButtons()
  *     new JoystickButton(...).whenPressed(this.mExampleCmdFactory.GetCommand("test1"));
  *     new JoystickButton(...).whenPressed(new ExampleCommandFactory.Test1());
+ *     new JoystickButton(...).whenPressed(new ExampleCommandFactory.Test5(mCamera));
  *
  */
 public class ExampleCommandFactory
@@ -87,6 +90,18 @@ public class ExampleCommandFactory
 
             // add subcommands here
         }
+    }
 
+    // Example InstantCommand. Why not just place the labmda expression in the
+    // caller? - to encapsulate the details of the expression in this file
+    // and not the caller (ownership of files is clearer)
+    public class Test5 extends InstantCommand
+    {
+        Test5(SpartronicsSubsystem subsys)
+        {
+            // Can't access mSubsys here, so we require that it be
+            // passed in...
+            super(() -> subsys.logInfo("InstantCommand Test5"));
+        }
     }
 }
