@@ -11,6 +11,32 @@
         "**/.classpath": true,
         "**/.project": true,
         "**/.settings": true,
-        "**/.factorypath": true
-    }
+        "**/.factorypath": true,
+        },
+        "editor.tokenColorCustomizations":{
+            "comments": "#00aeff",
+            //"variables": "#00eeff"
+        },
+        "workbench.colorCustomizations": {
+                //"sideBar.background": "#000000",
+                /*"sideBar.foreground": "#ffffff",
+                "sideBarSectionHeader.background": "#00AAFF",*/
+                "activityBar.background": "#00e1ff",
+                "activityBar.foreground": "#bbff00",
+                "activityBar.inactiveForeground": "#ff8046",
+                "editor.background": "#f3f3f3",
+                /*"sideBarTitle.foreground": "#00FFFF",
+                "editor.background": "#0000ee",*/
+                /*"editor.foreground": "#aaaaaa",
+                "editorLineNumber.foreground": "#000000",
+                "editorLineNumber.activeForeground": "#00ff00",
+                "editorCursor.background": "#00ff00",
+                "editor.selectionBackground": "#aa0000",
+                //"editor.selectionForeground": "#000000",
+                "editor.wordHighlightStrongBackground": "0000ff",
+                //editorCursor.foreground: Color of the editor cursor.
+                "editor.lineHighlightBackground": "#ccffff",
+                ■
+                */
+            }
 }
