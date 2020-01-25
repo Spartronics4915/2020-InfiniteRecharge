@@ -20,7 +20,7 @@ public class Indexer extends SpartronicsSubsystem {
     }
 
     public void rotateOnce() {
-
+        
     }
 
     public int rotateFull() {
@@ -32,7 +32,7 @@ public class Indexer extends SpartronicsSubsystem {
     }
 
     public void loadBall() {
-        
+
     }
 
     // The exception to this is a general-functionality stop() method.
