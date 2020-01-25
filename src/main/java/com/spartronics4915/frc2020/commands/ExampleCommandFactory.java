@@ -2,27 +2,28 @@ package com.spartronics4915.frc2020.commands;
 
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandGroupBase;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-// Here's an example Command "Factory" that operates on a single
-//  subsystem.  Note that some commands may require or operate on
-//  more than one subsystem.  This example could be extended to
-//  accept an ArrayList<SpartronicsSubsystem> or Set<SpartronicsSubsystem>
-//
+// Here's an example Command "Factory". 
 // This example represents a way to have a per-subsystem factory
 // that will allow us to factor/separate/encapsulate commands for
 // a subsystem into a single file, rather than mooshed into robotContainer
 // or spread across multiple files.
 //
+// This examples operates on a single subsystem.  Note that some commands may 
+// require or operate on more than one subsystem.  This example could be extended 
+// to accept an ArrayList<SpartronicsSubsystem> or Set<SpartronicsSubsystem>.
+// Or explicitly require, say, the DriveTrain subsystem.
+//
 // usage:
 //  in RobotContainer():
-//     mCameraCmdFactory = new ExampleCommandFactory(mCamera);
+//     this.mExampleCmdFactory = new ExampleCommandFactory(mCamera);
 //
-//  in RobotContainer::configureJoystickButtons()
-//     new JoystickButton(...).whenPressed(mCameraCmdFactory.GetCommand("test1")
+//  in RobotContainer::configureJoystickButtons() 
+//     new JoystickButton(...).whenPressed(this.mExampleCmdFactory.GetCommand("test1"));
+//     new JoystickButton(...).whenPressed(new ExampleCommandFactory.Test1());
 // 
 public class ExampleCommandFactory
 {
@@ -35,8 +36,8 @@ public class ExampleCommandFactory
 
     public CommandBase GetCommand(String nm)
     {
-        CommandBase result=null;
-        switch(nm)
+        CommandBase result = null;
+        switch (nm)
         {
         case "test1":
             result = new InstantCommand(() -> mSubsys.logInfo("running instant command test1"));
@@ -49,10 +50,12 @@ public class ExampleCommandFactory
         return result;
     }
 
-    public class Test1 extends CommandBase
+    public class Test3 extends CommandBase
     {
+
         private int mCount = 0;
-        public Test1()
+
+        public Test3()
         {
             addRequirements(mSubsys);
         }
@@ -73,19 +76,15 @@ public class ExampleCommandFactory
         }
     }
 
-    public class Test2 extends CommandGroupBase
+    public class Test4 extends SequentialCommandGroup
     {
-        Test2()
+
+        Test4()
         {
             addRequirements(mSubsys);
+
+            // add subcommands here
         }
 
-        public void addCommands(Command... commands)
-        {
-        }
-
-        public void execute()
-        {
-        }
     }
 }
