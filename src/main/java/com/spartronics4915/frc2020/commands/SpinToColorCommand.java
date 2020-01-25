@@ -23,7 +23,7 @@ public class SpinToColorCommand extends CommandBase {
     public void execute() {
         String targetColor = mPanelRotator.getTargetColor();
         targetColor = DriverStation.getInstance().getGameSpecificMessage();
-        if(mPanelRotator.getActualColor() != targetColor && (targetColor == "Red" || targetColor == "Blue" || targetColor == "Green" || targetColor == "Yellow")) {
+        if(mPanelRotator.getActualColor() != targetColor && targetColor.length() > 0) {
           if(mPanelRotator.getActualColor() != targetColor)
             mPanelRotator.spin();
         }
