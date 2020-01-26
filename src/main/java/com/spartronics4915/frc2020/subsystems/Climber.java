@@ -18,8 +18,8 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 public class Climber extends SpartronicsSubsystem
 {
 
-    private static TalonSRX mClimber775Pro;
-    private static CANSparkMax mClimberNEO;
+    private TalonSRX mClimber775Pro;
+    private CANSparkMax mClimberNEO;
 
     public Climber()
     {
