@@ -1,11 +1,11 @@
 package com.spartronics4915.frc2020.commands;
 
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
-import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 /**
  * Here's an example Command "Factory".
@@ -83,8 +83,7 @@ public class ExampleCommandFactory
 
     public class Test4 extends SequentialCommandGroup
     {
-
-        Test4()
+        public Test4()
         {
             addRequirements(mSubsys);
 
@@ -97,11 +96,28 @@ public class ExampleCommandFactory
     // and not the caller (ownership of files is clearer)
     public class Test5 extends InstantCommand
     {
-        Test5(SpartronicsSubsystem subsys)
+        public Test5(SpartronicsSubsystem subsys)
         {
             // Can't access mSubsys here, so we require that it be
             // passed in...
             super(() -> subsys.logInfo("InstantCommand Test5"));
+        }
+    }
+
+    // Another subclassing example. Here we subclass StartEndCommand
+    // and take care to pass our start and end Runnables as parameters
+    // to the superclass constructor.
+    public class Test6 extends StartEndCommand
+    {
+        public Test6(SpartronicsSubsystem subsys)
+        {
+            super(() ->
+            {
+                subsys.logInfo("Start of StartEndCommand");
+            }, () ->
+            {
+                subsys.logInfo("End of StartEndCommand");
+            }, subsys);
         }
     }
 }
