@@ -1,5 +1,8 @@
 package com.spartronics4915.frc2020;
 
+import com.spartronics4915.lib.util.Logger;
+import com.spartronics4915.frc2020.subsystems.LED.BlingState;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -30,6 +33,9 @@ public class Robot extends TimedRobot
     @Override
     public void disabledInit()
     {
+        // TODO: verify call to DISABLED bling state
+        Logger.notice("@disabledInit: Requested BlingState.DISABLED");
+        mRobotContainer.setBlingState(BlingState.DISABLED);
     }
 
     @Override
