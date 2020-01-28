@@ -10,9 +10,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -75,10 +72,10 @@ public class RobotContainer
     {
         /*
         new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
-        new JoystickButton(mJoystick, 2).whenHeld(new TurretRaiseCommand(mLauncher));
-        new JoystickButton(mJoystick, 3).whenHeld(new TurretLowerCommand(mLauncher));
-        new JoystickButton(mJoystick, 4).whenHeld(new TurretLeftCommand(mLauncher));
-        new JoystickButton(mJoystick, 5).whenHeld(new TurretRightCommand(mLauncher));
+        new JoystickButton(mJoystick, 2).whenHeld(new LauncherCommands.Raise(mLauncher));
+        new JoystickButton(mJoystick, 3).whenHeld(new LauncherCommands.Lower(mLauncher));
+        new JoystickButton(mJoystick, 4).whenHeld(new LauncherCommands.Left(mLauncher));
+        new JoystickButton(mJoystick, 5).whenHeld(new LauncherCommands.Right(mLauncher));
         */
 
         /* Switch Camera views
@@ -95,35 +92,25 @@ public class RobotContainer
 
     private void configureButtonBoardBindings()
     {
-        new JoystickButton(mButtonBoard, 0)
-                .whenPressed(new StartEndCommand(mIntake::intake, mIntake::stop, mIntake));
-        new JoystickButton(mButtonBoard, 1).whenPressed(new InstantCommand(mIntake::stop, mIntake));
-        // new JoystickButton(mButtonBoard, 2).whileHeld(new UnjamCommand(mIntake));
+        new JoystickButton(mButtonBoard, 0).whenPressed(new IntakeCommands.Intake(mIntake));
+        new JoystickButton(mButtonBoard, 1).whenPressed(new IntakeCommands.Stop(mIntake));
+        new JoystickButton(mButtonBoard, 2).whileHeld(new IntakeCommands.Unjam(mIntake));
 
         /*
-        new JoystickButton(mButtonBoard, 3).whenPressed(new AimLowCommand(mLauncher));
-        new JoystickButton(mButtonBoard, 4).whenPressed(new LaunchCommand(mLauncher));
-        new JoystickButton(mButtonBoard, 5).whenPressed(new AimHighCommand(mLauncher));
+        new JoystickButton(mButtonBoard, 3).whenPressed(new LauncherCommands.AimLow(mLauncher));
+        new JoystickButton(mButtonBoard, 4).whenPressed(new LauncherCommands.Launch(mLauncher));
+        new JoystickButton(mButtonBoard, 5).whenPressed(new LauncherCommands.AimHigh(mLauncher));
         */
 
-        new JoystickButton(mButtonBoard, 6).whenPressed(new FunctionalCommand(() ->
-        {}, mPanelRotator::raise, (Boolean b) -> mPanelRotator.stop(),
-                mPanelRotator::getBeamSensorUp, mPanelRotator));
-        new JoystickButton(mButtonBoard, 7).whenPressed(new FunctionalCommand(() ->
-        {}, mPanelRotator::lower, (Boolean b) -> mPanelRotator.stop(),
-                mPanelRotator::getBeamSensorDown, mPanelRotator));
-        new JoystickButton(mButtonBoard, 8).whenPressed(new SpinToColorCommand(mPanelRotator));
-        new JoystickButton(mButtonBoard, 9).whenPressed(new SpinRotationsCommand(mPanelRotator));
+        new JoystickButton(mButtonBoard, 6).whenPressed(new PanelRotatorCommands.Raise(mPanelRotator));
+        new JoystickButton(mButtonBoard, 7).whenPressed(new PanelRotatorCommands.Lower(mPanelRotator));
+        new JoystickButton(mButtonBoard, 8).whenPressed(new PanelRotatorCommands.SpinToColor());
+        new JoystickButton(mButtonBoard, 9).whenPressed(new PanelRotatorCommands.SpinRotation());
 
-        new JoystickButton(mButtonBoard, 10) // Extend the Climber elevator
-                .whileHeld(new StartEndCommand(mClimber::extend, mClimber::stop, mClimber));
-        new JoystickButton(mButtonBoard, 11) // Retract the Climber elevator
-                .whileHeld(new StartEndCommand(mClimber::retract, mClimber::stop, mClimber));
-        new JoystickButton(mButtonBoard, 14).whenHeld(new FunctionalCommand(() ->
-        {}, () -> mClimber.winch(!Constants.Climber.kStalled), (Boolean b) -> mClimber.stop(),
-                mClimber::isStalled, mClimber).andThen(
-                        new StartEndCommand(() -> mClimber.winch(Constants.Climber.kStalled),
-                                mClimber::stop, mClimber)));
+        new JoystickButton(mButtonBoard, 10).whileHeld(new ClimberCommands.Extend(mClimber));
+        new JoystickButton(mButtonBoard, 11).whileHeld(new ClimberCommands.Retract(mClimber));
+        new JoystickButton(mButtonBoard, 14).whenHeld(new ClimberCommands.WinchPrimary(mClimber)
+            .andThen(new ClimberCommands.WinchSecondary(mClimber)));
 
         /*
         new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
