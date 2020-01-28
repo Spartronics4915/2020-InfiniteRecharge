@@ -3,21 +3,23 @@ package com.spartronics4915.lib.subsystems;
 import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
+ * We introduce an abstract SpartronicsSubsystem class to provide uniformity
+ * in logging, smartdashboard and initialization behavior to all subclasses.
+ * 
  * The Subsystem abstract class, which serves as a basic framework for all robot
- * subsystems. Each subsystem outputs
- * commands to SmartDashboard, has a stop routine (for after each match), and a
- * routine to zero all sensors, which helps
+ * subsystems. Each subsystem outputs commands to SmartDashboard, has a stop 
+ * routine (for after each match), and a routine to zero all sensors, which helps
  * with calibration.
  * <p>
  * All Subsystems only have one instance (after all, one robot does not have two
- * drivetrains), and functions get the
- * instance of the drivetrain and act accordingly.
+ * drivetrains), and functions get the instance of the drivetrain and act 
+ * accordingly.
  */
-public abstract class SpartronicsSubsystem implements Subsystem
+public abstract class SpartronicsSubsystem extends SubsystemBase
 {
 
     // All subsystems should set mInitialized upon successful init.
@@ -35,57 +37,58 @@ public abstract class SpartronicsSubsystem implements Subsystem
         int tail = classname.lastIndexOf('.');
         if (tail == -1)
         {
-            mName = classname;
+            this.mName = classname;
         }
         else
         {
-            mName = classname.substring(tail + 1);
+            this.mName = classname.substring(tail + 1);
         }
     }
 
     public String getClassName()
     {
-        return mName;
+        return this.mName;
     }
 
     public void logInitialized(boolean success)
     {
-        mInitialized = success;
+        this.mInitialized = success;
         if (success)
             this.logNotice("init SUCCEEDED");
         else
             this.logWarning("init FAILED");
-        SmartDashboard.putString(mName + "/Status", mInitialized ? "OK" : "ERROR");
+        SmartDashboard.putString(this.mName + "/Status", 
+                                this.mInitialized ? "OK" : "ERROR");
     }
 
     public void dashboardPutString(String nm, String value)
     {
-        SmartDashboard.putString(mName + "/" + nm, value);
+        SmartDashboard.putString(this.mName + "/" + nm, value);
     }
 
     public String dashboardGetString(String nm, String defValue)
     {
-        return SmartDashboard.getString(mName + "/" + nm, defValue);
+        return SmartDashboard.getString(this.mName + "/" + nm, defValue);
     }
 
     public void dashboardPutNumber(String nm, Number value)
     {
-        SmartDashboard.putNumber(mName + "/" + nm, value.doubleValue());
+        SmartDashboard.putNumber(this.mName + "/" + nm, value.doubleValue());
     }
 
     public Number dashboardGetNumber(String nm, Number defaultValue)
     {
-        return SmartDashboard.getNumber(mName + "/" + nm, defaultValue.doubleValue());
+        return SmartDashboard.getNumber(this.mName + "/" + nm, defaultValue.doubleValue());
     }
 
     public void dashboardPutBoolean(String nm, Boolean value)
     {
-        SmartDashboard.putBoolean(mName + "/" + nm, value);
+        SmartDashboard.putBoolean(this.mName + "/" + nm, value);
     }
 
     public boolean dashboardGetBoolean(String nm, Boolean defValue)
     {
-        return SmartDashboard.getBoolean(mName + "/" + nm, defValue);
+        return SmartDashboard.getBoolean(this.mName + "/" + nm, defValue);
     }
 
     // log methods are for conventionalizing format across subsystems 
@@ -124,7 +127,11 @@ public abstract class SpartronicsSubsystem implements Subsystem
     }
 
     @Override
-    public void periodic() {
-        dashboardPutString("currentCommand", CommandScheduler.getInstance().requiring(this).getName());
+    public void periodic() 
+    {
+        // this.mName/currentCommand contains the current command for
+        // a subsystem.
+        dashboardPutString("currentCommand", 
+                CommandScheduler.getInstance().requiring(this).getName());
     }
 }

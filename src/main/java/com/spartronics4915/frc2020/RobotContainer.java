@@ -16,13 +16,16 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-public class RobotContainer {
+public class RobotContainer
+{
 
-    private static class AutoMode {
+    private static class AutoMode
+    {
         public final String name;
         public final Command command;
 
-        public AutoMode(String name, Command command) {
+        public AutoMode(String name, Command command)
+        {
             this.name = name;
             this.command = command;
         }
@@ -30,9 +33,11 @@ public class RobotContainer {
 
     public static final String kAutoOptionsKey = "AutoStrategyOptions";
     public static final String kSelectedAutoModeKey = "AutoStrategy";
-    public static final AutoMode kDefaultAutoMode = new AutoMode("All: Do Nothing", new Command() {
+    public static final AutoMode kDefaultAutoMode = new AutoMode("All: Do Nothing", new Command()
+    {
         @Override
-        public Set<Subsystem> getRequirements() {
+        public Set<Subsystem> getRequirements()
+        {
             return null;
         }
     });
@@ -50,7 +55,8 @@ public class RobotContainer {
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
-    public RobotContainer() {
+    public RobotContainer()
+    {
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
 
@@ -61,10 +67,12 @@ public class RobotContainer {
 
         configureJoystickBindings();
         configureButtonBoardBindings();
-        mAutoModes = new AutoMode[] {kDefaultAutoMode,};
+        mAutoModes = new AutoMode[]
+        {kDefaultAutoMode,};
     }
 
-    private void configureJoystickBindings() {
+    private void configureJoystickBindings()
+    {
         /*
         new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
         new JoystickButton(mJoystick, 2).whenHeld(new TurretRaiseCommand(mLauncher));
@@ -85,11 +93,11 @@ public class RobotContainer {
         */
     }
 
-    private void configureButtonBoardBindings() {
-        new JoystickButton(mButtonBoard, 0).whenPressed(
-            new StartEndCommand(mIntake::intake, mIntake::stop, mIntake));
-        new JoystickButton(mButtonBoard, 1).whenPressed(
-            new InstantCommand(mIntake::stop, mIntake));
+    private void configureButtonBoardBindings()
+    {
+        new JoystickButton(mButtonBoard, 0)
+                .whenPressed(new StartEndCommand(mIntake::intake, mIntake::stop, mIntake));
+        new JoystickButton(mButtonBoard, 1).whenPressed(new InstantCommand(mIntake::stop, mIntake));
         // new JoystickButton(mButtonBoard, 2).whileHeld(new UnjamCommand(mIntake));
 
         /*
@@ -98,22 +106,24 @@ public class RobotContainer {
         new JoystickButton(mButtonBoard, 5).whenPressed(new AimHighCommand(mLauncher));
         */
 
-        new JoystickButton(mButtonBoard, 6).whenPressed(
-            new FunctionalCommand(() -> {}, mPanelRotator::raise, (Boolean b) -> mPanelRotator.stop(), mPanelRotator::getBeamSensorUp, mPanelRotator));
-        new JoystickButton(mButtonBoard, 7).whenPressed(
-            new FunctionalCommand(() -> {}, mPanelRotator::lower, (Boolean b) -> mPanelRotator.stop(), mPanelRotator::getBeamSensorDown, mPanelRotator));
-        new JoystickButton(mButtonBoard, 8).whenPressed(
-            new SpinToColorCommand(mPanelRotator));
-        new JoystickButton(mButtonBoard, 9).whenPressed(
-            new SpinRotationsCommand(mPanelRotator));
+        new JoystickButton(mButtonBoard, 6).whenPressed(new FunctionalCommand(() ->
+        {}, mPanelRotator::raise, (Boolean b) -> mPanelRotator.stop(),
+                mPanelRotator::getBeamSensorUp, mPanelRotator));
+        new JoystickButton(mButtonBoard, 7).whenPressed(new FunctionalCommand(() ->
+        {}, mPanelRotator::lower, (Boolean b) -> mPanelRotator.stop(),
+                mPanelRotator::getBeamSensorDown, mPanelRotator));
+        new JoystickButton(mButtonBoard, 8).whenPressed(new SpinToColorCommand(mPanelRotator));
+        new JoystickButton(mButtonBoard, 9).whenPressed(new SpinRotationsCommand(mPanelRotator));
 
-        new JoystickButton(mButtonBoard, 10).whileHeld(
-            new StartEndCommand(mClimber::extend, mClimber::stop, mClimber)); // Extend the Climber elevator
-        new JoystickButton(mButtonBoard, 11).whileHeld(
-            new StartEndCommand(mClimber::retract, mClimber::stop, mClimber)); // Retract the Climber elevator
-        new JoystickButton(mButtonBoard, 14).whenHeld(
-            new FunctionalCommand(() -> {}, () -> mClimber.winch(!Constants.Climber.kStalled), (Boolean b) -> mClimber.stop(), mClimber::isStalled, mClimber).andThen(
-                new StartEndCommand(() -> mClimber.winch(Constants.Climber.kStalled), mClimber::stop, mClimber))); // Winches the Climber quickly until stalled, then winches slowly
+        new JoystickButton(mButtonBoard, 10) // Extend the Climber elevator
+                .whileHeld(new StartEndCommand(mClimber::extend, mClimber::stop, mClimber));
+        new JoystickButton(mButtonBoard, 11) // Retract the Climber elevator
+                .whileHeld(new StartEndCommand(mClimber::retract, mClimber::stop, mClimber));
+        new JoystickButton(mButtonBoard, 14).whenHeld(new FunctionalCommand(() ->
+        {}, () -> mClimber.winch(!Constants.Climber.kStalled), (Boolean b) -> mClimber.stop(),
+                mClimber::isStalled, mClimber).andThen(
+                        new StartEndCommand(() -> mClimber.winch(Constants.Climber.kStalled),
+                                mClimber::stop, mClimber)));
 
         /*
         new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
@@ -127,11 +137,15 @@ public class RobotContainer {
      * Use this to pass the autonomous command to the main {@link Robot} class.
      * @return the command to run in autonomous
      */
-    public Command getAutonomousCommand() {
-        String selectedModeName = SmartDashboard.getString(kSelectedAutoModeKey, "NO SELECTED MODE!!!!");
+    public Command getAutonomousCommand()
+    {
+        String selectedModeName = SmartDashboard.getString(kSelectedAutoModeKey,
+                "NO SELECTED MODE!!!!");
         Logger.notice("Auto mode name " + selectedModeName);
-        for (var mode : mAutoModes) {
-            if (mode.name.equals(selectedModeName)) {
+        for (var mode : mAutoModes)
+        {
+            if (mode.name.equals(selectedModeName))
+            {
                 return mode.command;
             }
         }
