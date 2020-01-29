@@ -26,23 +26,26 @@ public class Indexer extends SpartronicsSubsystem {
     private boolean mIsLaunching = false;
     
     public Indexer() {
-        // Set Spinner
+        // Set up Spinner
         mSpinnerModel = SensorModel.fromMultiplier(Constants.Indexer.Spinner.kConversionRatio);
         mSpinner = new SpartronicsMax(Constants.Indexer.Spinner.kMotorId, mSpinnerModel);
-        // Set up values
+        // Set up gains
         mSpinner.setVelocityGains(Constants.Indexer.Spinner.kVelocityP, Constants.Indexer.Spinner.kVelocityD);
         mSpinner.setPositionGains(Constants.Indexer.Spinner.kPositionP, Constants.Indexer.Spinner.kPositionD);
         
-        // Set Loader
+
+        // Set up Loader
         mLoaderModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);
         mLoader = new SpartronicsSRX(Constants.Indexer.Loader.kMotor, mLoaderModel);
-        // Set up values
+        // Set up gains
         mLoader.setVelocityGains(Constants.Indexer.Loader.kVelocityP, Constants.Indexer.Loader.kVelocityD);
         mLoader.setPositionGains(Constants.Indexer.Loader.kPositionP, Constants.Indexer.Loader.kPositionD);
+
 
         // Setup Optical Flag for zeroing position
         mOpticalFlag = new DigitalInput(Constants.Indexer.kOpticalFlagId);
 
+        
         // Setup Prox Sensor for indexing
         mProxSensor = new DigitalInput(Constants.Indexer.kProxSensorId);
     }
