@@ -8,8 +8,11 @@ import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
+/**
+ * Indexer for storing power cells
+ */
 public class Indexer extends SpartronicsSubsystem {
-    private double currentPosition = 0;
+    private double targetPosition = 0;
 
     private SpartronicsMax mSpinner; // Spins indexer.
     private SpartronicsSRX mLoader; // Loads ball into shooter
@@ -19,6 +22,8 @@ public class Indexer extends SpartronicsSubsystem {
 
     private DigitalInput mOpticalFlag;
     private DigitalInput mProxSensor;
+
+    private boolean mIsLaunching = false;
     
     public Indexer() {
         // Set Spinner
@@ -47,40 +52,108 @@ public class Indexer extends SpartronicsSubsystem {
     // - eg. instead of a setIntake method, control each intake motor individually
     // setIntake functionality should be implemented in a command.
 
+
+    /**
+     * 
+     * @return Whether or not the optical flag is triggered.
+     */
     public boolean checkFlag() { // Checks whether the optical flag is triggered.
         return (Constants.Indexer.kOpticalFlagReversed ? mOpticalFlag.get() : !mOpticalFlag.get());
     }
 
+
+    /**
+     * Sets the spinner to a specific velocity
+     * @param velocity the velocity to spin the spinner at
+     */
     public void spinAt(double velocity) { // Spins motor at velocity
         mSpinner.setVelocity(velocity);
     }
 
+
+    /**
+     * Sets the spinner encoder to zero at it's current position
+     */
     public void setZero() {
         mSpinner.getEncoder().setPosition(0);
     }
 
+
+    /**
+     * @return whether or not the ball is loaded in the first slot
+     */
     public boolean getBallLoaded() { // Checks if ball is loaded
         return mProxSensor.get();
     }
 
-    public void rotateN(int N) { // perform N quarter-rotations
-        double targetPosition = 0.25 * ((double) N); // Cast N to double and convert to rotations
-        currentPosition += targetPosition;
-        mSpinner.setPosition(currentPosition);       // Rotate Spinner to target.
+    /**
+     * Rotate the spinner a certain amount of rotations
+     * @param N the number of quarter rotations to perform
+     */
+    public void rotateN(int N) {
+        double deltaPosition = 0.25 * ((double) N); // Cast N to double and convert to rotations
+        targetPosition += deltaPosition;
+        mSpinner.setPosition(targetPosition);       // Rotate Spinner to target.
     }
 
-    public void launch() { // Loads balls into shooter
+
+    /**
+     * Returns spinner to "0" position on the encoder
+     */
+    public void returnSpin()
+    {
+        targetPosition = 0;
+        mSpinner.setPosition(targetPosition);
+    }
+
+    /**
+     * Move spinner to nearest position
+     */
+    public void endSpinner() {
+        targetPosition = Math.ceil(mSpinner.getEncoder().getPosition() * 4) / 4; // Rotates to nearest quarter rotation
+        mSpinner.setPosition(targetPosition);
+    }
+    
+    /**
+     * Start loading balls into the shooter
+     */
+    public void load() { // Loads balls into shooter
+        mIsLaunching = true;
         mLoader.setVelocity(Constants.Indexer.Loader.kSpeed);
     }
 
-    public void stopLaunch() {
+    /**
+     * Stop loading balls into the shooter
+     */
+    public void endLaunch() {
+        mIsLaunching = false;
         mLoader.setVelocity(0);
+    }
+
+
+    /**
+     * 
+     * @return whether or not the loader motor is running
+     */
+    public boolean getLaunching() {
+        return mIsLaunching;
     }
 
     // The exception to this is a general-functionality stop() method.
 
+
+    /**
+     * Stop all motors
+     */
     public void stop() {
         mLoader.setNeutral();
+        mSpinner.setNeutral();
+    }
+
+    /**
+     * Stop Spinner
+     */
+    public void stopSpinner() {
         mSpinner.setNeutral();
     }
 }
