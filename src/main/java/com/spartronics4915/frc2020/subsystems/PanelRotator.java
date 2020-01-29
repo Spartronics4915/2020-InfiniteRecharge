@@ -109,6 +109,7 @@ public class PanelRotator extends SpartronicsSubsystem {
                 }
             }
         }
+        System.out.println(sensedColor);
         return sensedColor;
     }
 

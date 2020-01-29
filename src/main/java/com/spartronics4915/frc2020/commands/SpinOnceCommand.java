@@ -8,8 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class SpinOnceCommand extends CommandBase {
-
-  private PanelRotator mPanelRotator;
+  
   public double spins;
   public String firstColor;
   public String lastColor;
@@ -17,8 +16,10 @@ public class SpinOnceCommand extends CommandBase {
 
   // You should only use one subsystem per command. If multiple are needed, use a
   // CommandGroup.
+  private PanelRotator mPanelRotator;
   public SpinOnceCommand(PanelRotator mSubsystem) {
     mPanelRotator = mSubsystem;
+    addRequirements(mPanelRotator);
   }
 
   // Called when the command is initially scheduled.

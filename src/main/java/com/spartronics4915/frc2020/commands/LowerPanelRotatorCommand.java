@@ -11,6 +11,7 @@ public class LowerPanelRotatorCommand extends CommandBase {
     // You should only use one subsystem per command. If multiple are needed, use a CommandGroup.
     public LowerPanelRotatorCommand(PanelRotator mSubsystem) {
       mPanelRotator = mSubsystem;
+      addRequirements(mPanelRotator);
     }
 
     // Called when the command is initially scheduled.

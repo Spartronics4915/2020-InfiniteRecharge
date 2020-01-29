@@ -14,6 +14,7 @@ public class SpinToColorCommand extends CommandBase {
   // CommandGroup.
   public SpinToColorCommand(PanelRotator mSubsystem) {
     mPanelRotator = mSubsystem;
+    addRequirements(mPanelRotator);
   }
 
   // Called when the command is initially scheduled.
