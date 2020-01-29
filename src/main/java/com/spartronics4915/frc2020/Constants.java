@@ -11,11 +11,20 @@ public final class Constants {
     }
     
     public static final class Indexer {
-        public static final int kSpinnerId = -1;
-        public static final int kLoaderId = -1;
+        public static final class Spinner {
+            public static final int kMotorId = -1;
+            public static final double kP = 1;
+            public static final double kD = 1;
+            public static final double kConversionRatio = 1;
+        }
+        public static final class Loader {
+            public static final int kMotor = -1;
+            public static final double kP = 1;
+            public static final double kD = 1;
+            public static final double kConversionRatio = 1;
+        }
         public static final int kProxSensorId = -1;
-        public static final double kSpinnerConversionRatio = 1;
-        public static final double kLoaderConversationRatio = 1;
+        public static final int kOpticalFlagId = -1;
     }   
 
     public static final class Launcher {
