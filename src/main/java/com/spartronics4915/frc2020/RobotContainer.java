@@ -41,13 +41,15 @@ public class RobotContainer
 
     public final AutoMode[] mAutoModes;
 
-    private final Joystick mJoystick;
-    private final Joystick mButtonBoard;
-
     private final Climber mClimber;
     private final Intake mIntake;
     private final Launcher mLauncher;
     private final PanelRotator mPanelRotator;
+    private final ClimberCommands mClimberCommands;
+    private final PanelRotatorCommands mPanelRotatorCommands;
+
+    private final Joystick mJoystick;
+    private final Joystick mButtonBoard;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -58,6 +60,9 @@ public class RobotContainer
         mIntake = new Intake();
         mLauncher = new Launcher();
         mPanelRotator = new PanelRotator();
+        mClimberCommands = new ClimberCommands(mClimber);
+        mPanelRotatorCommands = new PanelRotatorCommands(mPanelRotator);
+
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
 
@@ -103,15 +108,15 @@ public class RobotContainer
         new JoystickButton(mButtonBoard, 5).whenPressed(new LauncherCommands.AimHigh(mLauncher));
         */
 
-        new JoystickButton(mButtonBoard, 6).whenPressed(new PanelRotatorCommands.Raise(mPanelRotator));
-        new JoystickButton(mButtonBoard, 7).whenPressed(new PanelRotatorCommands.Lower(mPanelRotator));
-        new JoystickButton(mButtonBoard, 8).whenPressed(new PanelRotatorCommands.SpinToColor());
-        new JoystickButton(mButtonBoard, 9).whenPressed(new PanelRotatorCommands.SpinRotation());
+        new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
+        new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
+        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinToColor());
+        new JoystickButton(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinRotation());
 
-        new JoystickButton(mButtonBoard, 10).whileHeld(new ClimberCommands.Extend(mClimber));
-        new JoystickButton(mButtonBoard, 11).whileHeld(new ClimberCommands.Retract(mClimber));
-        new JoystickButton(mButtonBoard, 14).whenHeld(new ClimberCommands.WinchPrimary(mClimber)
-                .andThen(new ClimberCommands.WinchSecondary(mClimber)));
+        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber));
+        new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Retract(mClimber));
+        new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new WinchPrimary(mClimber)
+                .andThen(mClimberCommands.new WinchSecondary(mClimber)));
 
         /*
         new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));

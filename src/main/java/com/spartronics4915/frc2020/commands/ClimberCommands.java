@@ -10,7 +10,7 @@ public class ClimberCommands
 {
     private final Climber mClimber;
 
-    ClimberCommands(Climber Climber)
+    public ClimberCommands(Climber Climber)
     {
         this.mClimber = Climber;
     }

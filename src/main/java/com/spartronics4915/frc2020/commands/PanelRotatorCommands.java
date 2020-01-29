@@ -9,7 +9,7 @@ public class PanelRotatorCommands
 {
     private final PanelRotator mPanelRotator;
 
-    PanelRotatorCommands(PanelRotator PanelRotator)
+    public PanelRotatorCommands(PanelRotator PanelRotator)
     {
         this.mPanelRotator = PanelRotator;
     }
