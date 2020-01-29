@@ -60,7 +60,7 @@ public class RobotContainer
         mIntake = new Intake();
         mLauncher = new Launcher();
         mPanelRotator = new PanelRotator();
-        mClimberCommands = new ClimberCommands(mClimber);
+        mClimberCommands = new ClimberCommands();
         mPanelRotatorCommands = new PanelRotatorCommands(mPanelRotator);
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);

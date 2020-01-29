@@ -8,13 +8,6 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 public class ClimberCommands
 {
-    private final Climber mClimber;
-
-    public ClimberCommands(Climber Climber)
-    {
-        this.mClimber = Climber;
-    }
-
     public class Extend extends StartEndCommand
     {
         public Extend(Climber mClimber)
