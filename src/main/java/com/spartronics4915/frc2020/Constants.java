@@ -21,15 +21,17 @@ public final class Constants
 
     public static final class Launcher
     {
-        public static final int kFlywheelMasterID = -1;
+        public static final int kFlywheelMasterID = 7;
         public static final int kFlywheelFollowerID = -1;
-        public static final int kAngleAdjusterID = -1;
-        public static final int kTurretID = -1;
+        public static final int kAngleAdjusterMasterID = -1;
+        public static final int kAngleAdjusterFollowerID = -1;
+        public static final int kTurretID = 8;
+        public static final int kTurretPotentiometerID = 9;
     }
 
     public static final class OI
     {
-        public static final int kJoystickId = 0;
+        public static final int kJoystickId = 1;
         public static final int kButtonBoardId = 1;
     }
 
