@@ -4,18 +4,23 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-public class Robot extends TimedRobot {
+public class Robot extends TimedRobot
+{
     private Command mAutonomousCommand;
     private RobotContainer mRobotContainer;
+
     @Override
-    public void robotInit() {
-        // Instantiate our RobotContainer. This will perform all our button bindings, and put our
+    public void robotInit()
+    {
+        // Instantiate our RobotContainer. This will perform all our button bindings,
+        // and put our
         // autonomous chooser on the dashboard.
         mRobotContainer = new RobotContainer();
     }
 
     @Override
-    public void robotPeriodic() {
+    public void robotPeriodic()
+    {
         CommandScheduler.getInstance().run();
     }
 
@@ -23,21 +28,25 @@ public class Robot extends TimedRobot {
      * This function is called once each time the robot enters Disabled mode.
      */
     @Override
-    public void disabledInit() {
+    public void disabledInit()
+    {
     }
 
     @Override
-    public void disabledPeriodic() {
+    public void disabledPeriodic()
+    {
     }
 
     /**
      * This autonomous runs the autonomous command selected by our {@link RobotContainer} class.
      */
     @Override
-    public void autonomousInit() {
+    public void autonomousInit()
+    {
         mAutonomousCommand = mRobotContainer.getAutonomousCommand();
 
-        if (mAutonomousCommand != null) {
+        if (mAutonomousCommand != null)
+        {
             mAutonomousCommand.schedule();
         }
     }
@@ -46,12 +55,15 @@ public class Robot extends TimedRobot {
      * This function is called periodically during autonomous.
      */
     @Override
-    public void autonomousPeriodic() {
+    public void autonomousPeriodic()
+    {
     }
 
     @Override
-    public void teleopInit() {
-        if (mAutonomousCommand != null) {
+    public void teleopInit()
+    {
+        if (mAutonomousCommand != null)
+        {
             mAutonomousCommand.cancel();
         }
     }
@@ -60,11 +72,13 @@ public class Robot extends TimedRobot {
      * This function is called periodically during operator control.
      */
     @Override
-    public void teleopPeriodic() {
+    public void teleopPeriodic()
+    {
     }
 
     @Override
-    public void testInit() {
+    public void testInit()
+    {
         CommandScheduler.getInstance().cancelAll();
     }
 
@@ -72,6 +86,7 @@ public class Robot extends TimedRobot {
      * This function is called periodically during test mode.
      */
     @Override
-    public void testPeriodic() {
+    public void testPeriodic()
+    {
     }
 }

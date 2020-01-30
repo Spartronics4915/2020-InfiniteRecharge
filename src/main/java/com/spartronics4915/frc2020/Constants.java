@@ -7,9 +7,11 @@ import java.nio.file.Path;
 
 import com.spartronics4915.lib.util.Logger;
 
-public final class Constants {
+public final class Constants
+{
 
-    public static final class Climber {
+    public static final class Climber
+    {
         public static final int kLiftMotorId = 5;
         public static final int kWinchMotorId = 6;
         public static final double kExtendSpeed = 1.0;
@@ -17,25 +19,29 @@ public final class Constants {
         public static final boolean kStalled = true;
     }
 
-    public static final class Indexer {
+    public static final class Indexer
+    {
         public static final int kSpinnerId = -1;
         public static final int kLoaderId = -1;
         public static final int kProxSensorId = -1;
     }
 
-    public static final class Launcher {
+    public static final class Launcher
+    {
         public static final int kFlywheelMasterID = -1;
         public static final int kFlywheelFollowerID = -1;
         public static final int kAngleAdjusterID = -1;
         public static final int kTurretID = -1;
     }
 
-    public static final class OI {
+    public static final class OI
+    {
         public static final int kJoystickId = 0;
         public static final int kButtonBoardId = 1;
     }
 
-    public static final class PanelRotator {
+    public static final class PanelRotator
+    {
         public static final int kBeamSensorUpID = -1;
         public static final int kBeamSensorDownID = -1;
 
@@ -47,16 +53,22 @@ public final class Constants {
     }
 
     // Initialize blank fields that are robot-specific here
-    static {
+    static
+    {
         String config = "default";
-        Path machineIDPath = FileSystems.getDefault().getPath(System.getProperty("user.home"), "machineid");
-        try {
+        Path machineIDPath = FileSystems.getDefault().getPath(System.getProperty("user.home"),
+                "machineid");
+        try
+        {
             config = Files.readString(machineIDPath).trim().toLowerCase();
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
         }
         Logger.notice("Running on " + config + " constants");
 
-        switch (config) {
+        switch (config)
+        {
             case "test chassis":
                 // Put constants here
                 break;
