@@ -29,48 +29,55 @@ import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
  */
 public class Intake extends SpartronicsSubsystem 
 {
-
+    /** constructor **/
     public Intake()
     {
 
     }
-    
+
+    /** starts vector wheels **/
     public void harvestIntake() 
     {
 
     }
 
+    /** starts prism roller **/
     public void ingestIntake() 
     {
 
     }
 
-    /**  */
+    /** reverses vector wheels **/
     public void harvestReverse() 
     {
 
     }
 
+    /** reverses prism roller **/
     public void ingestReverse() 
     {
 
     }
 
+    /** stops vector wheels **/
     public void harvestStop() 
     {
 
     }
 
+    /** stops prism roller **/
     public void ingestStop() 
     {
 
     }
-    
+
+    /** checks to see if ball is held in intake chamber **/
     public void isBallHeld() 
     {
 
     }
 
+    /** universal stop method **/
     public void stop()
     {
 
