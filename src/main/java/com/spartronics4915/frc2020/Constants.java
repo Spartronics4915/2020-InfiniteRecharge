@@ -81,8 +81,6 @@ public final class Constants
         public static final double kSpinMotorSpeed = 0.5;
     }
 
-    <<<<<<<HEAD
-
     public static final class Drive
     {
         public static final int kRightDriveMaster = 1;
@@ -144,8 +142,10 @@ public final class Constants
     public static final class Estimator
     {
         public static final Pose2d kCameraOffset = new Pose2d();
-        public static final double kMeasurementCovariance = 1;=======
-        // Initialize blank fields that are robot-specific here
+        public static final double kMeasurementCovariance = 1;
+    }
+
+    // Initialize blank fields that are robot-specific here
     static
     {
         String config = "default";
@@ -170,6 +170,5 @@ public final class Constants
                 // Or here
                 break;
         }
->>>>>>> 16ba501a2224c13b25728cf22c463f2d466cca7a
     }
 }

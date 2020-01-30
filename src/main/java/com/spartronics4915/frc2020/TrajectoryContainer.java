@@ -13,8 +13,10 @@ import com.spartronics4915.lib.math.twodim.trajectory.TrajectoryGenerator;
 import com.spartronics4915.lib.math.twodim.trajectory.constraints.TimingConstraint;
 import com.spartronics4915.lib.math.twodim.trajectory.types.TimedTrajectory;
 
-public class TrajectoryContainer {
-    public static enum Destination {
+public class TrajectoryContainer
+{
+    public static enum Destination
+    {
         LeftTrenchBack(new Pose2d(0, 0, Rotation2d.fromDegrees(0))),
         leftTrenchFront(new Pose2d(0, 0, Rotation2d.fromDegrees(0))),
         rightTrenchBack(new Pose2d(0, 0, Rotation2d.fromDegrees(0))),
@@ -28,40 +30,60 @@ public class TrajectoryContainer {
 
         public final Pose2d pose;
 
-        private Destination(Pose2d pose) {
+        private Destination(Pose2d pose)
+        {
             this.pose = pose;
         }
     }
-    public static final class TrajectoryCollection {
+
+    public static final class TrajectoryCollection
+    {
         private Pose2d mStartPoint;
         private Map<Destination, TimedTrajectory<Pose2dWithCurvature>> mTrajectories;
-        public TrajectoryCollection(Pose2d startPoint) {
+
+        public TrajectoryCollection(Pose2d startPoint)
+        {
             mStartPoint = startPoint;
         }
-        public void generateTrajectories(Map<Destination, List<Pose2d>> destinations) {
 
-            for (var entry : destinations.entrySet()) {
+        public void generateTrajectories(Map<Destination, List<Pose2d>> destinations)
+        {
+
+            for (var entry : destinations.entrySet())
+            {
                 List<Pose2d> waypoints = new ArrayList<Pose2d>();
-                for (Pose2d pose : entry.getValue()) {
+                for (Pose2d pose : entry.getValue())
+                {
                     waypoints.add(pose);
                 }
                 waypoints.add(entry.getKey().pose);
                 waypoints.add(mStartPoint);
                 List<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
-                var trajectory = TrajectoryGenerator.defaultTrajectoryGenerator.generateTrajectory(waypoints, constraints, Constants.Trajectory.kStartVelocityMetersPerSec, Constants.Trajectory.kEndVelocityMetersPerSec, Constants.Trajectory.kMaxVelocityMetersPerSec, Constants.Trajectory.kMaxAccelerationMeterPerSecSq, false);
+                var trajectory = TrajectoryGenerator.defaultTrajectoryGenerator.generateTrajectory(
+                        waypoints, constraints, Constants.Trajectory.kStartVelocityMetersPerSec,
+                        Constants.Trajectory.kEndVelocityMetersPerSec,
+                        Constants.Trajectory.kMaxVelocityMetersPerSec,
+                        Constants.Trajectory.kMaxAccelerationMeterPerSecSq, false);
                 mTrajectories.put(entry.getKey(), trajectory);
             }
         }
-        public TimedTrajectory<Pose2dWithCurvature> getTrajectory(Destination name) {
+
+        public TimedTrajectory<Pose2dWithCurvature> getTrajectory(Destination name)
+        {
             return mTrajectories.get(name);
-        } 
+        }
     }
-    public static final TrajectoryCollection left = new TrajectoryCollection(Constants.Trajectory.kStartPointLeft);
-    public static final TrajectoryCollection middle = new TrajectoryCollection(Constants.Trajectory.kStartPointMiddle);
-    public static final TrajectoryCollection right = new TrajectoryCollection(Constants.Trajectory.kStartPointRight);
-    static {
+
+    public static final TrajectoryCollection left = new TrajectoryCollection(
+            Constants.Trajectory.kStartPointLeft);
+    public static final TrajectoryCollection middle = new TrajectoryCollection(
+            Constants.Trajectory.kStartPointMiddle);
+    public static final TrajectoryCollection right = new TrajectoryCollection(
+            Constants.Trajectory.kStartPointRight);
+    static
+    {
         Map<Destination, List<Pose2d>> destinations = new HashMap<Destination, List<Pose2d>>();
-        destinations.put(Destination.backOfShieldGenerator, Arrays.asList(new Pose2d(50, 50, Rotation2d.fromDegrees(0))));
+        destinations.put(Destination.backOfShieldGenerator, Arrays.asList());
         left.generateTrajectories(destinations);
         middle.generateTrajectories(destinations);
         right.generateTrajectories(destinations);
