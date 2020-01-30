@@ -20,18 +20,31 @@ public class ClimberCommands
 
     public class Raise extends StartEndCommand
     {
-        public Raise()
+        public Raise(Climber c)
         {
-            super(mClimber::extend, mClimber::stop, mClimber);
+            super(() ->
+            {
+                c.extend();
+            }, () ->
+            {
+                c.stop();
+            }, c);
+
         }
 
     }
 
     public class Retract extends StartEndCommand
     {
-        public Retract()
+        public Retract(Climber c)
         {
-            super(mClimber::retract, mClimber::stop, mClimber);
+            super(() ->
+            {
+                c.retract();
+            }, () ->
+            {
+                c.stop();
+            });
         }
     }
 
