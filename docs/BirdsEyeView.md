@@ -1,5 +1,5 @@
-# Birds Eye View for Programming 2020
-- [Birds Eye View for Programming 2020](#birds-eye-view-for-programming-2020)
+# Bird's Eye View for Programming 2020
+- [Bird's Eye View for Programming 2020](#birds-eye-view-for-programming-2020)
   - [Operator Interface (Justice? ...)](#operator-interface-justice)
   - [Drivetrain / vslam (Henry, Declan, Jeffrey, ..)](#drivetrain--vslam-henry-declan-jeffrey)
   - [Control-panel (Noah)](#control-panel-noah)
@@ -7,7 +7,7 @@
   - [Indexer (Camden)](#indexer-camden)
   - [Turret Control (Ethan)](#turret-control-ethan)
   - [Climber (Austin)](#climber-austin)
-  - [Vision (Darwin)](#vision-darwin)
+  - [Vision (Darwin, Jeffrey)](#vision-darwin-jeffrey)
   - [Driver Cameras (Martin)](#driver-cameras-martin)
   - [Dashboard (Martin)](#dashboard-martin)
   - [Bling (Maya?)](#bling-maya)
@@ -85,7 +85,7 @@
 * work with drivetrain team to determine if climber state should depend on
   robot position.
 
-## Vision (Darwin)
+## Vision (Darwin, Jeffrey)
 
 * strategy 1 (fire-and-forget PNP)
     * states:
@@ -94,7 +94,7 @@
             * inputs: how do we enter this mode?
             * output:  
                 /Vision/bboxErrorX, /Vision/bboxErrorY, /Vision/framerate
-        * acquiring (high res, pnp) -> camera-local P of cente" (turret coords)
+        * acquiring (high res, pnp) -> camera-local P of center (turret coords)
             * inputs: how do we enter this mode? (button push)
             * output:  /Vision/PnP/targetCenterX,Y,Z (Z is distance)
             * a one-off state, we proceed to quiet or searching (ignored)
@@ -105,7 +105,10 @@
             * reliability of shooter itself
         * trig for inner-vs-outer error metric
 * strategy 2 (run-n-gun)
+    * consider whether it's possible to shoot multiple balls while moving
 * strategy 3 (just inner pid)
+    * no PnP, just use bbox and known geo associated with target to
+      produce distance and angle estimates.
 
 ## Driver Cameras (Martin)
 
