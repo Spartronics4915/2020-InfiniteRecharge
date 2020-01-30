@@ -23,10 +23,8 @@ public class PanelRotatorCommands
     {
         public Raise(PanelRotator mPanelRotator)
         {
-            super(() ->
-            {
-            }, mPanelRotator::raise, (Boolean b) -> mPanelRotator.stop(),
-                    mPanelRotator::getBeamSensorUp, mPanelRotator);
+            super(() -> {}, mPanelRotator::raise, (Boolean b) -> mPanelRotator.stop(), 
+                mPanelRotator::getBeamSensorUp, mPanelRotator);
         }
     }
 
@@ -34,18 +32,15 @@ public class PanelRotatorCommands
     {
         public Lower(PanelRotator mPanelRotator)
         {
-            super(() ->
-            {
-            }, mPanelRotator::lower, (Boolean b) -> mPanelRotator.stop(),
-                    mPanelRotator::getBeamSensorDown, mPanelRotator);
+            super(() -> {}, mPanelRotator::lower, (Boolean b) -> mPanelRotator.stop(),
+                mPanelRotator::getBeamSensorDown, mPanelRotator);
         }
     }
 
     // TODO: This might be better as a FunctionalCommand
     public class SpinToColor extends CommandBase
     {
-        // You should only use one subsystem per command. If multiple are needed, use a
-        // CommandGroup.
+        // You should only use one subsystem per command. If multiple are needed, use a CommandGroup.
         public SpinToColor()
         {
             addRequirements(mPanelRotator);
@@ -95,8 +90,7 @@ public class PanelRotatorCommands
         public String lastColor;
         public String currentColor;
 
-        // You should only use one subsystem per command. If multiple are needed, use a
-        // CommandGroup.
+        // You should only use one subsystem per command. If multiple are needed, use a CommandGroup.
         public SpinRotation()
         {
             addRequirements(mPanelRotator);
