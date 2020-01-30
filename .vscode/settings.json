@@ -1,15 +1,17 @@
 {
-  "java.configuration.updateBuildConfiguration": "automatic",
-  "files.exclude": {
-    "**/.git": true,
-    "**/.svn": true,
-    "**/.hg": true,
-    "**/CVS": true,
-    "**/.DS_Store": true,
-    "bin/": true,
-    "**/.classpath": true,
-    "**/.project": true,
-    "**/.settings": true,
-    "**/.factorypath": true
-  }
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "java.format.enabled": true,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "bin/": true,
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.factorypath": true
+    }
 }

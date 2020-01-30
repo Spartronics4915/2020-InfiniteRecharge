@@ -26,43 +26,53 @@ import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
  * 
  * stop: a universal stop method
  * 
- * 
  */
-public class Intake extends SpartronicsSubsystem {
+public class Intake extends SpartronicsSubsystem 
+{
 
-    public Intake() {
-
-    }
-    
-    public static void harvestIntake() {
-
-    }
-
-    public static void ingestIntake() {
-
-    }
-
-    public static void harvestReverse() {
-
-    }
-
-    public static void ingestReverse() {
-
-    }
-
-    public static void harvestStop() {
-
-    }
-
-    public static void ingestStop() {
+    public Intake()
+    {
 
     }
     
-    public static void isBallHeld() {
+    public void harvestIntake() 
+    {
 
     }
 
-    public static void stop() {
-        
+    public void ingestIntake() 
+    {
+
+    }
+
+    /**  */
+    public void harvestReverse() 
+    {
+
+    }
+
+    public void ingestReverse() 
+    {
+
+    }
+
+    public void harvestStop() 
+    {
+
+    }
+
+    public void ingestStop() 
+    {
+
+    }
+    
+    public void isBallHeld() 
+    {
+
+    }
+
+    public void stop()
+    {
+
     }
 }
