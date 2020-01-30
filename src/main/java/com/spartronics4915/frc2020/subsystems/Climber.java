@@ -50,7 +50,7 @@ public class Climber extends SpartronicsSubsystem
         mClimberNEO.set(0.0);
     }
 
-    public void stop()
+    public void stop(boolean interrpted)
     {
         mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
         mClimberNEO.set(0.0);
