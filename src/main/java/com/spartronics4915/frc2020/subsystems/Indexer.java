@@ -116,9 +116,8 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void endSpinner()
     {
-        targetPosition = Math.ceil(mSpinner.getEncoder().getPosition() * 4) / 4; // Rotates to
-                                                                                 // nearest quarter
-                                                                                 // rotation
+        // Rotates to nearest quarter rotation
+        targetPosition = Math.ceil(mSpinner.getEncoder().getPosition() * 4) / 4;
         mSpinner.setPosition(targetPosition);
     }
 

@@ -1,9 +1,13 @@
 package com.spartronics4915.lib.hardware.motors;
 
+import com.revrobotics.CANError;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.spartronics4915.lib.util.Logger;
+
+import edu.wpi.first.wpilibj.RobotBase;
 
 public class SpartronicsMax implements SpartronicsMotor
 {
@@ -13,9 +17,10 @@ public class SpartronicsMax implements SpartronicsMotor
 
     private final double kRPMtoRPS = 1 / 60;
 
-    private CANSparkMax mSparkMax;
-    private SpartronicsEncoder mEncoder;
-    private SensorModel mSensorModel;
+    private final CANSparkMax mSparkMax;
+    private final SpartronicsEncoder mEncoder;
+    private final SensorModel mSensorModel;
+    private final boolean mHadStartupError;
 
     private boolean mBrakeMode = false;
     /** Volts */
@@ -55,20 +60,49 @@ public class SpartronicsMax implements SpartronicsMotor
         
     }
 
-    public SpartronicsMax(int deviceNumber, SensorModel sensorModel)
+    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel)
     {
-        this(new CANSparkMax(deviceNumber, MotorType.kBrushless), sensorModel);
+        if (RobotBase.isSimulation())
+        {
+            return new SpartronicsSimulatedMotor();
+        }
+        return new SpartronicsMax(new CANSparkMax(deviceNumber, MotorType.kBrushless), sensorModel);
     }
 
-    public SpartronicsMax(CANSparkMax spark, SensorModel sensorModel)
+    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel,
+            int followerDeviceNumber)
+    {
+        if (RobotBase.isSimulation())
+        {
+            return new SpartronicsSimulatedMotor();
+        }
+
+        // We only use SPARK MAXes for brushless motors
+        // If that changes we can make motor type configurable
+        var master = new CANSparkMax(deviceNumber, MotorType.kBrushless);
+        new CANSparkMax(deviceNumber, MotorType.kBrushless).follow(master);
+        return new SpartronicsMax(master, sensorModel);
+    }
+
+    private SpartronicsMax(CANSparkMax spark, SensorModel sensorModel)
     {
         mSparkMax = spark;
         mSensorModel = sensorModel;
-        mEncoder = new SpartronicsMaxEncoder();
-        mSparkMax.getEncoder().setPosition(0);
-        mSparkMax.getEncoder().setVelocityConversionFactor(kRPMtoRPS); // Set conversion factor.
 
-        // mSparkMax.configFactoryDefault();
+        CANError err = mSparkMax.getEncoder().setPosition(0);
+        mSparkMax.getEncoder().setVelocityConversionFactor(kRPMtoRPS); // Set conversion factor.
+        if (err != CANError.kOk)
+        {
+            Logger.error("SparkMax on with ID " + mSparkMax.getDeviceId()
+                    + " returned a non-OK error code on sensor configuration... Is the motor controller plugged in?");
+            mHadStartupError = true;
+        }
+        else
+        {
+            mHadStartupError = false;
+        }
+        mEncoder = new SpartronicsMaxEncoder();
+
         mSparkMax.enableVoltageCompensation(mVoltageCompSaturation);
     }
 
@@ -76,6 +110,12 @@ public class SpartronicsMax implements SpartronicsMotor
     public SpartronicsEncoder getEncoder()
     {
         return mEncoder;
+    }
+
+    @Override
+    public boolean hadStartupError()
+    {
+        return mHadStartupError;
     }
 
     @Override
@@ -214,11 +254,6 @@ public class SpartronicsMax implements SpartronicsMotor
         mSparkMax.getPIDController().setI(kI, kPositionSlotIdx);
         mSparkMax.getPIDController().setD(kD, kPositionSlotIdx);
         mSparkMax.getPIDController().setFF(kF, kPositionSlotIdx);
-    }
-
-    public void follow(SpartronicsMax other)
-    {
-        mSparkMax.follow(other.mSparkMax);
     }
 
     @Override
