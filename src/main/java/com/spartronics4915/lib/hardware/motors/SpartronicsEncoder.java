@@ -1,16 +1,15 @@
 package com.spartronics4915.lib.hardware.motors;
 
-import com.spartronics4915.lib.util.Logger;
-
-public interface SpartronicsEncoder {
+public interface SpartronicsEncoder
+{
 
     /**
-     * @return Velocity in meters/second.
+     * @return Velocity in custom units/second.
      */
     double getVelocity();
 
     /**
-     * @return Position in meters.
+     * @return Position in custom units.
      */
     double getPosition();
 
@@ -20,4 +19,11 @@ public interface SpartronicsEncoder {
      * @param isReversed If true, the sensor's output is reversed.
      */
     void setPhase(boolean isReversed);
+
+    /**
+     * Sets the current position (The value stored, not PID target)
+     * 
+     * @param TargetPosition position
+     */
+    void setPosition(double position);
 }
