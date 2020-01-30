@@ -28,6 +28,7 @@ public class ShootBallTest extends CommandBase
     public void execute()
     {
         mLauncher.runFlywheel();
+        System.out.println("whatsup");
     }
 
     // Returns true when the command should end.

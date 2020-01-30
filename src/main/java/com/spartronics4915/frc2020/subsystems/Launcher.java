@@ -9,6 +9,7 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 
 public class Launcher extends SpartronicsSubsystem
 {
@@ -19,8 +20,12 @@ public class Launcher extends SpartronicsSubsystem
     private Servo mAngleAdjusterFollowerServo;
     private SpartronicsMotor mTurretMotor;
     private AnalogPotentiometer mTurretPotentiometer;
+
     private double targetRPM;
     private double targetAngle;
+
+    private SimpleMotorFeedforward mFeedforwardCalculator = new SimpleMotorFeedforward(
+            Constants.Launcher.kS, Constants.Launcher.kV, Constants.Launcher.kA);
 
     public Launcher()
     {
@@ -31,15 +36,16 @@ public class Launcher extends SpartronicsSubsystem
             // ONE NEO for flywheel
             mFlywheelMasterMotor = SpartronicsMax.makeMotor(
                     /*Constants.Launcher.kFlywheelMasterID*/2,
-                    SensorModel.toRadians(1)/*, Constants.Launcher.kFlywheelFollowerID*/);// new
-                                                                                          // SpartronicsMax(Constants.Launcher.kFlywheelMasterID,SensorModel.toRadians(1));
+                    SensorModel.fromMultiplier(1)/*, Constants.Launcher.kFlywheelFollowerID*/);
+            mFlywheelMasterMotor.setVelocityGains(0.00154, 0, 0, 0);
             mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
+
             // Two Servos for angle adjustement
             mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterID);
             mAngleAdjusterFollowerServo = new Servo(Constants.Launcher.kAngleAdjusterFollowerID);
             // One NEO 550 motor for turret
-            mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretID,
-                    SensorModel.toRadians(360));
+            /*mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretID,
+                    SensorModel.toRadians(360));*/
             turnTurret(0);
             mTurretPotentiometer = new AnalogPotentiometer(
                     Constants.Launcher.kTurretPotentiometerID, 90, -45);
@@ -61,6 +67,7 @@ public class Launcher extends SpartronicsSubsystem
     public void runFlywheel()
     {
         mFlywheelMasterMotor.setVelocity(targetRPM);
+        System.out.println("hello");
     }
 
     /**
@@ -70,7 +77,7 @@ public class Launcher extends SpartronicsSubsystem
     public void turnTurret(double absoluteAngle)
     {
         // need enc or pot\
-        mTurretMotor.setPosition(absoluteAngle);
+        // mTurretMotor.setPosition(absoluteAngle);
     }
 
     /**
@@ -197,10 +204,10 @@ public class Launcher extends SpartronicsSubsystem
      */
     public void reset()
     {
-        setRPM(0);
+        /*setRPM(0);
         mFlywheelMasterMotor.setBrakeMode(true);
         setPitch(0);
-        turnTurret(0);
+        turnTurret(0);*/
     }
     // The exception to this is a general-functionality stop() method.
 }

@@ -30,10 +30,14 @@ public final class Constants
     {
         public static final int kFlywheelMasterID = 7;
         public static final int kFlywheelFollowerID = -1;
-        public static final int kAngleAdjusterMasterID = -1;
-        public static final int kAngleAdjusterFollowerID = -1;
+        public static final int kAngleAdjusterMasterID = 6;
+        public static final int kAngleAdjusterFollowerID = 7;
         public static final int kTurretID = 8;
-        public static final int kTurretPotentiometerID = 9;
+        public static final int kTurretPotentiometerID = 1;
+        public static final double kP = 0.0154;
+        public static final double kS = 0.0638;
+        public static final double kV = 0.121;
+        public static final double kA = 0.0252;
     }
 
     public static final class OI
