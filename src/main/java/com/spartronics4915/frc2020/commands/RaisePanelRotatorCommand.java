@@ -29,7 +29,6 @@ public class RaisePanelRotatorCommand extends CommandBase
     public void execute()
     {
         mPanelRotator.raise();
-
     }
 
     // Returns true when the command should end.

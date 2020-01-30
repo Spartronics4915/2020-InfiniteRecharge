@@ -29,11 +29,11 @@ public class SpinToColorCommand extends CommandBase
   @Override
   public void execute()
   {
-    targetColor = mPanelRotator.getTargetColor();
     if (mPanelRotator.getActualColor() != targetColor && targetColor.length() > 0)
-      mPanelRotator.spin();
+      targetColor = mPanelRotator.getTargetColor();
     else
       targetColor = "error";
+    mPanelRotator.spin();
   }
 
   // Returns true when the command should end.
