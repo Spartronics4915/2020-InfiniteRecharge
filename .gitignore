@@ -153,6 +153,8 @@ gradle-app.setting
 # # VS Code Specific Java Settings
 .classpath
 .project
+.settings
+!.settings/org.eclipse.jdt.core.prefs
 bin/
 imgui.ini
 

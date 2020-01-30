@@ -15,23 +15,27 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
  * The NEO motor winches the climber and the 775 PRO extends the climber
  * The four methods used are extend(), winch(), reverseExtend(), and stop()
  */
-public class Climber extends SpartronicsSubsystem {
+public class Climber extends SpartronicsSubsystem
+{
 
-    private static TalonSRX mClimber775Pro;
-    private static CANSparkMax mClimberNEO;
+    private TalonSRX mClimber775Pro;
+    private CANSparkMax mClimberNEO;
 
-    public Climber() {
+    public Climber()
+    {
         // Hardware Contructor (Add motors and such here when I get them)
         mClimber775Pro = new TalonSRX(Constants.Climber.kLiftMotorId); 
         mClimberNEO = new CANSparkMax(Constants.Climber.kWinchMotorId, MotorType.kBrushless);
     }
 
-    public void extend() {
+    public void extend()
+    {
         mClimber775Pro.set(ControlMode.PercentOutput, Constants.Climber.kExtendSpeed);
         mClimberNEO.set(0.0);
     }
 
-    public void winch(boolean stalled) {
+    public void winch(boolean stalled)
+    {
         mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
         if (stalled)
             mClimberNEO.set(Constants.Climber.kWinchSpeed);
@@ -39,22 +43,25 @@ public class Climber extends SpartronicsSubsystem {
             mClimberNEO.set(-Constants.Climber.kWinchSpeed);
     }
 
-    public void retract() {
+    public void retract()
+    {
         mClimber775Pro.set(ControlMode.PercentOutput, -Constants.Climber.kExtendSpeed);
         mClimberNEO.set(0.0);
     }
 
-    public void stop() {
+    public void stop()
+    {
         mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
         mClimberNEO.set(0.0);
     }
 
-    public double getWinchVoltage() {
+    public double getWinchVoltage()
+    {
         return mClimberNEO.getBusVoltage();
     }
-    
-    public boolean isStalled() {
+
+    public boolean isStalled()
+    {
         return false;
     }
 }
-
