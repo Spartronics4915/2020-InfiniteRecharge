@@ -249,11 +249,6 @@ public class SpartronicsMax implements SpartronicsMotor
         mSparkMax.getPIDController().setFF(kF, kPositionSlotIdx);
     }
 
-    public void follow(SpartronicsMax other)
-    {
-        mSparkMax.follow(other.mSparkMax);
-    }
-
     @Override
     public SensorModel getSensorModel()
     {
