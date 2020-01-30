@@ -17,7 +17,7 @@ public class ClimberCommands
 
     public class Extend extends StartEndCommand
     {
-        public Extend()
+        public Extend(Climber mClimber)
         {
             super(mClimber::extend, mClimber::stop, mClimber);
         }
