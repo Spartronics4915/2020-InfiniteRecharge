@@ -1,9 +1,11 @@
 package com.spartronics4915.lib.hardware.motors;
 
+import com.revrobotics.CANError;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.wpilibj.RobotBase;
 
@@ -15,9 +17,10 @@ public class SpartronicsMax implements SpartronicsMotor
 
     private final double kRPMtoRPS = 1 / 60;
 
-    private CANSparkMax mSparkMax;
-    private SpartronicsEncoder mEncoder;
-    private SensorModel mSensorModel;
+    private final CANSparkMax mSparkMax;
+    private final SpartronicsEncoder mEncoder;
+    private final SensorModel mSensorModel;
+    private final boolean mHadStartupError;
 
     private boolean mBrakeMode = false;
     /** Volts */
@@ -78,9 +81,20 @@ public class SpartronicsMax implements SpartronicsMotor
     {
         mSparkMax = spark;
         mSensorModel = sensorModel;
-        mEncoder = new SpartronicsMaxEncoder();
-        mSparkMax.getEncoder().setPosition(0);
+
+        CANError err = mSparkMax.getEncoder().setPosition(0);
         mSparkMax.getEncoder().setVelocityConversionFactor(kRPMtoRPS); // Set conversion factor.
+        if (err != CANError.kOk)
+        {
+            Logger.error("SparkMax on with ID " + mSparkMax.getDeviceId()
+                    + " returned a non-OK error code on sensor configuration... Is the motor controller plugged in?");
+            mHadStartupError = true;
+        }
+        else
+        {
+            mHadStartupError = false;
+        }
+        mEncoder = new SpartronicsMaxEncoder();
 
         mSparkMax.enableVoltageCompensation(mVoltageCompSaturation);
     }
@@ -89,6 +103,12 @@ public class SpartronicsMax implements SpartronicsMotor
     public SpartronicsEncoder getEncoder()
     {
         return mEncoder;
+    }
+
+    @Override
+    public boolean hadStartupError()
+    {
+        return mHadStartupError;
     }
 
     @Override

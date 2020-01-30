@@ -32,6 +32,11 @@ public class SpartronicsSimulatedMotor implements SpartronicsMotor {
     }
 
     @Override
+    public boolean hadStartupError() {
+        return false;
+    }
+
+    @Override
     public double getVoltageOutput() {
         return 0;
     }
