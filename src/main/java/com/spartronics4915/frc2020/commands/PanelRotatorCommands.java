@@ -119,6 +119,7 @@ public class PanelRotatorCommands
             currentColor = mPanelRotator.getActualColor();
             if (currentColor != lastColor)
                 eighths++;
+            lastColor = currentColor;
 
             if (eighths == 8) // TODO: double check for off-by-one errors
                 return true;

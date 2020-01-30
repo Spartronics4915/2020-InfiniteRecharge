@@ -48,7 +48,13 @@ public class RobotStateEstimator extends SpartronicsSubsystem
 
         resetRobotStateMaps();
 
-        // Run this at 20 Hz
+        if (mSLAMCamera == null) {
+            logInitialized(false);
+        } else {
+            logInitialized(true);
+        }
+
+        // Run this at 100 Hz
         new Notifier(this::run).startPeriodic(1 / 100.0);
     }
 
@@ -76,7 +82,9 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         mLeftPrevDist = mDrive.getLeftMotor().getEncoder().getPosition();
         mRightPrevDist = mDrive.getRightMotor().getEncoder().getPosition();
 
-        mSLAMCamera.setPose(pose);
+        if (mSLAMCamera != null) {
+            mSLAMCamera.setPose(pose);
+        }
         // mDrive.setIMUHeading(pose.getRotation()); TODO: Put back when I get a real IMU
     }
 
@@ -104,7 +112,9 @@ public class RobotStateEstimator extends SpartronicsSubsystem
 
     public void stop()
     {
-        mSLAMCamera.stop();
+        if (mSLAMCamera != null) {
+            mSLAMCamera.stop();
+        }
     }
 
     public void run()
@@ -168,11 +178,17 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         final double loopintervalToSeconds = 1 / (Timer.getFPGATimestamp() - last.timestamp);
         final Twist2d normalizedIVal = iVal.scaled(loopintervalToSeconds);
 
-        mSLAMCamera.sendOdometry(pVal);
+        if (mSLAMCamera != null) {
+            mSLAMCamera.sendOdometry(pVal);
+        }
     }
 
     public void enable()
     {
+        if (mSLAMCamera == null) {
+            return;
+        }
+
         // Callback is called from a different thread... We avoid data races because RobotSteteMap is thread-safe
         mSLAMCamera.stop();
         mSLAMCamera.start((CameraUpdate update) ->

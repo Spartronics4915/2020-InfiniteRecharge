@@ -13,6 +13,13 @@ public interface SpartronicsMotor {
     SensorModel getSensorModel();
 
     /**
+     * This method is useful for detecting unplugged motor controllers.
+     * 
+     * @return If true, the motor controller returned some type of error on startup.
+     */
+    boolean hadStartupError();
+
+    /**
      * @return Current output of the motor controller in Volts.
      */
     double getVoltageOutput();
