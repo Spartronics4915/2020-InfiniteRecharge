@@ -80,7 +80,7 @@ public final class Constants
         public static final int kExtendMotorID = -1;
         public static final int kSpinMotorID = -1;
 
-        public static final double kExtendMotorPercentOutput = 0.5;
+        public static final double kExtendMotorSpeed = 0.5;
         public static final double kSpinMotorSpeed = 0.5;
     }
 
