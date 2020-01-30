@@ -8,17 +8,18 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Servo;
 public class Launcher extends SpartronicsSubsystem {
+
     private SpartronicsMotor mFlywheelMasterMotor;
     private SpartronicsEncoder mFlywheelEncoder;
-    private Servo mAngleAdjusterMasterMotor;
-    private Servo mAngleAdjusterFollowerMotor;
+    private Servo mAngleAdjusterMasterServo;
+    private Servo mAngleAdjusterFollowerServo;
     private SpartronicsMotor mTurretMotor;
     private AnalogPotentiometer mTurretPotentiometer;
     private double targetRPM;
     private double targetAngle;
+
     public Launcher() {
         // Construct your hardware here
         boolean success=false;
@@ -27,11 +28,10 @@ public class Launcher extends SpartronicsSubsystem {
             mFlywheelMasterMotor = SpartronicsMax.makeMotor(/*Constants.Launcher.kFlywheelMasterID*/2, SensorModel.toRadians(1)/*, Constants.Launcher.kFlywheelFollowerID*/);//new SpartronicsMax(Constants.Launcher.kFlywheelMasterID,SensorModel.toRadians(1));
             mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
             //Two Servos for angle adjustement
-            mAngleAdjusterMasterMotor = new Servo(Constants.Launcher.kAngleAdjusterMasterID);
-            mAngleAdjusterFollowerMotor = new Servo(Constants.Launcher.kAngleAdjusterFollowerID);
+            mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterID);
+            mAngleAdjusterFollowerServo = new Servo(Constants.Launcher.kAngleAdjusterFollowerID);
             //One NEO 550 motor for turret
             mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretID,SensorModel.toRadians(360));
-            mTurretPotentiometer.setPIDSourceType(PIDSourceType.kDisplacement);
             turnTurret(0);
             mTurretPotentiometer = new AnalogPotentiometer(Constants.Launcher.kTurretPotentiometerID, 90, -45);
             setDefaultCommand(new LauncherDefaultCommand(this));
@@ -44,24 +44,12 @@ public class Launcher extends SpartronicsSubsystem {
         logInitialized(success);
     }
 
-    // Outline your API here by creating specific methods.
-    // Each method should perform a _singular action_
-    // - eg. instead of a setIntake method, control each intake motor individually
-    // setIntake functionality should be implemented in a command.
-
-
-
-
     /**
      * call this in execute() method of a command to have the motor constantly run at the target rpm
      */
     public void runFlywheel() {
         mFlywheelMasterMotor.setVelocity(targetRPM);
     }
-
-
-
-
 
     /**
      * Rotates turret to a specific angle relative to the home position
@@ -72,10 +60,6 @@ public class Launcher extends SpartronicsSubsystem {
         mTurretMotor.setPosition(absoluteAngle);
     }
 
-
-
-
-
     /**
      * Returns the current angle the turret is facing relative to straight ahead/home position
      * @return Current angle in degrees the turret is facing relative to the home position (forwards)
@@ -83,10 +67,6 @@ public class Launcher extends SpartronicsSubsystem {
     public double getTurretDirection() {
         return mTurretPotentiometer.get();
     }
-
-
-
-
 
     /**
      * Sets target angle to given angle
@@ -99,10 +79,6 @@ public class Launcher extends SpartronicsSubsystem {
         targetAngle=angle;
     }
 
-
-
-
-
     /**
      * Sets target rpm for flywheel to given rpm
      * @param rpm RPM you want the flywheel to target
@@ -110,10 +86,6 @@ public class Launcher extends SpartronicsSubsystem {
     public void setRPM(double rpm) {
         targetRPM=rpm;
     }
-
-
-
-
 
     /**
      * Returns current target angle of angle adjuster
@@ -123,10 +95,6 @@ public class Launcher extends SpartronicsSubsystem {
         return targetAngle;
     }
 
-
-
-
-
     /**
      * Returns current target RPM of shooter
      * @return RPM that the flywheel is targeting
@@ -134,24 +102,16 @@ public class Launcher extends SpartronicsSubsystem {
     public double getTargetRPM() {
         return targetRPM;
     }
-
-
-
-
-
+    
     /**
      * Returns current angle of angle adjuster
      * @return Current angle in degrees above horizontal of the angle adjuster
      */
     public double getCurrentPitch() {
         //NEED ENC OR POT
-        double pitch=mAngleAdjusterMotor.getPosition();
+        double pitch=mAngleAdjusterMasterServo.getPosition();
         return pitch;
     }
-
-
-
-
 
     /**
      * Returns current RPM of shooter
@@ -160,10 +120,6 @@ public class Launcher extends SpartronicsSubsystem {
     public double getCurrentRPM() {
         return mFlywheelEncoder.getVelocity();
     }
-
-
-
-
 
     /**
      * Computes and returns angle for angle adjuster based on input distance
@@ -175,10 +131,6 @@ public class Launcher extends SpartronicsSubsystem {
         return angle;
     }
 
-
-
-
-
     /**
      * Computes and returns RPM based on input distance
      * @param distance Horizontal distance in meters from the shooter to the target
@@ -189,10 +141,6 @@ public class Launcher extends SpartronicsSubsystem {
         return RPM;
     }
 
-
-
-
-
     /**
      * Returns whether or not the target is within the range that the turret can rotate to, used by driver
      * @return True if the target is within the turret's range of rotation, else false
@@ -201,10 +149,6 @@ public class Launcher extends SpartronicsSubsystem {
         boolean inRotationRange=true;
         return inRotationRange;
     }
-
-
-
-
 
     /**
      * Returns whether or not the target is within the range that the shooter can shoot, used by driver
@@ -215,18 +159,12 @@ public class Launcher extends SpartronicsSubsystem {
         return inRange;
     }
 
-
-
-
     /**
      * Reverses flywheel motors
      */
     public void reverse() {
 
     }
-
-
-
 
     /**
      * Resets shooter
