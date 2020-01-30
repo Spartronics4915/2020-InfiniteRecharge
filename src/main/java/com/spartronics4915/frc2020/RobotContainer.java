@@ -47,7 +47,6 @@ public class RobotContainer
 
     private Joystick mJoystick = new Joystick(Constants.OI.kJoystickId);
     private Joystick mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
-    private PanelRotator mPanelRotator;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
