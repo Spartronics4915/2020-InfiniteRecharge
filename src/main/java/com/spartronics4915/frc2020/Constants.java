@@ -26,6 +26,14 @@ public final class Constants
         public static final int kProxSensorId = -1;
     }
 
+    public static final class Intake
+    {
+        public static final int kHarvestMotorId = 12;
+        public static final int kIngestMotorId = 13;
+        public static final int kHarvestSpeed = 0.5;
+        public static final int kIngestSpeed = 0.5;
+    }
+
     public static final class Launcher
     {
         public static final int kFlywheelMasterID = 7;
