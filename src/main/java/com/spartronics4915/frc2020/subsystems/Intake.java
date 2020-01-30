@@ -1,7 +1,7 @@
 package com.spartronics4915.frc2020.subsystems;
 
-import com.spartronics4915.frc2020.Constants.Intake;
-import com.spartronics4915.lib.subsystem.SpartronicsSubsystem;
+import com.spartronics4915.frc2020.Constants;
+import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 
 import com.revrobotics.CANSparkMax;
