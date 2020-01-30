@@ -30,8 +30,8 @@ public final class Constants
     {
         public static final int kHarvestMotorId = 12;
         public static final int kIngestMotorId = 13;
-        public static final int kHarvestSpeed = 0.5;
-        public static final int kIngestSpeed = 0.5;
+        public static final double kHarvestSpeed = 0.5;
+        public static final double kIngestSpeed = 0.5;
     }
 
     public static final class Launcher
