@@ -1,6 +1,7 @@
 package com.spartronics4915.lib.hardware.motors;
 
-public class SensorModel {
+public class SensorModel
+{
     private final double mToCustomUnitsMultiplier;
 
     /**
@@ -10,7 +11,9 @@ public class SensorModel {
      * @param wheelDiameterMeters      The diameter of your wheel in meters.
      * @param nativeUnitsPerRevolution The number of native units per wheel revolution.
      */
-    public static SensorModel fromWheelDiameter(double wheelDiameterMeters, double nativeUnitsPerRevolution) {
+    public static SensorModel fromWheelDiameter(double wheelDiameterMeters,
+            double nativeUnitsPerRevolution)
+    {
         return new SensorModel((1 / nativeUnitsPerRevolution) * (wheelDiameterMeters * Math.PI));
     }
 
@@ -21,26 +24,36 @@ public class SensorModel {
      *                                           convert to related units, like custom 
      *                                           units/sec.
      */
-    public static SensorModel fromMultiplier(double nativeUnitsToCustomUnitsMultiplier) {
+    public static SensorModel fromMultiplier(double nativeUnitsToCustomUnitsMultiplier)
+    {
         return new SensorModel(nativeUnitsToCustomUnitsMultiplier);
     }
 
     /**
      * @param nativeUnitsPerRevolution The number of native units per wheel revolution.
      */
-    public static SensorModel toRadians(double nativeUnitsPerRevolution) {
+    public static SensorModel toRadians(double nativeUnitsPerRevolution)
+    {
         return new SensorModel((1 / nativeUnitsPerRevolution) * 2 * Math.PI);
     }
 
-    private SensorModel(double nativeUnitsToMetersMultiplier) {
+    public static SensorModel toDegrees(double nativeUnitsPerRevolution)
+    {
+        return new SensorModel(360 / nativeUnitsPerRevolution);
+    }
+
+    private SensorModel(double nativeUnitsToMetersMultiplier)
+    {
         mToCustomUnitsMultiplier = nativeUnitsToMetersMultiplier;
     }
 
-    public double toCustomUnits(double nativeUnits) {
+    public double toCustomUnits(double nativeUnits)
+    {
         return nativeUnits * mToCustomUnitsMultiplier;
     }
 
-    public double toNativeUnits(double meters) {
+    public double toNativeUnits(double meters)
+    {
         return meters / mToCustomUnitsMultiplier;
     }
 }
