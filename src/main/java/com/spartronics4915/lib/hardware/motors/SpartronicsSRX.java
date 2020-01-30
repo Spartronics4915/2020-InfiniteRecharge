@@ -20,9 +20,10 @@ public class SpartronicsSRX implements SpartronicsMotor {
     private static final double kMetersPer100msToMetersPerSecond = 10;
     private static final double kMetersPerSecondToMetersPer100ms = 1 / kMetersPer100msToMetersPerSecond;
 
-    private TalonSRX mTalonSRX;
-    private SpartronicsEncoder mEncoder;
-    private SensorModel mSensorModel;
+    private final TalonSRX mTalonSRX;
+    private final SpartronicsEncoder mEncoder;
+    private final SensorModel mSensorModel;
+    private final boolean mHadStartupError;
 
     private boolean mBrakeMode = false;
     /** Volts */
@@ -51,6 +52,11 @@ public class SpartronicsSRX implements SpartronicsMotor {
         public void setPhase(boolean isReversed) {
             mTalonSRX.setSensorPhase(isReversed);
         }
+
+        @Override
+        public void setPosition(double position) {
+            mTalonSRX.getSensorCollection().setQuadraturePosition((int) mSensorModel.toNativeUnits(position), 0);
+        }
     }
 
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel) {
@@ -77,10 +83,11 @@ public class SpartronicsSRX implements SpartronicsMotor {
         if (err != ErrorCode.OK) {
             Logger.error("TalonSRX on with ID " + mTalonSRX.getDeviceID()
                     + " returned a non-OK error code on sensor configuration... Is the encoder plugged in?");
-            mEncoder = SpartronicsEncoder.kDisconnectedEncoder;
+            mHadStartupError = true;
         } else {
-            mEncoder = new SpartronicsSRXEncoder();
+            mHadStartupError = false;
         }
+        mEncoder = new SpartronicsSRXEncoder();
 
         mTalonSRX.configFactoryDefault();
         mTalonSRX.configVoltageCompSaturation(mVoltageCompSaturation);
@@ -90,6 +97,11 @@ public class SpartronicsSRX implements SpartronicsMotor {
     @Override
     public SpartronicsEncoder getEncoder() {
         return mEncoder;
+    }
+
+    @Override
+    public boolean hadStartupError() {
+        return mHadStartupError;
     }
 
     @Override

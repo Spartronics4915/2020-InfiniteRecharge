@@ -5,36 +5,72 @@ import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.math.twodim.geometry.Translation2d;
 
 import edu.wpi.first.wpilibj.util.Units;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
-public final class Constants {
+import com.spartronics4915.lib.util.Logger;
 
-    public static final class Climber {
+public final class Constants
+{
+
+    public static final class Climber
+    {
         public static final int kLiftMotorId = 5;
         public static final int kWinchMotorId = 6;
         public static final double kExtendSpeed = 1.0;
         public static final double kWinchSpeed = 1.0;
         public static final boolean kStalled = true;
     }
-    
-    public static final class Indexer {
-        public static final int kSpinnerId = -1;
-        public static final int kLoaderId = -1;
-        public static final int kProxSensorId = -1;
-    }   
 
-    public static final class Launcher {
-        public static final int kFlywheelMasterID = -1;
-        public static final int kFlywheelFollowerID = -1;
-        public static final int kAngleAdjusterID = -1;
-        public static final int kTurretID = -1;
+    public static final class Indexer
+    {
+        public static final class Spinner
+        {
+            public static final int kMotorId = 10;
+            public static final double kVelocityP = 1;
+            public static final double kVelocityD = 1;
+            public static final double kPositionP = 1;
+            public static final double kPositionD = 1;
+            public static final double kConversionRatio = 1;
+        }
+
+        public static final class Loader
+        {
+            public static final int kMotor = 11;
+            public static final double kVelocityP = 1;
+            public static final double kVelocityD = 1;
+            public static final double kPositionP = 1;
+            public static final double kPositionD = 1;
+            public static final double kConversionRatio = 1;
+            public static final double kSpeed = 1;
+        }
+
+        public static final int kProxSensorId = 4; // DIO4 // Proximity Sensor (index slot one)
+        public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
+        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag
+                                                                  // is inverted
     }
 
-    public static final class OI {
-        public static final int kJoystickId = 0;
+    public static final class Launcher
+    {
+        public static final int kFlywheelMasterID = 7;
+        public static final int kFlywheelFollowerID = -1;
+        public static final int kAngleAdjusterMasterID = -1;
+        public static final int kAngleAdjusterFollowerID = -1;
+        public static final int kTurretID = 8;
+        public static final int kTurretPotentiometerID = 9;
+    }
+
+    public static final class OI
+    {
+        public static final int kJoystickId = 1;
         public static final int kButtonBoardId = 1;
     }
 
-    public static final class PanelRotator {
+    public static final class PanelRotator
+    {
         public static final int kBeamSensorUpID = -1;
         public static final int kBeamSensorDownID = -1;
 
@@ -45,7 +81,10 @@ public final class Constants {
         public static final double kSpinMotorSpeed = 0.5;
     }
 
-    public static final class Drive {
+    <<<<<<<HEAD
+
+    public static final class Drive
+    {
         public static final int kRightDriveMaster = 1;
         public static final int kRightDriveFollower = 2;
         public static final int kLeftDriveMaster = 3;
@@ -53,35 +92,84 @@ public final class Constants {
 
         public static final double kWheelDiameter = Units.inchesToMeters(8);
         public static final double kTrackWidthMeters = 1;
-        public static final double kScrubFactor = 1; //TODO: characterize
-        public static final int kNativeUnitsPerRevolution = 1; //TODO: get ratio
+        public static final double kScrubFactor = 1; // TODO: characterize
+        public static final int kNativeUnitsPerRevolution = 1; // TODO: get ratio
 
         public static final double kRobotMassKg = 1;
         public static final double kMoi = 1;
 
-        //TODO: characterize
+        // TODO: characterize
         public static final double kRightS = 1;
         public static final double kRightV = 1;
         public static final double kRightA = 1;
-        
+
         public static final double kLeftS = 1;
         public static final double kLeftV = 1;
         public static final double kLeftA = 1;
     }
 
-    public static final class Trajectory {
+    public static final class Trajectory
+    {
         public static final double kStartVelocityMetersPerSec = 0;
         public static final double kEndVelocityMetersPerSec = 0;
         public static final double kMaxVelocityMetersPerSec = 12;
         public static final double kMaxAccelerationMeterPerSecSq = 1;
 
-        public static final Pose2d kStartPointLeft = new Pose2d(0, 0, Rotation2d.fromDegrees(0)); //TODO: get world coordinates for start point left
-        public static final Pose2d kStartPointMiddle = new Pose2d(50, 0, Rotation2d.fromDegrees(0)); //TODO: get world coordinates for start point middle
-        public static final Pose2d kStartPointRight = new Pose2d(100, 0, Rotation2d.fromDegrees(0)); //TODO: get world coordinates for start point right
+        public static final Pose2d kStartPointLeft = new Pose2d(0, 0, Rotation2d.fromDegrees(0)); // TODO:
+                                                                                                  // get
+                                                                                                  // world
+                                                                                                  // coordinates
+                                                                                                  // for
+                                                                                                  // start
+                                                                                                  // point
+                                                                                                  // left
+        public static final Pose2d kStartPointMiddle = new Pose2d(50, 0, Rotation2d.fromDegrees(0)); // TODO:
+                                                                                                     // get
+                                                                                                     // world
+                                                                                                     // coordinates
+                                                                                                     // for
+                                                                                                     // start
+                                                                                                     // point
+                                                                                                     // middle
+        public static final Pose2d kStartPointRight = new Pose2d(100, 0, Rotation2d.fromDegrees(0)); // TODO:
+                                                                                                     // get
+                                                                                                     // world
+                                                                                                     // coordinates
+                                                                                                     // for
+                                                                                                     // start
+                                                                                                     // point
+                                                                                                     // right
     }
 
-    public static final class Estimator {
+    public static final class Estimator
+    {
         public static final Pose2d kCameraOffset = new Pose2d();
-        public static final double kMeasurementCovariance = 1;
+        public static final double kMeasurementCovariance = 1;=======
+        // Initialize blank fields that are robot-specific here
+    static
+    {
+        String config = "default";
+        Path machineIDPath = FileSystems.getDefault().getPath(System.getProperty("user.home"),
+                "machineid");
+        try
+        {
+            config = Files.readString(machineIDPath).trim().toLowerCase();
+        }
+        catch (IOException e)
+        {
+        }
+        Logger.notice("Running on " + config + " constants");
+
+        switch (config)
+        {
+            case "test chassis":
+                // Put constants here
+                break;
+            case "default":
+            case "real robot":
+                // Or here
+                break;
+        }
+>>>>>>> 16ba501a2224c13b25728cf22c463f2d466cca7a
     }
 }
