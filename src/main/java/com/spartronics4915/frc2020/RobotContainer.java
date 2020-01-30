@@ -3,7 +3,11 @@ package com.spartronics4915.frc2020;
 import java.util.Set;
 
 import com.spartronics4915.frc2020.commands.*;
+import com.spartronics4915.frc2020.subsystems.Drive;
 import com.spartronics4915.frc2020.subsystems.Launcher;
+import com.spartronics4915.lib.hardware.sensors.T265Camera;
+import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
+import com.spartronics4915.lib.util.Kinematics;
 import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -39,6 +43,9 @@ public class RobotContainer {
     private Joystick mJoystick = new Joystick(Constants.OI.kJoystickId);
     private Joystick mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
 
+    private final Drive mDrive;
+    private final RobotStateEstimator mStateEstimator;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -46,6 +53,17 @@ public class RobotContainer {
         configureJoystickBindings();
         configureButtonBoardBindings();
         mAutoModes = new AutoMode[] {kDefaultAutoMode,};
+
+        mDrive = new Drive();
+        mStateEstimator = new RobotStateEstimator(
+            mDrive, 
+            new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor), 
+            new T265Camera(
+                Constants.Estimator.kCameraOffset,
+                Constants.Estimator.kMeasurementCovariance
+            )
+        );
+        
     }
 
     private void configureJoystickBindings() {
