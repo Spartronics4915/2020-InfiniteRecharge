@@ -3,8 +3,7 @@ package com.spartronics4915.frc2020;
 import java.util.Set;
 
 import com.spartronics4915.frc2020.commands.*;
-import com.spartronics4915.frc2020.subsystems.Climber;
-import com.spartronics4915.frc2020.subsystems.Launcher;
+import com.spartronics4915.frc2020.subsystems.*;
 import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -43,23 +42,23 @@ public class RobotContainer
 
     public final AutoMode[] mAutoModes;
 
-    private Joystick mJoystick = new Joystick(Constants.OI.kJoystickId);
-    private Joystick mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
     private Climber mClimber;
     private ClimberCommands mClimberCommands;
+
+    private Joystick mJoystick = new Joystick(Constants.OI.kJoystickId);
+    private Joystick mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer()
     {
-        configureJoystickBindings();
-        configureButtonBoardBindings();
-        mAutoModes = new AutoMode[]
-        {kDefaultAutoMode,};
         mClimber = new Climber();
         mClimberCommands = new ClimberCommands(mClimber);
 
+        configureJoystickBindings();
+        configureButtonBoardBindings();
+        mAutoModes = new AutoMode[] {kDefaultAutoMode};
     }
 
     private void configureJoystickBindings()
@@ -75,8 +74,6 @@ public class RobotContainer
         new JoystickButton(mJoystick, 10).whenPressed();
         new JoystickButton(mJoystick, 11).whenPressed();
         */
-        new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(new Launcher()));
-        new JoystickButton(mJoystick, 2).whileHeld(mClimberCommands.new Extend());
     }
 
     private void configureButtonBoardBindings()
@@ -108,8 +105,7 @@ public class RobotContainer
      */
     public Command getAutonomousCommand()
     {
-        String selectedModeName = SmartDashboard.getString(kSelectedAutoModeKey,
-                "NO SELECTED MODE!!!!");
+        String selectedModeName = SmartDashboard.getString(kSelectedAutoModeKey, "NO SELECTED MODE!!!!");
         Logger.notice("Auto mode name " + selectedModeName);
         for (var mode : mAutoModes)
         {
