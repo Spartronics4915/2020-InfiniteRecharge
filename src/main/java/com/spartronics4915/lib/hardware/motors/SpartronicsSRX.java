@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.spartronics4915.lib.util.Logger;
 
+import edu.wpi.first.wpilibj.RobotBase;
+
 public class SpartronicsSRX implements SpartronicsMotor {
 
     private static final int kVelocitySlotIdx = 0;
@@ -18,9 +20,10 @@ public class SpartronicsSRX implements SpartronicsMotor {
     private static final double kMetersPer100msToMetersPerSecond = 10;
     private static final double kMetersPerSecondToMetersPer100ms = 1 / kMetersPer100msToMetersPerSecond;
 
-    private TalonSRX mTalonSRX;
-    private SpartronicsEncoder mEncoder;
-    private SensorModel mSensorModel;
+    private final TalonSRX mTalonSRX;
+    private final SpartronicsEncoder mEncoder;
+    private final SensorModel mSensorModel;
+    private final boolean mHadStartupError;
 
     private boolean mBrakeMode = false;
     /** Volts */
@@ -51,11 +54,23 @@ public class SpartronicsSRX implements SpartronicsMotor {
         }
     }
 
-    public SpartronicsSRX(int deviceNumber, SensorModel sensorModel) {
-        this(new TalonSRX(deviceNumber), sensorModel);
+    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel) {
+        if (RobotBase.isSimulation()) {
+            return new SpartronicsSimulatedMotor();
+        }
+        return new SpartronicsSRX(new TalonSRX(deviceNumber), sensorModel);
     }
 
-    public SpartronicsSRX(TalonSRX talon, SensorModel sensorModel) {
+    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel, int followerDeviceNumber) {
+        if (RobotBase.isSimulation()) {
+            return new SpartronicsSimulatedMotor();
+        }
+        var master = new TalonSRX(deviceNumber);
+        new TalonSRX(followerDeviceNumber).follow(master);
+        return new SpartronicsSRX(master, sensorModel);
+    }
+
+    private SpartronicsSRX(TalonSRX talon, SensorModel sensorModel) {
         mTalonSRX = talon;
         mSensorModel = sensorModel;
 
@@ -63,10 +78,11 @@ public class SpartronicsSRX implements SpartronicsMotor {
         if (err != ErrorCode.OK) {
             Logger.error("TalonSRX on with ID " + mTalonSRX.getDeviceID()
                     + " returned a non-OK error code on sensor configuration... Is the encoder plugged in?");
-            mEncoder = SpartronicsEncoder.kDisconnectedEncoder;
+            mHadStartupError = true;
         } else {
-            mEncoder = new SpartronicsSRXEncoder();
+            mHadStartupError = false;
         }
+        mEncoder = new SpartronicsSRXEncoder();
 
         mTalonSRX.configFactoryDefault();
         mTalonSRX.configVoltageCompSaturation(mVoltageCompSaturation);
@@ -76,6 +92,11 @@ public class SpartronicsSRX implements SpartronicsMotor {
     @Override
     public SpartronicsEncoder getEncoder() {
         return mEncoder;
+    }
+
+    @Override
+    public boolean hadStartupError() {
+        return mHadStartupError;
     }
 
     @Override
@@ -204,10 +225,6 @@ public class SpartronicsSRX implements SpartronicsMotor {
         mTalonSRX.config_kI(kPositionSlotIdx, kI);
         mTalonSRX.config_kD(kPositionSlotIdx, kD);
         mTalonSRX.config_kF(kPositionSlotIdx, kF);
-    }
-
-    public void follow(SpartronicsSRX other) {
-        mTalonSRX.follow(other.mTalonSRX);
     }
 
     @Override

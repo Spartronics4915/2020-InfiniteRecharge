@@ -2,6 +2,7 @@ package com.spartronics4915.lib.subsystems;
 
 import com.spartronics4915.lib.util.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -57,8 +58,7 @@ public abstract class SpartronicsSubsystem extends SubsystemBase
             this.logNotice("init SUCCEEDED");
         else
             this.logWarning("init FAILED");
-        SmartDashboard.putString(this.mName + "/Status", 
-                                this.mInitialized ? "OK" : "ERROR");
+        SmartDashboard.putString(this.mName + "/Status", this.mInitialized ? "OK" : "ERROR");
     }
 
     public void dashboardPutString(String nm, String value)
@@ -91,7 +91,7 @@ public abstract class SpartronicsSubsystem extends SubsystemBase
         return SmartDashboard.getBoolean(this.mName + "/" + nm, defValue);
     }
 
-    // log methods are for conventionalizing format across subsystems 
+    // log methods are for conventionalizing format across subsystems
     public void logException(String msg, Throwable e)
     {
         Logger.logThrowableCrash(this.getClassName() + " " + msg, e);
@@ -127,11 +127,13 @@ public abstract class SpartronicsSubsystem extends SubsystemBase
     }
 
     @Override
-    public void periodic() 
+    public void periodic()
     {
+        Command currentCommand = CommandScheduler.getInstance().requiring(this);
+
         // this.mName/currentCommand contains the current command for
         // a subsystem.
-        dashboardPutString("currentCommand", 
-                CommandScheduler.getInstance().requiring(this).getName());
+        dashboardPutString("currentCommand",
+                currentCommand != null ? currentCommand.getName() : "none");
     }
 }
