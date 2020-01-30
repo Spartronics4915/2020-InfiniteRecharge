@@ -164,7 +164,7 @@ public class PanelRotator extends SpartronicsSubsystem
     }
 
     /** stops the two motors */
-    public void stop()
+    public void stop(boolean interrupted)
     {
         mSpinMotor.set(0);
         mExtendMotor.set(0);

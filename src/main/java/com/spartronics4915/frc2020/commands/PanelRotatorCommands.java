@@ -21,18 +21,18 @@ public class PanelRotatorCommands
      */
     public class Raise extends FunctionalCommand
     {
-        public Raise(PanelRotator mPanelRotator)
+        public Raise()
         {
-            super(() -> {}, mPanelRotator::raise, (Boolean b) -> mPanelRotator.stop(),
+            super(() -> {}, mPanelRotator::raise, mPanelRotator::stop,
                 mPanelRotator::getBeamSensorUp, mPanelRotator);
         }
     }
 
     public class Lower extends FunctionalCommand
     {
-        public Lower(PanelRotator mPanelRotator)
+        public Lower()
         {
-            super(() -> {}, mPanelRotator::lower, (Boolean b) -> mPanelRotator.stop(),
+            super(() -> {}, mPanelRotator::lower, mPanelRotator::stop,
                 mPanelRotator::getBeamSensorDown, mPanelRotator);
         }
     }
@@ -74,7 +74,7 @@ public class PanelRotatorCommands
         @Override
         public void end(boolean interrupted)
         {
-            mPanelRotator.stop();
+            mPanelRotator.stop(interrupted);
         }
     }
 
@@ -130,7 +130,7 @@ public class PanelRotatorCommands
         @Override
         public void end(boolean interrupted)
         {
-            mPanelRotator.stop();
+            mPanelRotator.stop(interrupted);
         }
     }
 }
