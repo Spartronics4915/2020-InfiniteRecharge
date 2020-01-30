@@ -38,7 +38,7 @@ public class Intake extends SpartronicsSubsystem
     **/
     public void ingestIntake() 
     {
-        mIngestMotor.set(Constants.Intake.kIntakeSpeed);
+        mIngestMotor.set(Constants.Intake.kIngestSpeed);
     }
 
     /** reverses vector wheels **/
