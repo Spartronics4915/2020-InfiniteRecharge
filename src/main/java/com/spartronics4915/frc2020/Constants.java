@@ -1,22 +1,26 @@
 package com.spartronics4915.frc2020;
 
-public final class Constants {
+public final class Constants
+{
 
-    public static final class Climber {
+    public static final class Climber
+    {
         public static final int kLiftMotorId = 5;
         public static final int kWinchMotorId = 6;
         public static final double kExtendSpeed = 1.0;
         public static final double kWinchSpeed = 1.0;
         public static final boolean kStalled = true;
     }
-    
-    public static final class Indexer {
+
+    public static final class Indexer
+    {
         public static final int kSpinnerId = -1;
         public static final int kLoaderId = -1;
         public static final int kProxSensorId = -1;
-    }   
+    }
 
-    public static final class Launcher {
+    public static final class Launcher
+    {
         public static final int kFlywheelMasterID = 7;
         public static final int kFlywheelFollowerID = -1;
         public static final int kAngleAdjusterMasterID = -1;
@@ -25,12 +29,14 @@ public final class Constants {
         public static final int kTurretPotentiometerID = 9;
     }
 
-    public static final class OI {
+    public static final class OI
+    {
         public static final int kJoystickId = 1;
         public static final int kButtonBoardId = 1;
     }
 
-    public static final class PanelRotator {
+    public static final class PanelRotator
+    {
         public static final int kBeamSensorUpID = -1;
         public static final int kBeamSensorDownID = -1;
 
