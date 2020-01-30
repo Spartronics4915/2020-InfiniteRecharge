@@ -6,6 +6,11 @@ package com.spartronics4915.lib.hardware.motors;
 // TODO: Keep track of motor state
 public class SpartronicsSimulatedMotor implements SpartronicsMotor
 {
+    private double mMotionProfileMaxAcceleration = 0;
+    private boolean mOutputInverted = false;
+    private boolean mBrakeMode = false;
+    private double mVoltageCompSaturation = 0;
+    private double mMotionProfileCruiseVelocity = 0;
 
     @Override
     public SpartronicsEncoder getEncoder()
@@ -60,61 +65,61 @@ public class SpartronicsSimulatedMotor implements SpartronicsMotor
     @Override
     public boolean getOutputInverted()
     {
-        return false;
+        return mOutputInverted;
     }
 
     @Override
     public void setOutputInverted(boolean inverted)
     {
-
+        mOutputInverted = inverted;
     }
 
     @Override
     public boolean getBrakeMode()
     {
-        return false;
+        return mBrakeMode;
     }
 
     @Override
     public void setBrakeMode(boolean mode)
     {
-
+        mBrakeMode = mode;
     }
 
     @Override
     public double getVoltageCompSaturation()
     {
-        return 0;
+        return mVoltageCompSaturation;
     }
 
     @Override
     public void setVoltageCompSaturation(double voltage)
     {
-
+        mVoltageCompSaturation = voltage;
     }
 
     @Override
     public double getMotionProfileCruiseVelocity()
     {
-        return 0;
+        return mMotionProfileCruiseVelocity;
     }
 
     @Override
     public void setMotionProfileCruiseVelocity(double velocityMetersPerSecond)
     {
-
+        mMotionProfileCruiseVelocity = velocityMetersPerSecond;
     }
 
     @Override
     public double getMotionProfileMaxAcceleration()
     {
-        return 0;
+        return mMotionProfileMaxAcceleration;
     }
 
     @Override
     public void setMotionProfileMaxAcceleration(double accelerationMetersSecSq)
     {
-
+        mMotionProfileMaxAcceleration = accelerationMetersSecSq;
     }
 
     @Override

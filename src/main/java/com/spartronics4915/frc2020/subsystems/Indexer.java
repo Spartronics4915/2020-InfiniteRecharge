@@ -3,6 +3,7 @@ package com.spartronics4915.frc2020.subsystems;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
+import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -14,8 +15,8 @@ public class Indexer extends SpartronicsSubsystem
 {
     private double targetPosition = 0;
 
-    private SpartronicsMax mSpinner; // Spins indexer.
-    private SpartronicsSRX mLoader; // Loads ball into shooter
+    private SpartronicsMotor mSpinner; // Spins indexer.
+    private SpartronicsMotor mLoader; // Loads ball into shooter
 
     private SensorModel mSpinnerModel;
     private SensorModel mLoaderModel;
@@ -29,7 +30,7 @@ public class Indexer extends SpartronicsSubsystem
     {
         // Set up Spinner
         mSpinnerModel = SensorModel.fromMultiplier(Constants.Indexer.Spinner.kConversionRatio);
-        mSpinner = new SpartronicsMax(Constants.Indexer.Spinner.kMotorId, mSpinnerModel);
+        mSpinner = SpartronicsMax.makeMotor(Constants.Indexer.Spinner.kMotorId, mSpinnerModel);
         // Set up gains
         mSpinner.setVelocityGains(Constants.Indexer.Spinner.kVelocityP,
                 Constants.Indexer.Spinner.kVelocityD);
@@ -38,7 +39,7 @@ public class Indexer extends SpartronicsSubsystem
 
         // Set up Loader
         mLoaderModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);
-        mLoader = new SpartronicsSRX(Constants.Indexer.Loader.kMotor, mLoaderModel);
+        mLoader = SpartronicsSRX.makeMotor(Constants.Indexer.Loader.kMotor, mLoaderModel);
         // Set up gains
         mLoader.setVelocityGains(Constants.Indexer.Loader.kVelocityP,
                 Constants.Indexer.Loader.kVelocityD);
