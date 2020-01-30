@@ -1,13 +1,7 @@
 package com.spartronics4915.lib.hardware.motors;
 
-<<<<<<< HEAD
 public interface SpartronicsEncoder
 {
-=======
-import com.spartronics4915.lib.util.Logger;
-
-public interface SpartronicsEncoder {
->>>>>>> 1c015490772d15780e2e59b00e44b886fac47e35
 
     /**
      * @return Velocity in custom units/second.
