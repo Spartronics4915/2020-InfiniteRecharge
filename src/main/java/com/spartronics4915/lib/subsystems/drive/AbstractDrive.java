@@ -1,6 +1,7 @@
 package com.spartronics4915.lib.subsystems.drive;
 
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.hardware.sensors.SpartronicsIMU;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.math.twodim.physics.DifferentialDrive;
@@ -25,9 +26,25 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
         DifferentialDrive differentialDrive
     )
     {
-        mLeftMotor = leftMotor;
-        mRightMotor = rightMotor;
-        mIMU = imu;
+        if (leftMotor.hadStartupError() || rightMotor.hadStartupError()) {
+            mLeftMotor = new SpartronicsSimulatedMotor();
+            mRightMotor = new SpartronicsSimulatedMotor();
+            mIMU = new SpartronicsIMU() {
+                @Override
+                public Rotation2d getYaw() {
+                    return new Rotation2d();
+                }
+            };
+
+            logInitialized(false);
+        } else {
+            mLeftMotor = leftMotor;
+            mRightMotor = rightMotor;
+            mIMU = imu;
+
+            logInitialized(true);
+        }
+
         mDifferentialDrive = differentialDrive;
     }
 
