@@ -1,12 +1,12 @@
 // I'm bad at naming things. Please come up with a better name...
 package com.spartronics4915.frc2020.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.spartronics4915.frc2020.Constants;
+import com.spartronics4915.lib.hardware.motors.SensorModel;
+import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
+import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 public class PanelRotator extends SpartronicsSubsystem
 {
-    private final CANSparkMax mSpinMotor;
-    private final TalonSRX mExtendMotor;
+    private final SpartronicsMotor mSpinMotor;
+    private final SpartronicsMotor mExtendMotor;
 
     private final DigitalInput mBeamSensorUp;
     private final DigitalInput mBeamSensorDown;
@@ -61,27 +61,32 @@ public class PanelRotator extends SpartronicsSubsystem
     {
         mBeamSensorUp = new DigitalInput(Constants.PanelRotator.kBeamSensorUpID);
         mBeamSensorDown = new DigitalInput(Constants.PanelRotator.kBeamSensorDownID);
-        mSpinMotor = new CANSparkMax(Constants.PanelRotator.kSpinMotorID, MotorType.kBrushless);
-        mExtendMotor = new TalonSRX(Constants.PanelRotator.kExtendMotorID);
+        mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorID,
+                SensorModel.fromMultiplier(1));
+        mExtendMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kExtendMotorID,
+                SensorModel.fromMultiplier(1));
+        // mSpinMotor = new CANSparkMax(Constants.PanelRotator.kSpinMotorID,
+        // MotorType.kBrushless);
+        // mExtendMotor = new TalonSRX(Constants.PanelRotator.kExtendMotorID);
         mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     }
 
     /** raises the arm holding the spinner at a set speed*/
     public void raise()
     {
-        mExtendMotor.set(ControlMode.PercentOutput, Constants.PanelRotator.kExtendMotorSpeed);
+        mExtendMotor.setDutyCycle(Constants.PanelRotator.kExtendMotorPercentOutput);
     }
 
     /** lowers the arm holding the spinner at a set speed*/
     public void lower()
     {
-        mExtendMotor.set(ControlMode.PercentOutput, -Constants.PanelRotator.kExtendMotorSpeed);
+        mExtendMotor.setDutyCycle(-Constants.PanelRotator.kExtendMotorPercentOutput);
     }
 
     /** stops the extension motor */
     public void stopExtendMotor()
     {
-        mExtendMotor.set(ControlMode.PercentOutput, 0);
+        mExtendMotor.setDutyCycle(0);
     }
 
     /** gets the color (Red, Blue, Yellow, or Green) through game specific messages that the robot needs to spin to */
@@ -160,7 +165,7 @@ public class PanelRotator extends SpartronicsSubsystem
     /** spins the wheel to move the control panel */
     public void spin()
     {
-        mSpinMotor.set(Constants.PanelRotator.kSpinMotorSpeed);
+        mSpinMotor.setDutyCycle(Constants.PanelRotator.kSpinMotorSpeed);
     }
 
     /** get the number of times that the spinning */
@@ -172,13 +177,13 @@ public class PanelRotator extends SpartronicsSubsystem
     /** stops the wheel */
     public void stopSpin()
     {
-        mSpinMotor.set(0);
+        mSpinMotor.setDutyCycle(0);
     }
 
     /** stops the two motors */
     public void stop()
     {
-        mSpinMotor.set(0);
-        mExtendMotor.set(ControlMode.PercentOutput, 0);
+        mSpinMotor.setDutyCycle(0);
+        mExtendMotor.setDutyCycle(0);
     }
 }
