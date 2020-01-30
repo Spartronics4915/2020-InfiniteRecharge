@@ -44,6 +44,6 @@ public class ZeroSpinnerCommand extends CommandBase
     {
         mIndexer.setZero();
         mIndexer.stopSpinner();
-        mIndexer.returnSpin();
+        mIndexer.returnToHome();
     }
 }

@@ -53,11 +53,6 @@ public class Indexer extends SpartronicsSubsystem
         mProxSensor = new DigitalInput(Constants.Indexer.kProxSensorId);
     }
 
-    // Outline your API here by creating specific methods.
-    // Each method should perform a _singular action_
-    // - eg. instead of a setIntake method, control each intake motor individually
-    // setIntake functionality should be implemented in a command.
-
     /**
      * 
      * @return Whether or not the optical flag is triggered.
@@ -106,7 +101,7 @@ public class Indexer extends SpartronicsSubsystem
     /**
      * Returns spinner to "0" position on the encoder
      */
-    public void returnSpin()
+    public void returnToHome()
     {
         targetPosition = 0;
         mSpinner.setPosition(targetPosition);
@@ -115,7 +110,7 @@ public class Indexer extends SpartronicsSubsystem
     /**
      * Move spinner to nearest position
      */
-    public void endSpinner()
+    public void toNearestQuarterRotation()
     {
         // Rotates to nearest quarter rotation
         targetPosition = Math.ceil(mSpinner.getEncoder().getPosition() * 4) / 4;
@@ -125,7 +120,7 @@ public class Indexer extends SpartronicsSubsystem
     /**
      * Start loading balls into the shooter
      */
-    public void load()
+    public void launch()
     { // Loads balls into shooter
         mIsLaunching = true;
         mLoader.setVelocity(Constants.Indexer.Loader.kSpeed);
@@ -144,12 +139,10 @@ public class Indexer extends SpartronicsSubsystem
      * 
      * @return whether or not the loader motor is running
      */
-    public boolean getLaunching()
+    public boolean isLaunching()
     {
         return mIsLaunching;
     }
-
-    // The exception to this is a general-functionality stop() method.
 
     /**
      * Stop all motors
