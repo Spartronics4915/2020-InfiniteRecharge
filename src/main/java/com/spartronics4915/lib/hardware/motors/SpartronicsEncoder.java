@@ -2,28 +2,34 @@ package com.spartronics4915.lib.hardware.motors;
 
 import com.spartronics4915.lib.util.Logger;
 
-public interface SpartronicsEncoder {
-    
-    public final SpartronicsEncoder kDisconnectedEncoder = new SpartronicsEncoder() {
+public interface SpartronicsEncoder
+{
+
+    public final SpartronicsEncoder kDisconnectedEncoder = new SpartronicsEncoder()
+    {
 
         @Override
-        public void setPhase(boolean isReversed) {
+        public void setPhase(boolean isReversed)
+        {
             Logger.error("Couldn't set the phase of a disconnected encoder");
         }
 
         @Override
-        public double getVelocity() {
+        public double getVelocity()
+        {
             return 0;
         }
 
         @Override
-        public double getPosition() {
+        public double getPosition()
+        {
             return 0;
         }
 
         @Override
-        public void setPosition(double position) {
-            Logger.error("Couldn't set the phase of a disconnected encoder");
+        public void setPosition(double position)
+        {
+            Logger.error("Couldn't set the position of a disconnected encoder");
         }
     };
 
