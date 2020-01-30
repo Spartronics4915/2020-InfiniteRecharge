@@ -21,9 +21,31 @@ public final class Constants
 
     public static final class Indexer
     {
-        public static final int kSpinnerId = -1;
-        public static final int kLoaderId = -1;
-        public static final int kProxSensorId = -1;
+        public static final class Spinner
+        {
+            public static final int kMotorId = 10;
+            public static final double kVelocityP = 1;
+            public static final double kVelocityD = 1;
+            public static final double kPositionP = 1;
+            public static final double kPositionD = 1;
+            public static final double kConversionRatio = 1;
+        }
+
+        public static final class Loader
+        {
+            public static final int kMotor = 11;
+            public static final double kVelocityP = 1;
+            public static final double kVelocityD = 1;
+            public static final double kPositionP = 1;
+            public static final double kPositionD = 1;
+            public static final double kConversionRatio = 1;
+            public static final double kSpeed = 1;
+        }
+
+        public static final int kProxSensorId = 4; // DIO4 // Proximity Sensor (index slot one)
+        public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
+        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag
+                                                                  // is inverted
     }
 
     public static final class Launcher
