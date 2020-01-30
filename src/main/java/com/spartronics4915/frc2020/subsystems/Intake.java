@@ -29,50 +29,50 @@ import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
  */
 public class Intake extends SpartronicsSubsystem 
 {
-    private CANSparkMax mIntakeMotor1;
-    private CANSparkMax mIntakeMotor2;
+    private CANSparkMax mHarvest;
+    private CANSparkMax mIngest;
 
     /** constructor **/
     public Intake()
     {
-        mIntakeMotor1 = new CANSparkMax(12, MotorType.kBrushless);
-        mIntakeMotor2 = new CANSparkMax(13, MotorType.kBrushless);
+        mHarvest = new CANSparkMax(12, MotorType.kBrushless);
+        mIngest = new CANSparkMax(13, MotorType.kBrushless);
     }
 
     /** starts vector wheels **/
     public void harvestIntake() 
     {
-        mIntakeMotor1.set(0.5);
+        mHarvest.set(0.5);
     }
 
     /** starts prism roller **/
     public void ingestIntake() 
     {
-        mIntakeMotor2.set(0.5);
+        mIngest.set(0.5);
     }
 
     /** reverses vector wheels **/
     public void harvestReverse() 
     {
-        mIntakeMotor1.set(-0.5);
+        mHarvest.set(-0.5);
     }
 
     /** reverses prism roller **/
     public void ingestReverse() 
     {
-        mIntakeMotor2.set(-0.5);
+        mIngest.set(-0.5);
     }
 
     /** stops vector wheels **/
     public void harvestStop() 
     {
-        mIntakeMotor1.set(0.0);
+        mHarvest.set(0.0);
     }
 
     /** stops prism roller **/
     public void ingestStop() 
     {
-        mIntakeMotor2.set(0.0);
+        mIngest.set(0.0);
     }
 
     /** checks to see if ball is held in intake chamber **/
@@ -84,7 +84,7 @@ public class Intake extends SpartronicsSubsystem
     /** universal stop method **/
     public void stop()
     {
-        mIntakeMotor1.set(0.0);
-        mIntakeMotor2.set(0.0);
+        mHarvest.set(0.0);
+        mIngest.set(0.0);
     }
 }
