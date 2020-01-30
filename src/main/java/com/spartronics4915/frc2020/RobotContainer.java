@@ -45,6 +45,8 @@ public class RobotContainer
 
     private Joystick mJoystick = new Joystick(Constants.OI.kJoystickId);
     private Joystick mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
+    private Climber mClimber;
+    private ClimberCommands mClimberCommands;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -55,6 +57,9 @@ public class RobotContainer
         configureButtonBoardBindings();
         mAutoModes = new AutoMode[]
         {kDefaultAutoMode,};
+        mClimber = new Climber();
+        mClimberCommands = new ClimberCommands(mClimber);
+
     }
 
     private void configureJoystickBindings()
@@ -71,6 +76,7 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed();
         */
         new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(new Launcher()));
+        new JoystickButton(mJoystick, 2).whileHeld(mClimberCommands.new Extend());
     }
 
     private void configureButtonBoardBindings()

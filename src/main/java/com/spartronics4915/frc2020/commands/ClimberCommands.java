@@ -13,23 +13,16 @@ public class ClimberCommands
 {
     private Climber mClimber;
 
-    ClimberCommands(Climber Climber)
+    public ClimberCommands(Climber Climber)
     {
         mClimber = Climber;
     }
 
-    public class Raise extends StartEndCommand
+    public class Extend extends StartEndCommand
     {
-        public Raise(Climber c)
+        public Extend()
         {
-            super(() ->
-            {
-                c.extend();
-            }, () ->
-            {
-                c.stop();
-            }, c);
-
+            super(mClimber::extend, mClimber::stop, mClimber);
         }
 
     }
