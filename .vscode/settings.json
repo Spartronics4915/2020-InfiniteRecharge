@@ -12,6 +12,6 @@
         "bin/": true,
         "**/.classpath": true,
         "**/.project": true,
-        "**/.factorypath": true,
+        "**/.factorypath": true
     }
 }
