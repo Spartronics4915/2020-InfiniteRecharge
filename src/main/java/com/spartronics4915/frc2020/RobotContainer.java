@@ -15,13 +15,16 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-public class RobotContainer {
+public class RobotContainer
+{
 
-    private static class AutoMode {
+    private static class AutoMode
+    {
         public final String name;
         public final Command command;
 
-        public AutoMode(String name, Command command) {
+        public AutoMode(String name, Command command)
+        {
             this.name = name;
             this.command = command;
         }
@@ -29,9 +32,11 @@ public class RobotContainer {
 
     public static final String kAutoOptionsKey = "AutoStrategyOptions";
     public static final String kSelectedAutoModeKey = "AutoStrategy";
-    public static final AutoMode kDefaultAutoMode = new AutoMode("All: Do Nothing", new Command() {
+    public static final AutoMode kDefaultAutoMode = new AutoMode("All: Do Nothing", new Command()
+    {
         @Override
-        public Set<Subsystem> getRequirements() {
+        public Set<Subsystem> getRequirements()
+        {
             return null;
         }
     });
@@ -45,29 +50,33 @@ public class RobotContainer {
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
-    public RobotContainer() {
-        mPanelRotator = new PanelRotator();
+    public RobotContainer()
+    {
         configureJoystickBindings();
         configureButtonBoardBindings();
-        mAutoModes = new AutoMode[] {kDefaultAutoMode,};
+        mAutoModes = new AutoMode[]
+        {kDefaultAutoMode,};
     }
 
-    private void configureJoystickBindings() {
+    private void configureJoystickBindings()
+    {
         /*
-        // new JoystickButton(mJoystick, 1).whileHeld(); // Slow the robot
+        new JoystickButton(mJoystick, 1).whileHeld(); // Slow the robot
         new JoystickButton(mJoystick, 2).whenHeld(new TurretRaiseCommand());
         new JoystickButton(mJoystick, 3).whenHeld(new TurretLowerCommand());
         new JoystickButton(mJoystick, 4).whenHeld(new TurretLeftCommand());
         new JoystickButton(mJoystick, 5).whenHeld(new TurretRightCommand());
-        // new JoystickButton(mJoystick, 6).whenPressed(); // Switch Camera views
-        // new JoystickButton(mJoystick, 7).whenPressed();
-        // new JoystickButton(mJoystick, 10).whenPressed();
-        // new JoystickButton(mJoystick, 11).whenPressed();
+        new JoystickButton(mJoystick, 6).whenPressed(); // Switch Camera views
+        new JoystickButton(mJoystick, 7).whenPressed();
+        new JoystickButton(mJoystick, 10).whenPressed();
+        new JoystickButton(mJoystick, 11).whenPressed();
         */
-        new JoystickButton(mJoystick, 1).whenPressed(new InstantCommand(mPanelRotator::getActualColor, mPanelRotator));
+        new JoystickButton(mJoystick, 1)
+                .whenPressed(new InstantCommand(mPanelRotator::getActualColor, mPanelRotator));
     }
 
-    private void configureButtonBoardBindings() {
+    private void configureButtonBoardBindings()
+    {
         /*
         new JoystickButton(mButtonBoard, 0).whenPressed(new IntakeCommand());
         new JoystickButton(mButtonBoard, 1).cancelWhenPressed(new IntakeCommand());
@@ -93,11 +102,15 @@ public class RobotContainer {
      * Use this to pass the autonomous command to the main {@link Robot} class.
      * @return the command to run in autonomous
      */
-    public Command getAutonomousCommand() {
-        String selectedModeName = SmartDashboard.getString(kSelectedAutoModeKey, "NO SELECTED MODE!!!!");
+    public Command getAutonomousCommand()
+    {
+        String selectedModeName = SmartDashboard.getString(kSelectedAutoModeKey,
+                "NO SELECTED MODE!!!!");
         Logger.notice("Auto mode name " + selectedModeName);
-        for (var mode : mAutoModes) {
-            if (mode.name.equals(selectedModeName)) {
+        for (var mode : mAutoModes)
+        {
+            if (mode.name.equals(selectedModeName))
+            {
                 return mode.command;
             }
         }

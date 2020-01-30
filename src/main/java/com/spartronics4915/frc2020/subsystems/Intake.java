@@ -2,37 +2,46 @@ package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
-public class Intake extends SpartronicsSubsystem {
+public class Intake extends SpartronicsSubsystem
+{
 
-    public Intake() {
-
-    }
-    
-    public void mechvecintake() {
+    public Intake()
+    {
 
     }
 
-    public void prisrollintake() {
+    public void mechvecintake()
+    {
 
     }
 
-    public void prisrollreverse() {
+    public void prisrollintake()
+    {
 
     }
 
-    public void mechvecreverse() {
+    public void prisrollreverse()
+    {
 
     }
 
-    public void prisrollstop() {
+    public void mechvecreverse()
+    {
 
     }
 
-    public void mechvecstop() {
+    public void prisrollstop()
+    {
 
     }
 
-    public void stop() {
-        
+    public void mechvecstop()
+    {
+
+    }
+
+    public void stop()
+    {
+
     }
 }
