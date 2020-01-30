@@ -3,8 +3,7 @@ package com.spartronics4915.frc2020;
 import java.util.Set;
 
 import com.spartronics4915.frc2020.commands.*;
-import com.spartronics4915.frc2020.subsystems.Launcher;
-import com.spartronics4915.frc2020.subsystems.PanelRotator;
+import com.spartronics4915.frc2020.subsystems.*;
 import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -43,6 +42,9 @@ public class RobotContainer
 
     public final AutoMode[] mAutoModes;
 
+    private Climber mClimber;
+    private ClimberCommands mClimberCommands;
+
     private Joystick mJoystick = new Joystick(Constants.OI.kJoystickId);
     private Joystick mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
     private PanelRotator mPanelRotator;
@@ -52,10 +54,12 @@ public class RobotContainer
      */
     public RobotContainer()
     {
+        mClimber = new Climber();
+        mClimberCommands = new ClimberCommands(mClimber);
+
         configureJoystickBindings();
         configureButtonBoardBindings();
-        mAutoModes = new AutoMode[]
-        {kDefaultAutoMode,};
+        mAutoModes = new AutoMode[] {kDefaultAutoMode};
     }
 
     private void configureJoystickBindings()
@@ -71,8 +75,6 @@ public class RobotContainer
         new JoystickButton(mJoystick, 10).whenPressed();
         new JoystickButton(mJoystick, 11).whenPressed();
         */
-        new JoystickButton(mJoystick, 1)
-                .whenPressed(new InstantCommand(mPanelRotator::getActualColor, mPanelRotator));
     }
 
     private void configureButtonBoardBindings()
@@ -104,8 +106,7 @@ public class RobotContainer
      */
     public Command getAutonomousCommand()
     {
-        String selectedModeName = SmartDashboard.getString(kSelectedAutoModeKey,
-                "NO SELECTED MODE!!!!");
+        String selectedModeName = SmartDashboard.getString(kSelectedAutoModeKey, "NO SELECTED MODE!!!!");
         Logger.notice("Auto mode name " + selectedModeName);
         for (var mode : mAutoModes)
         {

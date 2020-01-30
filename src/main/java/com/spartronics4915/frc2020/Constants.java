@@ -48,6 +48,14 @@ public final class Constants
                                                                   // is inverted
     }
 
+    public static final class Intake
+    {
+        public static final int kHarvestMotorId = 12;
+        public static final int kIngestMotorId = 13;
+        public static final double kHarvestSpeed = 0.5;
+        public static final double kIngestSpeed = 0.5;
+    }
+
     public static final class Launcher
     {
         public static final int kFlywheelMasterID = 7;

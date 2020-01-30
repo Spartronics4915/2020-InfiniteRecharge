@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
+import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 
 /**
  * This subsystem has two motors. A NEO using a Spark, while the other is a 775 PRO using a Talon.
