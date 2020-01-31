@@ -16,7 +16,7 @@ public class PanelRotatorCommands
     {
         public Raise(PanelRotator PanelRotator)
         {
-            super(() -> {}, PanelRotator::raise, PanelRotator::stop,
+            super(() -> {}, PanelRotator::raise, (Boolean b) -> PanelRotator.stop(),
                 PanelRotator::getBeamSensorUp, PanelRotator);
         }
     }
@@ -25,7 +25,7 @@ public class PanelRotatorCommands
     {
         public Lower(PanelRotator PanelRotator)
         {
-            super(() -> {}, PanelRotator::lower, PanelRotator::stop,
+            super(() -> {}, PanelRotator::lower, (Boolean b) -> PanelRotator.stop(),
                 PanelRotator::getBeamSensorDown, PanelRotator);
         }
     }
@@ -70,7 +70,7 @@ public class PanelRotatorCommands
         @Override
         public void end(boolean interrupted)
         {
-            mPanelRotator.stop(interrupted);
+            mPanelRotator.stop();
         }
     }
 
@@ -130,7 +130,7 @@ public class PanelRotatorCommands
         @Override
         public void end(boolean interrupted)
         {
-            mPanelRotator.stop(interrupted);
+            mPanelRotator.stop();
         }
     }
 }
