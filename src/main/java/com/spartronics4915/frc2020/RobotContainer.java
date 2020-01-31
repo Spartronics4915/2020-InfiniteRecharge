@@ -2,7 +2,13 @@ package com.spartronics4915.frc2020;
 
 import java.util.Set;
 
+import com.spartronics4915.frc2020.TrajectoryContainer.Destination;
 import com.spartronics4915.frc2020.commands.*;
+import com.spartronics4915.lib.hardware.sensors.T265Camera;
+import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
+import com.spartronics4915.lib.subsystems.drive.TrajectoryTrackerCommand;
+import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
+import com.spartronics4915.lib.util.Kinematics;
 import com.spartronics4915.frc2020.subsystems.*;
 import com.spartronics4915.frc2020.subsystems.LED.BlingState;
 import com.spartronics4915.lib.util.Logger;
@@ -50,6 +56,10 @@ public class RobotContainer
     private Joystick mJoystick = new Joystick(Constants.OI.kJoystickId);
     private Joystick mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
 
+    private final Drive mDrive;
+    private final RamseteTracker mRamseteController = new RamseteTracker(2, 0.7);
+    private final RobotStateEstimator mStateEstimator;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -61,7 +71,16 @@ public class RobotContainer
 
         configureJoystickBindings();
         configureButtonBoardBindings();
-        mAutoModes = new AutoMode[] {kDefaultAutoMode};
+
+        mDrive = new Drive();
+        mStateEstimator = new RobotStateEstimator(mDrive,
+                new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
+                new T265Camera(Constants.Estimator.kCameraOffset,
+                        Constants.Estimator.kMeasurementCovariance));
+        mAutoModes = new AutoMode[] {kDefaultAutoMode, new AutoMode("drive straight",
+                new TrajectoryTrackerCommand(mDrive,
+                        TrajectoryContainer.middle.getTrajectory(Destination.backOfShieldGenerator),
+                        mRamseteController, mStateEstimator.getCameraRobotStateMap()))};
     }
 
     private void configureJoystickBindings()
