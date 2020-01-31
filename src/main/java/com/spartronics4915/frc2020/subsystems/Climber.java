@@ -4,11 +4,11 @@ import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.TalonSRXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
+import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 
 /**
  * This subsystem has two motors. A NEO using a Spark, while the other is a 775 PRO using a Talon.
@@ -17,47 +17,46 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
  */
 public class Climber extends SpartronicsSubsystem
 {
-
-    private static TalonSRX mClimber775Pro;
-    private static CANSparkMax mClimberNEO;
+    private TalonSRX mLiftMotor;
+    private CANSparkMax mWinchMotor;
 
     public Climber()
     {
         // Hardware Contructor (Add motors and such here when I get them)
-        mClimber775Pro = new TalonSRX(Constants.Climber.kLiftMotorId);
-        mClimberNEO = new CANSparkMax(Constants.Climber.kWinchMotorId, MotorType.kBrushless);
+        mLiftMotor = new TalonSRX(Constants.Climber.kLiftMotorId);
+        mWinchMotor = new CANSparkMax(Constants.Climber.kWinchMotorId, MotorType.kBrushless);
     }
 
     public void extend()
     {
-        mClimber775Pro.set(ControlMode.PercentOutput, Constants.Climber.kExtendSpeed);
-        mClimberNEO.set(0.0);
+        mLiftMotor.set(ControlMode.PercentOutput, Constants.Climber.kExtendSpeed);
+        mWinchMotor.set(0.0);
     }
 
     public void winch(boolean stalled)
     {
-        mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
+        mLiftMotor.set(ControlMode.PercentOutput, 0.0);
         if (stalled)
-            mClimberNEO.set(Constants.Climber.kWinchSpeed);
+            mWinchMotor.set(Constants.Climber.kWinchSpeed);
         else
-            mClimberNEO.set(-Constants.Climber.kWinchSpeed);
+            mWinchMotor.set(-Constants.Climber.kWinchSpeed);
     }
 
     public void retract()
     {
-        mClimber775Pro.set(ControlMode.PercentOutput, -Constants.Climber.kExtendSpeed);
-        mClimberNEO.set(0.0);
+        mLiftMotor.set(ControlMode.PercentOutput, -Constants.Climber.kExtendSpeed);
+        mWinchMotor.set(0.0);
     }
 
     public void stop()
     {
-        mClimber775Pro.set(ControlMode.PercentOutput, 0.0);
-        mClimberNEO.set(0.0);
+        mLiftMotor.set(ControlMode.PercentOutput, 0.0);
+        mWinchMotor.set(0.0);
     }
 
     public double getWinchVoltage()
     {
-        return mClimberNEO.getBusVoltage();
+        return mWinchMotor.getBusVoltage();
     }
 
     public boolean isStalled()

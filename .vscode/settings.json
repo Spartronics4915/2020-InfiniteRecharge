@@ -1,6 +1,6 @@
 {
-    "editor.formatOnSave": true,
-    "editor.formatOnPaste": true,
+    "editor.formatOnSave": false,
+    "editor.formatOnPaste": false,
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.format.enabled": true,
     "files.exclude": {
@@ -12,7 +12,6 @@
         "bin/": true,
         "**/.classpath": true,
         "**/.project": true,
-        "**/.settings": true,
-        "**/.factorypath": true,
+        "**/.factorypath": true
     }
 }

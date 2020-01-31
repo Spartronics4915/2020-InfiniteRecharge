@@ -9,32 +9,51 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 /**
  * Here's an example Command "Factory".
- * This example represents a way to have a per-subsystem factory
+ * This example represents a way to have a per-subsystem "command factory"
  * that will allow us to factor/separate/encapsulate commands for
  * a subsystem into a single file, rather than mooshed into robotContainer
  * or spread across multiple files.
  *
  * This examples operates on a single subsystem.  Note that some commands may
- * require or operate on more than one subsystem.  This example could be extended
- * to accept an ArrayList<SpartronicsSubsystem> or Set<SpartronicsSubsystem>.
- * Or explicitly require, say, the DriveTrain subsystem.
+ * require or operate on more than one subsystem.  This example could be 
+ * extended to accept an ArrayList<SpartronicsSubsystem> or 
+ * Set<SpartronicsSubsystem>. Or explicitly require, say, the DriveTrain 
+ * subsystem.
+ *
+ * We present at least 3 different styles/use-cases.  Choose the one that's
+ * best for your application, though option #1 is likely preferred.
+ *
+ * 1. Contextualized Innerclass 
+ *  - access to outerclass member variables
+ *  - requires unusual, but legal, java syntax for construction
+ * 2. Uncontextualized Innerclass
+ *  - no access to outerclass instance (ie: more of a namespace implemenation)
+ *  - easier construction, but no shared state across innerclass instances.
+ * 3. Enumerated GetCommand method
+ *  - easy to read and use, but the dispatch is switch-based
  *
  * usage:
  *  in RobotContainer():
- *     mCamera = new CameraSubsystem();
- *     this.mExampleCmdFactory = new ExampleCommandFactory(mCamera);
+ *     this.mCamera = new CameraSubsystem();
+ *     this.mCamCmds = new ExampleCommandFactory(mCamera);
  *
- *  in RobotContainer::configureJoystickButtons()
- *     new JoystickButton(...).whenPressed(this.mExampleCmdFactory.GetCommand("test1"));
- *     new JoystickButton(...).whenPressed(new ExampleCommandFactory.Test1());
- *     new JoystickButton(...).whenPressed(new ExampleCommandFactory.Test5(mCamera));
+ *  in RobotContainer::configureJoystickButtons(), for example:
+ *
+ *  // style #1
+ *  new JoystickButton(...).whenPressed(this.mCamCmds.new Test3());
+ *
+ *  // style #2
+ *  new JoystickButton(...).whenPressed(new ExampleCommandFactory.Test5(mCamera));
+ * 
+ *  // style #3
+ *  new JoystickButton(...).whenPressed(mCamCmds.GetCommand("test1"));
  *
  */
 public class ExampleCommandFactory
 {
     private final SpartronicsSubsystem mSubsys;
 
-    ExampleCommandFactory(SpartronicsSubsystem subsys)
+    public ExampleCommandFactory(SpartronicsSubsystem subsys)
     {
         this.mSubsys = subsys;
     }
@@ -45,10 +64,16 @@ public class ExampleCommandFactory
         switch (nm)
         {
             case "test1":
-                result = new InstantCommand(() -> mSubsys.logInfo("running instant command test1"));
+                result = new InstantCommand(() ->
+                {
+                    mSubsys.logInfo("running instant command test1");
+                });
                 break;
             case "test2":
-                result = new InstantCommand(() -> mSubsys.logInfo("running instant command test2"));
+                result = new InstantCommand(() ->
+                {
+                    mSubsys.logInfo("running instant command test2");
+                });
                 break;
             default:
         }

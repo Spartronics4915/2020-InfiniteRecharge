@@ -23,10 +23,8 @@ public class PanelRotatorCommands
     {
         public Raise(PanelRotator mPanelRotator)
         {
-            super(() ->
-            {
-            }, mPanelRotator::raise, (Boolean b) -> mPanelRotator.stop(),
-                    mPanelRotator::getBeamSensorUp, mPanelRotator);
+            super(() -> {}, mPanelRotator::raise, (Boolean b) -> mPanelRotator.stop(),
+                mPanelRotator::getBeamSensorUp, mPanelRotator);
         }
     }
 
@@ -34,10 +32,8 @@ public class PanelRotatorCommands
     {
         public Lower(PanelRotator mPanelRotator)
         {
-            super(() ->
-            {
-            }, mPanelRotator::lower, (Boolean b) -> mPanelRotator.stop(),
-                    mPanelRotator::getBeamSensorDown, mPanelRotator);
+            super(() -> {}, mPanelRotator::lower, (Boolean b) -> mPanelRotator.stop(),
+                mPanelRotator::getBeamSensorDown, mPanelRotator);
         }
     }
 
@@ -125,6 +121,7 @@ public class PanelRotatorCommands
             currentColor = mPanelRotator.getActualColor();
             if (currentColor != lastColor)
                 eighths++;
+            lastColor = currentColor;
 
             if (eighths == 8) // TODO: double check for off-by-one errors
                 return true;

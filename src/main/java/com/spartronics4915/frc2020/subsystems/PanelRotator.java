@@ -1,13 +1,15 @@
 // I'm bad at naming things. Please come up with a better name...
 package com.spartronics4915.frc2020.subsystems;
 
-import com.revrobotics.ColorSensorV3;
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
+
+import com.revrobotics.ColorSensorV3;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -25,31 +27,23 @@ public class PanelRotator extends SpartronicsSubsystem
     // TODO: These are essentially random numbers, with the max value based on the
     // images at
     // https://www.andymark.com/products/infinite-recharge-control-panel-stickr
-    public int[] mMinimumRed =
-    {200, 0, 0};
-    public int[] mMaximumRed =
-    {255, 30, 30};
+    public int[] mMinimumRed = {200, 0, 0};
+    public int[] mMaximumRed = {255, 30, 30};
 
     // TODO: These are bad and will work in a way that will make you lose, which
     // will be sad
-    public int[] mMinimumGreen =
-    {0, 200, 0};
-    public int[] mMaximumGreen =
-    {30, 255, 30};
+    public int[] mMinimumGreen = {0, 200, 0};
+    public int[] mMaximumGreen = {30, 255, 30};
 
     // TODO: These are bad and will work in a way that will make you lose, which
     // will be sad
-    public int[] mMinimumBlue =
-    {0, 200, 200};
-    public int[] mMaximumBlue =
-    {30, 255, 255};
+    public int[] mMinimumBlue = {0, 200, 200};
+    public int[] mMaximumBlue = {30, 255, 255};
 
     // TODO: These are bad and will work in a way that will make you lose, which
     // will be sad
-    public int[] mMinimumYellow =
-    {200, 200, 0};
-    public int[] mMaximumYellow =
-    {255, 255, 30};
+    public int[] mMinimumYellow = {200, 200, 0};
+    public int[] mMaximumYellow = {255, 255, 30};
 
     public String sensedColor;
 
@@ -62,9 +56,9 @@ public class PanelRotator extends SpartronicsSubsystem
         mBeamSensorUp = new DigitalInput(Constants.PanelRotator.kBeamSensorUpID);
         mBeamSensorDown = new DigitalInput(Constants.PanelRotator.kBeamSensorDownID);
         mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorID,
-                SensorModel.fromMultiplier(1));
+            SensorModel.fromMultiplier(1));
         mExtendMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kExtendMotorID,
-                SensorModel.fromMultiplier(1));
+            SensorModel.fromMultiplier(1));
         // mSpinMotor = new CANSparkMax(Constants.PanelRotator.kSpinMotorID,
         // MotorType.kBrushless);
         // mExtendMotor = new TalonSRX(Constants.PanelRotator.kExtendMotorID);
@@ -74,13 +68,13 @@ public class PanelRotator extends SpartronicsSubsystem
     /** raises the arm holding the spinner at a set speed*/
     public void raise()
     {
-        mExtendMotor.setDutyCycle(Constants.PanelRotator.kExtendMotorPercentOutput);
+        mExtendMotor.setDutyCycle(Constants.PanelRotator.kExtendMotorSpeed);
     }
 
     /** lowers the arm holding the spinner at a set speed*/
     public void lower()
     {
-        mExtendMotor.setDutyCycle(-Constants.PanelRotator.kExtendMotorPercentOutput);
+        mExtendMotor.setDutyCycle(-Constants.PanelRotator.kExtendMotorSpeed);
     }
 
     /** stops the extension motor */
@@ -92,13 +86,13 @@ public class PanelRotator extends SpartronicsSubsystem
     /** gets the color (Red, Blue, Yellow, or Green) through game specific messages that the robot needs to spin to */
     public String getTargetColor()
     {
-        String color = DriverStation.getInstance().getGameSpecificMessage();
-        return color;
+        return DriverStation.getInstance().getGameSpecificMessage();
     }
 
     /** finds what color the color sensor is seeing  (Red, Blue, Yellow, or Green); currently just a placeholder for output */
     public String getActualColor()
     {
+        /*
         // TODO: convert to 0-255 for user convenience.
         red = (mColorSensor.getRed()/;
         green = mColorSensor.getGreen();
@@ -146,6 +140,8 @@ public class PanelRotator extends SpartronicsSubsystem
         }
         System.out.println(sensedColor);
         return sensedColor;
+        */
+        return "method not complete";
     }
 
     /** sees if the bottom beam sensor is triggered */
@@ -158,8 +154,7 @@ public class PanelRotator extends SpartronicsSubsystem
     /** sees if the top beam sensor is triggered */
     public boolean getBeamSensorUp()
     {
-        // TODO: maybe backwards
-        return mBeamSensorUp.get();
+        return mBeamSensorUp.get(); // TODO: maybe backwards
     }
 
     /** spins the wheel to move the control panel */
@@ -171,7 +166,7 @@ public class PanelRotator extends SpartronicsSubsystem
     /** get the number of times that the spinning */
     public double getRotations()
     {
-        return -1;
+        return -1; // TODO: not complete
     }
 
     /** stops the wheel */
