@@ -10,17 +10,17 @@ public class ClimberCommands
 {
     public class Extend extends StartEndCommand
     {
-        public Extend(Climber mClimber)
+        public Extend(Climber Climber)
         {
-            super(mClimber::extend, mClimber::stop, mClimber);
+            super(Climber::extend, Climber::stop, Climber);
         }
     }
 
     public class Retract extends StartEndCommand
     {
-        public Retract(Climber mClimber)
+        public Retract(Climber Climber)
         {
-            super(mClimber::retract, mClimber::stop, mClimber);
+            super(Climber::retract, Climber::stop, Climber);
         }
     }
 
@@ -31,10 +31,10 @@ public class ClimberCommands
      */
     public class WinchPrimary extends FunctionalCommand
     {
-        public WinchPrimary(Climber mClimber)
+        public WinchPrimary(Climber Climber)
         {
-            super(() -> {}, () -> mClimber.winch(!Constants.Climber.kStalled),
-                (Boolean b) -> mClimber.stop(), mClimber::isStalled, mClimber);
+            super(() -> {}, () -> Climber.winch(!Constants.Climber.kStalled),
+                (Boolean b) -> Climber.stop(), Climber::isStalled, Climber);
         }
     }
 
@@ -44,9 +44,9 @@ public class ClimberCommands
      */
     public class WinchSecondary extends StartEndCommand
     {
-        public WinchSecondary(Climber mClimber)
+        public WinchSecondary(Climber Climber)
         {
-            super(() -> mClimber.winch(Constants.Climber.kStalled), mClimber::stop, mClimber);
+            super(() -> Climber.winch(Constants.Climber.kStalled), Climber::stop, Climber);
         }
     }
 }

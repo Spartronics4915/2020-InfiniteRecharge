@@ -14,19 +14,19 @@ public class PanelRotatorCommands
      */
     public class Raise extends FunctionalCommand
     {
-        public Raise(PanelRotator mPanelRotator)
+        public Raise(PanelRotator PanelRotator)
         {
-            super(() -> {}, mPanelRotator::raise, mPanelRotator::stop,
-                mPanelRotator::getBeamSensorUp, mPanelRotator);
+            super(() -> {}, PanelRotator::raise, PanelRotator::stop,
+                PanelRotator::getBeamSensorUp, PanelRotator);
         }
     }
 
     public class Lower extends FunctionalCommand
     {
-        public Lower(PanelRotator mPanelRotator)
+        public Lower(PanelRotator PanelRotator)
         {
-            super(() -> {}, mPanelRotator::lower, mPanelRotator::stop,
-                mPanelRotator::getBeamSensorDown, mPanelRotator);
+            super(() -> {}, PanelRotator::lower, PanelRotator::stop,
+                PanelRotator::getBeamSensorDown, PanelRotator);
         }
     }
 
