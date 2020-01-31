@@ -77,12 +77,6 @@ public class PanelRotator extends SpartronicsSubsystem
         mExtendMotor.setDutyCycle(-Constants.PanelRotator.kExtendMotorSpeed);
     }
 
-    /** stops the extension motor */
-    public void stopExtendMotor()
-    {
-        mExtendMotor.setDutyCycle(0);
-    }
-
     /** gets the color (Red, Blue, Yellow, or Green) through game specific messages that the robot needs to spin to */
     public String getTargetColor()
     {
@@ -173,6 +167,12 @@ public class PanelRotator extends SpartronicsSubsystem
     public void stopSpin()
     {
         mSpinMotor.setDutyCycle(0);
+    }
+
+    /** stops the extension motor */
+    public void stopExtendMotor()
+    {
+        mExtendMotor.setDutyCycle(0);
     }
 
     /** stops the two motors */
