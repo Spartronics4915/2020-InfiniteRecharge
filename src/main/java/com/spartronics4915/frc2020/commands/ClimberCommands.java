@@ -39,7 +39,7 @@ public class ClimberCommands
     {
         public WinchPrimary(Climber mClimber)
         {
-            super(() -> {}, () -> mClimber.winch(!Constants.Climber.kStalled), 
+            super(() -> {}, () -> mClimber.winch(!Constants.Climber.kStalled),
                 (Boolean b) -> mClimber.stop(), mClimber::isStalled, mClimber);
         }
     }
