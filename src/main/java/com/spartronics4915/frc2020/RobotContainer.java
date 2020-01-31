@@ -4,25 +4,25 @@ import java.util.Set;
 
 import com.spartronics4915.frc2020.TrajectoryContainer.Destination;
 import com.spartronics4915.frc2020.commands.*;
-import com.spartronics4915.frc2020.subsystems.Drive;
-import com.spartronics4915.frc2020.subsystems.Launcher;
 import com.spartronics4915.lib.hardware.sensors.T265Camera;
 import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
 import com.spartronics4915.lib.subsystems.drive.TrajectoryTrackerCommand;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
 import com.spartronics4915.lib.util.Kinematics;
+import com.spartronics4915.frc2020.subsystems.*;
+import com.spartronics4915.frc2020.subsystems.LED.BlingState;
 import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class RobotContainer
 {
-
     private static class AutoMode
     {
         public final String name;
@@ -48,6 +48,11 @@ public class RobotContainer
 
     public final AutoMode[] mAutoModes;
 
+    private Climber mClimber;
+    private ClimberCommands mClimberCommands;
+
+    private LED mLED;
+
     private Joystick mJoystick = new Joystick(Constants.OI.kJoystickId);
     private Joystick mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
 
@@ -60,15 +65,19 @@ public class RobotContainer
      */
     public RobotContainer()
     {
+        mClimber = new Climber();
+        mClimberCommands = new ClimberCommands(mClimber);
+        mLED = LED.getInstance();
+
         configureJoystickBindings();
         configureButtonBoardBindings();
+
         mDrive = new Drive();
         mStateEstimator = new RobotStateEstimator(mDrive,
                 new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
                 new T265Camera(Constants.Estimator.kCameraOffset,
                         Constants.Estimator.kMeasurementCovariance));
-        mAutoModes = new AutoMode[]
-        {kDefaultAutoMode, new AutoMode("drive straight",
+        mAutoModes = new AutoMode[] {kDefaultAutoMode, new AutoMode("drive straight",
                 new TrajectoryTrackerCommand(mDrive,
                         TrajectoryContainer.middle.getTrajectory(Destination.backOfShieldGenerator),
                         mRamseteController, mStateEstimator.getCameraRobotStateMap()))};
@@ -76,6 +85,9 @@ public class RobotContainer
 
     private void configureJoystickBindings()
     {
+        // Note: changes to bling state can be augmented with:
+        // .alongWith(new SetBlingStateCommand(mLED, BlingState.SOME_STATE)));
+
         /*
         new JoystickButton(mJoystick, 1).whileHeld(); // Slow the robot
         new JoystickButton(mJoystick, 2).whenHeld(new TurretRaiseCommand());
@@ -87,7 +99,6 @@ public class RobotContainer
         new JoystickButton(mJoystick, 10).whenPressed();
         new JoystickButton(mJoystick, 11).whenPressed();
         */
-        new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(new Launcher()));
     }
 
     private void configureButtonBoardBindings()
@@ -119,8 +130,7 @@ public class RobotContainer
      */
     public Command getAutonomousCommand()
     {
-        String selectedModeName = SmartDashboard.getString(kSelectedAutoModeKey,
-                "NO SELECTED MODE!!!!");
+        String selectedModeName = SmartDashboard.getString(kSelectedAutoModeKey, "NO SELECTED MODE!!!!");
         Logger.notice("Auto mode name " + selectedModeName);
         for (var mode : mAutoModes)
         {
@@ -132,5 +142,14 @@ public class RobotContainer
 
         Logger.error("AutoModeSelector failed to select auto mode: " + selectedModeName);
         return kDefaultAutoMode.command;
+    }
+
+    /**
+     * Sets bling state -- used by robot.java code
+     * TODO: verify this is how we want to interface to disabledInit()
+    */
+    public void setBlingState(BlingState blingState)
+    {
+        mLED.setBlingState(blingState);
     }
 }
