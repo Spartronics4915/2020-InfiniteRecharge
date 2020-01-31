@@ -100,7 +100,7 @@ public class PanelRotator extends SpartronicsSubsystem
     public String getActualColor()
     {
         // TODO: convert to 0-255 for user convenience.
-        red = mColorSensor.getRed();
+        red = (mColorSensor.getRed()/;
         green = mColorSensor.getGreen();
         blue = mColorSensor.getBlue();
         sensedColor = "sensor is not working";
