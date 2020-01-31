@@ -33,18 +33,18 @@ public class Indexer extends SpartronicsSubsystem
         mSpinner = SpartronicsMax.makeMotor(Constants.Indexer.Spinner.kMotorId, mSpinnerModel);
         // Set up gains
         mSpinner.setVelocityGains(Constants.Indexer.Spinner.kVelocityP,
-                Constants.Indexer.Spinner.kVelocityD);
+            Constants.Indexer.Spinner.kVelocityD);
         mSpinner.setPositionGains(Constants.Indexer.Spinner.kPositionP,
-                Constants.Indexer.Spinner.kPositionD);
+            Constants.Indexer.Spinner.kPositionD);
 
         // Set up Loader
         mLoaderModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);
         mLoader = SpartronicsSRX.makeMotor(Constants.Indexer.Loader.kMotor, mLoaderModel);
         // Set up gains
         mLoader.setVelocityGains(Constants.Indexer.Loader.kVelocityP,
-                Constants.Indexer.Loader.kVelocityD);
+            Constants.Indexer.Loader.kVelocityD);
         mLoader.setPositionGains(Constants.Indexer.Loader.kPositionP,
-                Constants.Indexer.Loader.kPositionD);
+            Constants.Indexer.Loader.kPositionD);
 
         // Setup Optical Flag for zeroing position
         mOpticalFlag = new DigitalInput(Constants.Indexer.kOpticalFlagId);
@@ -54,7 +54,7 @@ public class Indexer extends SpartronicsSubsystem
     }
 
     /**
-     * 
+     *
      * @return Whether or not the optical flag is triggered.
      */
     public boolean checkFlag()
@@ -136,7 +136,6 @@ public class Indexer extends SpartronicsSubsystem
     }
 
     /**
-     * 
      * @return whether or not the loader motor is running
      */
     public boolean isLaunching()

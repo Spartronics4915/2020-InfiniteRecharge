@@ -51,9 +51,9 @@ public class PanelRotator extends SpartronicsSubsystem
     {
         mBeamSensorUp = new DigitalInput(Constants.PanelRotator.kBeamSensorUpID);
         mBeamSensorDown = new DigitalInput(Constants.PanelRotator.kBeamSensorDownID);
-        mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorID, 
+        mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorID,
             SensorModel.fromMultiplier(1));
-        mExtendMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kExtendMotorID, 
+        mExtendMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kExtendMotorID,
             SensorModel.fromMultiplier(1));
         // mSpinMotor = new CANSparkMax(Constants.PanelRotator.kSpinMotorID,
         // MotorType.kBrushless);
@@ -150,8 +150,7 @@ public class PanelRotator extends SpartronicsSubsystem
     /** sees if the top beam sensor is triggered */
     public boolean getBeamSensorUp()
     {
-        // TODO: maybe backwards
-        return mBeamSensorUp.get();
+        return mBeamSensorUp.get(); // TODO: maybe backwards
     }
 
     /** spins the wheel to move the control panel */
@@ -163,8 +162,7 @@ public class PanelRotator extends SpartronicsSubsystem
     /** get the number of times that the spinning */
     public double getRotations()
     {
-        // TODO: not complete
-        return -1;
+        return -1; // TODO: not complete
     }
 
     /** stops the wheel */

@@ -1,6 +1,6 @@
 {
     "editor.formatOnSave": false,
-    "editor.formatOnPaste": true,
+    "editor.formatOnPaste": false,
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.format.enabled": true,
     "files.exclude": {

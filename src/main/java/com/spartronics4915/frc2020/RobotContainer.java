@@ -4,6 +4,7 @@ import java.util.Set;
 
 import com.spartronics4915.frc2020.commands.*;
 import com.spartronics4915.frc2020.subsystems.*;
+import com.spartronics4915.frc2020.subsystems.LED.BlingState;
 import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -16,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class RobotContainer
 {
-
     private static class AutoMode
     {
         public final String name;
@@ -46,6 +46,7 @@ public class RobotContainer
     private final Intake mIntake;
     private final Launcher mLauncher;
     private final PanelRotator mPanelRotator;
+    private final LED mLED;
     private final ClimberCommands mClimberCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
 
@@ -61,6 +62,7 @@ public class RobotContainer
         mIntake = new Intake();
         mLauncher = new Launcher();
         mPanelRotator = new PanelRotator();
+        mLED = LED.getInstance();
         mClimberCommands = new ClimberCommands(mClimber);
         mPanelRotatorCommands = new PanelRotatorCommands(mPanelRotator);
 
@@ -75,6 +77,9 @@ public class RobotContainer
 
     private void configureJoystickBindings()
     {
+        // Note: changes to bling state can be augmented with:
+        // .alongWith(new SetBlingStateCommand(mLED, BlingState.SOME_STATE)));
+
         /*
         new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
         new JoystickButton(mJoystick, 2).whenHeld(new LauncherCommands.Raise(mLauncher));
@@ -145,5 +150,14 @@ public class RobotContainer
 
         Logger.error("AutoModeSelector failed to select auto mode: " + selectedModeName);
         return kDefaultAutoMode.command;
+    }
+
+    /**
+     * Sets bling state -- used by robot.java code
+     * TODO: verify this is how we want to interface to disabledInit()
+    */
+    public void setBlingState(BlingState blingState)
+    {
+        mLED.setBlingState(blingState);
     }
 }
