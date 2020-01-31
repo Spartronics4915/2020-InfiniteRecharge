@@ -44,8 +44,7 @@ public final class Constants
 
         public static final int kProxSensorId = 4; // DIO4 // Proximity Sensor (index slot one)
         public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
-        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag
-                                                                  // is inverted
+        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag is inverted
     }
 
     public static final class Intake
@@ -58,12 +57,12 @@ public final class Constants
 
     public static final class Launcher
     {
-        public static final int kFlywheelMasterID = 7;
-        public static final int kFlywheelFollowerID = -1;
-        public static final int kAngleAdjusterMasterID = -1;
-        public static final int kAngleAdjusterFollowerID = -1;
-        public static final int kTurretID = 8;
-        public static final int kTurretPotentiometerID = 9;
+        public static final int kFlywheelMasterId = 7;
+        public static final int kFlywheelFollowerId = -1; // Solid brass
+        public static final int kAngleAdjusterMasterId = -1;
+        public static final int kAngleAdjusterFollowerId = -1;
+        public static final int kTurretId = 8;
+        public static final int kTurretPotentiometerId = 9;
     }
 
     public static final class OI
