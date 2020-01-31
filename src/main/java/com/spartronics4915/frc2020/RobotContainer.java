@@ -63,8 +63,8 @@ public class RobotContainer
         mLauncher = new Launcher();
         mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
-        mClimberCommands = new ClimberCommands(mClimber);
-        mPanelRotatorCommands = new PanelRotatorCommands(mPanelRotator);
+        mClimberCommands = new ClimberCommands();
+        mPanelRotatorCommands = new PanelRotatorCommands();
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
@@ -114,15 +114,15 @@ public class RobotContainer
         new JoystickButton(mButtonBoard, 5).whenPressed(new LauncherCommands.AimHigh(mLauncher));
         */
 
-        new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise());
-        new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower());
-        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinToColor());
-        new JoystickButton(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinRotation());
+        new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
+        new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
+        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
+        new JoystickButton(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinRotation(mPanelRotator));
 
-        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend());
-        new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Retract());
-        new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new WinchPrimary()
-                .andThen(mClimberCommands.new WinchSecondary()));
+        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber));
+        new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Retract(mClimber));
+        new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new WinchPrimary(mClimber)
+                .andThen(mClimberCommands.new WinchSecondary(mClimber)));
 
         /*
         new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));

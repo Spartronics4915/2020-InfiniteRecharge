@@ -7,13 +7,6 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 
 public class PanelRotatorCommands
 {
-    private final PanelRotator mPanelRotator;
-
-    public PanelRotatorCommands(PanelRotator PanelRotator)
-    {
-        this.mPanelRotator = PanelRotator;
-    }
-
     /**
      * Commands with simple logic statements should be implemented as a
      * FunctionalCommand. This saves the overhead of a full CommandBase, but still
@@ -21,7 +14,7 @@ public class PanelRotatorCommands
      */
     public class Raise extends FunctionalCommand
     {
-        public Raise()
+        public Raise(PanelRotator mPanelRotator)
         {
             super(() -> {}, mPanelRotator::raise, mPanelRotator::stop,
                 mPanelRotator::getBeamSensorUp, mPanelRotator);
@@ -30,7 +23,7 @@ public class PanelRotatorCommands
 
     public class Lower extends FunctionalCommand
     {
-        public Lower()
+        public Lower(PanelRotator mPanelRotator)
         {
             super(() -> {}, mPanelRotator::lower, mPanelRotator::stop,
                 mPanelRotator::getBeamSensorDown, mPanelRotator);
@@ -40,9 +33,12 @@ public class PanelRotatorCommands
     // TODO: This might be better as a FunctionalCommand
     public class SpinToColor extends CommandBase
     {
+        private final PanelRotator mPanelRotator;
+
         // You should only use one subsystem per command. If multiple are needed, use a CommandGroup.
-        public SpinToColor()
+        public SpinToColor(PanelRotator PanelRotator)
         {
+            mPanelRotator = PanelRotator;
             addRequirements(mPanelRotator);
         }
 
@@ -86,13 +82,16 @@ public class PanelRotatorCommands
      */
     public class SpinRotation extends CommandBase
     {
+        private final PanelRotator mPanelRotator;
+
         public int eighths;
         public String lastColor;
         public String currentColor;
 
         // You should only use one subsystem per command. If multiple are needed, use a CommandGroup.
-        public SpinRotation()
+        public SpinRotation(PanelRotator PanelRotator)
         {
+            mPanelRotator = PanelRotator;
             addRequirements(mPanelRotator);
         }
 

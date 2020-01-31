@@ -8,13 +8,6 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 public class ClimberCommands
 {
-    private final Climber mClimber;
-
-    public ClimberCommands(Climber Climber)
-    {
-        mClimber = Climber;
-    }
-
     public class Extend extends StartEndCommand
     {
         public Extend(Climber mClimber)
@@ -25,7 +18,7 @@ public class ClimberCommands
 
     public class Retract extends StartEndCommand
     {
-        public Retract()
+        public Retract(Climber mClimber)
         {
             super(mClimber::retract, mClimber::stop, mClimber);
         }
@@ -38,7 +31,7 @@ public class ClimberCommands
      */
     public class WinchPrimary extends FunctionalCommand
     {
-        public WinchPrimary()
+        public WinchPrimary(Climber mClimber)
         {
             super(() -> {}, () -> mClimber.winch(!Constants.Climber.kStalled),
                 (Boolean b) -> mClimber.stop(), mClimber::isStalled, mClimber);
@@ -51,7 +44,7 @@ public class ClimberCommands
      */
     public class WinchSecondary extends StartEndCommand
     {
-        public WinchSecondary()
+        public WinchSecondary(Climber mClimber)
         {
             super(() -> mClimber.winch(Constants.Climber.kStalled), mClimber::stop, mClimber);
         }
