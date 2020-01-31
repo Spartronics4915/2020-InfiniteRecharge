@@ -1,11 +1,12 @@
 package com.spartronics4915.frc2020.subsystems;
 
-import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.frc2020.Constants;
+import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 
 /**
@@ -15,8 +16,8 @@ public class Indexer extends SpartronicsSubsystem
 {
     private double targetPosition = 0;
 
-    private SpartronicsMotor mSpinner; // Spins indexer.
-    private SpartronicsMotor mLoader; // Loads ball into shooter
+    private SpartronicsMotor mSpinnerMotor;
+    private SpartronicsMotor mLoaderMotor;
 
     private SensorModel mSpinnerModel;
     private SensorModel mLoaderModel;
@@ -30,20 +31,20 @@ public class Indexer extends SpartronicsSubsystem
     {
         // Set up Spinner
         mSpinnerModel = SensorModel.fromMultiplier(Constants.Indexer.Spinner.kConversionRatio);
-        mSpinner = SpartronicsMax.makeMotor(Constants.Indexer.Spinner.kMotorId, mSpinnerModel);
+        mSpinnerMotor = SpartronicsMax.makeMotor(Constants.Indexer.Spinner.kMotorId, mSpinnerModel);
         // Set up gains
-        mSpinner.setVelocityGains(Constants.Indexer.Spinner.kVelocityP,
+        mSpinnerMotor.setVelocityGains(Constants.Indexer.Spinner.kVelocityP,
             Constants.Indexer.Spinner.kVelocityD);
-        mSpinner.setPositionGains(Constants.Indexer.Spinner.kPositionP,
+        mSpinnerMotor.setPositionGains(Constants.Indexer.Spinner.kPositionP,
             Constants.Indexer.Spinner.kPositionD);
 
         // Set up Loader
         mLoaderModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);
-        mLoader = SpartronicsSRX.makeMotor(Constants.Indexer.Loader.kMotor, mLoaderModel);
+        mLoaderMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Loader.kMotor, mLoaderModel);
         // Set up gains
-        mLoader.setVelocityGains(Constants.Indexer.Loader.kVelocityP,
+        mLoaderMotor.setVelocityGains(Constants.Indexer.Loader.kVelocityP,
             Constants.Indexer.Loader.kVelocityD);
-        mLoader.setPositionGains(Constants.Indexer.Loader.kPositionP,
+        mLoaderMotor.setPositionGains(Constants.Indexer.Loader.kPositionP,
             Constants.Indexer.Loader.kPositionD);
 
         // Setup Optical Flag for zeroing position
@@ -54,11 +55,10 @@ public class Indexer extends SpartronicsSubsystem
     }
 
     /**
-     *
      * @return Whether or not the optical flag is triggered.
      */
     public boolean checkFlag()
-    { // Checks whether the optical flag is triggered.
+    {
         return (Constants.Indexer.kOpticalFlagReversed ? mOpticalFlag.get() : !mOpticalFlag.get());
     }
 
@@ -67,8 +67,8 @@ public class Indexer extends SpartronicsSubsystem
      * @param velocity the velocity to spin the spinner at
      */
     public void spinAt(double velocity)
-    { // Spins motor at velocity
-        mSpinner.setVelocity(velocity);
+    {
+        mSpinnerMotor.setVelocity(velocity);
     }
 
     /**
@@ -76,14 +76,14 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void setZero()
     {
-        mSpinner.getEncoder().setPosition(0);
+        mSpinnerMotor.getEncoder().setPosition(0);
     }
 
     /**
      * @return whether or not the ball is loaded in the first slot
      */
     public boolean getBallLoaded()
-    { // Checks if ball is loaded
+    {
         return mProxSensor.get();
     }
 
@@ -95,7 +95,7 @@ public class Indexer extends SpartronicsSubsystem
     {
         double deltaPosition = 0.25 * ((double) N); // Cast N to double and convert to rotations
         targetPosition += deltaPosition;
-        mSpinner.setPosition(targetPosition); // Rotate Spinner to target.
+        mSpinnerMotor.setPosition(targetPosition); // Rotate Spinner to target.
     }
 
     /**
@@ -104,7 +104,7 @@ public class Indexer extends SpartronicsSubsystem
     public void returnToHome()
     {
         targetPosition = 0;
-        mSpinner.setPosition(targetPosition);
+        mSpinnerMotor.setPosition(targetPosition);
     }
 
     /**
@@ -113,17 +113,17 @@ public class Indexer extends SpartronicsSubsystem
     public void toNearestQuarterRotation()
     {
         // Rotates to nearest quarter rotation
-        targetPosition = Math.ceil(mSpinner.getEncoder().getPosition() * 4) / 4;
-        mSpinner.setPosition(targetPosition);
+        targetPosition = Math.ceil(mSpinnerMotor.getEncoder().getPosition() * 4) / 4;
+        mSpinnerMotor.setPosition(targetPosition);
     }
 
     /**
      * Start loading balls into the shooter
      */
     public void launch()
-    { // Loads balls into shooter
+    {
         mIsLaunching = true;
-        mLoader.setVelocity(Constants.Indexer.Loader.kSpeed);
+        mLoaderMotor.setVelocity(Constants.Indexer.Loader.kSpeed);
     }
 
     /**
@@ -132,7 +132,7 @@ public class Indexer extends SpartronicsSubsystem
     public void endLaunch()
     {
         mIsLaunching = false;
-        mLoader.setVelocity(0);
+        mLoaderMotor.setVelocity(0);
     }
 
     /**
@@ -148,8 +148,8 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void stop()
     {
-        mLoader.setNeutral();
-        mSpinner.setNeutral();
+        mLoaderMotor.setNeutral();
+        mSpinnerMotor.setNeutral();
     }
 
     /**
@@ -157,6 +157,6 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void stopSpinner()
     {
-        mSpinner.setNeutral();
+        mSpinnerMotor.setNeutral();
     }
 }
