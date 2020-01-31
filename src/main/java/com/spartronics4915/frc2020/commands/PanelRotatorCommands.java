@@ -85,7 +85,7 @@ public class PanelRotatorCommands
      *
      * An example of this is the SpinRotationsCommand.
      */
-    public class SpinRotation extends CommandBase
+    public class SpinOnce extends CommandBase
     {
         public int eighths;
         public String lastColor;
@@ -93,7 +93,7 @@ public class PanelRotatorCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public SpinRotation()
+        public SpinOnce()
         {
             addRequirements(mPanelRotator);
         }
