@@ -49,7 +49,7 @@ public class Indexer extends SpartronicsSubsystem
         // Setup Optical Flag for zeroing position
         mOpticalFlag = new DigitalInput(Constants.Indexer.kOpticalFlagId);
 
-        // Setup Prox Sensor for indexing
+        // Setup Proximity Sensor for indexing
         mProxSensor = new DigitalInput(Constants.Indexer.kProxSensorId);
     }
 
