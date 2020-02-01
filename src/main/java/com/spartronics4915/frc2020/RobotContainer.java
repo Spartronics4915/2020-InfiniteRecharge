@@ -78,6 +78,10 @@ public class RobotContainer
         mClimberCommands = new ClimberCommands();
         mLauncherCommands = new LauncherCommands();
         mPanelRotatorCommands = new PanelRotatorCommands();
+        //mClimber.setDefaultCommand(mClimberCommands.new ClimberDefaultCommand(mClimber));
+        //mIntake.setDefaultCommand(mIntakeCommands.new IntakeDefaultCommand(mIntake));
+        mLauncher.setDefaultCommand(mLauncherCommands.new LauncherDefaultCommand(mLauncher));
+        //mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new PanelRotatorDefaultCommand(mPanelRotator));
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);

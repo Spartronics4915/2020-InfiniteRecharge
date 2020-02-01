@@ -1,7 +1,7 @@
 package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.frc2020.Constants;
-import com.spartronics4915.frc2020.commands.LauncherDefaultCommand;
+import com.spartronics4915.frc2020.commands.LauncherCommands;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsEncoder;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
@@ -48,7 +48,6 @@ public class Launcher extends SpartronicsSubsystem
             turnTurret(0);
             mTurretPotentiometer = new AnalogPotentiometer(
                 Constants.Launcher.kTurretPotentiometerId, 90, -45);
-            setDefaultCommand(new LauncherDefaultCommand(this));
             
             mFeedforwardCalculator = new SimpleMotorFeedforward(Constants.Launcher.kS, 
                 Constants.Launcher.kV, Constants.Launcher.kA);
