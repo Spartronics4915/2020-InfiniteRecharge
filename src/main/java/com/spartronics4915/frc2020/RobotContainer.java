@@ -130,7 +130,7 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed(
                 new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
-        new JoystickButton(mJoystick, 1).toggleWhenPressed(LauncherCommands.new ShootBallTest(mLauncher));
+        new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
     }
 
     private void configureButtonBoardBindings()
