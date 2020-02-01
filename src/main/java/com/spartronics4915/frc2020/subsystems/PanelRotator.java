@@ -7,11 +7,13 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
-
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class PanelRotator extends SpartronicsSubsystem
@@ -50,6 +52,13 @@ public class PanelRotator extends SpartronicsSubsystem
     public int red;
     public int green;
     public int blue;
+
+    private final ColorMatch mColorMatcher = new ColorMatch();
+
+    private final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
+    private final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
+    private final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
+    private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
 
     public PanelRotator()
     {
@@ -98,51 +107,27 @@ public class PanelRotator extends SpartronicsSubsystem
     /** finds what color the color sensor is seeing  (Red, Blue, Yellow, or Green); currently just a placeholder for output */
     public String getActualColor()
     {
-        // TODO: convert to 0-255 for user convenience.
-        red = mColorSensor.getRed();
-        green = mColorSensor.getGreen();
-        blue = mColorSensor.getBlue();
-        sensedColor = "sensor is not working";
-        if (mMinimumRed[0] <= red && red <= mMaximumRed[0])
-        {
-            if (mMinimumRed[1] <= green && green <= mMaximumRed[1])
-            {
-                if (mMinimumRed[2] <= blue && blue <= mMaximumRed[2])
-                {
-                    sensedColor = "Red";
-                }
-            }
+        mColorMatcher.addColorMatch(kBlueTarget);
+        mColorMatcher.addColorMatch(kGreenTarget);
+        mColorMatcher.addColorMatch(kRedTarget);
+        mColorMatcher.addColorMatch(kYellowTarget);
+
+        Color detectedColor = mColorSensor.getColor();
+
+        ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
+
+        if (match.color == kBlueTarget) {
+            sensedColor = "Blue";
+        } else if (match.color == kRedTarget) {
+        sensedColor = "Red";
+        } else if (match.color == kGreenTarget) {
+        sensedColor = "Green";
+        } else if (match.color == kYellowTarget) {
+        sensedColor = "Yellow";
+        } else {
+        sensedColor = "Unknown; this shouldn't ever happen, but it did";
         }
-        if (mMinimumBlue[0] <= red && red <= mMaximumBlue[0])
-        {
-            if (mMinimumBlue[1] <= green && green <= mMaximumBlue[1])
-            {
-                if (mMinimumBlue[2] <= blue && blue <= mMaximumBlue[2])
-                {
-                    sensedColor = "Blue";
-                }
-            }
-        }
-        if (mMinimumYellow[0] <= red && red <= mMaximumYellow[0])
-        {
-            if (mMinimumYellow[1] <= green && green <= mMaximumYellow[1])
-            {
-                if (mMinimumYellow[2] <= blue && blue <= mMaximumYellow[2])
-                {
-                    sensedColor = "Yellow";
-                }
-            }
-        }
-        if (mMinimumGreen[0] <= red && red <= mMaximumGreen[0])
-        {
-            if (mMinimumGreen[1] <= green && green <= mMaximumGreen[1])
-            {
-                if (mMinimumGreen[2] <= blue && blue <= mMaximumGreen[2])
-                {
-                    sensedColor = "Green";
-                }
-            }
-        }
+
         System.out.println(sensedColor);
         return sensedColor;
 
