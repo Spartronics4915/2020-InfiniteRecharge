@@ -44,7 +44,7 @@ public class Launcher extends SpartronicsSubsystem
             mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterId);
             mAngleAdjusterFollowerServo = new Servo(Constants.Launcher.kAngleAdjusterFollowerId);
             // One NEO 550 motor for turret
-            mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretID,
+            mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretId,
                     SensorModel.toRadians(360));
             turnTurret(0);
             mTurretPotentiometer = new AnalogPotentiometer(
@@ -67,7 +67,7 @@ public class Launcher extends SpartronicsSubsystem
     public void runFlywheel()
     {
         mFlywheelMasterMotor.setVelocity(targetRPS, mFeedforwardCalculator.calculate(targetRPS));
-        System.out.println("hello");
+        System.out.println("Flywheel's current rps is " + getCurrentRPS());
     }
 
     /**
@@ -136,8 +136,7 @@ public class Launcher extends SpartronicsSubsystem
     public double getCurrentPitch()
     {
         // NEED ENC OR POT
-        double pitch = mAngleAdjusterMasterServo.getPosition();
-        return pitch;
+        return mAngleAdjusterMasterServo.getPosition();
     }
 
     /**

@@ -7,6 +7,10 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 
 public class LauncherCommands
 {
+    /* 
+    Command for testing, runs flywheel at a given RPS
+    !DO NOT MAKE THE RPS MORE THAN 90!
+    */
     public class ShootBallTest extends CommandBase
     {
     
@@ -49,7 +53,7 @@ public class LauncherCommands
         }
     }
 
-    /* */
+    /*Default command of the launcher subsystem, makes the flywheel's target rps 0*/
     public class LauncherDefaultCommand extends CommandBase
     {
     
