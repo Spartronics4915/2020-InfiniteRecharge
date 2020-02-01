@@ -247,4 +247,10 @@ public class SpartronicsSRX implements SpartronicsMotor {
         mTalonSRX.set(ControlMode.Disabled, 0.0, DemandType.Neutral, 0.0);
     }
 
+    @Override
+    public double getOutputCurrent()
+    {
+        return mTalonSRX.getStatorCurrent();
+    }
+
 }

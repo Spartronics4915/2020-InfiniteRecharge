@@ -274,4 +274,10 @@ public class SpartronicsMax implements SpartronicsMotor
         mSparkMax.getPIDController().setReference(0.0, ControlType.kDutyCycle, 0);
     }
 
+    @Override
+    public double getOutputCurrent()
+    {
+        return mSparkMax.getOutputCurrent();
+    }
+
 }
