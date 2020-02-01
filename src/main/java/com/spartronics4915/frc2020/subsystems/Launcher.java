@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 
 public class Launcher extends SpartronicsSubsystem
 {
-
     private SpartronicsMotor mFlywheelMasterMotor;
     private SpartronicsEncoder mFlywheelEncoder;
     private Servo mAngleAdjusterMasterServo;
@@ -25,7 +24,7 @@ public class Launcher extends SpartronicsSubsystem
     private double targetAngle;
 
     private SimpleMotorFeedforward mFeedforwardCalculator = new SimpleMotorFeedforward(
-            Constants.Launcher.kS, Constants.Launcher.kV, Constants.Launcher.kA);
+        Constants.Launcher.kS, Constants.Launcher.kV, Constants.Launcher.kA);
 
     public Launcher()
     {
@@ -35,28 +34,28 @@ public class Launcher extends SpartronicsSubsystem
         {
             // ONE NEO for flywheel
             mFlywheelMasterMotor = SpartronicsMax.makeMotor(
-                    /*Constants.Launcher.kFlywheelMasterID*/2,
-                    SensorModel.fromMultiplier(1)/*, Constants.Launcher.kFlywheelFollowerID*/);
+                /*Constants.Launcher.kFlywheelMasterID*/2,
+                SensorModel.fromMultiplier(1)/*, Constants.Launcher.kFlywheelFollowerID*/);
             mFlywheelMasterMotor.setVelocityGains(0.00154, 0, 0, 0);
             mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
 
             // Two Servos for angle adjustement
-            mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterID);
-            mAngleAdjusterFollowerServo = new Servo(Constants.Launcher.kAngleAdjusterFollowerID);
+            mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterId);
+            mAngleAdjusterFollowerServo = new Servo(Constants.Launcher.kAngleAdjusterFollowerId);
             // One NEO 550 motor for turret
             /*mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretID,
                     SensorModel.toRadians(360));*/
             turnTurret(0);
             mTurretPotentiometer = new AnalogPotentiometer(
-                    Constants.Launcher.kTurretPotentiometerID, 90, -45);
+                Constants.Launcher.kTurretPotentiometerId, 90, -45);
             setDefaultCommand(new LauncherDefaultCommand(this));
             success = true;
         }
         catch (Exception e)
         {
             // TODO: handle exception
-            success = false;
             logException("Could not instantiate Launcher: ", e);
+            success = false;
         }
         logInitialized(success);
     }

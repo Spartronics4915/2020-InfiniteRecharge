@@ -13,11 +13,14 @@ public class Kinematics
 {
     // TODO: Deduplicate kinematics once we add in path following stuff (i.e. remove this file)
 
-    private final double mTrackWidthInches, mScrubFactor;
+    /**
+     * Meters
+     */
+    private final double mTrackWidth, mScrubFactor;
 
-    public Kinematics(double trackWidthInches, double scrubFactor)
+    public Kinematics(double trackWidthMeters, double scrubFactor)
     {
-        mTrackWidthInches = trackWidthInches;
+        mTrackWidth = trackWidthMeters;
         mScrubFactor = scrubFactor;
     }
 
@@ -28,7 +31,7 @@ public class Kinematics
     public Twist2d forwardKinematics(double leftWheelDelta, double rightWheelDelta)
     {
         double delta_rotation = (rightWheelDelta - leftWheelDelta)
-                / (mTrackWidthInches * mScrubFactor);
+                / (mTrackWidth * mScrubFactor);
         return forwardKinematics(leftWheelDelta, rightWheelDelta, delta_rotation);
     }
 
