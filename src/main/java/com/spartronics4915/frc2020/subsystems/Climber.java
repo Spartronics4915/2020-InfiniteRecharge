@@ -41,12 +41,12 @@ public class Climber extends SpartronicsSubsystem
         if (stalled)
             mWinchMotor.setDutyCycle(Constants.Climber.kWinchSpeed);
         else
-            mWinchMotor.setDutyCycle(-Constants.Climber.kWinchSpeed);
+            mWinchMotor.setDutyCycle(Constants.Climber.kReverseWinchSpeed);
     }
 
     public void retract()
     {
-        mLiftMotor.setDutyCycle(-Constants.Climber.kExtendSpeed);
+        mLiftMotor.setDutyCycle(Constants.Climber.kReverseExtendSpeed);
         mWinchMotor.setDutyCycle(0.0);
     }
 
