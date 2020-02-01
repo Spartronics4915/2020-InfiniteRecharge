@@ -31,12 +31,15 @@ public class Indexer extends SpartronicsSubsystem
     {
         // Set up Spinner
         mSpinnerModel = SensorModel.fromMultiplier(Constants.Indexer.Spinner.kConversionRatio);
-        mSpinnerMotor = SpartronicsMax.makeMotor(Constants.Indexer.Spinner.kMotorId, mSpinnerModel);
+        mSpinnerMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Spinner.kMotorId, mSpinnerModel);
         // Set up gains
         mSpinnerMotor.setVelocityGains(Constants.Indexer.Spinner.kVelocityP,
             Constants.Indexer.Spinner.kVelocityD);
         mSpinnerMotor.setPositionGains(Constants.Indexer.Spinner.kPositionP,
             Constants.Indexer.Spinner.kPositionD);
+        mSpinnerMotor.setMotionProfileCruiseVelocity(Constants.Indexer.Spinner.kMaxVelocity); // Set motion profile
+        mSpinnerMotor.setMotionProfileMaxAcceleration(Constants.Indexer.Spinner.kMaxAcceleration);
+        mSpinnerMotor.setUseMotionProfileForPosition(true);
 
         // Set up Loader
         mLoaderModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);

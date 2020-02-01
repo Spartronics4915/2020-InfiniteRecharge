@@ -2,7 +2,6 @@ package com.spartronics4915.frc2020;
 
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
-import com.spartronics4915.lib.math.twodim.geometry.Translation2d;
 
 import edu.wpi.first.wpilibj.util.Units;
 import java.io.IOException;
@@ -34,6 +33,8 @@ public final class Constants
             public static final double kPositionP = 1;
             public static final double kPositionD = 1;
             public static final double kConversionRatio = 1;
+            public static final double kMaxVelocity = 1;
+            public static final double kMaxAcceleration = 1;
         }
 
         public static final class Loader
