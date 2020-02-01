@@ -7,13 +7,6 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 
 public class PanelRotatorCommands
 {
-    private final PanelRotator mPanelRotator;
-
-    public PanelRotatorCommands(PanelRotator PanelRotator)
-    {
-        this.mPanelRotator = PanelRotator;
-    }
-
     /**
      * Commands with simple logic statements should be implemented as a
      * FunctionalCommand. This saves the overhead of a full CommandBase, but still
@@ -21,29 +14,32 @@ public class PanelRotatorCommands
      */
     public class Raise extends FunctionalCommand
     {
-        public Raise(PanelRotator mPanelRotator)
+        public Raise(PanelRotator PanelRotator)
         {
-            super(() -> {}, mPanelRotator::raise, (Boolean b) -> mPanelRotator.stop(),
-                mPanelRotator::getBeamSensorUp, mPanelRotator);
+            super(() -> {}, PanelRotator::raise, (Boolean b) -> PanelRotator.stop(),
+                PanelRotator::getBeamSensorUp, PanelRotator);
         }
     }
 
     public class Lower extends FunctionalCommand
     {
-        public Lower(PanelRotator mPanelRotator)
+        public Lower(PanelRotator PanelRotator)
         {
-            super(() -> {}, mPanelRotator::lower, (Boolean b) -> mPanelRotator.stop(),
-                mPanelRotator::getBeamSensorDown, mPanelRotator);
+            super(() -> {}, PanelRotator::lower, (Boolean b) -> PanelRotator.stop(),
+                PanelRotator::getBeamSensorDown, PanelRotator);
         }
     }
 
     // TODO: This might be better as a FunctionalCommand
     public class SpinToColor extends CommandBase
     {
+        private final PanelRotator mPanelRotator;
+
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public SpinToColor()
+        public SpinToColor(PanelRotator PanelRotator)
         {
+            mPanelRotator = PanelRotator;
             addRequirements(mPanelRotator);
         }
 
@@ -87,6 +83,8 @@ public class PanelRotatorCommands
      */
     public class SpinOnce extends CommandBase
     {
+        private final PanelRotator mPanelRotator;
+
         public int eighths;
         public String currentColor;
         public String lastColor;
@@ -95,6 +93,7 @@ public class PanelRotatorCommands
         // CommandGroup.
         public SpinOnce()
         {
+            mPanelRotator = PanelRotator;
             addRequirements(mPanelRotator);
         }
 
