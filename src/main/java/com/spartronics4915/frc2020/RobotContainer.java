@@ -7,6 +7,7 @@ import com.spartronics4915.frc2020.commands.*;
 import com.spartronics4915.lib.hardware.sensors.T265Camera;
 import com.spartronics4915.lib.hardware.sensors.T265Camera.CameraJNIException;
 import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
+import com.spartronics4915.lib.subsystems.drive.CharacterizeDriveBaseCommand;
 import com.spartronics4915.lib.subsystems.drive.TrajectoryTrackerCommand;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
 import com.spartronics4915.lib.util.Kinematics;
@@ -98,11 +99,15 @@ public class RobotContainer
         mStateEstimator = new RobotStateEstimator(mDrive,
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
             slamra);
-        mAutoModes = new AutoMode[] {kDefaultAutoMode,
-            new AutoMode("drive straight",
+        mAutoModes = new AutoMode[] {
+            kDefaultAutoMode,
+            new AutoMode("Drive Straight",
                 new TrajectoryTrackerCommand(mDrive,
                     TrajectoryContainer.middle.getTrajectory(Destination.backOfShieldGenerator),
-                    mRamseteController, mStateEstimator.getCameraRobotStateMap()))};
+                    mRamseteController, mStateEstimator.getCameraRobotStateMap())),
+            new AutoMode("Characterize Drive",
+                new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter))
+        };
     }
 
     private void configureJoystickBindings()

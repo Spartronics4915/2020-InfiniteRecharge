@@ -14,6 +14,8 @@ public class CharacterizeDriveBaseCommand implements Command {
     private final AbstractDrive mDrive;
     private final NetworkTableEntry mAutoSpeedEntry = NetworkTableInstance.getDefault().getEntry("/robot/autospeed");
     private final NetworkTableEntry mTelemetryEntry = NetworkTableInstance.getDefault().getEntry("/robot/telemetry");
+    private final NetworkTableEntry rotateEntry = NetworkTableInstance.getDefault().getEntry("/robot/rotate");
+
     /** Meters */
     private final double mWheelCircumference;
 
@@ -47,7 +49,7 @@ public class CharacterizeDriveBaseCommand implements Command {
                 / mWheelCircumference * (2 * Math.PI);
         double leftVelocity = mDrive.getLeftMotor().getEncoder().getVelocity() / mWheelCircumference * (2 * Math.PI);
 
-        // radians and raians/s
+        // radians and radians/s
         double rightPosition = (mDrive.getRightMotor().getEncoder().getPosition() - mRightInitialPosition)
                 / mWheelCircumference * (2 * Math.PI);
         double rightVelocity = mDrive.getLeftMotor().getEncoder().getVelocity() / mWheelCircumference * (2 * Math.PI);
@@ -62,7 +64,7 @@ public class CharacterizeDriveBaseCommand implements Command {
         // percent output on [-1 1]
         double autospeed = mAutoSpeedEntry.getDouble(0.0);
 
-        mDrive.tankDrive(autospeed, autospeed);
+        mDrive.tankDrive((rotateEntry.getBoolean(false) ? -1 : 1) * autospeed, autospeed);
 
         // send telemetry data array back to NT
         mOutputArray[0] = now;
@@ -75,6 +77,7 @@ public class CharacterizeDriveBaseCommand implements Command {
         mOutputArray[7] = leftVelocity;
         mOutputArray[8] = rightVelocity;
         mOutputArray[9] = mDrive.getIMUHeading().getRadians();
+        
         mTelemetryEntry.setNumberArray(mOutputArray);
     }
 
