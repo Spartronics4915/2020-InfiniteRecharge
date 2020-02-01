@@ -29,15 +29,9 @@ public class ClimberCommands
 
     public class Retract extends StartEndCommand
     {
-        public Retract(Climber c)
+        public Retract()
         {
-            super(() ->
-            {
-                c.retract();
-            }, () ->
-            {
-                c.stop();
-            });
+            super(mClimber::retract, mClimber::stop, mClimber);
         }
     }
 
@@ -45,10 +39,8 @@ public class ClimberCommands
     {
         public WinchPrimary(Climber mClimber)
         {
-            super(() ->
-            {
-            }, () -> mClimber.winch(!Constants.Climber.kStalled), (Boolean b) -> mClimber.stop(),
-                    mClimber::isStalled, mClimber);
+            super(() -> {}, () -> mClimber.winch(!Constants.Climber.kStalled),
+                (Boolean b) -> mClimber.stop(), mClimber::isStalled, mClimber);
         }
     }
 
