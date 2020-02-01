@@ -5,9 +5,8 @@ import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 /** 
  * The Intake subsystem takes balls from 
@@ -15,8 +14,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
  */
 public class Intake extends SpartronicsSubsystem 
 {
-    private final SpartronicsMotor mHarvestMotor;
-    private final SpartronicsMotor mIngestMotor;
+    private SpartronicsMotor mHarvestMotor;
+    private SpartronicsMotor mIngestMotor;
 
     /** constructor **/
     public Intake()
