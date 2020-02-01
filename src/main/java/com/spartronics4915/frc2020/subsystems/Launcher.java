@@ -23,8 +23,7 @@ public class Launcher extends SpartronicsSubsystem
     private double targetRPS;
     private double targetAngle;
 
-    private SimpleMotorFeedforward mFeedforwardCalculator = new SimpleMotorFeedforward(
-        Constants.Launcher.kS, Constants.Launcher.kV, Constants.Launcher.kA);
+    private SimpleMotorFeedforward mFeedforwardCalculator;
 
     public Launcher()
     {
@@ -50,6 +49,9 @@ public class Launcher extends SpartronicsSubsystem
             mTurretPotentiometer = new AnalogPotentiometer(
                 Constants.Launcher.kTurretPotentiometerId, 90, -45);
             setDefaultCommand(new LauncherDefaultCommand(this));
+            
+            mFeedforwardCalculator = new SimpleMotorFeedforward(Constants.Launcher.kS, 
+                Constants.Launcher.kV, Constants.Launcher.kA);
             success = true;
         }
         catch (Exception e)
