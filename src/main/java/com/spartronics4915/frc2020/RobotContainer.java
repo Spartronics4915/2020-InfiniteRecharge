@@ -55,6 +55,7 @@ public class RobotContainer
     private final PanelRotator mPanelRotator;
     private final LED mLED;
     private final ClimberCommands mClimberCommands;
+    private final LauncherCommands mLauncherCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
 
     private final Joystick mJoystick;
@@ -75,6 +76,7 @@ public class RobotContainer
         mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
         mClimberCommands = new ClimberCommands();
+        mLauncherCommands = new LauncherCommands();
         mPanelRotatorCommands = new PanelRotatorCommands();
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
@@ -128,7 +130,7 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed(
                 new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
-        new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(mLauncher));
+        new JoystickButton(mJoystick, 1).toggleWhenPressed(LauncherCommands.new ShootBallTest(mLauncher));
     }
 
     private void configureButtonBoardBindings()
