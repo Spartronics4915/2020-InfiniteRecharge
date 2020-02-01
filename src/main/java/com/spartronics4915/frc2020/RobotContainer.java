@@ -5,6 +5,7 @@ import java.util.Set;
 import com.spartronics4915.frc2020.TrajectoryContainer.Destination;
 import com.spartronics4915.frc2020.commands.*;
 import com.spartronics4915.lib.hardware.sensors.T265Camera;
+import com.spartronics4915.lib.hardware.sensors.T265Camera.CameraJNIException;
 import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
 import com.spartronics4915.lib.subsystems.drive.TrajectoryTrackerCommand;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
@@ -83,6 +84,17 @@ public class RobotContainer
         configureButtonBoardBindings();
 
         mDrive = new Drive();
+
+        T265Camera slamra;
+        try
+        {
+            slamra = new T265Camera(Constants.Estimator.kCameraOffset,
+                Constants.Estimator.kMeasurementCovariance);
+        }
+        catch (CameraJNIException e)
+        {
+            slamra = null;
+        }
         mStateEstimator = new RobotStateEstimator(mDrive,
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
             new T265Camera(Constants.Estimator.kCameraOffset,

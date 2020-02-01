@@ -3,6 +3,8 @@ package com.spartronics4915.frc2020.subsystems;
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
+import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
+import com.spartronics4915.lib.hardware.motors.SensorModel;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -13,14 +15,14 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
  */
 public class Intake extends SpartronicsSubsystem 
 {
-    private final CANSparkMax mHarvestMotor;
-    private final CANSparkMax mIngestMotor;
+    private final SpartronicsMotor mHarvestMotor;
+    private final SpartronicsMotor mIngestMotor;
 
     /** constructor **/
     public Intake()
     {
-        mHarvestMotor = new CANSparkMax(Constants.Intake.kHarvestMotorId, MotorType.kBrushless);
-        mIngestMotor = new CANSparkMax(Constants.Intake.kIngestMotorId, MotorType.kBrushless);
+        mHarvestMotor = SpartronicsSRX.makeMotor(Constants.Intake.kHarvestMotorId, SensorModel.fromMultiplier(1));
+        mIngestMotor = SpartronicsSRX.makeMotor(Constants.Intake.kIngestMotorId, SensorModel.fromMultiplier(1));
     }
 
     /** 
@@ -29,7 +31,7 @@ public class Intake extends SpartronicsSubsystem
     **/
     public void harvestIntake() 
     {
-        mHarvestMotor.set(Constants.Intake.kHarvestSpeed);
+        mHarvestMotor.setDutyCycle(Constants.Intake.kHarvestSpeed);
     }
 
     /** 
@@ -38,31 +40,31 @@ public class Intake extends SpartronicsSubsystem
     **/
     public void ingestIntake() 
     {
-        mIngestMotor.set(Constants.Intake.kIngestSpeed);
+        mIngestMotor.setDutyCycle(Constants.Intake.kIngestSpeed);
     }
 
     /** reverses vector wheels **/
     public void harvestReverse() 
     {
-        mHarvestMotor.set(-Constants.Intake.kHarvestSpeed);
+        mHarvestMotor.setDutyCycle(-Constants.Intake.kHarvestSpeed);
     }
 
     /** reverses prism roller **/
     public void ingestReverse() 
     {
-        mIngestMotor.set(-Constants.Intake.kIngestSpeed);
+        mIngestMotor.setDutyCycle(-Constants.Intake.kIngestSpeed);
     }
 
     /** stops vector wheels **/
     public void harvestStop() 
     {
-        mHarvestMotor.set(0.0);
+        mHarvestMotor.setDutyCycle(0.0);
     }
 
     /** stops prism roller **/
     public void ingestStop() 
     {
-        mIngestMotor.set(0.0);
+        mIngestMotor.setDutyCycle(0.0);
     }
 
     /** checks to see if ball is held in intake chamber **/
@@ -74,7 +76,7 @@ public class Intake extends SpartronicsSubsystem
     /** universal stop method **/
     public void stop()
     {
-        mHarvestMotor.set(0.0);
-        mIngestMotor.set(0.0);
+        mHarvestMotor.setNeutral();
+        mIngestMotor.setNeutral();
     }
 }
