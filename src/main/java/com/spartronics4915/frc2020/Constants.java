@@ -66,8 +66,8 @@ public final class Constants
     {
         public static final int kFlywheelMasterId = 7;
         public static final int kFlywheelFollowerId = -1; // Solid brass
-        public static final int kAngleAdjusterMasterId = -1;
-        public static final int kAngleAdjusterFollowerId = -1;
+        public static final int kAngleAdjusterMasterId = 0;
+        public static final int kAngleAdjusterFollowerId = 1;
         public static final int kTurretId = 8;
         public static final int kTurretPotentiometerId = 9;
     }
@@ -119,15 +119,15 @@ public final class Constants
     {
         public static final double kStartVelocityMetersPerSec = 0;
         public static final double kEndVelocityMetersPerSec = 0;
-        public static final double kMaxVelocityMetersPerSec = 12;
+        public static final double kMaxVelocityMetersPerSec = 1;
         public static final double kMaxAccelerationMeterPerSecSq = 1;
 
-        // TODO: get world coordinates for start point left
-        public static final Pose2d kStartPointLeft = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
-        // TODO: get world coordinates for start point middle
-        public static final Pose2d kStartPointMiddle = new Pose2d(50, 0, Rotation2d.fromDegrees(0));
-        // TODO: get world coordinates for start point right
-        public static final Pose2d kStartPointRight = new Pose2d(100, 0, Rotation2d.fromDegrees(0));
+        public static final Pose2d kStartPointLeft = new Pose2d(Units.inchesToMeters(508), Units.inchesToMeters(138),
+                Rotation2d.fromDegrees(0));
+        public static final Pose2d kStartPointMiddle = new Pose2d(Units.inchesToMeters(508), Units.inchesToMeters(-54),
+                Rotation2d.fromDegrees(0));
+        public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(508), Units.inchesToMeters(-138),
+                Rotation2d.fromDegrees(0));
     }
 
     public static final class Estimator

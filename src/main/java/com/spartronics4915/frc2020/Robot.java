@@ -34,7 +34,7 @@ public class Robot extends TimedRobot
     {
         // TODO: verify call to DISABLED bling state
         Logger.notice("@disabledInit: Requested BlingState.DISABLED");
-        mRobotContainer.setBlingState(BlingState.DISABLED);
+        // mRobotContainer.setBlingState(BlingState.DISABLED);
     }
 
     @Override
