@@ -35,7 +35,8 @@ public class PanelRotatorCommands
     {
         private final PanelRotator mPanelRotator;
 
-        // You should only use one subsystem per command. If multiple are needed, use a CommandGroup.
+        // You should only use one subsystem per command. If multiple are needed, use a
+        // CommandGroup.
         public SpinToColor(PanelRotator PanelRotator)
         {
             mPanelRotator = PanelRotator;
@@ -88,7 +89,8 @@ public class PanelRotatorCommands
         public String lastColor;
         public String currentColor;
 
-        // You should only use one subsystem per command. If multiple are needed, use a CommandGroup.
+        // You should only use one subsystem per command. If multiple are needed, use a
+        // CommandGroup.
         public SpinRotation(PanelRotator PanelRotator)
         {
             mPanelRotator = PanelRotator;

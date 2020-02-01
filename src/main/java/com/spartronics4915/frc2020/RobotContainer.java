@@ -2,7 +2,13 @@ package com.spartronics4915.frc2020;
 
 import java.util.Set;
 
+import com.spartronics4915.frc2020.TrajectoryContainer.Destination;
 import com.spartronics4915.frc2020.commands.*;
+import com.spartronics4915.lib.hardware.sensors.T265Camera;
+import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
+import com.spartronics4915.lib.subsystems.drive.TrajectoryTrackerCommand;
+import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
+import com.spartronics4915.lib.util.Kinematics;
 import com.spartronics4915.frc2020.subsystems.*;
 import com.spartronics4915.frc2020.subsystems.LED.BlingState;
 import com.spartronics4915.lib.util.Logger;
@@ -53,6 +59,10 @@ public class RobotContainer
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
 
+    private final Drive mDrive;
+    private final RamseteTracker mRamseteController = new RamseteTracker(2, 0.7);
+    private final RobotStateEstimator mStateEstimator;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -72,7 +82,16 @@ public class RobotContainer
         configureJoystickBindings();
         configureButtonBoardBindings();
 
-        mAutoModes = new AutoMode[] {kDefaultAutoMode};
+        mDrive = new Drive();
+        mStateEstimator = new RobotStateEstimator(mDrive,
+            new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
+            new T265Camera(Constants.Estimator.kCameraOffset,
+                Constants.Estimator.kMeasurementCovariance));
+        mAutoModes = new AutoMode[] {kDefaultAutoMode,
+            new AutoMode("drive straight",
+                new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.middle.getTrajectory(Destination.backOfShieldGenerator),
+                    mRamseteController, mStateEstimator.getCameraRobotStateMap()))};
     }
 
     private void configureJoystickBindings()
@@ -114,15 +133,19 @@ public class RobotContainer
         new JoystickButton(mButtonBoard, 5).whenPressed(new LauncherCommands.AimHigh(mLauncher));
         */
 
-        new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
-        new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
-        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
-        new JoystickButton(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinRotation(mPanelRotator));
+        new JoystickButton(mButtonBoard, 6)
+            .whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
+        new JoystickButton(mButtonBoard, 7)
+            .whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
+        new JoystickButton(mButtonBoard, 8)
+            .whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
+        new JoystickButton(mButtonBoard, 9)
+            .whenPressed(mPanelRotatorCommands.new SpinRotation(mPanelRotator));
 
         new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber));
         new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Retract(mClimber));
         new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new WinchPrimary(mClimber)
-                .andThen(mClimberCommands.new WinchSecondary(mClimber)));
+            .andThen(mClimberCommands.new WinchSecondary(mClimber)));
 
         /*
         new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
@@ -138,7 +161,8 @@ public class RobotContainer
      */
     public Command getAutonomousCommand()
     {
-        String selectedModeName = SmartDashboard.getString(kSelectedAutoModeKey, "NO SELECTED MODE!!!!");
+        String selectedModeName = SmartDashboard.getString(kSelectedAutoModeKey,
+            "NO SELECTED MODE!!!!");
         Logger.notice("Auto mode name " + selectedModeName);
         for (var mode : mAutoModes)
         {
