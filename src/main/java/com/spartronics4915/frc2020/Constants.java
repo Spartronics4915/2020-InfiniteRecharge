@@ -2,8 +2,6 @@ package com.spartronics4915.frc2020;
 
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
-import com.spartronics4915.lib.math.twodim.geometry.Translation2d;
-
 import edu.wpi.first.wpilibj.util.Units;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -49,7 +47,8 @@ public final class Constants
 
         public static final int kProxSensorId = 4; // DIO4 // Proximity Sensor (index slot one)
         public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
-        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag is inverted
+        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag
+                                                                  // is inverted
     }
 
     public static final class Intake
@@ -84,7 +83,7 @@ public final class Constants
         public static final int kExtendMotorID = -1;
         public static final int kSpinMotorID = -1;
 
-        public static final double kExtendMotorSpeed = 0.5;
+        public static final double kExtendMotorSpeed = 0.1;
         public static final double kSpinMotorSpeed = 0.5;
     }
 
@@ -139,7 +138,7 @@ public final class Constants
     {
         String config = "default";
         Path machineIDPath = FileSystems.getDefault().getPath(System.getProperty("user.home"),
-                "machineid");
+            "machineid");
         try
         {
             config = Files.readString(machineIDPath).trim().toLowerCase();

@@ -127,7 +127,8 @@ public class RobotContainer
         new JoystickButton(mButtonBoard, 2).whileHeld(new IntakeCommands.Unjam(mIntake));
         */
 
-        new JoystickButton(mJoystick, 1).whenPressed(mPanelRotatorCommands.new ColorSensorTesting(mPanelRotator));
+        new JoystickButton(mJoystick, 1)
+            .whenPressed(mPanelRotatorCommands.new ColorSensorTesting(mPanelRotator));
 
         /*
         new JoystickButton(mButtonBoard, 3).whenPressed(new LauncherCommands.AimLow(mLauncher));

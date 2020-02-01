@@ -135,6 +135,7 @@ public class PanelRotatorCommands
             mPanelRotator.stop();
         }
     }
+
     public class ColorSensorTesting extends CommandBase
     {
         private final PanelRotator mPanelRotator;

@@ -84,7 +84,8 @@ public class PanelRotator extends SpartronicsSubsystem
     }
 
     /** */
-    public String getRGB(){
+    public String getRGB()
+    {
         int red = mColorSensor.getRed();
         int green = mColorSensor.getGreen();
         int blue = mColorSensor.getBlue();
@@ -144,8 +145,8 @@ public class PanelRotator extends SpartronicsSubsystem
         }
         System.out.println(sensedColor);
         return sensedColor;
-        
-        //return "method not complete";
+
+        // return "method not complete";
     }
 
     /** sees if the bottom beam sensor is triggered */
