@@ -73,7 +73,7 @@ public final class Constants
 
     public static final class OI
     {
-        public static final int kJoystickId = 1;
+        public static final int kJoystickId = 0;
         public static final int kButtonBoardId = 1;
     }
 
