@@ -6,6 +6,7 @@ import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
 import com.revrobotics.ColorSensorV3;
@@ -16,8 +17,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 public class PanelRotator extends SpartronicsSubsystem
 {
-    private final SpartronicsMotor mSpinMotor;
-    private final SpartronicsMotor mExtendMotor;
+    private SpartronicsMotor mSpinMotor;
+    private SpartronicsMotor mExtendMotor;
 
     private final DigitalInput mBeamSensorUp;
     private final DigitalInput mBeamSensorDown;
@@ -59,6 +60,14 @@ public class PanelRotator extends SpartronicsSubsystem
             SensorModel.fromMultiplier(1));
         mExtendMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kExtendMotorID,
             SensorModel.fromMultiplier(1));
+        if (mSpinMotor.hadStartupError() || mExtendMotor.hadStartupError())
+        {
+            mSpinMotor = new SpartronicsSimulatedMotor();
+            mExtendMotor = new SpartronicsSimulatedMotor();
+            logInitialized(false);
+        } else {
+            logInitialized(true);
+        }
         // mSpinMotor = new CANSparkMax(Constants.PanelRotator.kSpinMotorID,
         // MotorType.kBrushless);
         // mExtendMotor = new TalonSRX(Constants.PanelRotator.kExtendMotorID);

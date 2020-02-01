@@ -23,6 +23,14 @@ public class Intake extends SpartronicsSubsystem
     {
         mHarvestMotor = SpartronicsSRX.makeMotor(Constants.Intake.kHarvestMotorId, SensorModel.fromMultiplier(1));
         mIngestMotor = SpartronicsSRX.makeMotor(Constants.Intake.kIngestMotorId, SensorModel.fromMultiplier(1));
+        if (mHarvestMotor.hadStartupError() || mIngestMotor.hadStartupError())
+        {
+            mHarvestMotor = new SpartronicsSimulatedMotor();
+            mIngestMotor = new SpartronicsSimulatedMotor();
+            logInitialized(false);
+        } else {
+            logInitialized(true);
+        }
     }
 
     /** 

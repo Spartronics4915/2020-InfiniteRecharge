@@ -11,6 +11,7 @@ import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 
 /**
  * This subsystem has two motors. A NEO using a Spark, while the other is a 775 PRO using a Talon.
@@ -19,14 +20,23 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
  */
 public class Climber extends SpartronicsSubsystem
 {
-    private final SpartronicsMotor mLiftMotor;
-    private final SpartronicsMotor mWinchMotor;
+    private SpartronicsMotor mLiftMotor;
+    private SpartronicsMotor mWinchMotor;
 
     public Climber()
     {
         // Hardware Contructor (Add motors and such here when I get them)
         mLiftMotor = SpartronicsSRX.makeMotor(Constants.Climber.kLiftMotorId, SensorModel.fromMultiplier(1));
         mWinchMotor = SpartronicsMax.makeMotor(Constants.Climber.kWinchMotorId, SensorModel.fromMultiplier(1));
+
+        if (mLiftMotor.hadStartupError() || mWinchMotor.hadStartupError())
+        {
+            mLiftMotor = new SpartronicsSimulatedMotor();
+            mWinchMotor = new SpartronicsSimulatedMotor();
+            logInitialized(false);
+        } else {
+            logInitialized(true);
+        }
     }
 
     public void extend()

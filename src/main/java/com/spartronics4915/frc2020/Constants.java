@@ -66,8 +66,8 @@ public final class Constants
     {
         public static final int kFlywheelMasterId = 7;
         public static final int kFlywheelFollowerId = -1; // Solid brass
-        public static final int kAngleAdjusterMasterId = -1;
-        public static final int kAngleAdjusterFollowerId = -1;
+        public static final int kAngleAdjusterMasterId = 0;
+        public static final int kAngleAdjusterFollowerId = 1;
         public static final int kTurretId = 8;
         public static final int kTurretPotentiometerId = 9;
     }
