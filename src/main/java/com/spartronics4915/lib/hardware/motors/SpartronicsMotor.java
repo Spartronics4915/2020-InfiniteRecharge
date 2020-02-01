@@ -145,4 +145,9 @@ public interface SpartronicsMotor {
      * Turns the motor off.
      */
     void setNeutral();
+
+    /**
+     * @return The output current of the motor in amps.
+     */
+    double getOutputCurrent();
 }
