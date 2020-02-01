@@ -1,5 +1,6 @@
 package com.spartronics4915.frc2020;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import com.spartronics4915.frc2020.TrajectoryContainer.Destination;
@@ -8,14 +9,24 @@ import com.spartronics4915.frc2020.subsystems.Drive;
 import com.spartronics4915.frc2020.subsystems.Launcher;
 import com.spartronics4915.lib.hardware.sensors.T265Camera;
 import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
+import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
+import com.spartronics4915.lib.math.twodim.geometry.Pose2dWithCurvature;
+import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
+import com.spartronics4915.lib.math.twodim.trajectory.constraints.TimingConstraint;
+import com.spartronics4915.lib.math.twodim.trajectory.types.TimedTrajectory;
 import com.spartronics4915.lib.subsystems.drive.TrajectoryTrackerCommand;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
+import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 import com.spartronics4915.lib.util.Kinematics;
 import com.spartronics4915.lib.util.Logger;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -36,7 +47,6 @@ public class RobotContainer
     }
 
     public static final String kAutoOptionsKey = "AutoStrategyOptions";
-    public static final String kSelectedAutoModeKey = "AutoStrategy";
     public static final AutoMode kDefaultAutoMode = new AutoMode("All: Do Nothing", new Command()
     {
         @Override
@@ -46,6 +56,8 @@ public class RobotContainer
         }
     });
 
+    public final NetworkTableEntry mAutoModeEntry = NetworkTableInstance.getDefault()
+            .getTable("SmartDashboard").getEntry("AutoModeStrategy");
     public final AutoMode[] mAutoModes;
 
     private Joystick mJoystick = new Joystick(Constants.OI.kJoystickId);
@@ -70,8 +82,12 @@ public class RobotContainer
         mAutoModes = new AutoMode[]
         {kDefaultAutoMode, new AutoMode("drive straight",
                 new TrajectoryTrackerCommand(mDrive,
-                        TrajectoryContainer.middle.getTrajectory(Destination.backOfShieldGenerator),
-                        mRamseteController, mStateEstimator.getCameraRobotStateMap()))};
+                        TrajectoryContainer.left.getTrajectory(null, Destination.LeftTrenchFar),
+                        mRamseteController, mStateEstimator.getCameraRobotStateMap())),
+                new AutoMode("drive through trench",
+                        new TrajectoryTrackerCommand(mDrive, throughTrench(), mRamseteController,
+                                mStateEstimator.getCameraRobotStateMap()))};
+
     }
 
     private void configureJoystickBindings()
@@ -88,6 +104,8 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed();
         */
         new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(new Launcher()));
+        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive,
+                throughTrench(), mRamseteController, mStateEstimator.getCameraRobotStateMap()));
     }
 
     private void configureButtonBoardBindings()
@@ -119,8 +137,7 @@ public class RobotContainer
      */
     public Command getAutonomousCommand()
     {
-        String selectedModeName = SmartDashboard.getString(kSelectedAutoModeKey,
-                "NO SELECTED MODE!!!!");
+        String selectedModeName = mAutoModeEntry.getString("NO SELECTED MODE!!!!");
         Logger.notice("Auto mode name " + selectedModeName);
         for (var mode : mAutoModes)
         {
@@ -132,5 +149,46 @@ public class RobotContainer
 
         Logger.error("AutoModeSelector failed to select auto mode: " + selectedModeName);
         return kDefaultAutoMode.command;
+    }
+
+    public TimedTrajectory<Pose2dWithCurvature> throughTrench()
+    {
+        ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
+        Pose2d[] intermediate = new Pose2d[]
+        {new Pose2d(Units.inchesToMeters(424), Units.inchesToMeters(135),
+                Rotation2d.fromDegrees(180)),
+                new Pose2d(Units.inchesToMeters(207), Units.inchesToMeters(135),
+                        Rotation2d.fromDegrees(180))};
+        for (int i = 0; i < intermediate.length; i++)
+        {
+            Pose2d pose = intermediate[i];
+            intermediate[i] = new Pose2d(pose.getTranslation().getX() - Units.inchesToMeters(312.5),
+                    pose.getTranslation().getY(), pose.getRotation());
+        }
+        RobotStateMap stateMap = mStateEstimator.getCameraRobotStateMap();
+        Pose2d robotPose = stateMap.getLatestState().pose;
+        double robotX = robotPose.getTranslation().getX();
+        if (robotX < Units.inchesToMeters(312.5))
+        {
+            for (int i = 0; i < intermediate.length; i++)
+            {
+                Pose2d pose = intermediate[i];
+                intermediate[i] = new Pose2d(-pose.getTranslation().getX(),
+                        pose.getTranslation().getY(), Rotation2d.fromDegrees(0));
+            }
+        }
+        for (int i = 0; i < intermediate.length; i++)
+        {
+            Pose2d pose = intermediate[i];
+            intermediate[i] = new Pose2d(pose.getTranslation().getX() + Units.inchesToMeters(312.5),
+                    pose.getTranslation().getY(), pose.getRotation());
+        }
+        waypoints.add(robotPose);
+        for (Pose2d pose : intermediate)
+        {
+            waypoints.add(pose);
+        }
+        ArrayList<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
+        return TrajectoryContainer.generateTrajectory(waypoints, constraints);
     }
 }
