@@ -58,6 +58,6 @@ public class Climber extends SpartronicsSubsystem
 
     public boolean isStalled()
     {
-        return mWinchMotor.getOutputCurrent() == 10;
+        return mWinchMotor.getOutputCurrent() >= 10;
     }
 }
