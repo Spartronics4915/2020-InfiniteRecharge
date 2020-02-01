@@ -26,27 +26,6 @@ public class PanelRotator extends SpartronicsSubsystem
 
     private final ColorSensorV3 mColorSensor;
 
-    // TODO: These are essentially random numbers, with the max value based on the
-    // images at
-    // https://www.andymark.com/products/infinite-recharge-control-panel-stickr
-    public int[] mMinimumRed = {200, 0, 0};
-    public int[] mMaximumRed = {255, 30, 30};
-
-    // TODO: These are bad and will work in a way that will make you lose, which
-    // will be sad
-    public int[] mMinimumGreen = {0, 200, 0};
-    public int[] mMaximumGreen = {30, 255, 30};
-
-    // TODO: These are bad and will work in a way that will make you lose, which
-    // will be sad
-    public int[] mMinimumBlue = {0, 200, 200};
-    public int[] mMaximumBlue = {30, 255, 255};
-
-    // TODO: These are bad and will work in a way that will make you lose, which
-    // will be sad
-    public int[] mMinimumYellow = {200, 200, 0};
-    public int[] mMaximumYellow = {255, 255, 30};
-
     public String sensedColor;
 
     public int red;
@@ -55,10 +34,10 @@ public class PanelRotator extends SpartronicsSubsystem
 
     private final ColorMatch mColorMatcher = new ColorMatch();
 
-    private final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
-    private final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
-    private final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
-    private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
+    private final Color kRedTarget = ColorMatch.makeColor(1, 0, 0);
+    private final Color kGreenTarget = ColorMatch.makeColor(0, 1, 0);
+    private final Color kBlueTarget = ColorMatch.makeColor(0, 1, 1);
+    private final Color kYellowTarget = ColorMatch.makeColor(1, 1, 0);
 
     public PanelRotator()
     {
@@ -92,8 +71,8 @@ public class PanelRotator extends SpartronicsSubsystem
         return DriverStation.getInstance().getGameSpecificMessage();
     }
 
-    /** */
-    public String getRGB()
+    /** this gets the 18-bit output (max is 2^18 - 1, I think) -*/
+    public String get18BitRGB()
     {
         int red = mColorSensor.getRed();
         int green = mColorSensor.getGreen();
@@ -104,24 +83,36 @@ public class PanelRotator extends SpartronicsSubsystem
         return RGB;
     }
 
+    /** this gets the 18-bit output but divided by 262143 to make a fraction between 0 & 1 -*/
+    public String getFloatRGB()
+    {
+        int redFloat = mColorSensor.getRed()/262143;
+        int greenFloat = mColorSensor.getGreen()/262143;
+        int blueFloat = mColorSensor.getBlue()/262143;
+
+        String RGB = redFloat + ", " + greenFloat + ", " + blueFloat;
+
+        return RGB;
+    }
+
     /** finds what color the color sensor is seeing  (Red, Blue, Yellow, or Green); currently just a placeholder for output */
     public String getActualColor()
     {
-        mColorMatcher.addColorMatch(kBlueTarget);
-        mColorMatcher.addColorMatch(kGreenTarget);
         mColorMatcher.addColorMatch(kRedTarget);
+        mColorMatcher.addColorMatch(kGreenTarget);
+        mColorMatcher.addColorMatch(kBlueTarget);
         mColorMatcher.addColorMatch(kYellowTarget);
 
         Color detectedColor = mColorSensor.getColor();
 
         ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
 
-        if (match.color == kBlueTarget) {
-            sensedColor = "Blue";
-        } else if (match.color == kRedTarget) {
-        sensedColor = "Red";
+        if (match.color == kRedTarget) {
+            sensedColor = "Red";
         } else if (match.color == kGreenTarget) {
         sensedColor = "Green";
+        } else if (match.color == kBlueTarget) {
+        sensedColor = "Blue";
         } else if (match.color == kYellowTarget) {
         sensedColor = "Yellow";
         } else {
