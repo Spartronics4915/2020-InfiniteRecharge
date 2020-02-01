@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.Servo;
 
 public class Launcher extends SpartronicsSubsystem
 {
-
     private SpartronicsMotor mFlywheelMasterMotor;
     private SpartronicsEncoder mFlywheelEncoder;
     private Servo mAngleAdjusterMasterServo;
@@ -29,28 +28,24 @@ public class Launcher extends SpartronicsSubsystem
         try
         {
             // ONE NEO for flywheel
-            mFlywheelMasterMotor = SpartronicsMax.makeMotor(
-                    /*Constants.Launcher.kFlywheelMasterID*/2,
-                    SensorModel.toRadians(1)/*, Constants.Launcher.kFlywheelFollowerID*/);// new
-                                                                                          // SpartronicsMax(Constants.Launcher.kFlywheelMasterID,SensorModel.toRadians(1));
+            mFlywheelMasterMotor = SpartronicsMax.makeMotor(Constants.Launcher.kFlywheelMasterId, SensorModel.toRadians(1),
+                Constants.Launcher.kFlywheelFollowerId);// new SpartronicsMax(Constants.Launcher.kFlywheelMasterID,SensorModel.toRadians(1));
             mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
             // Two Servos for angle adjustement
-            mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterID);
-            mAngleAdjusterFollowerServo = new Servo(Constants.Launcher.kAngleAdjusterFollowerID);
+            mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterId);
+            mAngleAdjusterFollowerServo = new Servo(Constants.Launcher.kAngleAdjusterFollowerId);
             // One NEO 550 motor for turret
-            mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretID,
-                    SensorModel.toRadians(360));
+            mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretId, SensorModel.toRadians(360));
             turnTurret(0);
-            mTurretPotentiometer = new AnalogPotentiometer(
-                    Constants.Launcher.kTurretPotentiometerID, 90, -45);
+            mTurretPotentiometer = new AnalogPotentiometer(Constants.Launcher.kTurretPotentiometerId, 90, -45);
             setDefaultCommand(new LauncherDefaultCommand(this));
             success = true;
         }
         catch (Exception e)
         {
             // TODO: handle exception
-            success = false;
             logException("Could not instantiate Launcher: ", e);
+            success = false;
         }
         logInitialized(success);
     }
