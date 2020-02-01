@@ -86,9 +86,8 @@ public class PanelRotator extends SpartronicsSubsystem
     /** finds what color the color sensor is seeing  (Red, Blue, Yellow, or Green); currently just a placeholder for output */
     public String getActualColor()
     {
-        /*
         // TODO: convert to 0-255 for user convenience.
-        red = (mColorSensor.getRed()/;
+        red = mColorSensor.getRed();
         green = mColorSensor.getGreen();
         blue = mColorSensor.getBlue();
         sensedColor = "sensor is not working";
@@ -134,8 +133,8 @@ public class PanelRotator extends SpartronicsSubsystem
         }
         System.out.println(sensedColor);
         return sensedColor;
-        */
-        return "method not complete";
+        
+        //return "method not complete";
     }
 
     /** sees if the bottom beam sensor is triggered */
