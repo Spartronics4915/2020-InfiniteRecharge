@@ -68,6 +68,7 @@ public final class Constants
         public static final int kAngleAdjusterFollowerId = 7;
         public static final int kTurretId = 8;
         public static final int kTurretPotentiometerId = 1;
+        // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
         public static final double kP = 0.00154;
         public static final double kS = 0.0638;
         public static final double kV = 0.121;
