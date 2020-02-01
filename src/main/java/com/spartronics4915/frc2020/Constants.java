@@ -21,6 +21,8 @@ public final class Constants
         public static final int kWinchMotorId = 6;
         public static final double kExtendSpeed = 1.0;
         public static final double kWinchSpeed = 1.0;
+        public static final double kReverseWinchSpeed = -1.0;
+        public static final double kReverseExtendSpeed = -1.0;
         public static final boolean kStalled = true;
     }
 
@@ -72,7 +74,7 @@ public final class Constants
 
     public static final class OI
     {
-        public static final int kJoystickId = 1;
+        public static final int kJoystickId = 0;
         public static final int kButtonBoardId = 1;
     }
 
@@ -117,14 +119,14 @@ public final class Constants
     {
         public static final double kStartVelocityMetersPerSec = 0;
         public static final double kEndVelocityMetersPerSec = 0;
-        public static final double kMaxVelocityMetersPerSec = 12;
+        public static final double kMaxVelocityMetersPerSec = 1;
         public static final double kMaxAccelerationMeterPerSecSq = 1;
 
-        public static final Pose2d kStartPointLeft = new Pose2d(508, 138,
+        public static final Pose2d kStartPointLeft = new Pose2d(Units.inchesToMeters(508), Units.inchesToMeters(138),
                 Rotation2d.fromDegrees(0));
-        public static final Pose2d kStartPointMiddle = new Pose2d(508, -54,
+        public static final Pose2d kStartPointMiddle = new Pose2d(Units.inchesToMeters(508), Units.inchesToMeters(-54),
                 Rotation2d.fromDegrees(0));
-        public static final Pose2d kStartPointRight = new Pose2d(508, -138,
+        public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(508), Units.inchesToMeters(-138),
                 Rotation2d.fromDegrees(0));
     }
 

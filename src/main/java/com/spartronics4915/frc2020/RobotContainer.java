@@ -6,6 +6,7 @@ import java.util.Set;
 import com.spartronics4915.frc2020.TrajectoryContainer.Destination;
 import com.spartronics4915.frc2020.commands.*;
 import com.spartronics4915.lib.hardware.sensors.T265Camera;
+import com.spartronics4915.lib.hardware.sensors.T265Camera.CameraJNIException;
 import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2dWithCurvature;
@@ -60,13 +61,16 @@ public class RobotContainer
             .getTable("SmartDashboard").getEntry("AutoModeStrategy");
     public final AutoMode[] mAutoModes;
 
-    private Climber mClimber;
-    private ClimberCommands mClimberCommands;
+    private final Climber mClimber;
+    private final Intake mIntake;
+    private final Launcher mLauncher;
+    private final PanelRotator mPanelRotator;
+    private final LED mLED;
+    private final ClimberCommands mClimberCommands;
+    private final PanelRotatorCommands mPanelRotatorCommands;
 
-    private LED mLED;
-
-    private Joystick mJoystick = new Joystick(Constants.OI.kJoystickId);
-    private Joystick mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
+    private final Joystick mJoystick;
+    private final Joystick mButtonBoard;
 
     private final Drive mDrive;
     private final RamseteTracker mRamseteController = new RamseteTracker(2, 0.7);
@@ -78,25 +82,35 @@ public class RobotContainer
     public RobotContainer()
     {
         mClimber = new Climber();
-        mClimberCommands = new ClimberCommands(mClimber);
+        mIntake = new Intake();
+        mLauncher = new Launcher();
+        mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
+        mClimberCommands = new ClimberCommands();
+        mPanelRotatorCommands = new PanelRotatorCommands();
+
+        mJoystick = new Joystick(Constants.OI.kJoystickId);
+        mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
 
         configureJoystickBindings();
         configureButtonBoardBindings();
 
         mDrive = new Drive();
-        mStateEstimator = new RobotStateEstimator(mDrive,
-                new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
-                new T265Camera(Constants.Estimator.kCameraOffset,
-                        Constants.Estimator.kMeasurementCovariance));
-        mAutoModes = new AutoMode[] {kDefaultAutoMode, new AutoMode("drive straight",
-                new TrajectoryTrackerCommand(mDrive,
-                        TrajectoryContainer.left.getTrajectory(null, Destination.LeftTrenchFar),
-                        mRamseteController, mStateEstimator.getCameraRobotStateMap())),
-                new AutoMode("drive through trench",
-                        new TrajectoryTrackerCommand(mDrive, throughTrench(), mRamseteController,
-                                mStateEstimator.getCameraRobotStateMap()))};
 
+        T265Camera slamra;
+        try
+        {
+            slamra = new T265Camera(Constants.Estimator.kCameraOffset,
+                Constants.Estimator.kMeasurementCovariance);
+        }
+        catch (CameraJNIException e)
+        {
+            slamra = null;
+        }
+        mStateEstimator = new RobotStateEstimator(mDrive,
+            new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
+            slamra);
+        mAutoModes = new AutoMode[] {kDefaultAutoMode};
     }
 
     private void configureJoystickBindings()
@@ -105,15 +119,22 @@ public class RobotContainer
         // .alongWith(new SetBlingStateCommand(mLED, BlingState.SOME_STATE)));
 
         /*
-        new JoystickButton(mJoystick, 1).whileHeld(); // Slow the robot
-        new JoystickButton(mJoystick, 2).whenHeld(new TurretRaiseCommand());
-        new JoystickButton(mJoystick, 3).whenHeld(new TurretLowerCommand());
-        new JoystickButton(mJoystick, 4).whenHeld(new TurretLeftCommand());
-        new JoystickButton(mJoystick, 5).whenHeld(new TurretRightCommand());
-        new JoystickButton(mJoystick, 6).whenPressed(); // Switch Camera views
-        new JoystickButton(mJoystick, 7).whenPressed();
-        new JoystickButton(mJoystick, 10).whenPressed();
-        new JoystickButton(mJoystick, 11).whenPressed();
+        new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
+        new JoystickButton(mJoystick, 2).whenHeld(new LauncherCommands.Raise(mLauncher));
+        new JoystickButton(mJoystick, 3).whenHeld(new LauncherCommands.Lower(mLauncher));
+        new JoystickButton(mJoystick, 4).whenHeld(new LauncherCommands.Left(mLauncher));
+        new JoystickButton(mJoystick, 5).whenHeld(new LauncherCommands.Right(mLauncher));
+        */
+
+        /* Switch Camera views
+        new JoystickButton(mJoystick, 6).whenPressed(
+            new InstantCommand(() -> mCamera.switch(Constants.Camera.kFrontId)));
+        new JoystickButton(mJoystick, 7).whenPressed(
+            new InstantCommand(() -> mCamera.switch(Constants.Camera.kRearId)));
+        new JoystickButton(mJoystick, 10).whenPressed(
+            new InstantCommand(() -> mCamera.switch(Constants.Camera.kIntakeId)));
+        new JoystickButton(mJoystick, 11).whenPressed(
+            new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
         new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(new Launcher()));
         new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive,
@@ -123,23 +144,36 @@ public class RobotContainer
     private void configureButtonBoardBindings()
     {
         /*
-        new JoystickButton(mButtonBoard, 0).whenPressed(new IntakeCommand());
-        new JoystickButton(mButtonBoard, 1).cancelWhenPressed(new IntakeCommand());
-        new JoystickButton(mButtonBoard, 2).whileHeld(new UnjamCommand()); // Will reschedule itself
-        new JoystickButton(mButtonBoard, 3).whenPressed(new AimLowCommand());
-        new JoystickButton(mButtonBoard, 4).whenPressed(new LaunchCommand());
-        new JoystickButton(mButtonBoard, 5).whenPressed(new AimHighCommand());
-        new JoystickButton(mButtonBoard, 6).whenPressed(new PanelRaiseCommand());
-        new JoystickButton(mButtonBoard, 7).whenPressed(new PanelLowerCommand());
-        new JoystickButton(mButtonBoard, 8).whenPressed(new PanelSpinColorCommand());
-        new JoystickButton(mButtonBoard, 9).whenPressed(new PanelSpinRotationsCommand());
-        new JoystickButton(mButtonBoard, 10).whileHeld(new ClimberExtendCommand());
-        new JoystickButton(mButtonBoard, 11).whileHeld(new ClimberRetractCommand());
-        new JoystickButton(mButtonBoard, 14).whenHeld(new ClimberWinchCommand()); // Consists of a CommandGroup - ClimberWinchPrimary and ClimberWinchSecondary
-        new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand()); // Will not reschedule itself eg. voltage drop
-        new JoystickButton(mButtonBoard, 16).whenHeld(new TurretLowerCommand());
-        new JoystickButton(mButtonBoard, 17).whenHeld(new TurretLeftCommand());
-        new JoystickButton(mButtonBoard, 18).whenHeld(new TurretRightCommand());
+        new JoystickButton(mButtonBoard, 0).whenPressed(new IntakeCommands.Intake(mIntake));
+        new JoystickButton(mButtonBoard, 1).whenPressed(new IntakeCommands.Stop(mIntake));
+        new JoystickButton(mButtonBoard, 2).whileHeld(new IntakeCommands.Unjam(mIntake));
+        */
+
+        /*
+        new JoystickButton(mButtonBoard, 3).whenPressed(new LauncherCommands.AimLow(mLauncher));
+        new JoystickButton(mButtonBoard, 4).whenPressed(new LauncherCommands.Launch(mLauncher));
+        new JoystickButton(mButtonBoard, 5).whenPressed(new LauncherCommands.AimHigh(mLauncher));
+        */
+
+        new JoystickButton(mButtonBoard, 6)
+            .whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
+        new JoystickButton(mButtonBoard, 7)
+            .whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
+        new JoystickButton(mButtonBoard, 8)
+            .whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
+        new JoystickButton(mButtonBoard, 9)
+            .whenPressed(mPanelRotatorCommands.new SpinRotation(mPanelRotator));
+
+        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber));
+        new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Retract(mClimber));
+        new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new WinchPrimary(mClimber)
+            .andThen(mClimberCommands.new WinchSecondary(mClimber)));
+
+        /*
+        new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
+        new JoystickButton(mButtonBoard, 16).whenHeld(new TurretLowerCommand(mLauncher));
+        new JoystickButton(mButtonBoard, 17).whenHeld(new TurretLeftCommand(mLauncher));
+        new JoystickButton(mButtonBoard, 18).whenHeld(new TurretRightCommand(mLauncher));
         */
     }
 
