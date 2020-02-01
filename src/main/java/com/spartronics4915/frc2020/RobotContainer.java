@@ -127,6 +127,8 @@ public class RobotContainer
         new JoystickButton(mButtonBoard, 2).whileHeld(new IntakeCommands.Unjam(mIntake));
         */
 
+        new JoystickButton(mJoystick, 1).whenPressed(mPanelRotatorCommands.new ColorSensorTesting(mPanelRotator));
+
         /*
         new JoystickButton(mButtonBoard, 3).whenPressed(new LauncherCommands.AimLow(mLauncher));
         new JoystickButton(mButtonBoard, 4).whenPressed(new LauncherCommands.Launch(mLauncher));
@@ -140,7 +142,7 @@ public class RobotContainer
         new JoystickButton(mButtonBoard, 8)
             .whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
         new JoystickButton(mButtonBoard, 9)
-            .whenPressed(mPanelRotatorCommands.new SpinRotation(mPanelRotator));
+            .whenPressed(mPanelRotatorCommands.new SpinOnce(mPanelRotator));
 
         new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber));
         new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Retract(mClimber));

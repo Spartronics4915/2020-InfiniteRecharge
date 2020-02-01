@@ -91,7 +91,7 @@ public class PanelRotatorCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public SpinOnce()
+        public SpinOnce(PanelRotator PanelRotator)
         {
             mPanelRotator = PanelRotator;
             addRequirements(mPanelRotator);
@@ -133,6 +133,44 @@ public class PanelRotatorCommands
         public void end(boolean interrupted)
         {
             mPanelRotator.stop();
+        }
+    }
+    public class ColorSensorTesting extends CommandBase
+    {
+        private final PanelRotator mPanelRotator;
+
+        // You should only use one subsystem per command. If multiple are needed, use a
+        // CommandGroup.
+        public ColorSensorTesting(PanelRotator PanelRotator)
+        {
+            mPanelRotator = PanelRotator;
+            addRequirements(mPanelRotator);
+        }
+
+        // Called when the command is initially scheduled.
+        @Override
+        public void initialize()
+        {
+            System.out.println(mPanelRotator.getRGB());
+        }
+
+        // Called every time the scheduler runs while the command is scheduled.
+        @Override
+        public void execute()
+        {
+        }
+
+        // Returns true when the command should end.
+        @Override
+        public boolean isFinished()
+        {
+            return true;
+        }
+
+        // Called once the command ends or is interrupted.
+        @Override
+        public void end(boolean interrupted)
+        {
         }
     }
 }

@@ -83,6 +83,17 @@ public class PanelRotator extends SpartronicsSubsystem
         return DriverStation.getInstance().getGameSpecificMessage();
     }
 
+    /** */
+    public String getRGB(){
+        int red = mColorSensor.getRed();
+        int green = mColorSensor.getGreen();
+        int blue = mColorSensor.getBlue();
+
+        String RGB = red + ", " + green + ", " + blue;
+
+        return RGB;
+    }
+
     /** finds what color the color sensor is seeing  (Red, Blue, Yellow, or Green); currently just a placeholder for output */
     public String getActualColor()
     {
