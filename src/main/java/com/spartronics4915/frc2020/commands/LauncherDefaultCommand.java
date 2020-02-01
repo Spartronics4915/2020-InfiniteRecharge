@@ -20,7 +20,7 @@ public class LauncherDefaultCommand extends CommandBase
     @Override
     public void initialize()
     {
-        mLauncher.setRPM(0);
+        mLauncher.setRPS(0);
     }
 
     // Called every time the scheduler runs while the command is scheduled.

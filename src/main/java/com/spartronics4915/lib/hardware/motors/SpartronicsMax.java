@@ -15,7 +15,7 @@ public class SpartronicsMax implements SpartronicsMotor
     private static final int kVelocitySlotIdx = 0;
     private static final int kPositionSlotIdx = 1;
 
-    private final double kRPMtoRPS = 1 / 60;
+    private final double kRPMtoRPS = 1.0 / 60.0;
 
     private final CANSparkMax mSparkMax;
     private final SpartronicsEncoder mEncoder;

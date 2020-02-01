@@ -68,7 +68,7 @@ public final class Constants
         public static final int kAngleAdjusterFollowerId = 7;
         public static final int kTurretId = 8;
         public static final int kTurretPotentiometerId = 1;
-        public static final double kP = 0.0154;
+        public static final double kP = 0.00154;
         public static final double kS = 0.0638;
         public static final double kV = 0.121;
         public static final double kA = 0.0252;
@@ -76,7 +76,7 @@ public final class Constants
 
     public static final class OI
     {
-        public static final int kJoystickId = 1;
+        public static final int kJoystickId = 0;
         public static final int kButtonBoardId = 1;
     }
 

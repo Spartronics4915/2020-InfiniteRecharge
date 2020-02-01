@@ -20,7 +20,7 @@ public class Launcher extends SpartronicsSubsystem
     private SpartronicsMotor mTurretMotor;
     private AnalogPotentiometer mTurretPotentiometer;
 
-    private double targetRPM;
+    private double targetRPS;
     private double targetAngle;
 
     private SimpleMotorFeedforward mFeedforwardCalculator = new SimpleMotorFeedforward(
@@ -36,15 +36,16 @@ public class Launcher extends SpartronicsSubsystem
             mFlywheelMasterMotor = SpartronicsMax.makeMotor(
                 /*Constants.Launcher.kFlywheelMasterID*/2,
                 SensorModel.fromMultiplier(1)/*, Constants.Launcher.kFlywheelFollowerID*/);
-            mFlywheelMasterMotor.setVelocityGains(0.00154, 0, 0, 0);
+                mFlywheelMasterMotor.setOutputInverted(true);
+            mFlywheelMasterMotor.setVelocityGains(0.000389, 0, 0, 0);
             mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
 
             // Two Servos for angle adjustement
             mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterId);
             mAngleAdjusterFollowerServo = new Servo(Constants.Launcher.kAngleAdjusterFollowerId);
             // One NEO 550 motor for turret
-            /*mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretID,
-                    SensorModel.toRadians(360));*/
+            mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretID,
+                    SensorModel.toRadians(360));
             turnTurret(0);
             mTurretPotentiometer = new AnalogPotentiometer(
                 Constants.Launcher.kTurretPotentiometerId, 90, -45);
@@ -65,7 +66,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public void runFlywheel()
     {
-        mFlywheelMasterMotor.setVelocity(targetRPM);
+        mFlywheelMasterMotor.setVelocity(targetRPS, mFeedforwardCalculator.calculate(targetRPS));
         System.out.println("hello");
     }
 
@@ -76,7 +77,7 @@ public class Launcher extends SpartronicsSubsystem
     public void turnTurret(double absoluteAngle)
     {
         // need enc or pot\
-        // mTurretMotor.setPosition(absoluteAngle);
+        mTurretMotor.setPosition(absoluteAngle);
     }
 
     /**
@@ -105,9 +106,9 @@ public class Launcher extends SpartronicsSubsystem
      * Sets target rpm for flywheel to given rpm
      * @param rpm RPM you want the flywheel to target
      */
-    public void setRPM(double rpm)
+    public void setRPS(double rps)
     {
-        targetRPM = rpm;
+        targetRPS = rps;
     }
 
     /**
@@ -120,12 +121,12 @@ public class Launcher extends SpartronicsSubsystem
     }
 
     /**
-     * Returns current target RPM of shooter
-     * @return RPM that the flywheel is targeting
+     * Returns current target RPS of shooter
+     * @return RPS that the flywheel is targeting
      */
-    public double getTargetRPM()
+    public double getTargetRPS()
     {
-        return targetRPM;
+        return targetRPS;
     }
 
     /**
@@ -140,10 +141,10 @@ public class Launcher extends SpartronicsSubsystem
     }
 
     /**
-     * Returns current RPM of shooter
-     * @return The current RPM of the flywheel
+     * Returns current RPS of shooter
+     * @return The current RPS of the flywheel
      */
-    public double getCurrentRPM()
+    public double getCurrentRPS()
     {
         return mFlywheelEncoder.getVelocity();
     }
@@ -160,14 +161,14 @@ public class Launcher extends SpartronicsSubsystem
     }
 
     /**
-     * Computes and returns RPM based on input distance
+     * Computes and returns RPS based on input distance
      * @param distance Horizontal distance in meters from the shooter to the target
-     * @return RPM calculated to be necessary to hit the target based of of the input distance
+     * @return RPS calculated to be necessary to hit the target based of of the input distance
      */
-    public double calcRPM(double distance)
+    public double calcRPS(double distance)
     {
-        double RPM = 0.0;
-        return RPM;
+        double RPS = 0.0;
+        return RPS;
     }
 
     /**
@@ -203,7 +204,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public void reset()
     {
-        /*setRPM(0);
+        /*setRPS(0);
         mFlywheelMasterMotor.setBrakeMode(true);
         setPitch(0);
         turnTurret(0);*/

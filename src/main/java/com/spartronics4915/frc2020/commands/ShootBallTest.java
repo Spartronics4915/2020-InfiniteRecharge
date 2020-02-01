@@ -20,7 +20,7 @@ public class ShootBallTest extends CommandBase
     @Override
     public void initialize()
     {
-        mLauncher.setRPM(60);
+        mLauncher.setRPS(40);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -28,7 +28,6 @@ public class ShootBallTest extends CommandBase
     public void execute()
     {
         mLauncher.runFlywheel();
-        System.out.println("whatsup");
     }
 
     // Returns true when the command should end.
