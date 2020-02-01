@@ -113,30 +113,12 @@ public final class Constants
         public static final double kMaxVelocityMetersPerSec = 12;
         public static final double kMaxAccelerationMeterPerSecSq = 1;
 
-        public static final Pose2d kStartPointLeft = new Pose2d(0, 0, Rotation2d.fromDegrees(0)); // TODO:
-                                                                                                  // get
-                                                                                                  // world
-                                                                                                  // coordinates
-                                                                                                  // for
-                                                                                                  // start
-                                                                                                  // point
-                                                                                                  // left
-        public static final Pose2d kStartPointMiddle = new Pose2d(50, 0, Rotation2d.fromDegrees(0)); // TODO:
-                                                                                                     // get
-                                                                                                     // world
-                                                                                                     // coordinates
-                                                                                                     // for
-                                                                                                     // start
-                                                                                                     // point
-                                                                                                     // middle
-        public static final Pose2d kStartPointRight = new Pose2d(100, 0, Rotation2d.fromDegrees(0)); // TODO:
-                                                                                                     // get
-                                                                                                     // world
-                                                                                                     // coordinates
-                                                                                                     // for
-                                                                                                     // start
-                                                                                                     // point
-                                                                                                     // right
+        public static final Pose2d kStartPointLeft = new Pose2d(508, 138,
+                Rotation2d.fromDegrees(0));
+        public static final Pose2d kStartPointMiddle = new Pose2d(508, -54,
+                Rotation2d.fromDegrees(0));
+        public static final Pose2d kStartPointRight = new Pose2d(508, -138,
+                Rotation2d.fromDegrees(0));
     }
 
     public static final class Estimator
