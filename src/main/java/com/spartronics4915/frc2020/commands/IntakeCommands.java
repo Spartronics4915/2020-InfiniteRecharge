@@ -2,17 +2,16 @@ package com.spartronics4915.frc2020.commands;
 
 import com.spartronics4915.frc2020.subsystems.Intake;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 public class IntakeCommands
 {
-    public class Intake extends StartEndCommand
+    public class Harvest extends StartEndCommand
     {
-        public Intake(Intake Intake)
+        public Harvest(Intake Intake)
         {
-            super(Intake::intake, Intake::stop, Intake); // FIXME
+            super(Intake::intake, Intake::stop, Intake);
         }
     }
 
@@ -21,7 +20,7 @@ public class IntakeCommands
     {
         public Stop(Intake Intake)
         {
-            super(Intake::stop, Intake); // FIXME
+            super(Intake::stop, Intake);
         }
     }
 
@@ -29,7 +28,7 @@ public class IntakeCommands
     {
         public Eject(Intake Intake)
         {
-            super(Intake:reverse, Intake::stop, Intake); // FIXME
+            super(Intake::reverse, Intake::stop, Intake);
         }
     }
 }

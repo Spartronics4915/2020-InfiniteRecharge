@@ -35,7 +35,7 @@ public class Intake extends SpartronicsSubsystem
      * activates the mechanum "vector" wheels in partial intake
      * hopefully in tandem with the prism roller
     **/
-    public void harvest()
+    public void intake()
     {
         mHarvestMotor.setDutyCycle(Constants.Intake.kHarvestSpeed);
     }
