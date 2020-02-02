@@ -54,8 +54,9 @@ public class SpartronicsSRX implements SpartronicsMotor {
         }
 
         @Override
-        public void setPosition(double position) {
+        public boolean setPosition(double position) {
             mTalonSRX.getSensorCollection().setQuadraturePosition((int) mSensorModel.toNativeUnits(position), 0);
+            return true;
         }
     }
 
