@@ -1,8 +1,10 @@
 package com.spartronics4915.lib.hardware.motors;
 
+import com.revrobotics.CANAnalog;
 import com.revrobotics.CANError;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANAnalog.AnalogMode;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.spartronics4915.lib.util.Logger;
@@ -111,7 +113,14 @@ public class SpartronicsMax implements SpartronicsMotor
     {
         return mEncoder;
     }
-
+    /**
+	 * @return An object for interfacing with a connected analog sensor.
+	 */
+    
+	public CANAnalog getAnalog() {
+		return mSparkMax.getAnalog(AnalogMode.kAbsolute);
+    }
+    
     @Override
     public boolean hadStartupError()
     {

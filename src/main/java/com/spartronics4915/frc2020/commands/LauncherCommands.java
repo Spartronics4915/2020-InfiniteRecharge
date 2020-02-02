@@ -54,10 +54,9 @@ public class LauncherCommands
         }
     }
 
-    
+
     public class TurretTest extends CommandBase
     {
-    
         Launcher mLauncher;
     
         // You should only use one subsystem per command. If multiple are needed, use a
@@ -72,14 +71,13 @@ public class LauncherCommands
         @Override
         public void initialize()
         {
-            mLauncher.setRPS(SmartDashboard.getNumber("Launcher/FlywheelRPS", 0));
         }
     
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
-            mLauncher.runFlywheel();
+            System.out.println(mLauncher.getTurretDirection());
         }
     
         // Returns true when the command should end.

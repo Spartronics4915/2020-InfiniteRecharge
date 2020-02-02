@@ -1,5 +1,8 @@
 package com.spartronics4915.frc2020.subsystems;
 
+import com.revrobotics.CANAnalog;
+import com.revrobotics.CANPIDController;
+import com.revrobotics.CANAnalog.AnalogMode;
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.commands.LauncherCommands;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
@@ -19,7 +22,7 @@ public class Launcher extends SpartronicsSubsystem
     private Servo mAngleAdjusterMasterServo;
     private Servo mAngleAdjusterFollowerServo;
     private SpartronicsMotor mTurretMotor;
-    private AnalogPotentiometer mTurretPotentiometer;
+    private SpartronicsEncoder mTurretPotentiometer;
 
     private double targetRPS;
     private double targetAngle;
@@ -55,7 +58,7 @@ public class Launcher extends SpartronicsSubsystem
             } else {
                 logInitialized(true);
             }
-            mTurretPotentiometer = new AnalogPotentiometer(Constants.Launcher.kTurretPotentiometerId, 90, -45);
+            mTurretPotentiometer = mTurretMotor.getEncoder().setFeedBackDevice(((SpartronicsMax)mTurretMotor).getAnalog());//new AnalogPotentiometer(Constants.Launcher.kTurretPotentiometerId, 90, -45);
 
             // Two Servos for angle adjustement
             mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterId);
@@ -98,7 +101,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public double getTurretDirection()
     {
-        return mTurretPotentiometer.get();
+        return mTurretPotentiometer.getPosition();
     }
 
     /**

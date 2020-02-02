@@ -150,4 +150,6 @@ public interface SpartronicsMotor {
      * @return The output current of the motor in amps.
      */
     double getOutputCurrent();
+
+    
 }

@@ -85,11 +85,11 @@ public final class Constants
 
     public static final class PanelRotator
     {
-        public static final int kBeamSensorUpID = -1;
-        public static final int kBeamSensorDownID = -1;
+        public static final int kBeamSensorUpID = 5;
+        public static final int kBeamSensorDownID = 6;
 
-        public static final int kExtendMotorID = -1;
-        public static final int kSpinMotorID = -1;
+        public static final int kExtendMotorID = 7;
+        public static final int kSpinMotorID = 8;
 
         public static final double kExtendMotorSpeed = 0.5;
         public static final double kSpinMotorSpeed = 0.5;

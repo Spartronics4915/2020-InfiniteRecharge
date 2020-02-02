@@ -143,9 +143,10 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed(
                 new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
-        new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
-        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive,
-                throughTrench(), mRamseteController, mStateEstimator.getCameraRobotStateMap()));
+        //new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
+        new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
+        // new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive,
+        //         throughTrench(), mRamseteController, mStateEstimator.getCameraRobotStateMap()));
     }
 
     private void configureButtonBoardBindings()
