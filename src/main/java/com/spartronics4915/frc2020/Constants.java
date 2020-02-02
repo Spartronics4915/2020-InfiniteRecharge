@@ -21,8 +21,9 @@ public final class Constants
         public static final int kWinchMotorId = 6;
         public static final double kExtendSpeed = 1.0;
         public static final double kWinchSpeed = 1.0;
+        public static final double kRetractSpeed = -1.0;
         public static final double kReverseWinchSpeed = -1.0;
-        public static final double kReverseExtendSpeed = -1.0;
+        public static final double kStallThreshold = 10.0;
         public static final boolean kStalled = true;
     }
 
@@ -30,7 +31,7 @@ public final class Constants
     {
         public static final class Spinner
         {
-            public static final int kMotorId = 10;
+            public static final int kMotorId = 9;
             public static final double kVelocityP = 1;
             public static final double kVelocityD = 1;
             public static final double kPositionP = 1;
@@ -40,7 +41,7 @@ public final class Constants
 
         public static final class Loader
         {
-            public static final int kMotor = 11;
+            public static final int kMotorId = 10;
             public static final double kVelocityP = 1;
             public static final double kVelocityD = 1;
             public static final double kPositionP = 1;
@@ -58,19 +59,18 @@ public final class Constants
     public static final class Intake
     {
         public static final int kHarvestMotorId = 12;
-        public static final int kIngestMotorId = 13;
         public static final double kHarvestSpeed = 0.5;
-        public static final double kIngestSpeed = 0.5;
+        public static final double kEjectSpeed = -0.5;
     }
 
     public static final class Launcher
     {
         public static final int kFlywheelMasterId = 7;
         public static final int kFlywheelFollowerId = -1; // Solid brass
-        public static final int kAngleAdjusterMasterId = 0;
-        public static final int kAngleAdjusterFollowerId = 1;
+        public static final int kAngleAdjusterMasterId = 0; // PWM0
+        public static final int kAngleAdjusterFollowerId = 1; // PWM1
         public static final int kTurretId = 8;
-        public static final int kTurretPotentiometerId = 9;
+        public static final int kTurretPotentiometerId = 2; // A2
     }
 
     public static final class OI
@@ -81,13 +81,14 @@ public final class Constants
 
     public static final class PanelRotator
     {
-        public static final int kBeamSensorUpID = 1;
-        public static final int kBeamSensorDownID = 2;
+        public static final int kBeamSensorUpId = 1; // TODO: take up issue with electronics over these not being on the control map
+        public static final int kBeamSensorDownId = 2;
 
-        public static final int kExtendMotorID = 3;
-        public static final int kSpinMotorID = 4;
+        public static final int kExtendMotorId = 13;
+        public static final int kSpinMotorId = 14;
 
-        public static final double kExtendMotorSpeed = 0.5;
+        public static final double kRaiseSpeed = 0.5;
+        public static final double kLowerSpeed = -0.5;
         public static final double kSpinMotorSpeed = 0.5;
     }
 
