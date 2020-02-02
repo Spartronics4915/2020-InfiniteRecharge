@@ -21,8 +21,9 @@ public final class Constants
         public static final int kWinchMotorId = 6;
         public static final double kExtendSpeed = 1.0;
         public static final double kWinchSpeed = 1.0;
+        public static final double kRetractSpeed = -1.0;
         public static final double kReverseWinchSpeed = -1.0;
-        public static final double kReverseExtendSpeed = -1.0;
+        public static final double kStallThreshold = 10.0;
         public static final boolean kStalled = true;
     }
 
@@ -58,7 +59,7 @@ public final class Constants
     {
         public static final int kHarvestMotorId = 12;
         public static final double kHarvestSpeed = 0.5;
-        public static final double kHarvestReverseSpeed = -0.5;
+        public static final double kEjectSpeed = -0.5;
     }
 
     public static final class Launcher
@@ -85,7 +86,8 @@ public final class Constants
         public static final int kExtendMotorID = -1;
         public static final int kSpinMotorID = -1;
 
-        public static final double kExtendMotorSpeed = 0.5;
+        public static final double kRaiseSpeed = 0.5;
+        public static final double kLowerSpeed = -0.5;
         public static final double kSpinMotorSpeed = 0.5;
     }
 

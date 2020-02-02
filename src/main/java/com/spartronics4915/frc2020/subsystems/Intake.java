@@ -43,13 +43,14 @@ public class Intake extends SpartronicsSubsystem
     /** reverses vector wheels **/
     public void reverse()
     {
-        mHarvestMotor.setDutyCycle(Constants.Intake.kHarvestReverseSpeed);
+        mHarvestMotor.setDutyCycle(Constants.Intake.kEjectSpeed);
     }
 
     /** checks to see if ball is held in intake chamber **/
-    public void isBallHeld()
+    public boolean isBallHeld()
     {
-
+        // TODO: Implement this functionality with the digital Proximity Sensor
+        return false;
     }
 
     /** universal stop method **/

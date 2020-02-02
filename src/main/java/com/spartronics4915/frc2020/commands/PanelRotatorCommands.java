@@ -34,6 +34,7 @@ public class PanelRotatorCommands
     public class SpinToColor extends CommandBase
     {
         private final PanelRotator mPanelRotator;
+        private String mTargetColor;
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
@@ -47,7 +48,7 @@ public class PanelRotatorCommands
         @Override
         public void initialize()
         {
-            // Intentionally left blank
+            mTargetColor = mPanelRotator.getTargetColor();
         }
 
         // Called every time the scheduler runs while the command is scheduled.
@@ -61,7 +62,9 @@ public class PanelRotatorCommands
         @Override
         public boolean isFinished()
         {
-            if (mPanelRotator.getActualColor() == mPanelRotator.getTargetColor())
+            // Note that this is a comparison of Strings.
+            // Conversions from native ColorSensorV3 values to one of four values is done in PanelRotator
+            if (mPanelRotator.getActualColor() == mTargetColor)
                 return true;
             else
                 return false;

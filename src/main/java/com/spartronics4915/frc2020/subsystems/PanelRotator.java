@@ -65,7 +65,9 @@ public class PanelRotator extends SpartronicsSubsystem
             mSpinMotor = new SpartronicsSimulatedMotor();
             mExtendMotor = new SpartronicsSimulatedMotor();
             logInitialized(false);
-        } else {
+        }
+        else
+        {
             logInitialized(true);
         }
         // mSpinMotor = new CANSparkMax(Constants.PanelRotator.kSpinMotorID,
@@ -77,13 +79,13 @@ public class PanelRotator extends SpartronicsSubsystem
     /** raises the arm holding the spinner at a set speed*/
     public void raise()
     {
-        mExtendMotor.setDutyCycle(Constants.PanelRotator.kExtendMotorSpeed);
+        mExtendMotor.setDutyCycle(Constants.PanelRotator.kRaiseSpeed);
     }
 
     /** lowers the arm holding the spinner at a set speed*/
     public void lower()
     {
-        mExtendMotor.setDutyCycle(-Constants.PanelRotator.kExtendMotorSpeed);
+        mExtendMotor.setDutyCycle(Constants.PanelRotator.kLowerSpeed);
     }
 
     /** stops the extension motor */
@@ -98,6 +100,8 @@ public class PanelRotator extends SpartronicsSubsystem
         return DriverStation.getInstance().getGameSpecificMessage();
     }
 
+    // TODO: Implement this method!! !
+    // https://github.com/REVrobotics/Color-Sensor-v3-Examples/blob/master/Java/Color%20Match/src/main/java/frc/robot/Robot.java
     /** finds what color the color sensor is seeing  (Red, Blue, Yellow, or Green); currently just a placeholder for output */
     public String getActualColor()
     {
@@ -172,11 +176,7 @@ public class PanelRotator extends SpartronicsSubsystem
         mSpinMotor.setDutyCycle(Constants.PanelRotator.kSpinMotorSpeed);
     }
 
-    /** get the number of times that the spinning */
-    public double getRotations()
-    {
-        return -1; // TODO: not complete
-    }
+    // TODO: A discussion needs to be had on the relevance and implementation of getRotations...
 
     /** stops the wheel */
     public void stopSpin()

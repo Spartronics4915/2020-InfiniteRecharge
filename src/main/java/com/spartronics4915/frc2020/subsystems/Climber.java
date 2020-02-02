@@ -11,7 +11,7 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 
 /**
  * This subsystem has two motors. A NEO using a Spark, while the other is a 775 PRO using a Talon.
- * The NEO motor winches the climber and the 775 PRO extends the climber
+ * The NEO motor winches the climber and the 775 PRO extends the climber.
  * The four methods used are extend(), winch(), reverseExtend(), and stop()
  */
 public class Climber extends SpartronicsSubsystem
@@ -56,7 +56,7 @@ public class Climber extends SpartronicsSubsystem
 
     public void retract()
     {
-        mLiftMotor.setDutyCycle(Constants.Climber.kReverseExtendSpeed);
+        mLiftMotor.setDutyCycle(Constants.Climber.kRetractSpeed);
         mWinchMotor.setDutyCycle(0.0);
     }
 
@@ -68,6 +68,6 @@ public class Climber extends SpartronicsSubsystem
 
     public boolean isStalled()
     {
-        return mWinchMotor.getOutputCurrent() >= 10;
+        return mWinchMotor.getOutputCurrent() >= Constants.Climber.kStallThreshold;
     }
 }
