@@ -91,12 +91,7 @@ public class RobotContainer
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
-
-        configureJoystickBindings();
-        configureButtonBoardBindings();
-
-        mDrive = new Drive();
-
+        
         T265Camera slamra;
         try
         {
@@ -107,9 +102,13 @@ public class RobotContainer
         {
             slamra = null;
         }
+        mDrive = new Drive();
         mStateEstimator = new RobotStateEstimator(mDrive,
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
             slamra);
+
+        configureJoystickBindings();
+        configureButtonBoardBindings();
 
         mAutoModes = new AutoMode[] {
             kDefaultAutoMode,
@@ -220,6 +219,7 @@ public class RobotContainer
             intermediate[i] = new Pose2d(pose.getTranslation().getX() - Units.inchesToMeters(312.5),
                     pose.getTranslation().getY(), pose.getRotation());
         }
+        System.out.println(mStateEstimator);
         RobotStateMap stateMap = mStateEstimator.getCameraRobotStateMap();
         Pose2d robotPose = stateMap.getLatestState().pose;
         double robotX = robotPose.getTranslation().getX();

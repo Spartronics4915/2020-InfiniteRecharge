@@ -7,7 +7,6 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 
-
 /** 
  * The Intake subsystem takes balls from 
  * the playing field and outputs them to storage.

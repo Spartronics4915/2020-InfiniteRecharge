@@ -51,7 +51,8 @@ public final class Constants
 
         public static final int kProxSensorId = 4; // DIO4 // Proximity Sensor (index slot one)
         public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
-        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag is inverted
+        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag
+                                                                  // is inverted
     }
 
     public static final class Intake
@@ -80,11 +81,11 @@ public final class Constants
 
     public static final class PanelRotator
     {
-        public static final int kBeamSensorUpID = -1;
-        public static final int kBeamSensorDownID = -1;
+        public static final int kBeamSensorUpID = 1;
+        public static final int kBeamSensorDownID = 2;
 
-        public static final int kExtendMotorID = -1;
-        public static final int kSpinMotorID = -1;
+        public static final int kExtendMotorID = 3;
+        public static final int kSpinMotorID = 4;
 
         public static final double kExtendMotorSpeed = 0.5;
         public static final double kSpinMotorSpeed = 0.5;
@@ -97,22 +98,65 @@ public final class Constants
         public static final int kLeftDriveMaster = 3;
         public static final int kLeftDriveFollower = 4;
 
-        public static final double kWheelDiameter = Units.inchesToMeters(8);
-        public static final double kTrackWidthMeters = 1;
-        public static final double kScrubFactor = 1; // TODO: characterize
+        public static final double kWheelDiameter;
+        public static final double kTrackWidthMeters;
+        public static final double kScrubFactor;
         public static final int kNativeUnitsPerRevolution = 1; // TODO: get ratio
 
         public static final double kRobotMassKg = 1;
         public static final double kMoi = 1;
 
         // TODO: characterize
-        public static final double kRightS = 1;
-        public static final double kRightV = 1;
-        public static final double kRightA = 1;
+        public static final double kRightS;
+        public static final double kRightV;
+        public static final double kRightA;
 
-        public static final double kLeftS = 1;
-        public static final double kLeftV = 1;
-        public static final double kLeftA = 1;
+        public static final double kLeftS;
+        public static final double kLeftV;
+        public static final double kLeftA;
+
+        // Initialize blank fields that are robot-specific here
+        static
+        {
+            String config = "default";
+            Path machineIDPath = FileSystems.getDefault().getPath(System.getProperty("user.home"),
+                "machineid");
+            try
+            {
+                config = Files.readString(machineIDPath).trim().toLowerCase();
+            }
+            catch (IOException e)
+            {
+            }
+            Logger.notice("Running on " + config + " constants");
+
+            switch (config)
+            {
+                case "test chassis":
+                    kTrackWidthMeters = Units.inchesToMeters(23.75);
+                    kWheelDiameter = Units.inchesToMeters(6.2554245800704);
+                    kScrubFactor = 1.063;
+                    kLeftS = 0.6995;
+                    kLeftV = 0.2066;
+                    kLeftA = 0.0107;
+                    kRightS = 0.6815;
+                    kRightV = 0.2194;
+                    kRightA = 0.0340;
+                    break;
+                default:
+                    kTrackWidthMeters = 1; // TODO: find track width
+                    kWheelDiameter = Units.inchesToMeters(8);
+                    //TODO characterize
+                    kScrubFactor = 1;
+                    kLeftS = 1;
+                    kLeftV = 1;
+                    kLeftA = 1;
+                    kRightS = 1;
+                    kRightV = 1;
+                    kRightA = 1;
+                    break;
+            }
+        }
     }
 
     public static final class Trajectory
@@ -122,44 +166,17 @@ public final class Constants
         public static final double kMaxVelocityMetersPerSec = 1;
         public static final double kMaxAccelerationMeterPerSecSq = 1;
 
-        public static final Pose2d kStartPointLeft = new Pose2d(Units.inchesToMeters(508), Units.inchesToMeters(138),
-                Rotation2d.fromDegrees(0));
-        public static final Pose2d kStartPointMiddle = new Pose2d(Units.inchesToMeters(508), Units.inchesToMeters(-54),
-                Rotation2d.fromDegrees(0));
-        public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(508), Units.inchesToMeters(-138),
-                Rotation2d.fromDegrees(0));
+        public static final Pose2d kStartPointLeft = new Pose2d(Units.inchesToMeters(508),
+            Units.inchesToMeters(138), Rotation2d.fromDegrees(0));
+        public static final Pose2d kStartPointMiddle = new Pose2d(Units.inchesToMeters(508),
+            Units.inchesToMeters(-54), Rotation2d.fromDegrees(0));
+        public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(508),
+            Units.inchesToMeters(-138), Rotation2d.fromDegrees(0));
     }
 
     public static final class Estimator
     {
         public static final Pose2d kCameraOffset = new Pose2d();
         public static final double kMeasurementCovariance = 1;
-    }
-
-    // Initialize blank fields that are robot-specific here
-    static
-    {
-        String config = "default";
-        Path machineIDPath = FileSystems.getDefault().getPath(System.getProperty("user.home"),
-                "machineid");
-        try
-        {
-            config = Files.readString(machineIDPath).trim().toLowerCase();
-        }
-        catch (IOException e)
-        {
-        }
-        Logger.notice("Running on " + config + " constants");
-
-        switch (config)
-        {
-            case "test chassis":
-                // Put constants here
-                break;
-            case "default":
-            case "real robot":
-                // Or here
-                break;
-        }
     }
 }
