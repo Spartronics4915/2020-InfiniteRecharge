@@ -47,7 +47,7 @@ public class RobotContainer
         }
     }
 
-    public static final String kAutoOptionsKey = "AutoStrategyOptions";
+    private static final String kAutoOptionsKey = "AutoStrategyOptions";
     public static final AutoMode kDefaultAutoMode = new AutoMode("All: Do Nothing", new Command()
     {
         @Override
@@ -91,12 +91,7 @@ public class RobotContainer
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
-
-        configureJoystickBindings();
-        configureButtonBoardBindings();
-
-        mDrive = new Drive();
-
+        
         T265Camera slamra;
         try
         {
@@ -107,9 +102,13 @@ public class RobotContainer
         {
             slamra = null;
         }
+        mDrive = new Drive();
         mStateEstimator = new RobotStateEstimator(mDrive,
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
             slamra);
+
+        configureJoystickBindings();
+        configureButtonBoardBindings();
 
         mAutoModes = new AutoMode[] {
             kDefaultAutoMode,
@@ -120,6 +119,11 @@ public class RobotContainer
             new AutoMode("Characterize Drive",
                 new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter))
         };
+        String autoModeList = "";
+        for (var autoMode : mAutoModes) {
+            autoModeList += autoMode.name;
+        }
+        SmartDashboard.putString(kAutoOptionsKey, autoModeList);
     }
 
     private void configureJoystickBindings()
@@ -220,6 +224,7 @@ public class RobotContainer
             intermediate[i] = new Pose2d(pose.getTranslation().getX() - Units.inchesToMeters(312.5),
                     pose.getTranslation().getY(), pose.getRotation());
         }
+        System.out.println(mStateEstimator);
         RobotStateMap stateMap = mStateEstimator.getCameraRobotStateMap();
         Pose2d robotPose = stateMap.getLatestState().pose;
         double robotX = robotPose.getTranslation().getX();
