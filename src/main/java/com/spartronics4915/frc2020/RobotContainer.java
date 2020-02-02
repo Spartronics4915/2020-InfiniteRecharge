@@ -145,6 +145,7 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
+        new JoystickButton(mJoystick, 2).whenPressed(mPanelRotatorCommands.new ColorSensorTesting(mPanelRotator));
         new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(new Launcher()));
         new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive,
                 throughTrench(), mRamseteController, mStateEstimator.getCameraRobotStateMap()));
@@ -157,9 +158,6 @@ public class RobotContainer
         new JoystickButton(mButtonBoard, 1).whenPressed(new IntakeCommands.Stop(mIntake));
         new JoystickButton(mButtonBoard, 2).whileHeld(new IntakeCommands.Unjam(mIntake));
         */
-
-        new JoystickButton(mJoystick, 1)
-            .whenPressed(mPanelRotatorCommands.new ColorSensorTesting(mPanelRotator));
 
         /*
         new JoystickButton(mButtonBoard, 3).whenPressed(new LauncherCommands.AimLow(mLauncher));

@@ -152,9 +152,9 @@ public class PanelRotatorCommands
         @Override
         public void initialize()
         {
+            System.out.println("\nPredicted color: " + mPanelRotator.getActualColor());
             System.out.println("18-bit: " + mPanelRotator.get18BitRGB());
             System.out.println("Float: " + mPanelRotator.getFloatRGB());
-            System.out.println("Predicted color: " + mPanelRotator.getActualColor());
         }
 
         // Called every time the scheduler runs while the command is scheduled.
