@@ -35,8 +35,8 @@ public class Indexer extends SpartronicsSubsystem
         mSpinnerMotor = SpartronicsMax.makeMotor(Constants.Indexer.Spinner.kMotorId, mSpinnerModel);
         // Set up Loader
         mLoaderModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);
-        mLoaderMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Loader.kMotor, mLoaderModel);
-        
+        mLoaderMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Loader.kMotorId, mLoaderModel);
+
         if (mSpinnerMotor.hadStartupError() || mLoaderMotor.hadStartupError())
         {
             mSpinnerMotor = new SpartronicsSimulatedMotor();

@@ -53,11 +53,11 @@ public class PanelRotator extends SpartronicsSubsystem
 
     public PanelRotator()
     {
-        mBeamSensorUp = new DigitalInput(Constants.PanelRotator.kBeamSensorUpID);
-        mBeamSensorDown = new DigitalInput(Constants.PanelRotator.kBeamSensorDownID);
-        mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorID,
+        mBeamSensorUp = new DigitalInput(Constants.PanelRotator.kBeamSensorUpId);
+        mBeamSensorDown = new DigitalInput(Constants.PanelRotator.kBeamSensorDownId);
+        mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId,
             SensorModel.fromMultiplier(1));
-        mExtendMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kExtendMotorID,
+        mExtendMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kExtendMotorId,
             SensorModel.fromMultiplier(1));
         if (mSpinMotor.hadStartupError() || mExtendMotor.hadStartupError())
         {
