@@ -29,8 +29,7 @@ public class Launcher extends SpartronicsSubsystem
         try
         {
             // ONE NEO for flywheel
-            mFlywheelMasterMotor = SpartronicsMax.makeMotor(Constants.Launcher.kFlywheelMasterId, SensorModel.toRadians(1),
-                Constants.Launcher.kFlywheelFollowerId);// new SpartronicsMax(Constants.Launcher.kFlywheelMasterID,SensorModel.toRadians(1));
+            mFlywheelMasterMotor = SpartronicsMax.makeMotor(Constants.Launcher.kFlywheelMasterId, SensorModel.toRadians(1));
             // One NEO 550 motor for turret
             mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretId, SensorModel.toRadians(360));
             if (mFlywheelMasterMotor.hadStartupError() || mTurretMotor.hadStartupError())
