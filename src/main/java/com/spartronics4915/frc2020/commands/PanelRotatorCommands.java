@@ -9,8 +9,25 @@ public class PanelRotatorCommands
 {
     /**
      * Commands with simple logic statements should be implemented as a
-     * FunctionalCommand. This saves the overhead of a full CommandBase, but still
-     * allows us to deal with isFinished.
+     * {@link FunctionalCommand}. This saves the overhead of a full
+     * {@link CommandBase}, but still allows us to deal with isFinished.
+     * <p>
+     * A FunctionalCommand takes five inputs:
+     * @param Runnable onInit
+     * @param Runnable onExecute
+     * @param Consumer<Boolean> onEnd (boolean interrupted)
+     * @param BooleanSupplier isFinished
+     * @param Subsystem requirement For both the CommandScheduler and the above method references.
+     * <p>
+     * Each of these parameters corresponds with a method in the CommandBase class.
+     */
+
+    /**
+     * This Raise {@link FunctionalCommand} calls {@link PanelRotator}.raise
+     * repeatedly, until the upper beam sensor is broken, at which point the
+     * motor will stop.
+     * <p>
+     * The motor will also stop raising if interrupted by another Command.
      */
     public class Raise extends FunctionalCommand
     {
@@ -21,6 +38,13 @@ public class PanelRotatorCommands
         }
     }
 
+    /**
+     * This Lower {@link FunctionalCommand} will call {@link PanelRotator}.lower
+     * repeatedly, until the down beam sensor is broken, at which point the
+     * motor will stop.
+     * <p>
+     * The motor will also stop lowering if interrupted by another Command.
+     */
     public class Lower extends FunctionalCommand
     {
         public Lower(PanelRotator PanelRotator)
@@ -30,9 +54,22 @@ public class PanelRotatorCommands
         }
     }
 
-    // TODO: This might be better as a FunctionalCommand
+    /**
+     * Commands that are "complex", or have > simple logic within them,
+     * should be put here. They simply extend {@link CommandBase} and
+     * are written as such.
+     */
+
+    /**
+     * This {@link CommandBase} will spin the color wheel to the correct color as broadcast
+     * by the FMS.
+     * No "optimization" is implemented - the spinner only moves clockwise/counterclockwise.
+     * <p>
+     * It requires the {@link PanelRotator} to be raised first to work properly.
+     */
     public class SpinToColor extends CommandBase
     {
+        // TODO: This might be better as a FunctionalCommand.
         private final PanelRotator mPanelRotator;
         private String mTargetColor;
 
@@ -48,6 +85,7 @@ public class PanelRotatorCommands
         @Override
         public void initialize()
         {
+            // We set mTargetColor only once, after this Command is first called.
             mTargetColor = mPanelRotator.getTargetColor();
         }
 
@@ -63,8 +101,8 @@ public class PanelRotatorCommands
         public boolean isFinished()
         {
             // Note that this is a comparison of Strings.
-            // Conversions from native ColorSensorV3 values to one of four values is done
-            // in PanelRotator
+            // Conversions from native ColorSensorV3 values to one of four values is
+            // done in PanelRotator.
             if (mPanelRotator.getActualColor() == mTargetColor)
                 return true;
             else
@@ -80,10 +118,12 @@ public class PanelRotatorCommands
     }
 
     /**
-     * Commands that are "complex", or have > simple logic within them,
-     * should be put here.
-     *
-     * An example of this is the SpinRotationsCommand.
+     * The {@link CommandBase} SpinRotation calls {@link PanelRotator}.spin until
+     * it detects (through use of the color sensor) that the wheel has been spun
+     * one full rotation.
+     * <p>
+     * Do note that it only spins the Color Wheel once. The operator will have to
+     * push the corresponding button at least three times to complete Stage Two.
      */
     public class SpinRotation extends CommandBase
     {
@@ -121,11 +161,14 @@ public class PanelRotatorCommands
         @Override
         public boolean isFinished()
         {
+            // If the detected color has changed, iterate the eighths counter.
             currentColor = mPanelRotator.getActualColor();
             if (currentColor != lastColor)
                 eighths++;
             lastColor = currentColor;
 
+            // The color wheel is made up of two each of four total colors,
+            // for a total of eight.
             if (eighths == 8) // TODO: double check for off-by-one errors
                 return true;
             else

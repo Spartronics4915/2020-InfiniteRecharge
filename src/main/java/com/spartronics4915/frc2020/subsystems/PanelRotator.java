@@ -93,6 +93,7 @@ public class PanelRotator extends SpartronicsSubsystem
         mExtendMotor.setDutyCycle(0);
     }
 
+    // TODO: What will this do before Stage Two?
     /** gets the color (Red, Blue, Yellow, or Green) through game specific messages that the robot needs to spin to */
     public String getTargetColor()
     {
