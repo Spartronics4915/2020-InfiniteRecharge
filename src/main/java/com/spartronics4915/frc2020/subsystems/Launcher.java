@@ -198,7 +198,7 @@ public class Launcher extends SpartronicsSubsystem
     }
 
     /**
-     * Resets shooter
+     * Resets shooter and stops flywheel
      */
     public void reset()
     {
@@ -207,5 +207,4 @@ public class Launcher extends SpartronicsSubsystem
         setPitch(0);
         turnTurret(0);
     }
-    // The exception to this is a general-functionality stop() method.
 }

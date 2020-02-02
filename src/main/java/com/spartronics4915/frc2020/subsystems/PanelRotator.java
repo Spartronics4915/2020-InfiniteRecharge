@@ -75,26 +75,36 @@ public class PanelRotator extends SpartronicsSubsystem
         mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     }
 
-    /** raises the arm holding the spinner at a set speed*/
+    /**
+     * Raises the arm holding the spinner at a set speed
+     */
     public void raise()
     {
         mExtendMotor.setDutyCycle(Constants.PanelRotator.kRaiseSpeed);
     }
 
-    /** lowers the arm holding the spinner at a set speed*/
+    /**
+     * Lowers the arm holding the spinner at a set speed
+     */
     public void lower()
     {
         mExtendMotor.setDutyCycle(Constants.PanelRotator.kLowerSpeed);
     }
 
-    /** stops the extension motor */
-    public void stopExtendMotor()
+    /**
+     * Spins the wheel to move the control panel
+     */
+    public void spin()
     {
-        mExtendMotor.setDutyCycle(0);
+        mSpinMotor.setDutyCycle(Constants.PanelRotator.kSpinMotorSpeed);
     }
 
-    // TODO: What will this do before Stage Two?
-    /** gets the color (Red, Blue, Yellow, or Green) through game specific messages that the robot needs to spin to */
+    // TODO: What will this return before Stage Two?
+    /**
+     * Gets the color the robot needs to spin to through game specific messages
+     *
+     * @return A String color - either Red, Blue, Yellow, or Green
+     */
     public String getTargetColor()
     {
         return DriverStation.getInstance().getGameSpecificMessage();
@@ -102,7 +112,11 @@ public class PanelRotator extends SpartronicsSubsystem
 
     // TODO: Implement this method!! !
     // https://github.com/REVrobotics/Color-Sensor-v3-Examples/blob/master/Java/Color%20Match/src/main/java/frc/robot/Robot.java
-    /** finds what color the color sensor is seeing  (Red, Blue, Yellow, or Green); currently just a placeholder for output */
+    /**
+     * Finds what color the color sensor is seeing - currently just a placeholder for output
+     *
+     * @return A String color - either Red, Blue, Yellow, or Green
+     */
     public String getActualColor()
     {
         /*
@@ -157,34 +171,46 @@ public class PanelRotator extends SpartronicsSubsystem
         return "method not complete";
     }
 
-    /** sees if the bottom beam sensor is triggered */
+    /**
+     * Sees if the bottom beam sensor is triggered
+     */
     public boolean getBeamSensorDown()
     {
         // TODO: maybe backwards
         return mBeamSensorDown.get();
     }
 
-    /** sees if the top beam sensor is triggered */
+    /**
+     * Sees if the top beam sensor is triggered
+     */
     public boolean getBeamSensorUp()
     {
         return mBeamSensorUp.get(); // TODO: maybe backwards
     }
 
-    /** spins the wheel to move the control panel */
-    public void spin()
-    {
-        mSpinMotor.setDutyCycle(Constants.PanelRotator.kSpinMotorSpeed);
-    }
-
     // TODO: A discussion needs to be had on the relevance and implementation of getRotations...
 
-    /** stops the wheel */
+    // TODO: Multiple stop() methods are redundant unless we use motor safety
+
+    /**
+     * Stops the extension motor
+     */
+    public void stopExtendMotor()
+    {
+        mExtendMotor.setDutyCycle(0);
+    }
+
+    /**
+     * Stops the wheel motor
+     */
     public void stopSpin()
     {
         mSpinMotor.setDutyCycle(0);
     }
 
-    /** stops the two motors */
+    /**
+     * Universal stop method
+     */
     public void stop()
     {
         mSpinMotor.setDutyCycle(0);

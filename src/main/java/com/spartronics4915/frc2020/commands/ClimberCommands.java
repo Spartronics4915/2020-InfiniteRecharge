@@ -72,9 +72,6 @@ public class ClimberCommands
      * (! {@link Constants}.Climber.kStalled) until it detects a stall ({@link Climber.isStalled}),
      * in which case {@link WinchSecondary} follows.
      * <p>
-     * The design of the gearbox means that running the Climber in either direction will still
-     * winch rope, making the {@link Climber} strictly one-way.
-     * <p>
      * A switch controls this Command, and will always run it first. In the event the Climber is
      * already winched in this motor direction, it will quickly detect the stall and go to
      * {@link WinchSecondary}.
@@ -93,9 +90,6 @@ public class ClimberCommands
      * <p>
      * This secondary functionality activates after {@link WinchPrimary}, winching the rope by turning
      * the motor the opposite direction as {@link WinchPrimary} ({@link Constants}.Climber.kStalled).
-     * <p>
-     * The design of the gearbox means that running the Climber in either direction will still
-     * winch rope, making the {@link Climber} strictly one-way.
      * <p>
      * A switch controls this Command, and will always run it after {@link WinchPrimary}, even if
      * {@link WinchPrimary} is already winched enough in that direction.

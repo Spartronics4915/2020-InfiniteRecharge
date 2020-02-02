@@ -8,14 +8,13 @@ import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 
 /**
- * The Intake subsystem takes balls from
- * the playing field and outputs them to storage.
+ * The Intake subsystem takes balls from the playing field and outputs them to
+ * storage.
  */
 public class Intake extends SpartronicsSubsystem
 {
     private SpartronicsMotor mHarvestMotor;
 
-    /** constructor **/
     public Intake()
     {
         mHarvestMotor = SpartronicsSRX.makeMotor(Constants.Intake.kHarvestMotorId,
@@ -32,28 +31,38 @@ public class Intake extends SpartronicsSubsystem
     }
 
     /**
-     * activates the mechanum "vector" wheels in partial intake
-     * hopefully in tandem with the prism roller
-    **/
+     * Activates the mechanum "vector" wheels in intake
+     */
     public void intake()
     {
         mHarvestMotor.setDutyCycle(Constants.Intake.kHarvestSpeed);
     }
 
-    /** reverses vector wheels **/
+    /**
+     * Reverses the vector wheel intake
+     */
     public void reverse()
     {
         mHarvestMotor.setDutyCycle(Constants.Intake.kEjectSpeed);
     }
 
-    /** checks to see if ball is held in intake chamber **/
+    /**
+     * Checks to see if a ball is held in the intake chamber
+     * with a proximity sensor returning a digital value
+     * <p>
+     * The style of proximity sensor we use requires MANUAL calibration
+     *
+     * @return Whether a ball is held
+     */
     public boolean isBallHeld()
     {
         // TODO: Implement this functionality with the digital Proximity Sensor
         return false;
     }
 
-    /** universal stop method **/
+    /**
+     * Universal stop method
+     */
     public void stop()
     {
         mHarvestMotor.setNeutral();
