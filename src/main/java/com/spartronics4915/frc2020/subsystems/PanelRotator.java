@@ -1,4 +1,3 @@
-// I'm bad at naming things. Please come up with a better name...
 package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.frc2020.Constants;
@@ -28,29 +27,29 @@ public class PanelRotator extends SpartronicsSubsystem
     // TODO: These are essentially random numbers, with the max value based on the
     // images at
     // https://www.andymark.com/products/infinite-recharge-control-panel-stickr
-    public int[] mMinimumRed = {200, 0, 0};
-    public int[] mMaximumRed = {255, 30, 30};
+    private int[] mMinimumRed = {200, 0, 0};
+    private int[] mMaximumRed = {255, 30, 30};
 
     // TODO: These are bad and will work in a way that will make you lose, which
     // will be sad
-    public int[] mMinimumGreen = {0, 200, 0};
-    public int[] mMaximumGreen = {30, 255, 30};
+    private int[] mMinimumGreen = {0, 200, 0};
+    private int[] mMaximumGreen = {30, 255, 30};
 
     // TODO: These are bad and will work in a way that will make you lose, which
     // will be sad
-    public int[] mMinimumBlue = {0, 200, 200};
-    public int[] mMaximumBlue = {30, 255, 255};
+    private int[] mMinimumBlue = {0, 200, 200};
+    private int[] mMaximumBlue = {30, 255, 255};
 
     // TODO: These are bad and will work in a way that will make you lose, which
     // will be sad
-    public int[] mMinimumYellow = {200, 200, 0};
-    public int[] mMaximumYellow = {255, 255, 30};
+    private int[] mMinimumYellow = {200, 200, 0};
+    private int[] mMaximumYellow = {255, 255, 30};
 
-    public String sensedColor;
+    private String sensedColor;
 
-    public int red;
-    public int green;
-    public int blue;
+    private int red;
+    private int green;
+    private int blue;
 
     public PanelRotator()
     {

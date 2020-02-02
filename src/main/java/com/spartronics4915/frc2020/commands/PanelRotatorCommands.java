@@ -63,7 +63,8 @@ public class PanelRotatorCommands
         public boolean isFinished()
         {
             // Note that this is a comparison of Strings.
-            // Conversions from native ColorSensorV3 values to one of four values is done in PanelRotator
+            // Conversions from native ColorSensorV3 values to one of four values is done
+            // in PanelRotator
             if (mPanelRotator.getActualColor() == mTargetColor)
                 return true;
             else
@@ -88,9 +89,9 @@ public class PanelRotatorCommands
     {
         private final PanelRotator mPanelRotator;
 
-        public int eighths;
-        public String lastColor;
-        public String currentColor;
+        private int eighths;
+        private String lastColor;
+        private String currentColor;
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
