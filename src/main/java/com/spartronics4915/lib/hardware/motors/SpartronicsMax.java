@@ -3,6 +3,7 @@ package com.spartronics4915.lib.hardware.motors;
 import com.revrobotics.CANError;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
+import com.revrobotics.CANAnalog.AnalogMode;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.spartronics4915.lib.util.Logger;
@@ -30,6 +31,12 @@ public class SpartronicsMax implements SpartronicsMotor
     /** Native units/sec^2, converted to meters on get and set */
     private double mMotionProfileAcceleration = 0.0;
     private boolean mUseMotionProfileForPosition = false;
+
+    public static enum EncoderType {
+        kNormal,
+        kAnalogAbsolute,
+        kAnalogRelative
+    }
 
     public class SpartronicsMaxEncoder implements SpartronicsEncoder
     {
@@ -62,11 +69,16 @@ public class SpartronicsMax implements SpartronicsMotor
 
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel)
     {
+        return makeMotor(deviceNumber, sensorModel, EncoderType.kNormal);
+    }
+
+    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel, EncoderType encoderType)
+    {
         if (RobotBase.isSimulation())
         {
             return new SpartronicsSimulatedMotor();
         }
-        return new SpartronicsMax(new CANSparkMax(deviceNumber, MotorType.kBrushless), sensorModel);
+        return new SpartronicsMax(new CANSparkMax(deviceNumber, MotorType.kBrushless), sensorModel, EncoderType.kNormal);
     }
 
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel,
@@ -81,13 +93,15 @@ public class SpartronicsMax implements SpartronicsMotor
         // If that changes we can make motor type configurable
         var master = new CANSparkMax(deviceNumber, MotorType.kBrushless);
         new CANSparkMax(deviceNumber, MotorType.kBrushless).follow(master);
-        return new SpartronicsMax(master, sensorModel);
+        return new SpartronicsMax(master, sensorModel, EncoderType.kNormal);
     }
 
-    private SpartronicsMax(CANSparkMax spark, SensorModel sensorModel)
+    private SpartronicsMax(CANSparkMax spark, SensorModel sensorModel, EncoderType encoder)
     {
         mSparkMax = spark;
         mSensorModel = sensorModel;
+        
+        // mSparkMax.getPIDController().setFeedbackDevice();
 
         CANError err = mSparkMax.getEncoder().setPosition(0);
         mSparkMax.getEncoder().setVelocityConversionFactor(kRPMtoRPS); // Set conversion factor.
@@ -273,5 +287,4 @@ public class SpartronicsMax implements SpartronicsMotor
     {
         mSparkMax.getPIDController().setReference(0.0, ControlType.kDutyCycle, 0);
     }
-
 }
