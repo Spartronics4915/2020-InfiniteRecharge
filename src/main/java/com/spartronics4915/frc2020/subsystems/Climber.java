@@ -3,10 +3,6 @@ package com.spartronics4915.frc2020.subsystems;
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
@@ -26,15 +22,19 @@ public class Climber extends SpartronicsSubsystem
     public Climber()
     {
         // Hardware Contructor (Add motors and such here when I get them)
-        mLiftMotor = SpartronicsSRX.makeMotor(Constants.Climber.kLiftMotorId, SensorModel.fromMultiplier(1));
-        mWinchMotor = SpartronicsMax.makeMotor(Constants.Climber.kWinchMotorId, SensorModel.fromMultiplier(1));
+        mLiftMotor = SpartronicsSRX.makeMotor(Constants.Climber.kLiftMotorId,
+            SensorModel.fromMultiplier(1));
+        mWinchMotor = SpartronicsMax.makeMotor(Constants.Climber.kWinchMotorId,
+            SensorModel.fromMultiplier(1));
 
         if (mLiftMotor.hadStartupError() || mWinchMotor.hadStartupError())
         {
             mLiftMotor = new SpartronicsSimulatedMotor();
             mWinchMotor = new SpartronicsSimulatedMotor();
             logInitialized(false);
-        } else {
+        }
+        else
+        {
             logInitialized(true);
         }
     }
