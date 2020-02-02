@@ -59,11 +59,19 @@ public class SpartronicsSRX implements SpartronicsMotor {
         }
     }
 
+    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel, FeedbackDevice feedbackDevice)
+    {
+        if (RobotBase.isSimulation()) {
+            return new SpartronicsSimulatedMotor();
+        }
+        return new SpartronicsSRX(new TalonSRX(deviceNumber), sensorModel, feedbackDevice);
+    }
+
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel) {
         if (RobotBase.isSimulation()) {
             return new SpartronicsSimulatedMotor();
         }
-        return new SpartronicsSRX(new TalonSRX(deviceNumber), sensorModel);
+        return new SpartronicsSRX(new TalonSRX(deviceNumber), sensorModel, FeedbackDevice.QuadEncoder);
     }
 
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel, int followerDeviceNumber) {
@@ -72,14 +80,14 @@ public class SpartronicsSRX implements SpartronicsMotor {
         }
         var master = new TalonSRX(deviceNumber);
         new TalonSRX(followerDeviceNumber).follow(master);
-        return new SpartronicsSRX(master, sensorModel);
+        return new SpartronicsSRX(master, sensorModel, FeedbackDevice.QuadEncoder);
     }
 
-    private SpartronicsSRX(TalonSRX talon, SensorModel sensorModel) {
+    private SpartronicsSRX(TalonSRX talon, SensorModel sensorModel, FeedbackDevice encoder) {
         mTalonSRX = talon;
         mSensorModel = sensorModel;
 
-        ErrorCode err = mTalonSRX.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 5);
+        ErrorCode err = mTalonSRX.configSelectedFeedbackSensor(encoder, 0, 5);
         if (err != ErrorCode.OK) {
             Logger.error("TalonSRX on with ID " + mTalonSRX.getDeviceID()
                     + " returned a non-OK error code on sensor configuration... Is the encoder plugged in?");
