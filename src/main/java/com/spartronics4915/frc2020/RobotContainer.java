@@ -47,7 +47,7 @@ public class RobotContainer
         }
     }
 
-    public static final String kAutoOptionsKey = "AutoStrategyOptions";
+    private static final String kAutoOptionsKey = "AutoStrategyOptions";
     public static final AutoMode kDefaultAutoMode = new AutoMode("All: Do Nothing", new Command()
     {
         @Override
@@ -119,6 +119,11 @@ public class RobotContainer
             new AutoMode("Characterize Drive",
                 new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter))
         };
+        String autoModeList = "";
+        for (var autoMode : mAutoModes) {
+            autoModeList += autoMode.name;
+        }
+        SmartDashboard.putString(kAutoOptionsKey, autoModeList);
     }
 
     private void configureJoystickBindings()
