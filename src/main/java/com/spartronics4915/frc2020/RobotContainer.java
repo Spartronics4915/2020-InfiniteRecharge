@@ -1,7 +1,9 @@
 package com.spartronics4915.frc2020;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.spartronics4915.frc2020.TrajectoryContainer.Destination;
 import com.spartronics4915.frc2020.commands.*;
@@ -53,12 +55,12 @@ public class RobotContainer
         @Override
         public Set<Subsystem> getRequirements()
         {
-            return null;
+            return Set.of();
         }
     });
 
     public final NetworkTableEntry mAutoModeEntry = NetworkTableInstance.getDefault()
-            .getTable("SmartDashboard").getEntry("AutoModeStrategy");
+        .getTable("SmartDashboard").getEntry("AutoStrategy");
     public final AutoMode[] mAutoModes;
 
     private final Climber mClimber;
@@ -81,9 +83,9 @@ public class RobotContainer
      */
     public RobotContainer()
     {
+        mLauncher = new Launcher();
         mClimber = new Climber();
         mIntake = new Intake();
-        mLauncher = new Launcher();
         mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
         mClimberCommands = new ClimberCommands();
@@ -91,7 +93,7 @@ public class RobotContainer
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
-        
+
         T265Camera slamra;
         try
         {
@@ -110,19 +112,18 @@ public class RobotContainer
         configureJoystickBindings();
         configureButtonBoardBindings();
 
-        mAutoModes = new AutoMode[] {
-            kDefaultAutoMode,
+        System.out.println(TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight));
+
+        mAutoModes = new AutoMode[] {kDefaultAutoMode,
             new AutoMode("Drive Straight",
                 new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.middle.getTrajectory(Destination.MiddleShootingPosition),
+                    TrajectoryContainer.middle.getTrajectory(Destination.ShieldGeneratorFarRight),
                     mRamseteController, mStateEstimator.getCameraRobotStateMap())),
             new AutoMode("Characterize Drive",
-                new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter))
-        };
-        String autoModeList = "";
-        for (var autoMode : mAutoModes) {
-            autoModeList += autoMode.name;
-        }
+                new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter))};
+
+        String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
+            .collect(Collectors.joining(","));
         SmartDashboard.putString(kAutoOptionsKey, autoModeList);
     }
 
@@ -149,9 +150,9 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
-        new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(new Launcher()));
+        new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(mLauncher));
         new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive,
-                throughTrench(), mRamseteController, mStateEstimator.getCameraRobotStateMap()));
+            throughTrench(), mRamseteController, mStateEstimator.getCameraRobotStateMap()));
     }
 
     private void configureButtonBoardBindings()
@@ -213,18 +214,17 @@ public class RobotContainer
     public TimedTrajectory<Pose2dWithCurvature> throughTrench()
     {
         ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
-        Pose2d[] intermediate = new Pose2d[]
-        {new Pose2d(Units.inchesToMeters(424), Units.inchesToMeters(135),
+        Pose2d[] intermediate = new Pose2d[] {
+            new Pose2d(Units.inchesToMeters(424), Units.inchesToMeters(135),
                 Rotation2d.fromDegrees(180)),
-                new Pose2d(Units.inchesToMeters(207), Units.inchesToMeters(135),
-                        Rotation2d.fromDegrees(180))};
+            new Pose2d(Units.inchesToMeters(207), Units.inchesToMeters(135),
+                Rotation2d.fromDegrees(180))};
         for (int i = 0; i < intermediate.length; i++)
         {
             Pose2d pose = intermediate[i];
             intermediate[i] = new Pose2d(pose.getTranslation().getX() - Units.inchesToMeters(312.5),
-                    pose.getTranslation().getY(), pose.getRotation());
+                pose.getTranslation().getY(), pose.getRotation());
         }
-        System.out.println(mStateEstimator);
         RobotStateMap stateMap = mStateEstimator.getCameraRobotStateMap();
         Pose2d robotPose = stateMap.getLatestState().pose;
         double robotX = robotPose.getTranslation().getX();
@@ -234,14 +234,14 @@ public class RobotContainer
             {
                 Pose2d pose = intermediate[i];
                 intermediate[i] = new Pose2d(-pose.getTranslation().getX(),
-                        pose.getTranslation().getY(), Rotation2d.fromDegrees(0));
+                    pose.getTranslation().getY(), Rotation2d.fromDegrees(0));
             }
         }
         for (int i = 0; i < intermediate.length; i++)
         {
             Pose2d pose = intermediate[i];
             intermediate[i] = new Pose2d(pose.getTranslation().getX() + Units.inchesToMeters(312.5),
-                    pose.getTranslation().getY(), pose.getRotation());
+                pose.getTranslation().getY(), pose.getRotation());
         }
         waypoints.add(robotPose);
         for (Pose2d pose : intermediate)

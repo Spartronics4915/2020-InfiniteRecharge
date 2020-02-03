@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedMap;
 
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
@@ -71,6 +72,12 @@ public class TrajectoryContainer
             List<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
             return TrajectoryContainer.generateTrajectory(waypoints, constraints);
         }
+
+        @Override
+        public int hashCode()
+        {
+            return Objects.hash(mStart, mEnd);
+        }
     }
 
     public static final class TrajectoryCollection
@@ -88,6 +95,7 @@ public class TrajectoryContainer
         {
             for (var entry : trajectories.entrySet())
             {
+                System.out.println(entry.getKey().hashCode());
                 var trajectory = entry.getKey().createTrajectory(mStartPoint, entry.getValue());
                 mTrajectories.put(entry.getKey(), trajectory);
             }

@@ -81,8 +81,8 @@ public final class Constants
 
     public static final class PanelRotator
     {
-        public static final int kBeamSensorUpId = 1; // TODO: take up issue with electronics over these not being on the control map
-        public static final int kBeamSensorDownId = 2;
+        public static final int kBeamSensorUpId = 2; // TODO: take up issue with electronics over these not being on the control map
+        public static final int kBeamSensorDownId = 3;
 
         public static final int kExtendMotorId = 13;
         public static final int kSpinMotorId = 14;

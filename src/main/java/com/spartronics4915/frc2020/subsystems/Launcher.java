@@ -25,7 +25,8 @@ public class Launcher extends SpartronicsSubsystem
     public Launcher()
     {
         // ONE NEO for flywheel
-        mFlywheelMasterMotor = SpartronicsMax.makeMotor(Constants.Launcher.kFlywheelMasterId, SensorModel.toRadians(1));
+        mFlywheelMasterMotor = SpartronicsMax.makeMotor(Constants.Launcher.kFlywheelMasterId,
+            SensorModel.toRadians(1));
         // One NEO 550 motor for turret
         mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretId,
             SensorModel.toRadians(360));
@@ -43,13 +44,11 @@ public class Launcher extends SpartronicsSubsystem
 
         // Two Servos for angle adjustement
         mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterId);
-        mAngleAdjusterFollowerServo = new Servo(
-            Constants.Launcher.kAngleAdjusterFollowerId);
-
+        mAngleAdjusterFollowerServo = new Servo(Constants.Launcher.kAngleAdjusterFollowerId);
 
         turnTurret(0);
-        mTurretPotentiometer = new AnalogPotentiometer(
-            Constants.Launcher.kTurretPotentiometerId, 90, -45);
+        mTurretPotentiometer = new AnalogPotentiometer(Constants.Launcher.kTurretPotentiometerId,
+            90, -45);
         setDefaultCommand(new LauncherDefaultCommand(this));
     }
 
