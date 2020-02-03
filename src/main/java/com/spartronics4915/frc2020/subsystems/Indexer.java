@@ -5,6 +5,7 @@ import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -31,7 +32,23 @@ public class Indexer extends SpartronicsSubsystem
     {
         // Set up Spinner
         mSpinnerModel = SensorModel.fromMultiplier(Constants.Indexer.Spinner.kConversionRatio);
+<<<<<<< HEAD
         mSpinnerMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Spinner.kMotorId, mSpinnerModel);
+=======
+        mSpinnerMotor = SpartronicsMax.makeMotor(Constants.Indexer.Spinner.kMotorId, mSpinnerModel);
+        // Set up Loader
+        mLoaderModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);
+        mLoaderMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Loader.kMotorId, mLoaderModel);
+
+        if (mSpinnerMotor.hadStartupError() || mLoaderMotor.hadStartupError())
+        {
+            mSpinnerMotor = new SpartronicsSimulatedMotor();
+            mLoaderMotor = new SpartronicsSimulatedMotor();
+            logInitialized(false);
+        } else {
+            logInitialized(true);
+        }
+>>>>>>> 44fe2cfe830a3ebd6967a90b0ca25cc29d7f4e37
         // Set up gains
         mSpinnerMotor.setVelocityGains(Constants.Indexer.Spinner.kVelocityP,
             Constants.Indexer.Spinner.kVelocityD);
@@ -41,9 +58,6 @@ public class Indexer extends SpartronicsSubsystem
         mSpinnerMotor.setMotionProfileMaxAcceleration(Constants.Indexer.Spinner.kMaxAcceleration);
         mSpinnerMotor.setUseMotionProfileForPosition(true);
 
-        // Set up Loader
-        mLoaderModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);
-        mLoaderMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Loader.kMotor, mLoaderModel);
         // Set up gains
         mLoaderMotor.setVelocityGains(Constants.Indexer.Loader.kVelocityP,
             Constants.Indexer.Loader.kVelocityD);

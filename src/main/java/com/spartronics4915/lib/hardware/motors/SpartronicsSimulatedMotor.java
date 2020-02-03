@@ -189,4 +189,10 @@ public class SpartronicsSimulatedMotor implements SpartronicsMotor
 
     }
 
+    @Override
+    public double getOutputCurrent()
+    {
+        return 0;
+    }
+
 }

@@ -361,4 +361,11 @@ public class SpartronicsMax implements SpartronicsMotor
     {
         return mFeedbackSensor;
     }
+
+    @Override
+    public double getOutputCurrent()
+    {
+        return mSparkMax.getOutputCurrent();
+    }
+
 }

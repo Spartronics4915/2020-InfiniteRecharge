@@ -3,64 +3,89 @@ package com.spartronics4915.frc2020.subsystems;
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 
 /**
- * This subsystem has two motors. A NEO using a Spark, while the other is a 775 PRO using a Talon.
- * The NEO motor winches the climber and the 775 PRO extends the climber
- * The four methods used are extend(), winch(), reverseExtend(), and stop()
+ * TODO: Write an updated and comprehensive subsystem overview
  */
 public class Climber extends SpartronicsSubsystem
 {
-    private TalonSRX mLiftMotor;
-    private CANSparkMax mWinchMotor;
+    private SpartronicsMotor mLiftMotor;
+    private SpartronicsMotor mWinchMotor;
 
     public Climber()
     {
         // Hardware Contructor (Add motors and such here when I get them)
-        mLiftMotor = new TalonSRX(Constants.Climber.kLiftMotorId);
-        mWinchMotor = new CANSparkMax(Constants.Climber.kWinchMotorId, MotorType.kBrushless);
+        mLiftMotor = SpartronicsSRX.makeMotor(Constants.Climber.kLiftMotorId,
+            SensorModel.fromMultiplier(1));
+        mWinchMotor = SpartronicsMax.makeMotor(Constants.Climber.kWinchMotorId,
+            SensorModel.fromMultiplier(1));
+
+        if (mLiftMotor.hadStartupError() || mWinchMotor.hadStartupError())
+        {
+            mLiftMotor = new SpartronicsSimulatedMotor();
+            mWinchMotor = new SpartronicsSimulatedMotor();
+            logInitialized(false);
+        }
+        else
+        {
+            logInitialized(true);
+        }
     }
 
+    /**
+     * Extends the "lightsaber"
+     */
     public void extend()
     {
-        mLiftMotor.set(ControlMode.PercentOutput, Constants.Climber.kExtendSpeed);
-        mWinchMotor.set(0.0);
+        mLiftMotor.setDutyCycle(Constants.Climber.kExtendSpeed);
+        mWinchMotor.setDutyCycle(0.0);
     }
 
+    /**
+     * Takes a parameter that reverses the motor direction.
+     * <p>
+     * The design of the gearbox means that running the Winch motor in either direction
+     * will still winch rope, making the {@link Climber} strictly one-way.
+     *
+     * @param stalled Whether the winch has stalled yet
+     */
     public void winch(boolean stalled)
     {
-        mLiftMotor.set(ControlMode.PercentOutput, 0.0);
+        mLiftMotor.setDutyCycle(0.0);
         if (stalled)
-            mWinchMotor.set(Constants.Climber.kWinchSpeed);
+            mWinchMotor.setDutyCycle(Constants.Climber.kWinchSpeed);
         else
-            mWinchMotor.set(-Constants.Climber.kWinchSpeed);
+            mWinchMotor.setDutyCycle(Constants.Climber.kReverseWinchSpeed);
     }
 
+    /**
+     * Lowers the "lightsaber"
+     */
     public void retract()
     {
-        mLiftMotor.set(ControlMode.PercentOutput, -Constants.Climber.kExtendSpeed);
-        mWinchMotor.set(0.0);
+        mLiftMotor.setDutyCycle(Constants.Climber.kRetractSpeed);
+        mWinchMotor.setDutyCycle(0.0);
     }
 
+    /**
+     * Universal stop method
+     */
     public void stop()
     {
-        mLiftMotor.set(ControlMode.PercentOutput, 0.0);
-        mWinchMotor.set(0.0);
+        mLiftMotor.setDutyCycle(0.0);
+        mWinchMotor.setDutyCycle(0.0);
     }
 
-    public double getWinchVoltage()
-    {
-        return mWinchMotor.getBusVoltage();
-    }
-
+    /**
+     * @return Whether the output current of the Winch motor is above the "stall" threshold
+     */
     public boolean isStalled()
     {
-        return false;
+        return mWinchMotor.getOutputCurrent() >= Constants.Climber.kStallThreshold;
     }
 }
