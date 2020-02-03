@@ -223,6 +223,8 @@ public class PathFinder {
             this.second = second;
         }
 
+        // https://stackoverflow.com/questions/262367/type-safety-unchecked-cast
+        @SuppressWarnings("unchecked") 
         @Override
         public boolean equals(Object o) {
             if (this == o)

@@ -10,7 +10,7 @@
   - [Vision (Darwin, Jeffrey)](#vision-darwin-jeffrey)
   - [Driver Cameras (Martin)](#driver-cameras-martin)
   - [Dashboard (Martin)](#dashboard-martin)
-  - [Bling (Maya?)](#bling-maya)
+  - [Bling (Maya)](#bling-maya)
   - [Scouting (Henry)](#scouting-henry)
 
 ## Operator Interface (Justice? ...)
@@ -21,7 +21,7 @@
 
 ## Drivetrain / vslam (Henry, Declan, Jeffrey, ..)
 
-* excellent manual control over manoevering robot
+* goal: excellent manual control over manoevering robot
 * odometry / tracking via intel T265 / vslam
     * validation
         * drive characterization (for both main and test robots)
@@ -50,11 +50,19 @@
         * allow driver position/pressure tweaks?
         * tradeoff between motor rotation speed and power and slippage
     * consider whether driver control is valid option
+    * modes:
+      * spin-by revs
+      * spin-to gametime color
 
 ## Intake (Freeman)
 
 * collaborate with Indexer to ensure intake is active when we're in
   collection mode.
+    * what does it mean to store a ball? 
+      * how do we communicate with indexer to identify this?
+      * do we need to keep any motors running in order to store?
+    * is there a concern about stuck/wedged balls?  if so, does the driver
+      remediate?
 
 ## Indexer (Camden)
 
@@ -64,6 +72,12 @@
 * collaborate with Turret to shoot balls
     * kick ball(s) sequentially into Turret/shooter, shooter must be
         ready to receive balls (ie: flywheel up-to-speed & turret aimed)
+    * do we run the kicker motor at all times, or only when a ball is in 
+      position to kick?
+* sensor questions
+  * is the indexer angle available?  Is there an absolute encoder?
+  * can we share a sensor instance for the intake ball-available sensor
+    with the intake subsytem?
 
 ## Turret Control (Ethan)
 
@@ -115,14 +129,17 @@
 * camera placement and count
   * front, back, up (?)
 * determine raspi count
-  * validate camera switcher - if it works, then 1 raspi may suffice
+  * ~~validate camera switcher - if it works, then 1 raspi may suffice~~
 * update to WPI 2020 img
+  * test the new image
+  * clone it to backup microsd cards
 
 ## Dashboard (Martin)
 
 * final drive-team layout of cameras and match controls
     * heads-up display
         * reticles?
+        * compass to target (depends on camera view)
         * climber current?
         * battery? 
         * gamestate? (match-time, target color, ...)
@@ -142,7 +159,7 @@
         * update robot specs for 2020
         * work with drivetrain team to determine if useful
 
-## Bling (Maya?)
+## Bling (Maya)
 
 * work with OI team to map buttons and robot state to different Bling patterns
 * make sure we have a backup solution for LED strip and arduino?
