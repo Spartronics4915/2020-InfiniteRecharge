@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -70,6 +71,7 @@ public class RobotContainer
     private final LED mLED;
     private final ClimberCommands mClimberCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
+    private final ExampleCommandFactory mExampleCommandFactory;
 
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
@@ -90,6 +92,7 @@ public class RobotContainer
         mLED = LED.getInstance();
         mClimberCommands = new ClimberCommands();
         mPanelRotatorCommands = new PanelRotatorCommands();
+        mExampleCommandFactory = new ExampleCommandFactory(mLED);
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
@@ -189,6 +192,21 @@ public class RobotContainer
         new JoystickButton(mButtonBoard, 17).whenHeld(new TurretLeftCommand(mLauncher));
         new JoystickButton(mButtonBoard, 18).whenHeld(new TurretRightCommand(mLauncher));
         */
+    }
+
+    // configureTestCommands is not actually run. It is declared public to
+    // quell warnings. Its use is to test out different construction idioms 
+    // for externally defined commands. 
+    public void configureTestCommands()
+    {
+        // in this style object construction happens in the CommandFactory
+        this.mExampleCommandFactory.MakeCmd(ExampleCommandFactory.CmdEnum.kTest1);
+
+        // in this mode we construct things here, we must pass in parameters
+        // that are required during construction, since the outer class 
+        // member variables aren't accessible until after construction.
+        this.mExampleCommandFactory.new Test5(this.mLED); // an InstantCommand
+        this.mExampleCommandFactory.new Test6(this.mLED); // a StartEndCommand
     }
 
     /**
