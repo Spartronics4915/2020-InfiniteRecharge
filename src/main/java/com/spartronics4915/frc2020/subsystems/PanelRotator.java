@@ -34,8 +34,7 @@ public class PanelRotator extends SpartronicsSubsystem
 
     private final ColorMatch mColorMatcher = new ColorMatch();
 
-    //see https://drive.google.com/file/d/1kc73I2Qj1vwfnR0_QI9QO8Up4mWS3IuH/view for a diagram of how these line up
-    //explains why they correspond this way
+    //see https://drive.google.com/file/d/1BfoFJmpJg31txUqTG-OrJjeWgQdQsCNC/view for a diagram of how these line up
     //TODO: test all these
 
     //Blue
