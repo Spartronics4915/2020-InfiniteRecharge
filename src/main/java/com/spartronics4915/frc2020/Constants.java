@@ -76,6 +76,11 @@ public final class Constants
         public static final double kS = 0.0638;
         public static final double kV = 0.121;
         public static final double kA = 0.0252;
+        //Vals for interpolating lookup table
+        public static final int LookupTableSize = 0;
+        public static final double[] DistanceTable = null;
+        public static final double[] AngleTable = null;
+        public static final double[] RPSTable = null;
     }
 
     public static final class OI
