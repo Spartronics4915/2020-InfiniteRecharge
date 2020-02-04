@@ -25,7 +25,7 @@
 
 // Configuration for our LED strip and Arduino
 // TODO: Update PIN and NUM_LEDS for development and later robot deployment
-#define NUM_LEDS 60
+#define NUM_LEDS 30
 #define PIN 4
 
 // Allocate our pixel memory, set interface to match our hardware
@@ -80,9 +80,17 @@ const rgbColor rgbColor_MAGENTA_DIM(0x330033);
 enum
 {
   OFF = 0,
-  DISABLED,
-  SOME_BLING_STATE_2,
-  SOME_BLING_STATE_3,
+  //NEEDS
+  BLING_COMMAND_STARTUP,
+  BLING_COMMAND_DISABLED,
+  BLING_COMMAND_DEFAULT,
+  //WANTS
+  BLING_COMMAND_AUTOMODE,
+  BLING_COMMAND_SHOOTING,
+  BLING_COMMAND_PICKUP,
+  BLING_COMMAND_LOADING,
+  BLING_COMMAND_CLIMBING,
+  BLING_COMMAND_VISION,
 
   // Add new bling states immediately above this line
 
@@ -191,19 +199,47 @@ void loop()
     solid(rgbColor_OFF);
     break;
 
-  case DISABLED:
-    // All pixels set to orange
-    solid(rgbColor_ORANGE);
-    break;
+//NEEDS BELOW
 
-    // TODO: setup state and animation functions
-  case SOME_BLING_STATE_2:
-    // my_fancy_animation_function();
-    break;
+    case BLING_COMMAND_STARTUP:
+      solid(rgbColor_ORANGE);
+      break;
 
-  case SOME_BLING_STATE_3:
-    // my_fancy_animation_function();
-    break;
+    case BLING_COMMAND_DISABLED:
+      strobe(rgbColor_ORANGE, 1, 100, 0);
+      break;
+      //Will adjust accordingly to the usual past robots blinking rate etc etc
+
+      
+    case BLING_COMMAND_DEFAULT:
+      solid(rgbColor_BLUE);
+      break;
+
+//WANTS BELOW
+
+    case BLING_COMMAND_AUTOMODE:
+      solid(rgbColor_WHITE);
+      break;
+
+    case BLING_COMMAND_SHOOTING:
+      strobe(rgbColor_WHITE, 1, 150, 2000);
+      break;
+
+    case BLING_COMMAND_PICKUP:
+      strobe(rgbColor_YELLOW, 1, 100, 0);
+      break;
+
+    case BLING_COMMAND_LOADING:
+      fillPixelByPixel (rgbColor_YELLOW, 50);
+      break;
+
+    case BLING_COMMAND_CLIMBING:
+      solid(rgbColor_WHITE);
+      break;
+
+    case BLING_COMMAND_VISION:
+      strobe(rgbColor_WHITE, 1, 150, 500);
+      break;
 
   default:
     solid(rgbColor_OFF);

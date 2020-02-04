@@ -40,3 +40,33 @@ void blinkOffWithDelay(uint8_t wait)
   setAllPixelsOff();
   delay(wait);
 }
+
+ void strobe(rgbColor c, uint8_t numFlashes, int flashDelay, int strobePause)
+ {
+  for(int j = 0; j < numFlashes; j++) 
+  {
+    setAllPixels(c);
+    showPixels();
+    
+    delay(flashDelay);
+    
+    setAllPixels(rgbColor_OFF);
+    showPixels();
+    delay(flashDelay);
+  }
+ 
+ delay(strobePause);
+}
+
+void fillPixelByPixel(rgbColor c, uint8_t wait)
+ {
+  // start w/ pixel 0, set color, show color, wait and do it again
+  for(uint16_t i=0; i<pixels.numPixels(); i++) 
+  {
+    // pass the color component of rgbColor 
+    setPixel(i, c.color);
+    showPixels();
+
+    delay(wait);
+  }
+}
