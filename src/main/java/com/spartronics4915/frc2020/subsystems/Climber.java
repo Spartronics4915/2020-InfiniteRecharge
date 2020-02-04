@@ -27,8 +27,8 @@ public class Climber extends SpartronicsSubsystem
 
         if (mLiftMotor.hadStartupError() || mWinchMotor.hadStartupError())
         {
-            mLiftMotor = new SpartronicsSimulatedMotor();
-            mWinchMotor = new SpartronicsSimulatedMotor();
+            mLiftMotor = new SpartronicsSimulatedMotor(Constants.Climber.kLiftMotorId);
+            mWinchMotor = new SpartronicsSimulatedMotor(Constants.Climber.kWinchMotorId);
             logInitialized(false);
         }
         else

@@ -1,16 +1,34 @@
 package com.spartronics4915.lib.hardware.motors;
 
+import java.util.HashMap;
+
 /**
  * This class provides a simulated, easy-to-inspect, implementor of SpartronicsMotor.
  */
 // TODO: Keep track of motor state
 public class SpartronicsSimulatedMotor implements SpartronicsMotor
 {
+    private static HashMap<Integer, SpartronicsSimulatedMotor> sMotors = new HashMap<>();
+
+    public static SpartronicsSimulatedMotor getFromId(int deviceId)
+    {
+        var dev = sMotors.get(deviceId);
+        if (dev == null)
+        {
+            throw new RuntimeException("Simulated motor with ID " + deviceId + " not found");
+        }
+        return dev;
+    }
+
     private double mMotionProfileMaxAcceleration = 0;
     private boolean mOutputInverted = false;
     private boolean mBrakeMode = false;
     private double mVoltageCompSaturation = 0;
     private double mMotionProfileCruiseVelocity = 0;
+    private double mOutputCurrent = 0;
+
+    private final SpartronicsSimulatedMotor mFollower;
+    private final int mDeviceNumber;
 
     @Override
     public SpartronicsEncoder getEncoder()
@@ -43,6 +61,31 @@ public class SpartronicsSimulatedMotor implements SpartronicsMotor
                 return true;
             }
         };
+    }
+
+    public SpartronicsSimulatedMotor(int deviceNumber)
+    {
+        this(deviceNumber, -1);
+    }
+
+    public SpartronicsSimulatedMotor(int deviceNumber, int followerDeviceNumber)
+    {
+        if (sMotors.get(deviceNumber) != null)
+        {
+            throw new RuntimeException("Can't instantiate a duplicate motor with device ID " + deviceNumber);
+        }
+        sMotors.put(deviceNumber, this);
+
+        mDeviceNumber = deviceNumber;
+
+        if (followerDeviceNumber != -1)
+        {
+            mFollower = new SpartronicsSimulatedMotor(followerDeviceNumber);
+        }
+        else
+        {
+            mFollower = null;
+        }
     }
 
     @Override
@@ -192,7 +235,24 @@ public class SpartronicsSimulatedMotor implements SpartronicsMotor
     @Override
     public double getOutputCurrent()
     {
-        return 0;
+        return mOutputCurrent;
+    }
+
+    public void setOutputCurrent(double current)
+    {
+        mOutputCurrent = current;
+    }
+
+    @Override
+    public SpartronicsMotor getFollower()
+    {
+        return mFollower;
+    }
+
+    @Override
+    public int getDeviceNumber()
+    {
+        return mDeviceNumber;
     }
 
 }
