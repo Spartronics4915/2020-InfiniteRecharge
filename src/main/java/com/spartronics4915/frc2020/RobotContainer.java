@@ -71,7 +71,7 @@ public class RobotContainer
     private final LED mLED;
     private final ClimberCommands mClimberCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
-    private final ExampleCommandFactory mExampleCommandFactory;
+    private final IndexerCommandFactory mExampleCommandFactory;
 
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
@@ -92,7 +92,7 @@ public class RobotContainer
         mLED = LED.getInstance();
         mClimberCommands = new ClimberCommands();
         mPanelRotatorCommands = new PanelRotatorCommands();
-        mExampleCommandFactory = new ExampleCommandFactory(mLED);
+        mExampleCommandFactory = new IndexerCommandFactory(mLED);
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
@@ -200,7 +200,7 @@ public class RobotContainer
     public void configureTestCommands()
     {
         // in this style object construction happens in the CommandFactory
-        this.mExampleCommandFactory.MakeCmd(ExampleCommandFactory.CmdEnum.kTest1);
+        this.mExampleCommandFactory.MakeCmd(IndexerCommandFactory.CmdEnum.kTest1);
 
         // in this mode we construct things here, we must pass in parameters
         // that are required during construction, since the outer class 
