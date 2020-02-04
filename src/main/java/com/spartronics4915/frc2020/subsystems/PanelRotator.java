@@ -53,7 +53,9 @@ public class PanelRotator extends SpartronicsSubsystem
             mSpinMotor = new SpartronicsSimulatedMotor();
             mExtendMotor = new SpartronicsSimulatedMotor();
             logInitialized(false);
-        } else {
+        }
+        else
+        {
             logInitialized(true);
         }
         // mSpinMotor = new CANSparkMax(Constants.PanelRotator.kSpinMotorID,
@@ -95,9 +97,9 @@ public class PanelRotator extends SpartronicsSubsystem
     /** this gets the 18-bit output but divided by 262143 to make a fraction between 0 & 1 -*/
     public String getFloatRGB()
     {
-        int redFloat = mColorSensor.getRed()/262143;
-        int greenFloat = mColorSensor.getGreen()/262143;
-        int blueFloat = mColorSensor.getBlue()/262143;
+        int redFloat = mColorSensor.getRed() / 262143;
+        int greenFloat = mColorSensor.getGreen() / 262143;
+        int blueFloat = mColorSensor.getBlue() / 262143;
 
         String RGB = redFloat + ", " + greenFloat + ", " + blueFloat;
 
@@ -116,16 +118,25 @@ public class PanelRotator extends SpartronicsSubsystem
 
         ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
 
-        if (match.color == kRedTarget) {
+        if (match.color == kRedTarget)
+        {
             sensedColor = "Red";
-        } else if (match.color == kGreenTarget) {
-        sensedColor = "Green";
-        } else if (match.color == kBlueTarget) {
-        sensedColor = "Blue";
-        } else if (match.color == kYellowTarget) {
-        sensedColor = "Yellow";
-        } else {
-        sensedColor = "Unknown; this shouldn't ever happen, but it did";
+        }
+        else if (match.color == kGreenTarget)
+        {
+            sensedColor = "Green";
+        }
+        else if (match.color == kBlueTarget)
+        {
+            sensedColor = "Blue";
+        }
+        else if (match.color == kYellowTarget)
+        {
+            sensedColor = "Yellow";
+        }
+        else
+        {
+            sensedColor = "Unknown; this shouldn't ever happen, but it did";
         }
 
         System.out.println(sensedColor);

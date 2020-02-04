@@ -58,7 +58,7 @@ public class RobotContainer
     });
 
     public final NetworkTableEntry mAutoModeEntry = NetworkTableInstance.getDefault()
-            .getTable("SmartDashboard").getEntry("AutoModeStrategy");
+        .getTable("SmartDashboard").getEntry("AutoModeStrategy");
     public final AutoMode[] mAutoModes;
 
     private final Climber mClimber;
@@ -111,15 +111,13 @@ public class RobotContainer
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
             slamra);
 
-        mAutoModes = new AutoMode[] {
-            kDefaultAutoMode,
+        mAutoModes = new AutoMode[] {kDefaultAutoMode,
             new AutoMode("Drive Straight",
                 new TrajectoryTrackerCommand(mDrive,
                     TrajectoryContainer.middle.getTrajectory(Destination.MiddleShootingPosition),
                     mRamseteController, mStateEstimator.getCameraRobotStateMap())),
             new AutoMode("Characterize Drive",
-                new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter))
-        };
+                new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter))};
     }
 
     private void configureJoystickBindings()
@@ -145,10 +143,11 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
-        new JoystickButton(mJoystick, 2).whenPressed(mPanelRotatorCommands.new ColorSensorTesting(mPanelRotator));
+        new JoystickButton(mJoystick, 2)
+            .whenPressed(mPanelRotatorCommands.new ColorSensorTesting(mPanelRotator));
         new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(new Launcher()));
         new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive,
-                throughTrench(), mRamseteController, mStateEstimator.getCameraRobotStateMap()));
+            throughTrench(), mRamseteController, mStateEstimator.getCameraRobotStateMap()));
     }
 
     private void configureButtonBoardBindings()
@@ -210,16 +209,16 @@ public class RobotContainer
     public TimedTrajectory<Pose2dWithCurvature> throughTrench()
     {
         ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
-        Pose2d[] intermediate = new Pose2d[]
-        {new Pose2d(Units.inchesToMeters(424), Units.inchesToMeters(135),
+        Pose2d[] intermediate = new Pose2d[] {
+            new Pose2d(Units.inchesToMeters(424), Units.inchesToMeters(135),
                 Rotation2d.fromDegrees(180)),
-                new Pose2d(Units.inchesToMeters(207), Units.inchesToMeters(135),
-                        Rotation2d.fromDegrees(180))};
+            new Pose2d(Units.inchesToMeters(207), Units.inchesToMeters(135),
+                Rotation2d.fromDegrees(180))};
         for (int i = 0; i < intermediate.length; i++)
         {
             Pose2d pose = intermediate[i];
             intermediate[i] = new Pose2d(pose.getTranslation().getX() - Units.inchesToMeters(312.5),
-                    pose.getTranslation().getY(), pose.getRotation());
+                pose.getTranslation().getY(), pose.getRotation());
         }
         RobotStateMap stateMap = mStateEstimator.getCameraRobotStateMap();
         Pose2d robotPose = stateMap.getLatestState().pose;
@@ -230,14 +229,14 @@ public class RobotContainer
             {
                 Pose2d pose = intermediate[i];
                 intermediate[i] = new Pose2d(-pose.getTranslation().getX(),
-                        pose.getTranslation().getY(), Rotation2d.fromDegrees(0));
+                    pose.getTranslation().getY(), Rotation2d.fromDegrees(0));
             }
         }
         for (int i = 0; i < intermediate.length; i++)
         {
             Pose2d pose = intermediate[i];
             intermediate[i] = new Pose2d(pose.getTranslation().getX() + Units.inchesToMeters(312.5),
-                    pose.getTranslation().getY(), pose.getRotation());
+                pose.getTranslation().getY(), pose.getRotation());
         }
         waypoints.add(robotPose);
         for (Pose2d pose : intermediate)

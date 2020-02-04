@@ -1,6 +1,7 @@
 package com.spartronics4915.lib.hardware.motors;
 
-public interface SpartronicsMotor {
+public interface SpartronicsMotor
+{
 
     /**
      * @return The encoder attached to the motor.
@@ -131,7 +132,7 @@ public interface SpartronicsMotor {
      * @param positionMeters Target position in meters.
      */
     void setPosition(double positionMeters);
-    
+
     /**
      * Sets the PID gains for the built in position PID controller.
      */

@@ -64,7 +64,7 @@ public final class Constants
     public static final class Launcher
     {
         public static final int kFlywheelMasterId = 7;
-        public static final int kFlywheelFollowerId = -1; // Solid brass
+        public static final int kFlywheelFollowerId = 0; // Solid brass
         public static final int kAngleAdjusterMasterId = 0;
         public static final int kAngleAdjusterFollowerId = 1;
         public static final int kTurretId = 8;
@@ -79,11 +79,11 @@ public final class Constants
 
     public static final class PanelRotator
     {
-        public static final int kBeamSensorUpID = -1;
-        public static final int kBeamSensorDownID = -1;
+        public static final int kBeamSensorUpID = 0;
+        public static final int kBeamSensorDownID = 0;
 
-        public static final int kExtendMotorID = -1;
-        public static final int kSpinMotorID = -1;
+        public static final int kExtendMotorID = 0;
+        public static final int kSpinMotorID = 0;
 
         public static final double kExtendMotorSpeed = 0.1;
         public static final double kSpinMotorSpeed = 0.5;
@@ -121,12 +121,12 @@ public final class Constants
         public static final double kMaxVelocityMetersPerSec = 1;
         public static final double kMaxAccelerationMeterPerSecSq = 1;
 
-        public static final Pose2d kStartPointLeft = new Pose2d(Units.inchesToMeters(508), Units.inchesToMeters(138),
-                Rotation2d.fromDegrees(0));
-        public static final Pose2d kStartPointMiddle = new Pose2d(Units.inchesToMeters(508), Units.inchesToMeters(-54),
-                Rotation2d.fromDegrees(0));
-        public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(508), Units.inchesToMeters(-138),
-                Rotation2d.fromDegrees(0));
+        public static final Pose2d kStartPointLeft = new Pose2d(Units.inchesToMeters(508),
+            Units.inchesToMeters(138), Rotation2d.fromDegrees(0));
+        public static final Pose2d kStartPointMiddle = new Pose2d(Units.inchesToMeters(508),
+            Units.inchesToMeters(-54), Rotation2d.fromDegrees(0));
+        public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(508),
+            Units.inchesToMeters(-138), Rotation2d.fromDegrees(0));
     }
 
     public static final class Estimator
