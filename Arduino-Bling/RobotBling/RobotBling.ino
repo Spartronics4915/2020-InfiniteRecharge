@@ -83,7 +83,6 @@ enum
   //NEEDS
   BLING_COMMAND_STARTUP,
   BLING_COMMAND_DISABLED,
-  BLING_COMMAND_DEFAULT,
   //WANTS
   BLING_COMMAND_AUTOMODE,
   BLING_COMMAND_SHOOTING,
@@ -91,6 +90,8 @@ enum
   BLING_COMMAND_LOADING,
   BLING_COMMAND_CLIMBING,
   BLING_COMMAND_VISION,
+  //NEED
+  BLING_COMMAND_DEFAULT,
 
   // Add new bling states immediately above this line
 
@@ -210,10 +211,6 @@ void loop()
       break;
       //Will adjust accordingly to the usual past robots blinking rate etc etc
 
-      
-    case BLING_COMMAND_DEFAULT:
-      solid(rgbColor_BLUE);
-      break;
 
 //WANTS BELOW
 
@@ -240,7 +237,13 @@ void loop()
     case BLING_COMMAND_VISION:
       strobe(rgbColor_WHITE, 1, 150, 500);
       break;
+      
+//NEED 
 
+    case BLING_COMMAND_DEFAULT:
+      solid(rgbColor_BLUE);
+      break;
+      
   default:
     solid(rgbColor_OFF);
     // The currentCommand is not handled in this switch statement, and may be corrupt. Reset it to a good value.
