@@ -176,6 +176,36 @@ public class PanelRotator extends SpartronicsSubsystem
         // return "method not complete";
     }
 
+    /** gets the color that the field's sensors are seeing */
+    public String getColorForDashboard()
+    {
+        Color detectedColor = mColorSensor.getColor();
+
+        ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
+
+        if (match.color == kRedTarget)
+        {
+            sensedColor = "Blue";
+        }
+        else if (match.color == kGreenTarget)
+        {
+            sensedColor = "Yellow";
+        }
+        else if (match.color == kBlueTarget)
+        {
+            sensedColor = "Red";
+        }
+        else if (match.color == kYellowTarget)
+        {
+            sensedColor = "Green";
+        }
+        else
+        {
+            sensedColor = "Error";
+        }
+        return sensedColor;
+    }
+
     /**
      * Sees if the bottom beam sensor is triggered
      */
