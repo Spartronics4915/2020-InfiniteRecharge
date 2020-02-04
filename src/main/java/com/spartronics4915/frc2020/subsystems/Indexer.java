@@ -32,9 +32,6 @@ public class Indexer extends SpartronicsSubsystem
     {
         // Set up Spinner
         mSpinnerModel = SensorModel.fromMultiplier(Constants.Indexer.Spinner.kConversionRatio);
-<<<<<<< HEAD
-        mSpinnerMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Spinner.kMotorId, mSpinnerModel);
-=======
         mSpinnerMotor = SpartronicsMax.makeMotor(Constants.Indexer.Spinner.kMotorId, mSpinnerModel);
         // Set up Loader
         mLoaderModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);
@@ -48,8 +45,7 @@ public class Indexer extends SpartronicsSubsystem
         } else {
             logInitialized(true);
         }
->>>>>>> 44fe2cfe830a3ebd6967a90b0ca25cc29d7f4e37
-        // Set up gains
+        // Set up gains for spinner
         mSpinnerMotor.setVelocityGains(Constants.Indexer.Spinner.kVelocityP,
             Constants.Indexer.Spinner.kVelocityD);
         mSpinnerMotor.setPositionGains(Constants.Indexer.Spinner.kPositionP,
@@ -58,7 +54,7 @@ public class Indexer extends SpartronicsSubsystem
         mSpinnerMotor.setMotionProfileMaxAcceleration(Constants.Indexer.Spinner.kMaxAcceleration);
         mSpinnerMotor.setUseMotionProfileForPosition(true);
 
-        // Set up gains
+        // Set up gains for loader
         mLoaderMotor.setVelocityGains(Constants.Indexer.Loader.kVelocityP,
             Constants.Indexer.Loader.kVelocityD);
         mLoaderMotor.setPositionGains(Constants.Indexer.Loader.kPositionP,
