@@ -75,6 +75,20 @@ public class TrajectoryContainer
         }
 
         @Override
+        public boolean equals(Object obj)
+        {
+            if (obj == this)
+                return true;
+            else if (obj == null)
+                return false;
+            else if (!(obj instanceof DestinationCouple))
+                return false;
+            
+            var dest = ((DestinationCouple) obj);
+            return dest.mEnd == this.mEnd && dest.mStart == this.mStart;
+        }
+
+        @Override
         public int hashCode()
         {
             return Objects.hash(mStart, mEnd);
@@ -97,6 +111,7 @@ public class TrajectoryContainer
             for (var entry : trajectories.entrySet())
             {
                 var trajectory = entry.getKey().createTrajectory(mStartPoint, entry.getValue());
+
                 mTrajectories.put(entry.getKey(), trajectory);
             }
         }

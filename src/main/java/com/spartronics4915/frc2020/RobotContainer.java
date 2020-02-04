@@ -97,6 +97,7 @@ public class RobotContainer
         mPanelRotatorCommands = new PanelRotatorCommands();
         mExampleCommandFactory = new ExampleCommandFactory(mLED);
 
+
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
 
@@ -119,7 +120,7 @@ public class RobotContainer
         configureJoystickBindings();
         configureButtonBoardBindings();
 
-        System.out.println(TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight));
+        System.out.println(new TrajectoryContainer.DestinationCouple(Destination.ShieldGeneratorFarRight, Destination.MiddleShootingPosition).hashCode());
 
         mAutoModes = new AutoMode[] {kDefaultAutoMode,
             new AutoMode("Drive Straight",

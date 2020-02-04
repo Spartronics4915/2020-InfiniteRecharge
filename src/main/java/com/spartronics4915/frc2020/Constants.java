@@ -96,6 +96,9 @@ public final class Constants
 
     public static final class Drive
     {
+        public static final boolean kRightOutputInverted = false;
+        public static final boolean kLeftOutputInverted = true;
+        
         public static final int kRightDriveMaster = 1;
         public static final int kRightDriveFollower = 2;
         public static final int kLeftDriveMaster = 3;

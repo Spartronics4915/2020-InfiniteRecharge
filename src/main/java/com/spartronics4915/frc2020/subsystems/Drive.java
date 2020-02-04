@@ -54,5 +54,7 @@ public class Drive extends AbstractDrive {
                 )
             )
         );
+        mLeftMotor.setOutputInverted(Constants.Drive.kLeftOutputInverted);
+        mRightMotor.setOutputInverted(Constants.Drive.kRightOutputInverted);
     }
 }
