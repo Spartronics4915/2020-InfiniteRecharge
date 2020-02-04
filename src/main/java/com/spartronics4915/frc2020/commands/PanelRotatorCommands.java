@@ -105,14 +105,13 @@ public class PanelRotatorCommands
             // done in PanelRotator.
             if (mPanelRotator.getActualColor() == mTargetColor)
                 return true;
-            else
-                return false;
-
-            if (mPanelRotator.getActualColor() == "Error")
+            else if (mPanelRotator.getActualColor() == "Error")
             {
                 System.out.println("error—no data provided");
                 return true;
             }
+            else
+                return false;
 
         }
 
