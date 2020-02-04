@@ -103,9 +103,10 @@ public class RobotContainer
             slamra = new T265Camera(Constants.Estimator.kCameraOffset,
                 Constants.Estimator.kMeasurementCovariance);
         }
-        catch (CameraJNIException e)
+        catch (CameraJNIException | UnsatisfiedLinkError e)
         {
             slamra = null;
+            Logger.exception(e);
         }
         mDrive = new Drive();
         mStateEstimator = new RobotStateEstimator(mDrive,
