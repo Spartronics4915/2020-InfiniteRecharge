@@ -1,5 +1,6 @@
 package com.spartronics4915.frc2020;
 
+import java.security.KeyStore.Entry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,9 +23,9 @@ public class TrajectoryContainer
 {
     public static enum Destination
     {
-        LeftTrenchFar(385, 134, 0), LeftShootingPosition(508, 5, 0), RightTrenchFar(394, -134, 0),
-        RightTrenchNear(242, -134, 0), RightShootingPosition(421, -121, 0),
-        ShieldGeneratorFarRight(400, -40, 0), MiddleShootingPosition(456, -67, 0);
+        LeftTrenchFar(385, 134, 0), LeftShootingPosition(508, 5, 328.69), RightTrenchFar(394, -134, 180),
+        RightTrenchNear(242, -134, 180), RightShootingPosition(421, -121, 14.36),
+        ShieldGeneratorFarRight(400, -40, 135), MiddleShootingPosition(456, -67, 0);
 
         public final Pose2d pose;
 
@@ -105,11 +106,6 @@ public class TrajectoryContainer
         {
             return mTrajectories.get(new DestinationCouple(start, end));
         }
-
-        public TimedTrajectory<Pose2dWithCurvature> getTrajectory(Destination end)
-        {
-            return mTrajectories.get(new DestinationCouple(null, end));
-        }
     }
 
     public static TimedTrajectory<Pose2dWithCurvature> generateTrajectory(List<Pose2d> waypoints,
@@ -149,7 +145,6 @@ public class TrajectoryContainer
                 Destination.MiddleShootingPosition), Arrays.asList());
 
         middle.generateTrajectories(middleTrajectories);
-
         // right
         var rightTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
         rightTrajectories.put(new DestinationCouple(null, Destination.RightTrenchFar),

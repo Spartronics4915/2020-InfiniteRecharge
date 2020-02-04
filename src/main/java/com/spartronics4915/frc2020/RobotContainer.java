@@ -124,7 +124,7 @@ public class RobotContainer
         mAutoModes = new AutoMode[] {kDefaultAutoMode,
             new AutoMode("Drive Straight",
                 new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.middle.getTrajectory(Destination.ShieldGeneratorFarRight),
+                    TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight),
                     mRamseteController, mStateEstimator.getCameraRobotStateMap())),
             new AutoMode("Characterize Drive",
                 new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter))};
@@ -158,10 +158,10 @@ public class RobotContainer
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
         new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(mLauncher));
-        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive,
-            throughTrench(), mRamseteController, mStateEstimator.getCameraRobotStateMap()));
-        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive,
-            toControlPanel(), mRamseteController, mStateEstimator.getCameraRobotStateMap()));
+        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
+            this::throughTrench, mRamseteController, mStateEstimator.getCameraRobotStateMap()));
+        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
+            this::toControlPanel, mRamseteController, mStateEstimator.getCameraRobotStateMap()));
     }
 
     private void configureButtonBoardBindings()
