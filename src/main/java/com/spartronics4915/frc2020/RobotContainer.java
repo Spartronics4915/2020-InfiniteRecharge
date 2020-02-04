@@ -13,8 +13,11 @@ import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
 import com.spartronics4915.lib.subsystems.drive.CharacterizeDriveBaseCommand;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2dWithCurvature;
+import com.spartronics4915.lib.math.twodim.geometry.Rectangle2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
+import com.spartronics4915.lib.math.twodim.geometry.Translation2d;
 import com.spartronics4915.lib.math.twodim.trajectory.constraints.TimingConstraint;
+import com.spartronics4915.lib.math.twodim.trajectory.constraints.VelocityLimitRegionConstraint;
 import com.spartronics4915.lib.math.twodim.trajectory.types.TimedTrajectory;
 import com.spartronics4915.lib.subsystems.drive.TrajectoryTrackerCommand;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
@@ -156,6 +159,8 @@ public class RobotContainer
         new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(mLauncher));
         new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive,
             throughTrench(), mRamseteController, mStateEstimator.getCameraRobotStateMap()));
+        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive,
+            toControlPanel(), mRamseteController, mStateEstimator.getCameraRobotStateMap()));
     }
 
     private void configureButtonBoardBindings()
@@ -267,6 +272,22 @@ public class RobotContainer
             waypoints.add(pose);
         }
         ArrayList<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
+        return TrajectoryContainer.generateTrajectory(waypoints, constraints);
+    }
+    public TimedTrajectory<Pose2dWithCurvature> toControlPanel() {
+        ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
+        Pose2d pose = mStateEstimator.getCameraRobotStateMap().getLatestState().pose;
+        waypoints.add(pose);
+        Translation2d p = pose.getTranslation();
+        Pose2d nextToControlPanel;
+        if (p.getX() < Units.inchesToMeters(359)) {
+            nextToControlPanel = new Pose2d(Units.inchesToMeters(328), Units.inchesToMeters(135), Rotation2d.fromDegrees(0));
+        } else {
+            nextToControlPanel = new Pose2d(Units.inchesToMeters(390), Units.inchesToMeters(135), Rotation2d.fromDegrees(180));
+        }
+        waypoints.add(nextToControlPanel); 
+        ArrayList<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
+        constraints.add(new VelocityLimitRegionConstraint(new Rectangle2d(new Translation2d(Units.inchesToMeters(290), Units.inchesToMeters(161.6)), new Translation2d(Units.inchesToMeters(428), Units.inchesToMeters(90))), .5));
         return TrajectoryContainer.generateTrajectory(waypoints, constraints);
     }
 }
