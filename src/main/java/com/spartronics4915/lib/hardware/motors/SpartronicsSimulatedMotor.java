@@ -37,9 +37,10 @@ public class SpartronicsSimulatedMotor implements SpartronicsMotor
             }
 
             @Override
-            public void setPosition(double position)
+            public boolean setPosition(double position)
             {
                 mPosition = position;
+                return true;
             }
         };
     }

@@ -45,13 +45,16 @@ public class Indexer extends SpartronicsSubsystem
         } else {
             logInitialized(true);
         }
-        // Set up gains
+        // Set up gains for spinner
         mSpinnerMotor.setVelocityGains(Constants.Indexer.Spinner.kVelocityP,
             Constants.Indexer.Spinner.kVelocityD);
         mSpinnerMotor.setPositionGains(Constants.Indexer.Spinner.kPositionP,
             Constants.Indexer.Spinner.kPositionD);
+        mSpinnerMotor.setMotionProfileCruiseVelocity(Constants.Indexer.Spinner.kMaxVelocity); // Set motion profile
+        mSpinnerMotor.setMotionProfileMaxAcceleration(Constants.Indexer.Spinner.kMaxAcceleration);
+        mSpinnerMotor.setUseMotionProfileForPosition(true);
 
-        // Set up gains
+        // Set up gains for loader
         mLoaderMotor.setVelocityGains(Constants.Indexer.Loader.kVelocityP,
             Constants.Indexer.Loader.kVelocityD);
         mLoaderMotor.setPositionGains(Constants.Indexer.Loader.kPositionP,
@@ -60,7 +63,7 @@ public class Indexer extends SpartronicsSubsystem
         // Setup Optical Flag for zeroing position
         mOpticalFlag = new DigitalInput(Constants.Indexer.kOpticalFlagId);
 
-        // Setup Prox Sensor for indexing
+        // Setup Proximity Sensor for indexing
         mProxSensor = new DigitalInput(Constants.Indexer.kProxSensorId);
     }
 

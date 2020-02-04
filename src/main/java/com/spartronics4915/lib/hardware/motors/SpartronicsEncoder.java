@@ -25,5 +25,5 @@ public interface SpartronicsEncoder
      * 
      * @param TargetPosition position
      */
-    void setPosition(double position);
+    boolean setPosition(double position);
 }
