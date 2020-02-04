@@ -27,10 +27,16 @@ import com.spartronics4915.lib.math.twodim.geometry.Twist2d;
 public class T265Camera
 {
 
+    private static UnsatisfiedLinkError mLinkError = null;
+
     static
     {
         // FIXME: Use System.loadLibrary
-        System.load(Paths.get(System.getProperty("user.home"), "libspartronicsnative.so").toAbsolutePath().toString());
+        try {
+            System.load(Paths.get(System.getProperty("user.home"), "libspartronicsnative.so").toAbsolutePath().toString());
+        } catch (UnsatisfiedLinkError e) {
+            mLinkError = e;
+        }
 
         // Cleanup is quite tricky for us, because the native code has no idea when Java
         // will be done. This is why we can't use smart pointers in the native code.
@@ -105,6 +111,10 @@ public class T265Camera
      */
     public T265Camera(Pose2d robotOffsetMeters, double odometryCovariance, String relocMapPath)
     {
+        if (mLinkError == null) {
+            throw mLinkError;
+        }
+
         mNativeCameraObjectPointer = newCamera(relocMapPath);
         setOdometryInfo((float) robotOffsetMeters.getTranslation().getX(), (float) robotOffsetMeters.getTranslation().getY(),
                 (float) robotOffsetMeters.getRotation().getRadians(), odometryCovariance);
