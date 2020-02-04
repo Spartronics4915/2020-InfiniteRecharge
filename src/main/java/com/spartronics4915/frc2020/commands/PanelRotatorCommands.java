@@ -136,15 +136,9 @@ public class PanelRotatorCommands
     {
         private final PanelRotator mPanelRotator;
 
-<<<<<<< HEAD
         public int eighths;
         public String currentColor;
         public String lastColor;
-=======
-        private int eighths;
-        private String lastColor;
-        private String currentColor;
->>>>>>> 6994853066370995031bb4e51dab95c757325bfd
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
