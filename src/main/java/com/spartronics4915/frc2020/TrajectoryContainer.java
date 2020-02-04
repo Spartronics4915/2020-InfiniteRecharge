@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedMap;
 
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
@@ -49,25 +50,33 @@ public class TrajectoryContainer
         public DestinationCouple(Destination a, Destination b)
         {
             mStart = a;
-            mStart = b;
+            mEnd = b;
         }
 
         public TimedTrajectory<Pose2dWithCurvature> createTrajectory(Pose2d startPoint,
                 List<Pose2d> midpoints)
         {
-            Pose2d start = mStart.pose;
+            Pose2d start;
             Pose2d end = mEnd.pose;
             if (mStart == null)
                 start = startPoint;
+            else
+                start = mStart.pose;
             ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
             waypoints.add(start);
-            for (Pose2d pose : waypoints)
+            for (Pose2d pose : midpoints)
             {
                 waypoints.add(pose);
             }
             waypoints.add(end);
             List<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
             return TrajectoryContainer.generateTrajectory(waypoints, constraints);
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return Objects.hash(mStart, mEnd);
         }
     }
 
@@ -79,6 +88,7 @@ public class TrajectoryContainer
         public TrajectoryCollection(Pose2d startPoint)
         {
             mStartPoint = startPoint;
+            mTrajectories = new HashMap<DestinationCouple, TimedTrajectory<Pose2dWithCurvature>>();
         }
 
         public void generateTrajectories(Map<DestinationCouple, List<Pose2d>> trajectories)

@@ -7,83 +7,64 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 
-
-/** 
- * The Intake subsystem takes balls from 
- * the playing field and outputs them to storage.
+/**
+ * The Intake subsystem takes balls from the playing field and outputs them to
+ * storage.
  */
-public class Intake extends SpartronicsSubsystem 
+public class Intake extends SpartronicsSubsystem
 {
     private SpartronicsMotor mHarvestMotor;
-    private SpartronicsMotor mIngestMotor;
 
-    /** constructor **/
     public Intake()
     {
-        mHarvestMotor = SpartronicsSRX.makeMotor(Constants.Intake.kHarvestMotorId, SensorModel.fromMultiplier(1));
-        mIngestMotor = SpartronicsSRX.makeMotor(Constants.Intake.kIngestMotorId, SensorModel.fromMultiplier(1));
-        if (mHarvestMotor.hadStartupError() || mIngestMotor.hadStartupError())
+        mHarvestMotor = SpartronicsSRX.makeMotor(Constants.Intake.kHarvestMotorId,
+            SensorModel.fromMultiplier(1));
+        if (mHarvestMotor.hadStartupError())
         {
             mHarvestMotor = new SpartronicsSimulatedMotor();
-            mIngestMotor = new SpartronicsSimulatedMotor();
             logInitialized(false);
-        } else {
+        }
+        else
+        {
             logInitialized(true);
         }
     }
 
-    /** 
-     * activates the mechanum "vector" wheels in partial intake
-     * hopefully in tandem with the prism roller 
-    **/
-    public void harvestIntake() 
+    /**
+     * Activates the mechanum "vector" wheels in intake
+     */
+    public void intake()
     {
         mHarvestMotor.setDutyCycle(Constants.Intake.kHarvestSpeed);
     }
 
-    /** 
-     * in partial intake
-     * hopefully in tandem with the mechanum "vector" wheels 
-    **/
-    public void ingestIntake() 
+    /**
+     * Reverses the vector wheel intake
+     */
+    public void reverse()
     {
-        mIngestMotor.setDutyCycle(Constants.Intake.kIngestSpeed);
+        mHarvestMotor.setDutyCycle(Constants.Intake.kEjectSpeed);
     }
 
-    /** reverses vector wheels **/
-    public void harvestReverse() 
+    /**
+     * Checks to see if a ball is held in the intake chamber
+     * with a proximity sensor returning a digital value
+     * <p>
+     * The style of proximity sensor we use requires MANUAL calibration
+     *
+     * @return Whether a ball is held
+     */
+    public boolean isBallHeld()
     {
-        mHarvestMotor.setDutyCycle(-Constants.Intake.kHarvestSpeed);
+        // TODO: Implement this functionality with the digital Proximity Sensor
+        return false;
     }
 
-    /** reverses prism roller **/
-    public void ingestReverse() 
-    {
-        mIngestMotor.setDutyCycle(-Constants.Intake.kIngestSpeed);
-    }
-
-    /** stops vector wheels **/
-    public void harvestStop() 
-    {
-        mHarvestMotor.setDutyCycle(0.0);
-    }
-
-    /** stops prism roller **/
-    public void ingestStop() 
-    {
-        mIngestMotor.setDutyCycle(0.0);
-    }
-
-    /** checks to see if ball is held in intake chamber **/
-    public void isBallHeld() 
-    {
-
-    }
-
-    /** universal stop method **/
+    /**
+     * Universal stop method
+     */
     public void stop()
     {
         mHarvestMotor.setNeutral();
-        mIngestMotor.setNeutral();
     }
 }

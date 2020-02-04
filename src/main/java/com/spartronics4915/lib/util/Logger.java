@@ -78,7 +78,7 @@ public class Logger
         logMarker("ERROR " + msg, throwable);
     }
 
-    public static void exception(Exception e)
+    public static void exception(Throwable e)
     {
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));

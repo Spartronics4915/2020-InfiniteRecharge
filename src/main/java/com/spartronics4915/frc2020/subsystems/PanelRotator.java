@@ -1,4 +1,3 @@
-// I'm bad at naming things. Please come up with a better name...
 package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.frc2020.Constants;
@@ -29,9 +28,9 @@ public class PanelRotator extends SpartronicsSubsystem
 
     public String sensedColor;
 
-    public int red;
-    public int green;
-    public int blue;
+    private int red;
+    private int green;
+    private int blue;
 
     private final ColorMatch mColorMatcher = new ColorMatch();
 
@@ -42,11 +41,11 @@ public class PanelRotator extends SpartronicsSubsystem
 
     public PanelRotator()
     {
-        mBeamSensorUp = new DigitalInput(Constants.PanelRotator.kBeamSensorUpID);
-        mBeamSensorDown = new DigitalInput(Constants.PanelRotator.kBeamSensorDownID);
-        mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorID,
+        mBeamSensorUp = new DigitalInput(Constants.PanelRotator.kBeamSensorUpId);
+        mBeamSensorDown = new DigitalInput(Constants.PanelRotator.kBeamSensorDownId);
+        mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId,
             SensorModel.fromMultiplier(1));
-        mExtendMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kExtendMotorID,
+        mExtendMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kExtendMotorId,
             SensorModel.fromMultiplier(1));
         if (mSpinMotor.hadStartupError() || mExtendMotor.hadStartupError())
         {
@@ -64,19 +63,36 @@ public class PanelRotator extends SpartronicsSubsystem
         mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     }
 
-    /** raises the arm holding the spinner at a set speed*/
+    /**
+     * Raises the arm holding the spinner at a set speed
+     */
     public void raise()
     {
-        mExtendMotor.setDutyCycle(Constants.PanelRotator.kExtendMotorSpeed);
+        mExtendMotor.setDutyCycle(Constants.PanelRotator.kRaiseSpeed);
     }
 
-    /** lowers the arm holding the spinner at a set speed*/
+    /**
+     * Lowers the arm holding the spinner at a set speed
+     */
     public void lower()
     {
-        mExtendMotor.setDutyCycle(-Constants.PanelRotator.kExtendMotorSpeed);
+        mExtendMotor.setDutyCycle(Constants.PanelRotator.kLowerSpeed);
     }
 
-    /** gets the color (Red, Blue, Yellow, or Green) through game specific messages that the robot needs to spin to */
+    /**
+     * Spins the wheel to move the control panel
+     */
+    public void spin()
+    {
+        mSpinMotor.setDutyCycle(Constants.PanelRotator.kSpinMotorSpeed);
+    }
+
+    // TODO: What will this return before Stage Two?
+    /**
+     * Gets the color the robot needs to spin to through game specific messages
+     *
+     * @return A String color - either Red, Blue, Yellow, or Green
+     */
     public String getTargetColor()
     {
         return DriverStation.getInstance().getGameSpecificMessage();
@@ -107,6 +123,14 @@ public class PanelRotator extends SpartronicsSubsystem
     }
 
     /** finds what color the color sensor is seeing  (Red, Blue, Yellow, or Green); currently just a placeholder for output */
+
+    // TODO: Implement this method!! !
+    // https://github.com/REVrobotics/Color-Sensor-v3-Examples/blob/master/Java/Color%20Match/src/main/java/frc/robot/Robot.java
+    /**
+     * Finds what color the color sensor is seeing - currently just a placeholder for output
+     *
+     * @return A String color - either Red, Blue, Yellow, or Green
+     */
     public String getActualColor()
     {
         mColorMatcher.addColorMatch(kRedTarget);
@@ -136,7 +160,7 @@ public class PanelRotator extends SpartronicsSubsystem
         }
         else
         {
-            sensedColor = "Unknown; this shouldn't ever happen, but it did";
+            sensedColor = "Error";
         }
 
         System.out.println(sensedColor);
@@ -145,37 +169,44 @@ public class PanelRotator extends SpartronicsSubsystem
         // return "method not complete";
     }
 
-    /** sees if the bottom beam sensor is triggered */
+    /**
+     * Sees if the bottom beam sensor is triggered
+     */
     public boolean getBeamSensorDown()
     {
         // TODO: maybe backwards
         return mBeamSensorDown.get();
     }
 
-    /** sees if the top beam sensor is triggered */
+    /**
+     * Sees if the top beam sensor is triggered
+     */
     public boolean getBeamSensorUp()
     {
         return mBeamSensorUp.get(); // TODO: maybe backwards
     }
 
-    /** spins the wheel to move the control panel */
-    public void spin()
+    // TODO: A discussion needs to be had on the relevance and implementation of getRotations...
+
+    // TODO: Multiple stop() methods are redundant unless we use motor safety
+
+    /**
+     * Stops the extension motor
+     */
+    public void stopExtendMotor()
     {
-        mSpinMotor.setDutyCycle(Constants.PanelRotator.kSpinMotorSpeed);
+        mExtendMotor.setDutyCycle(0);
     }
 
-    /** get the number of times that the spinning */
-    public double getRotations()
-    {
-        return -1; // TODO: not complete
-    }
-
-    /** stops the wheel */
+    /**
+     * Stops the wheel motor
+     */
     public void stopSpin()
     {
         mSpinMotor.setDutyCycle(0);
     }
 
+<<<<<<< HEAD
     /** stops the extension motor */
     public void stopExtendMotor()
     {
@@ -183,6 +214,11 @@ public class PanelRotator extends SpartronicsSubsystem
     }
 
     /** stops the two motors */
+=======
+    /**
+     * Universal stop method
+     */
+>>>>>>> 6994853066370995031bb4e51dab95c757325bfd
     public void stop()
     {
         mSpinMotor.setDutyCycle(0);

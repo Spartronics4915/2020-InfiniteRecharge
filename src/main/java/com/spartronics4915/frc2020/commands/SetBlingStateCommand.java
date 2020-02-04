@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
  */
 public class SetBlingStateCommand extends CommandBase
 {
-
     private LED mLED;
     private BlingState mBlingState;
 

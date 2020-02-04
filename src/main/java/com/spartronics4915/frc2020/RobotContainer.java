@@ -1,7 +1,9 @@
 package com.spartronics4915.frc2020;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.spartronics4915.frc2020.TrajectoryContainer.Destination;
 import com.spartronics4915.frc2020.commands.*;
@@ -29,6 +31,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -47,18 +50,18 @@ public class RobotContainer
         }
     }
 
-    public static final String kAutoOptionsKey = "AutoStrategyOptions";
+    private static final String kAutoOptionsKey = "AutoStrategyOptions";
     public static final AutoMode kDefaultAutoMode = new AutoMode("All: Do Nothing", new Command()
     {
         @Override
         public Set<Subsystem> getRequirements()
         {
-            return null;
+            return Set.of();
         }
     });
 
     public final NetworkTableEntry mAutoModeEntry = NetworkTableInstance.getDefault()
-        .getTable("SmartDashboard").getEntry("AutoModeStrategy");
+        .getTable("SmartDashboard").getEntry("AutoStrategy");
     public final AutoMode[] mAutoModes;
 
     private final Climber mClimber;
@@ -68,6 +71,7 @@ public class RobotContainer
     private final LED mLED;
     private final ClimberCommands mClimberCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
+    private final ExampleCommandFactory mExampleCommandFactory;
 
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
@@ -81,21 +85,17 @@ public class RobotContainer
      */
     public RobotContainer()
     {
+        mLauncher = new Launcher();
         mClimber = new Climber();
         mIntake = new Intake();
-        mLauncher = new Launcher();
         mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
         mClimberCommands = new ClimberCommands();
         mPanelRotatorCommands = new PanelRotatorCommands();
+        mExampleCommandFactory = new ExampleCommandFactory(mLED);
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
-
-        configureJoystickBindings();
-        configureButtonBoardBindings();
-
-        mDrive = new Drive();
 
         T265Camera slamra;
         try
@@ -103,21 +103,33 @@ public class RobotContainer
             slamra = new T265Camera(Constants.Estimator.kCameraOffset,
                 Constants.Estimator.kMeasurementCovariance);
         }
-        catch (CameraJNIException e)
+        catch (CameraJNIException | UnsatisfiedLinkError e)
         {
             slamra = null;
+            Logger.exception(e);
         }
+        mDrive = new Drive();
         mStateEstimator = new RobotStateEstimator(mDrive,
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
             slamra);
 
+        configureJoystickBindings();
+        configureButtonBoardBindings();
+
+        System.out.println(
+            TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight));
+
         mAutoModes = new AutoMode[] {kDefaultAutoMode,
             new AutoMode("Drive Straight",
                 new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.middle.getTrajectory(Destination.MiddleShootingPosition),
+                    TrajectoryContainer.middle.getTrajectory(Destination.ShieldGeneratorFarRight),
                     mRamseteController, mStateEstimator.getCameraRobotStateMap())),
             new AutoMode("Characterize Drive",
                 new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter))};
+
+        String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
+            .collect(Collectors.joining(","));
+        SmartDashboard.putString(kAutoOptionsKey, autoModeList);
     }
 
     private void configureJoystickBindings()
@@ -145,7 +157,7 @@ public class RobotContainer
         */
         new JoystickButton(mJoystick, 2)
             .whenPressed(mPanelRotatorCommands.new ColorSensorTesting(mPanelRotator));
-        new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(new Launcher()));
+        new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(mLauncher));
         new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive,
             throughTrench(), mRamseteController, mStateEstimator.getCameraRobotStateMap()));
     }
@@ -184,6 +196,21 @@ public class RobotContainer
         new JoystickButton(mButtonBoard, 17).whenHeld(new TurretLeftCommand(mLauncher));
         new JoystickButton(mButtonBoard, 18).whenHeld(new TurretRightCommand(mLauncher));
         */
+    }
+
+    // configureTestCommands is not actually run. It is declared public to
+    // quell warnings. Its use is to test out different construction idioms
+    // for externally defined commands.
+    public void configureTestCommands()
+    {
+        // in this style object construction happens in the CommandFactory
+        this.mExampleCommandFactory.MakeCmd(ExampleCommandFactory.CmdEnum.kTest1);
+
+        // in this mode we construct things here, we must pass in parameters
+        // that are required during construction, since the outer class
+        // member variables aren't accessible until after construction.
+        this.mExampleCommandFactory.new Test5(this.mLED); // an InstantCommand
+        this.mExampleCommandFactory.new Test6(this.mLED); // a StartEndCommand
     }
 
     /**
