@@ -34,9 +34,16 @@ public class PanelRotator extends SpartronicsSubsystem
 
     private final ColorMatch mColorMatcher = new ColorMatch();
 
+    //TODO: adjust these so that the thing gone to when red matches is blue, yellow is green, etc.
+    //see https://drive.google.com/file/d/1kc73I2Qj1vwfnR0_QI9QO8Up4mWS3IuH/view for a diagram of how these line up
+    
+    //Blue
     private final Color kRedTarget = ColorMatch.makeColor(1, 0, 0);
+    //Yellow
     private final Color kGreenTarget = ColorMatch.makeColor(0, 1, 0);
+    //Red
     private final Color kBlueTarget = ColorMatch.makeColor(0, 1, 1);
+    //Green
     private final Color kYellowTarget = ColorMatch.makeColor(1, 1, 0);
 
     public PanelRotator()
@@ -61,6 +68,11 @@ public class PanelRotator extends SpartronicsSubsystem
         // MotorType.kBrushless);
         // mExtendMotor = new TalonSRX(Constants.PanelRotator.kExtendMotorID);
         mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+
+        mColorMatcher.addColorMatch(kRedTarget);
+        mColorMatcher.addColorMatch(kGreenTarget);
+        mColorMatcher.addColorMatch(kBlueTarget);
+        mColorMatcher.addColorMatch(kYellowTarget);
     }
 
     /**
@@ -133,11 +145,6 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public String getActualColor()
     {
-        mColorMatcher.addColorMatch(kRedTarget);
-        mColorMatcher.addColorMatch(kGreenTarget);
-        mColorMatcher.addColorMatch(kBlueTarget);
-        mColorMatcher.addColorMatch(kYellowTarget);
-
         Color detectedColor = mColorSensor.getColor();
 
         ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
