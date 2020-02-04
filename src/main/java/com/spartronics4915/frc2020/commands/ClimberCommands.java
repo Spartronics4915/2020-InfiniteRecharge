@@ -28,9 +28,9 @@ public class ClimberCommands
      */
     public class Extend extends StartEndCommand
     {
-        public Extend(Climber Climber)
+        public Extend(Climber climber)
         {
-            super(Climber::extend, Climber::stop, Climber);
+            super(climber::extend, climber::stop, climber);
         }
     }
 
@@ -44,26 +44,11 @@ public class ClimberCommands
      */
     public class Retract extends StartEndCommand
     {
-        public Retract(Climber Climber)
+        public Retract(Climber climber)
         {
-            super(Climber::retract, Climber::stop, Climber);
+            super(climber::retract, climber::stop, climber);
         }
     }
-
-    /**
-     * Commands with simple logic statements should be implemented as a
-     * {@link FunctionalCommand}. This saves the overhead of a full
-     * {@link CommandBase}, but still allows us to deal with isFinished.
-     * <p>
-     * A FunctionalCommand takes five inputs:
-     * @param Runnable onInit
-     * @param Runnable onExecute
-     * @param Consumer<Boolean> onEnd (boolean interrupted)
-     * @param BooleanSupplier isFinished
-     * @param Subsystem requirement For both the CommandScheduler and the above method references.
-     * <p>
-     * Each of these parameters corresponds with a method in the CommandBase class.
-     */
 
     /**
      * The {@link FunctionalCommand} WinchPrimary is part of a two-step winching Command chain.
@@ -78,10 +63,10 @@ public class ClimberCommands
      */
     public class WinchPrimary extends FunctionalCommand
     {
-        public WinchPrimary(Climber Climber)
+        public WinchPrimary(Climber climber)
         {
-            super(() -> {}, () -> Climber.winch(!Constants.Climber.kStalled),
-                (Boolean b) -> Climber.stop(), Climber::isStalled, Climber);
+            super(() -> {}, () -> climber.winch(!Constants.Climber.kStalled),
+                (Boolean b) -> climber.stop(), climber::isStalled, climber);
         }
     }
 
@@ -96,9 +81,9 @@ public class ClimberCommands
      */
     public class WinchSecondary extends StartEndCommand
     {
-        public WinchSecondary(Climber Climber)
+        public WinchSecondary(Climber climber)
         {
-            super(() -> Climber.winch(Constants.Climber.kStalled), Climber::stop, Climber);
+            super(() -> climber.winch(Constants.Climber.kStalled), climber::stop, climber);
         }
     }
 }
