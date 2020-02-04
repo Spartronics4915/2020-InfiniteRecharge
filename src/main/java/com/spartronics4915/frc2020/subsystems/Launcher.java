@@ -22,7 +22,7 @@ public class Launcher extends SpartronicsSubsystem
     private Servo mAngleAdjusterMasterServo;
     private Servo mAngleAdjusterFollowerServo;
     private SpartronicsMotor mTurretMotor;
-    private SpartronicsEncoder mTurretPotentiometer;
+    private AnalogPotentiometer mTurretPotentiometer;
 
     private double targetRPS;
     private double targetAngle;
@@ -31,49 +31,43 @@ public class Launcher extends SpartronicsSubsystem
 
     public Launcher()
     {
-        // Construct your hardware here
-        boolean success = false;
-        try
+        // ONE NEO for flywheel
+        mFlywheelMasterMotor = SpartronicsMax.makeMotor(/*Constants.Launcher.kFlywheelMasterId*/2, SensorModel.fromMultiplier(1));
+        if (mFlywheelMasterMotor.hadStartupError())
         {
-            // ONE NEO for flywheel
-            mFlywheelMasterMotor = SpartronicsMax.makeMotor(/*Constants.Launcher.kFlywheelMasterId*/2, SensorModel.fromMultiplier(1));
-            mFlywheelMasterMotor.setVelocityGains(0.000389, 0, 0, 0);
-            mFeedforwardCalculator = new SimpleMotorFeedforward(Constants.Launcher.kS, Constants.Launcher.kV, Constants.Launcher.kA);
-            mFlywheelMasterMotor.setOutputInverted(true);
-            if (mFlywheelMasterMotor.hadStartupError())
-            {
-                mFlywheelMasterMotor = new SpartronicsSimulatedMotor();
-                logInitialized(false);
-            } else {
-                logInitialized(true);
-            }
-            mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
+            mFlywheelMasterMotor = new SpartronicsSimulatedMotor();
+            logInitialized(false);
+        } else {
+            logInitialized(true);
+        }
+        mFlywheelMasterMotor.setVelocityGains(0.000389, 0, 0, 0);
+        mFeedforwardCalculator = new SimpleMotorFeedforward(Constants.Launcher.kS, Constants.Launcher.kV, Constants.Launcher.kA);
+        mFlywheelMasterMotor.setOutputInverted(true);
+        mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
+        
+        // One NEO 550 motor for turret
+        mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretId, SensorModel.toRadians(360));
+        if (mTurretMotor.hadStartupError())
+        {
+            mTurretMotor = new SpartronicsSimulatedMotor();
+            logInitialized(false);
+        } else {
+            logInitialized(true);
+        }
+        mTurretPotentiometer = new AnalogPotentiometer(Constants.Launcher.kTurretPotentiometerId,
+            90, -45);
             
-            // One NEO 550 motor for turret
-            mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretId, SensorModel.toRadians(360));
-            if (mTurretMotor.hadStartupError())
-            {
-                mTurretMotor = new SpartronicsSimulatedMotor();
-                logInitialized(false);
-            } else {
-                logInitialized(true);
-            }
-            mTurretPotentiometer = mTurretMotor.getEncoder().setFeedBackDevice(((SpartronicsMax)mTurretMotor).getAnalog());//new AnalogPotentiometer(Constants.Launcher.kTurretPotentiometerId, 90, -45);
+        // Two Servos for angle adjustement
+        mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterId);
+        mAngleAdjusterFollowerServo = new Servo(Constants.Launcher.kAngleAdjusterFollowerId);
+        
+        mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
 
-            // Two Servos for angle adjustement
-            mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterId);
-            mAngleAdjusterFollowerServo = new Servo(Constants.Launcher.kAngleAdjusterFollowerId);
-            
-            turnTurret(0);
-            success = true;
-        }
-        catch (Exception e)
-        {
-            // TODO: handle exception
-            logException("Could not instantiate Launcher: ", e);
-            success = false;
-        }
-        logInitialized(success);
+        // Two Servos for angle adjustement
+        mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterId);
+        mAngleAdjusterFollowerServo = new Servo(Constants.Launcher.kAngleAdjusterFollowerId);
+
+        turnTurret(0);
     }
 
     /**
@@ -101,7 +95,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public double getTurretDirection()
     {
-        return mTurretPotentiometer.getPosition();
+        return mTurretPotentiometer.get();
     }
 
     /**
@@ -214,7 +208,7 @@ public class Launcher extends SpartronicsSubsystem
     }
 
     /**
-     * Resets shooter
+     * Resets shooter and stops flywheel
      */
     public void reset()
     {
@@ -223,5 +217,4 @@ public class Launcher extends SpartronicsSubsystem
         setPitch(0);
         turnTurret(0);*/
     }
-    // The exception to this is a general-functionality stop() method.
 }
