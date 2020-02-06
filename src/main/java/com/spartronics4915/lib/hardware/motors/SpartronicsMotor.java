@@ -145,4 +145,16 @@ public interface SpartronicsMotor {
      * Turns the motor off.
      */
     void setNeutral();
+
+    /**
+     * @return The output current of the motor in amps.
+     */
+    double getOutputCurrent();
+
+    /**
+     * @return The motor following this motor, or null.
+     */
+    SpartronicsMotor getFollower();
+
+    int getDeviceNumber();
 }

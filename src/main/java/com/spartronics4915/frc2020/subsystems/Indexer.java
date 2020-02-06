@@ -5,6 +5,7 @@ import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -32,16 +33,28 @@ public class Indexer extends SpartronicsSubsystem
         // Set up Spinner
         mSpinnerModel = SensorModel.fromMultiplier(Constants.Indexer.Spinner.kConversionRatio);
         mSpinnerMotor = SpartronicsMax.makeMotor(Constants.Indexer.Spinner.kMotorId, mSpinnerModel);
-        // Set up gains
+        // Set up Loader
+        mLoaderModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);
+        mLoaderMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Loader.kMotorId, mLoaderModel);
+
+        if (mSpinnerMotor.hadStartupError() || mLoaderMotor.hadStartupError())
+        {
+            mSpinnerMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Spinner.kMotorId);
+            mLoaderMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Loader.kMotorId);
+            logInitialized(false);
+        } else {
+            logInitialized(true);
+        }
+        // Set up gains for spinner
         mSpinnerMotor.setVelocityGains(Constants.Indexer.Spinner.kVelocityP,
             Constants.Indexer.Spinner.kVelocityD);
         mSpinnerMotor.setPositionGains(Constants.Indexer.Spinner.kPositionP,
             Constants.Indexer.Spinner.kPositionD);
+        mSpinnerMotor.setMotionProfileCruiseVelocity(Constants.Indexer.Spinner.kMaxVelocity); // Set motion profile
+        mSpinnerMotor.setMotionProfileMaxAcceleration(Constants.Indexer.Spinner.kMaxAcceleration);
+        mSpinnerMotor.setUseMotionProfileForPosition(true);
 
-        // Set up Loader
-        mLoaderModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);
-        mLoaderMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Loader.kMotor, mLoaderModel);
-        // Set up gains
+        // Set up gains for loader
         mLoaderMotor.setVelocityGains(Constants.Indexer.Loader.kVelocityP,
             Constants.Indexer.Loader.kVelocityD);
         mLoaderMotor.setPositionGains(Constants.Indexer.Loader.kPositionP,
@@ -50,7 +63,7 @@ public class Indexer extends SpartronicsSubsystem
         // Setup Optical Flag for zeroing position
         mOpticalFlag = new DigitalInput(Constants.Indexer.kOpticalFlagId);
 
-        // Setup Prox Sensor for indexing
+        // Setup Proximity Sensor for indexing
         mProxSensor = new DigitalInput(Constants.Indexer.kProxSensorId);
     }
 

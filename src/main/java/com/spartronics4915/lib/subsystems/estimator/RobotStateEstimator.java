@@ -95,6 +95,7 @@ public class RobotStateEstimator extends SpartronicsSubsystem
 
         final RobotStateMap.State estate = mEncoderStateMap.getLatestState();
         Pose2d epose = estate.pose;
+        SmartDashboard.putNumber("RobotState/timeStamp", estate.timestamp);
         SmartDashboard.putString("RobotState/encoderPose",
                 Units.metersToInches(epose.getTranslation().getX()) +
                         " " + Units.metersToInches(epose.getTranslation().getY()) +
@@ -103,6 +104,9 @@ public class RobotStateEstimator extends SpartronicsSubsystem
 
         final RobotStateMap.State cstate = getCameraRobotStateMap().getLatestState();
         Pose2d cpose = cstate.pose;
+
+        // NB: other tools (like Dashboard and Vision) depend on the structure
+        // and id of RobotState/pose. Change with caution.
         SmartDashboard.putString("RobotState/pose",
                 Units.metersToInches(cpose.getTranslation().getX()) +
                         " " + Units.metersToInches(cpose.getTranslation().getY()) +

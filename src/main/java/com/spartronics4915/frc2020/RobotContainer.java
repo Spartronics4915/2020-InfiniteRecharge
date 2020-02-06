@@ -1,22 +1,37 @@
 package com.spartronics4915.frc2020;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.spartronics4915.frc2020.TrajectoryContainer.Destination;
 import com.spartronics4915.frc2020.commands.*;
 import com.spartronics4915.lib.hardware.sensors.T265Camera;
+import com.spartronics4915.lib.hardware.sensors.T265Camera.CameraJNIException;
 import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
+import com.spartronics4915.lib.subsystems.drive.CharacterizeDriveBaseCommand;
+import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
+import com.spartronics4915.lib.math.twodim.geometry.Pose2dWithCurvature;
+import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
+import com.spartronics4915.lib.math.twodim.trajectory.constraints.TimingConstraint;
+import com.spartronics4915.lib.math.twodim.trajectory.types.TimedTrajectory;
 import com.spartronics4915.lib.subsystems.drive.TrajectoryTrackerCommand;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
+import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 import com.spartronics4915.lib.util.Kinematics;
 import com.spartronics4915.frc2020.subsystems.*;
 import com.spartronics4915.frc2020.subsystems.LED.BlingState;
 import com.spartronics4915.lib.util.Logger;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -35,17 +50,18 @@ public class RobotContainer
         }
     }
 
-    public static final String kAutoOptionsKey = "AutoStrategyOptions";
-    public static final String kSelectedAutoModeKey = "AutoStrategy";
+    private static final String kAutoOptionsKey = "AutoStrategyOptions";
     public static final AutoMode kDefaultAutoMode = new AutoMode("All: Do Nothing", new Command()
     {
         @Override
         public Set<Subsystem> getRequirements()
         {
-            return null;
+            return Set.of();
         }
     });
 
+    public final NetworkTableEntry mAutoModeEntry = NetworkTableInstance.getDefault()
+        .getTable("SmartDashboard").getEntry("AutoStrategy");
     public final AutoMode[] mAutoModes;
 
     private final Climber mClimber;
@@ -55,6 +71,7 @@ public class RobotContainer
     private final LED mLED;
     private final ClimberCommands mClimberCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
+    private final ExampleCommandFactory mExampleCommandFactory;
 
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
@@ -68,30 +85,50 @@ public class RobotContainer
      */
     public RobotContainer()
     {
+        mLauncher = new Launcher();
         mClimber = new Climber();
         mIntake = new Intake();
-        mLauncher = new Launcher();
         mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
         mClimberCommands = new ClimberCommands();
         mPanelRotatorCommands = new PanelRotatorCommands();
+        mExampleCommandFactory = new ExampleCommandFactory(mLED);
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
 
-        configureJoystickBindings();
-        configureButtonBoardBindings();
-
+        T265Camera slamra;
+        try
+        {
+            slamra = new T265Camera(Constants.Estimator.kCameraOffset,
+                Constants.Estimator.kMeasurementCovariance);
+        }
+        catch (CameraJNIException | UnsatisfiedLinkError e)
+        {
+            slamra = null;
+            Logger.exception(e);
+        }
         mDrive = new Drive();
         mStateEstimator = new RobotStateEstimator(mDrive,
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
-            new T265Camera(Constants.Estimator.kCameraOffset,
-                Constants.Estimator.kMeasurementCovariance));
+            slamra);
+
+        configureJoystickBindings();
+        configureButtonBoardBindings();
+
+        System.out.println(TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight));
+
         mAutoModes = new AutoMode[] {kDefaultAutoMode,
-            new AutoMode("drive straight",
+            new AutoMode("Drive Straight",
                 new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.middle.getTrajectory(Destination.backOfShieldGenerator),
-                    mRamseteController, mStateEstimator.getCameraRobotStateMap()))};
+                    TrajectoryContainer.middle.getTrajectory(Destination.ShieldGeneratorFarRight),
+                    mRamseteController, mStateEstimator.getCameraRobotStateMap())),
+            new AutoMode("Characterize Drive",
+                new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter))};
+
+        String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
+            .collect(Collectors.joining(","));
+        SmartDashboard.putString(kAutoOptionsKey, autoModeList);
     }
 
     private void configureJoystickBindings()
@@ -117,6 +154,9 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
+        new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(mLauncher));
+        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive,
+            throughTrench(), mRamseteController, mStateEstimator.getCameraRobotStateMap()));
     }
 
     private void configureButtonBoardBindings()
@@ -155,14 +195,28 @@ public class RobotContainer
         */
     }
 
+    // configureTestCommands is not actually run. It is declared public to
+    // quell warnings. Its use is to test out different construction idioms 
+    // for externally defined commands. 
+    public void configureTestCommands()
+    {
+        // in this style object construction happens in the CommandFactory
+        this.mExampleCommandFactory.MakeCmd(ExampleCommandFactory.CmdEnum.kTest1);
+
+        // in this mode we construct things here, we must pass in parameters
+        // that are required during construction, since the outer class 
+        // member variables aren't accessible until after construction.
+        this.mExampleCommandFactory.new Test5(this.mLED); // an InstantCommand
+        this.mExampleCommandFactory.new Test6(this.mLED); // a StartEndCommand
+    }
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand()
     {
-        String selectedModeName = SmartDashboard.getString(kSelectedAutoModeKey,
-            "NO SELECTED MODE!!!!");
+        String selectedModeName = mAutoModeEntry.getString("NO SELECTED MODE!!!!");
         Logger.notice("Auto mode name " + selectedModeName);
         for (var mode : mAutoModes)
         {
@@ -176,12 +230,44 @@ public class RobotContainer
         return kDefaultAutoMode.command;
     }
 
-    /**
-     * Sets bling state -- used by robot.java code
-     * TODO: verify this is how we want to interface to disabledInit()
-    */
-    public void setBlingState(BlingState blingState)
+    public TimedTrajectory<Pose2dWithCurvature> throughTrench()
     {
-        mLED.setBlingState(blingState);
+        ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
+        Pose2d[] intermediate = new Pose2d[] {
+            new Pose2d(Units.inchesToMeters(424), Units.inchesToMeters(135),
+                Rotation2d.fromDegrees(180)),
+            new Pose2d(Units.inchesToMeters(207), Units.inchesToMeters(135),
+                Rotation2d.fromDegrees(180))};
+        for (int i = 0; i < intermediate.length; i++)
+        {
+            Pose2d pose = intermediate[i];
+            intermediate[i] = new Pose2d(pose.getTranslation().getX() - Units.inchesToMeters(312.5),
+                pose.getTranslation().getY(), pose.getRotation());
+        }
+        RobotStateMap stateMap = mStateEstimator.getCameraRobotStateMap();
+        Pose2d robotPose = stateMap.getLatestState().pose;
+        double robotX = robotPose.getTranslation().getX();
+        if (robotX < Units.inchesToMeters(312.5))
+        {
+            for (int i = 0; i < intermediate.length; i++)
+            {
+                Pose2d pose = intermediate[i];
+                intermediate[i] = new Pose2d(-pose.getTranslation().getX(),
+                    pose.getTranslation().getY(), Rotation2d.fromDegrees(0));
+            }
+        }
+        for (int i = 0; i < intermediate.length; i++)
+        {
+            Pose2d pose = intermediate[i];
+            intermediate[i] = new Pose2d(pose.getTranslation().getX() + Units.inchesToMeters(312.5),
+                pose.getTranslation().getY(), pose.getRotation());
+        }
+        waypoints.add(robotPose);
+        for (Pose2d pose : intermediate)
+        {
+            waypoints.add(pose);
+        }
+        ArrayList<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
+        return TrajectoryContainer.generateTrajectory(waypoints, constraints);
     }
 }
