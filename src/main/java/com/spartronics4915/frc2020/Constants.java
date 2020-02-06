@@ -85,11 +85,11 @@ public final class Constants
         public static final int kLimitSwitchDownId = 6;
         public static final int kOpticalFlagUpId = 7;
         public static final int kRaiseMotorId = 13;
-        public static final int kRotateMotorId = 14;
+        public static final int kSpinMotorId = 14;
 
         public static final double kRaiseSpeed = 0.5;
         public static final double kLowerSpeed = -0.5;
-        public static final double kRotateSpeed = 0.5;
+        public static final double kSpinSpeed = 0.5;
 
         // Whether or not something has triggered the optical flag, as a constant to be unambiguous
         public static final boolean kOpticalFlagBroken = false;
