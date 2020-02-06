@@ -53,6 +53,21 @@ public class ClimberCommands
     }
 
     /**
+     * Commands with simple logic statements should be implemented as a
+     * {@link FunctionalCommand}. This saves the overhead of a full
+     * {@link CommandBase}, but still allows us to deal with isFinished.
+     * <p>
+     * A FunctionalCommand takes five inputs:
+     * @param Runnable onInit
+     * @param Runnable onExecute
+     * @param Consumer<Boolean> onEnd (boolean interrupted)
+     * @param BooleanSupplier isFinished
+     * @param Subsystem requirement For both the CommandScheduler and the above method references.
+     * <p>
+     * Each of these parameters corresponds with a method in the CommandBase class.
+     */
+
+    /**
      * The {@link FunctionalCommand} WinchPrimary is part of a two-step winching Command chain.
      * <p>
      * This primary functionality activates first, winching the rope by turning the motor a direction
