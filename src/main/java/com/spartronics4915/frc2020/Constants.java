@@ -52,9 +52,7 @@ public final class Constants
         }
 
         public static final int kProxSensorId = 4; // DIO4 // Proximity Sensor (index slot one)
-        public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
-        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag
-                                                                  // is inverted
+        
         //TODO: sounds misplaced…needs a better name?
         public static final int kIntakeSensorId = 5;
     }
@@ -94,6 +92,9 @@ public final class Constants
         public static final double kLowerSpeed = -0.5;
 
         public static final double kSpinMotorSpeed = 0.5;
+
+        public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
+        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag is inverted
     }
 
     public static final class Drive
