@@ -131,24 +131,16 @@ public class PanelRotator extends SpartronicsSubsystem
         Color detectedColor = mColorSensor.getColor();
         ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
 
-        switch (match.color)
-        {
-            case "Red":
-                sensedColor = "Red";
-                break;
-            case "Green":
-                sensedColor = "Green";
-                break;
-            case "Blue":
-                sensedColor = "Blue";
-                break;
-            case "Yellow":
-                sensedColor = "Yellow";
-                break;
-            default:
-                sensedColor = "Error";
-                break;
-        }
+        if (match.color.equals(Constants.PanelRotator.kRedTarget))
+            sensedColor = "Red";
+        else if (match.color.equals(Constants.PanelRotator.kGreenTarget))
+            sensedColor = "Green";
+        else if (match.color.equals(Constants.PanelRotator.kBlueTarget))
+            sensedColor = "Blue";
+        else if (match.color.equals(Constants.PanelRotator.kYellowTarget))
+            sensedColor = "Yellow";
+        else
+            sensedColor = "Error";
 
         System.out.println(sensedColor);
         return sensedColor;
