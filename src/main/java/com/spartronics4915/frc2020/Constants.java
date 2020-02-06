@@ -182,4 +182,11 @@ public final class Constants
         public static final Pose2d kCameraOffset = new Pose2d();
         public static final double kMeasurementCovariance = 1;
     }
+
+
+    public static final class Vision
+    {
+        public static final String kTurretTargetKey = "/Vision/Target/Turret";
+        public static final String kPoseBroadcastKey = "/Vision/Control/RobotPose";
+    }
 }
