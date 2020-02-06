@@ -7,6 +7,7 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
+
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
@@ -18,62 +19,51 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 public class PanelRotator extends SpartronicsSubsystem
 {
-    private SpartronicsMotor mSpinMotor;
-    private SpartronicsMotor mExtendMotor;
-
-    private final DigitalInput mBeamSensorUp;
-
+    private final SpartronicsMotor mSpinMotor;
+    private final SpartronicsMotor mRaiseMotor;
+    private final DigitalInput mOpticalFlagUp;
     private final DigitalInput mLimitSwitchDown;
-
     private final ColorSensorV3 mColorSensor;
 
-    public String sensedColor;
-
+    private String sensedColor;
     private int red;
     private int green;
     private int blue;
 
     private final ColorMatch mColorMatcher = new ColorMatch();
 
-    //see https://drive.google.com/file/d/1BfoFJmpJg31txUqTG-OrJjeWgQdQsCNC/view for a diagram of how these line up
-    //TODO: test all these
-
-    //Blue
-    private final Color kRedTarget = ColorMatch.makeColor(0, 1, 0);
-    //Yellow
-    private final Color kGreenTarget = ColorMatch.makeColor(1, 1, 0);
-    //Red
-    private final Color kBlueTarget = ColorMatch.makeColor(1, 0, 0);
-    //Green
-    private final Color kYellowTarget = ColorMatch.makeColor(0, 1, 0);
+    // see https://drive.google.com/file/d/1BfoFJmpJg31txUqTG-OrJjeWgQdQsCNC/view for a diagram of how these line up
+    // TODO: test all these
+    private final Color kRedTarget = ColorMatch.makeColor(0, 1, 0); // Blue
+    private final Color kGreenTarget = ColorMatch.makeColor(1, 1, 0); // Yellow
+    private final Color kBlueTarget = ColorMatch.makeColor(1, 0, 0); // Red
+    private final Color kYellowTarget = ColorMatch.makeColor(0, 1, 0); // Green
 
     public PanelRotator()
     {
-        mBeamSensorUp = new DigitalInput(Constants.PanelRotator.kBeamSensorUpId);
+        mOpticalFlagUp = new DigitalInput(Constants.PanelRotator.kOpticalFlagUpId);
         mLimitSwitchDown = new DigitalInput(Constants.PanelRotator.kLimitSwitchDownId);
         mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId,
             SensorModel.fromMultiplier(1));
-        mExtendMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kExtendMotorId,
+        mRaiseMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId,
             SensorModel.fromMultiplier(1));
+
+        mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+        mColorMatcher.addColorMatch(kRedTarget);
+        mColorMatcher.addColorMatch(kGreenTarget);
+        mColorMatcher.addColorMatch(kBlueTarget);
+        mColorMatcher.addColorMatch(kYellowTarget);
+
         if (mSpinMotor.hadStartupError() || mExtendMotor.hadStartupError())
         {
             mSpinMotor = new SpartronicsSimulatedMotor(Constants.PanelRotator.kSpinMotorId);
-            mExtendMotor = new SpartronicsSimulatedMotor(Constants.PanelRotator.kExtendMotorId);
+            mExtendMotor = new SpartronicsSimulatedMotor(Constants.PanelRotator.kRaiseMotorId);
             logInitialized(false);
         }
         else
         {
             logInitialized(true);
         }
-        // mSpinMotor = new CANSparkMax(Constants.PanelRotator.kSpinMotorID,
-        // MotorType.kBrushless);
-        // mExtendMotor = new TalonSRX(Constants.PanelRotator.kExtendMotorID);
-        mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
-
-        mColorMatcher.addColorMatch(kRedTarget);
-        mColorMatcher.addColorMatch(kGreenTarget);
-        mColorMatcher.addColorMatch(kBlueTarget);
-        mColorMatcher.addColorMatch(kYellowTarget);
     }
 
     /**
@@ -81,7 +71,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void raise()
     {
-        mExtendMotor.setDutyCycle(Constants.PanelRotator.kRaiseSpeed);
+        mRaiseMotor.setDutyCycle(Constants.PanelRotator.kRaiseSpeed);
     }
 
     /**
@@ -89,7 +79,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void lower()
     {
-        mExtendMotor.setDutyCycle(Constants.PanelRotator.kLowerSpeed);
+        mRaiseMotor.setDutyCycle(Constants.PanelRotator.kLowerSpeed);
     }
 
     /**
@@ -103,7 +93,6 @@ public class PanelRotator extends SpartronicsSubsystem
     // TODO: What will this return before Stage Two?
     /**
      * Gets the color the robot needs to spin to through game specific messages
-     *
      * @return A String color - either Red, Blue, Yellow, or Green
      */
     public String getTargetColor()
@@ -111,7 +100,9 @@ public class PanelRotator extends SpartronicsSubsystem
         return DriverStation.getInstance().getGameSpecificMessage();
     }
 
-    /** this gets the 18-bit output (max is 2^18 - 1, I think) -*/
+    /** 
+     * this gets the 18-bit output (max is 2^18 - 1, I think)
+     */
     public String get18BitRGB()
     {
         int red = mColorSensor.getRed();
@@ -123,7 +114,9 @@ public class PanelRotator extends SpartronicsSubsystem
         return RGB;
     }
 
-    /** this gets the 18-bit output but divided by 262143 to make a fraction between 0 & 1 -*/
+    /** 
+     * this gets the 18-bit output but divided by 262143 to make a fraction between 0 & 1
+     */
     public String getFloatRGB()
     {
         int redFloat = mColorSensor.getRed() / 262143;
@@ -135,20 +128,16 @@ public class PanelRotator extends SpartronicsSubsystem
         return RGB;
     }
 
-    /** finds what color the color sensor is seeing  (Red, Blue, Yellow, or Green); currently just a placeholder for output */
-
-    // TODO: Implement this method!! !
-    // https://github.com/REVrobotics/Color-Sensor-v3-Examples/blob/master/Java/Color%20Match/src/main/java/frc/robot/Robot.java
     /**
-     * Finds what color the color sensor is seeing - currently just a placeholder for output
+     * Finds what color the color sensor is seeing.
      *
      * @return A String color - either Red, Blue, Yellow, or Green
      */
     public String getActualColor()
     {
-        Color detectedColor = mColorSensor.getColor();
-
-        ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
+        // TODO: You will need to verify that this builtin functionality works.
+        private Color detectedColor = mColorSensor.getColor();
+        private ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
 
         if (match.color.equals(kRedTarget))
             sensedColor = "Red";
@@ -163,11 +152,11 @@ public class PanelRotator extends SpartronicsSubsystem
 
         System.out.println(sensedColor);
         return sensedColor;
-
-        // return "method not complete";
     }
 
-    /** gets the color that the field's sensors are seeing */
+    /** 
+     * Gets the color that the field's sensors are seeing
+     */
     public String getColorForDashboard()
     {
         Color detectedColor = mColorSensor.getColor();
@@ -184,15 +173,16 @@ public class PanelRotator extends SpartronicsSubsystem
             sensedColor = "Green";
         else
             sensedColor = "Error";
+
         return sensedColor;
     }
 
     /**
      * Sees if the beam sensor on the top is triggered
      */
-    public boolean getBeamSensorUp()
+    public boolean getOpticalFlagUp()
     {
-        return mBeamSensorUp.get() == Constants.PanelRotator.kBeamSensorUpReversed; // TODO: adjust the constant if backwards
+        return mOpticalFlagUp.get() == Constants.PanelRotator.kOpticalFlagBroken; // TODO: adjust the constant if backwards
     }
 
     /**
