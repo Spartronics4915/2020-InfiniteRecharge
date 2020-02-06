@@ -97,7 +97,7 @@ public class TrajectoryContainer
 
     public static final class TrajectoryCollection
     {
-        private Pose2d mStartPoint;
+        public final Pose2d mStartPoint;
         private Map<DestinationCouple, TimedTrajectory<Pose2dWithCurvature>> mTrajectories;
 
         public TrajectoryCollection(Pose2d startPoint)

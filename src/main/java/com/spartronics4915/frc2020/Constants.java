@@ -96,8 +96,10 @@ public final class Constants
 
     public static final class Drive
     {
-        public static final boolean kRightOutputInverted = false;
-        public static final boolean kLeftOutputInverted = true;
+        public static final boolean kRightOutputInverted = true;
+        public static final boolean kRightFollowerOutputInverted = true;
+        public static final boolean kLeftOutputInverted = false;
+        public static final boolean kLeftFollowerOutputInverted = false;
         
         public static final int kRightDriveMaster = 1;
         public static final int kRightDriveFollower = 2;
@@ -107,7 +109,7 @@ public final class Constants
         public static final double kWheelDiameter;
         public static final double kTrackWidthMeters;
         public static final double kScrubFactor;
-        public static final int kNativeUnitsPerRevolution = 1; // TODO: get ratio
+        public static final double kNativeUnitsPerRevolution;
 
         public static final double kRobotMassKg = 1;
         public static final double kMoi = 1;
@@ -140,7 +142,6 @@ public final class Constants
             {
                 case "test chassis":
                     kTrackWidthMeters = Units.inchesToMeters(23.75);
-                    kWheelDiameter = Units.inchesToMeters(6.2554245800704);
                     kScrubFactor = 1.063;
                     kLeftS = 0.6995;
                     kLeftV = 0.2066;
@@ -148,6 +149,8 @@ public final class Constants
                     kRightS = 0.6815;
                     kRightV = 0.2194;
                     kRightA = 0.0340;
+                    kWheelDiameter = Units.inchesToMeters(6);
+                    kNativeUnitsPerRevolution = 1440.0;
                     break;
                 default:
                     kTrackWidthMeters = 1; // TODO: find track width
@@ -160,6 +163,7 @@ public final class Constants
                     kRightS = 1;
                     kRightV = 1;
                     kRightA = 1;
+                    kNativeUnitsPerRevolution = 10.71;
                     break;
             }
         }
@@ -169,13 +173,14 @@ public final class Constants
     {
         public static final double kStartVelocityMetersPerSec = 0;
         public static final double kEndVelocityMetersPerSec = 0;
-        public static final double kMaxVelocityMetersPerSec = 1;
-        public static final double kMaxAccelerationMeterPerSecSq = 1;
+        public static final double kMaxVelocityMetersPerSec = .2;
+        public static final double kMaxAccelerationMeterPerSecSq = .1;
 
         public static final Pose2d kStartPointLeft = new Pose2d(Units.inchesToMeters(508),
             Units.inchesToMeters(138), Rotation2d.fromDegrees(180));
         public static final Pose2d kStartPointMiddle = new Pose2d(Units.inchesToMeters(508),
             Units.inchesToMeters(-54), Rotation2d.fromDegrees(180));
+            //(x:508, y:-54, r:180) (x:400, y:-40, r:135)
         public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(508),
             Units.inchesToMeters(-138), Rotation2d.fromDegrees(180));
     }
@@ -183,7 +188,7 @@ public final class Constants
     public static final class Estimator
     {
         public static final Pose2d kCameraOffset = new Pose2d();
-        public static final double kMeasurementCovariance = 1;
+        public static final double kMeasurementCovariance = 0.001;
     }
 
 
