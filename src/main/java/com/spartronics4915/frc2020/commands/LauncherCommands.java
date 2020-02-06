@@ -35,6 +35,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
+            mLauncher.setRPS(SmartDashboard.getNumber("Launcher/FlywheelRPS", 0));
             mLauncher.runFlywheel();
         }
 
