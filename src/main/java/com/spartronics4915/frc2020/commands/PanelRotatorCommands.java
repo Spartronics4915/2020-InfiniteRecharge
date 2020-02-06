@@ -50,7 +50,7 @@ public class PanelRotatorCommands
         public Lower(PanelRotator PanelRotator)
         {
             super(() -> {}, PanelRotator::lower, (Boolean b) -> PanelRotator.stop(),
-                PanelRotator::getBeamSensorDown, PanelRotator);
+                PanelRotator::getLimitSwitchDown, PanelRotator);
         }
     }
 

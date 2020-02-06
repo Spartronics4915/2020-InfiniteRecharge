@@ -213,15 +213,10 @@ public final class Constants
                 break;
         }
     }
-=======
->>>>>>> 6994853066370995031bb4e51dab95c757325bfd
-=======
-
 
     public static final class Vision
     {
         public static final String kTurretTargetKey = "/Vision/Target/Turret";
         public static final String kPoseBroadcastKey = "/Vision/Control/RobotPose";
     }
->>>>>>> 0c4a60ce9534d9f2abfc7ab5c6ef8dda333c8ea1
 }
