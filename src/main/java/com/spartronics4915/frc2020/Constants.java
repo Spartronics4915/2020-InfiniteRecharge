@@ -2,14 +2,17 @@ package com.spartronics4915.frc2020;
 
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
+import com.spartronics4915.lib.util.Logger;
 
+import com.revrobotics.ColorMatch;
+
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Units;
+
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import com.spartronics4915.lib.util.Logger;
 
 public final class Constants
 {
@@ -93,6 +96,17 @@ public final class Constants
 
         // Whether or not something has triggered the optical flag, as a constant to be unambiguous
         public static final boolean kOpticalFlagBroken = false;
+
+        /* The position of our color sensor and the field's has a difference of π/2, so
+         * we need to adjust targets accordingly.
+         * <p>
+         * See https://drive.google.com/file/d/1BfoFJmpJg31txUqTG-OrJjeWgQdQsCNC/view
+         * for a diagram of how these line up.
+         */
+        public static final Color kRedTarget = ColorMatch.makeColor(0, 1, 0); // Blue
+        public static final Color kGreenTarget = ColorMatch.makeColor(1, 1, 0); // Yellow
+        public static final Color kBlueTarget = ColorMatch.makeColor(1, 0, 0); // Red
+        public static final Color kYellowTarget = ColorMatch.makeColor(0, 1, 0); // Green
     }
 
     public static final class Drive
