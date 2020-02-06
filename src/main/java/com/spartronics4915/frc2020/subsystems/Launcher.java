@@ -98,12 +98,6 @@ public class Launcher extends SpartronicsSubsystem
 
         mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
 
-        // Two Servos for angle adjustement
-        // mAngleAdjusterMasterServo = new
-        // Servo(Constants.Launcher.kAngleAdjusterMasterId);
-        // mAngleAdjusterFollowerServo = new
-        // Servo(Constants.Launcher.kAngleAdjusterFollowerId);
-
         setUpLookupTable(Constants.Launcher.LookupTableSize, Constants.Launcher.DistanceTable,
             Constants.Launcher.AngleTable, Constants.Launcher.RPSTable);
         turnTurret(0);
@@ -123,6 +117,7 @@ public class Launcher extends SpartronicsSubsystem
     public void rotateHood()
     {
         mAngleAdjusterMasterServo.setAngle(targetAngle.getDegrees());
+        mAngleAdjusterFollowerServo.setAngle(targetAngle.getDegrees());
     }
 
     /**
