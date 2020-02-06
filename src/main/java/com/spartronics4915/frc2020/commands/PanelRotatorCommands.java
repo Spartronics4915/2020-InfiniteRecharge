@@ -103,9 +103,9 @@ public class PanelRotatorCommands
             // Note that this is a comparison of Strings.
             // Conversions from native ColorSensorV3 values to one of four values is
             // done in PanelRotator.
-            if (mPanelRotator.getActualColor() == mTargetColor)
+            if (mPanelRotator.getActualColor().equals(mTargetColor))
                 return true;
-            else if (mPanelRotator.getActualColor() == "Error")
+            else if (mPanelRotator.getActualColor().equals("Error"))
             {
                 System.out.println("error—no data provided");
                 return true;
