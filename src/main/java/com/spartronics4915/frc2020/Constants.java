@@ -56,7 +56,7 @@ public final class Constants
         public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag
                                                                   // is inverted
         //TODO: sounds misplaced…needs a better name?
-        public static final int kIntakeSensorId = -1;
+        public static final int kIntakeSensorId = 5;
     }
 
     public static final class Intake
