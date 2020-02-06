@@ -174,26 +174,16 @@ public class PanelRotator extends SpartronicsSubsystem
 
         ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
 
-        if (match.color == kRedTarget)
-        {
+        if (match.color.equals(kRedTarget))
             sensedColor = "Blue";
-        }
-        else if (match.color == kGreenTarget)
-        {
+        else if (match.color.equals(kGreenTarget))
             sensedColor = "Yellow";
-        }
-        else if (match.color == kBlueTarget)
-        {
+        else if (match.color.equals(kBlueTarget))
             sensedColor = "Red";
-        }
-        else if (match.color == kYellowTarget)
-        {
+        else if (match.color.equals(kYellowTarget))
             sensedColor = "Green";
-        }
         else
-        {
             sensedColor = "Error";
-        }
         return sensedColor;
     }
 
