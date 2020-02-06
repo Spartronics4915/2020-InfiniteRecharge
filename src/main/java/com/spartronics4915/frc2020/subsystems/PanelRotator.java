@@ -131,40 +131,26 @@ public class PanelRotator extends SpartronicsSubsystem
         Color detectedColor = mColorSensor.getColor();
         ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
 
-        if (match.color.equals(Constants.PanelRotator.kRedTarget))
-            sensedColor = "Red";
-        else if (match.color.equals(Constants.PanelRotator.kGreenTarget))
-            sensedColor = "Green";
-        else if (match.color.equals(Constants.PanelRotator.kBlueTarget))
-            sensedColor = "Blue";
-        else if (match.color.equals(Constants.PanelRotator.kYellowTarget))
-            sensedColor = "Yellow";
-        else
-            sensedColor = "Error";
+        switch (match.color)
+        {
+            case "Red":
+                sensedColor = "Red";
+                break;
+            case "Green":
+                sensedColor = "Green";
+                break;
+            case "Blue":
+                sensedColor = "Blue";
+                break;
+            case "Yellow":
+                sensedColor = "Yellow";
+                break;
+            default:
+                sensedColor = "Error";
+                break;
+        }
 
         System.out.println(sensedColor);
-        return sensedColor;
-    }
-
-    /** 
-     * Gets the color that the field's sensors are seeing
-     */
-    public String getColorForDashboard()
-    {
-        Color detectedColor = mColorSensor.getColor();
-        ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
-
-        if (match.color.equals(Constants.PanelRotator.kRedTarget))
-            sensedColor = "Blue";
-        else if (match.color.equals(Constants.PanelRotator.kGreenTarget))
-            sensedColor = "Yellow";
-        else if (match.color.equals(Constants.PanelRotator.kBlueTarget))
-            sensedColor = "Red";
-        else if (match.color.equals(Constants.PanelRotator.kYellowTarget))
-            sensedColor = "Green";
-        else
-            sensedColor = "Error";
-
         return sensedColor;
     }
 
