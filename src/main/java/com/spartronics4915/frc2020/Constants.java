@@ -52,7 +52,9 @@ public final class Constants
         }
 
         public static final int kProxSensorId = 4; // DIO4 // Proximity Sensor (index slot one)
-        
+        public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
+        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag
+                                                                  // is inverted
         //TODO: sounds misplaced…needs a better name?
         public static final int kIntakeSensorId = 5;
     }
@@ -82,8 +84,8 @@ public final class Constants
 
     public static final class PanelRotator
     {
-        public static final int kBeamSensorUpId = 2; // TODO: take up issue with electronics over these not being on the control map
-        public static final int kBeamSensorDownId = 3;
+        public static final int kBeamSensorId = 2; // A2 // Optical Flag for Zeroing
+        public static final boolean kBeamSensorReversed = false; // Whether or not the beam sensor is inverted
 
         public static final int kExtendMotorId = 13;
         public static final int kSpinMotorId = 14;
@@ -92,9 +94,6 @@ public final class Constants
         public static final double kLowerSpeed = -0.5;
 
         public static final double kSpinMotorSpeed = 0.5;
-
-        public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
-        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag is inverted
     }
 
     public static final class Drive
