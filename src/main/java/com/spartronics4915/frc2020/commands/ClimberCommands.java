@@ -89,14 +89,15 @@ public class ClimberCommands
         }
     }
 
-    public class extendToMax extends CommandBase
+    public class ExtendAutoMax extends CommandBase
     {
-        private Climber mClimber;
+        private final Climber mClimber;
         private double targetTime;
         
-        public extendToMax()
+        public ExtendAutoMax(Climber Climber)
         {
-            
+            mClimber = Climber;
+            addRequirements(mClimber);            
         }
 
         @Override
@@ -124,13 +125,14 @@ public class ClimberCommands
         }
     }
 
-    public class extendToMin extends CommandBase
+    public class ExtendAutoMin extends CommandBase
     {
-        private Climber mClimber;
+        private final Climber mClimber;
         private double targetTime;
-        public extendToMin(Climber climber)
+        public ExtendAutoMin(Climber Climber)
         {
-
+            mClimber = Climber;
+            addRequirements(mClimber);
         }
 
         @Override
