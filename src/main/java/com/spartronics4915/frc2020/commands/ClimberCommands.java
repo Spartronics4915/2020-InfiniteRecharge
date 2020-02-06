@@ -86,4 +86,20 @@ public class ClimberCommands
             super(() -> climber.winch(Constants.Climber.kStalled), climber::stop, climber);
         }
     }
+
+    public class extendToMax extends StartEndCommand
+    {
+        public extendToMax(Climber climber)
+        {
+            super(() -> climber.extend(), climber::stop, climber);
+        }
+    }
+
+    /*public class extendToMin extends StartEndCommand
+    {
+        public extendToMin(Climber climber)
+        {
+            super(() -> )
+        }
+    }*/
 }

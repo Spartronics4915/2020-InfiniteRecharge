@@ -1,6 +1,7 @@
 package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.frc2020.commands.ClimberCommands;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 
 import org.junit.jupiter.api.Test;
 
