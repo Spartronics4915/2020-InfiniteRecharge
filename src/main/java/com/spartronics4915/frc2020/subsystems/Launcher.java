@@ -19,6 +19,7 @@ import com.spartronics4915.lib.util.InterpolatingTreeMap;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Launcher extends SpartronicsSubsystem
 {
@@ -76,9 +77,9 @@ public class Launcher extends SpartronicsSubsystem
         mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
 
         // One NEO 550 motor for turret
-        mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretId,
-            SensorModel.toRadians(360));
-        if (mTurretMotor.hadStartupError())
+        // mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretId,
+        // SensorModel.toRadians(360));
+        /*if (mTurretMotor.hadStartupError())
         {
             mTurretMotor = new SpartronicsSimulatedMotor();
             logInitialized(false);
@@ -86,9 +87,9 @@ public class Launcher extends SpartronicsSubsystem
         else
         {
             logInitialized(true);
-        }
+        }*/
         mTurretPotentiometer = new AnalogPotentiometer(Constants.Launcher.kTurretPotentiometerId,
-            90, -45);
+            360, -180);
 
         // Two Servos for angle adjustement
         mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterId);
@@ -97,11 +98,16 @@ public class Launcher extends SpartronicsSubsystem
         mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
 
         // Two Servos for angle adjustement
-        mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterId);
-        mAngleAdjusterFollowerServo = new Servo(Constants.Launcher.kAngleAdjusterFollowerId);
+        // mAngleAdjusterMasterServo = new
+        // Servo(Constants.Launcher.kAngleAdjusterMasterId);
+        // mAngleAdjusterFollowerServo = new
+        // Servo(Constants.Launcher.kAngleAdjusterFollowerId);
 
-        setUpLookupTable(Constants.Launcher.LookupTableSize, Constants.Launcher.DistanceTable, Constants.Launcher.AngleTable, Constants.Launcher.RPSTable);
+        setUpLookupTable(Constants.Launcher.LookupTableSize, Constants.Launcher.DistanceTable,
+            Constants.Launcher.AngleTable, Constants.Launcher.RPSTable);
         turnTurret(0);
+
+        SmartDashboard.putNumber("Launcher/FlywheelRPS", 0);
     }
 
     /**
@@ -110,7 +116,12 @@ public class Launcher extends SpartronicsSubsystem
     public void runFlywheel()
     {
         mFlywheelMasterMotor.setVelocity(targetRPS, mFeedforwardCalculator.calculate(targetRPS));
-        System.out.println("Flywheel's current rps is " + getCurrentRPS());
+        // System.out.println("Flywheel's current rps is " + getCurrentRPS());
+    }
+
+    public void rotateHood()
+    {
+        mAngleAdjusterMasterServo.setAngle(targetAngle.getDegrees());
     }
 
     /**
@@ -120,7 +131,7 @@ public class Launcher extends SpartronicsSubsystem
     public void turnTurret(double absoluteAngle)
     {
         // need enc or pot\
-        mTurretMotor.setPosition(absoluteAngle);
+        // mTurretMotor.setPosition(absoluteAngle);
     }
 
     /**
@@ -209,7 +220,8 @@ public class Launcher extends SpartronicsSubsystem
      */
     public double calcRPS(double distance)
     {
-        double RPS = table.getInterpolated(new InterpolatingDouble(distance)).flywheelSpeedRPS.value;
+        double RPS = table
+            .getInterpolated(new InterpolatingDouble(distance)).flywheelSpeedRPS.value;
         return RPS;
     }
 
@@ -252,12 +264,15 @@ public class Launcher extends SpartronicsSubsystem
         turnTurret(0);*/
     }
 
-    public void setUpLookupTable(int size, double[] distances,double[] angles,double[] rps)
+    public void setUpLookupTable(int size, double[] distances, double[] angles, double[] rps)
     {
         table = new InterpolatingTreeMap<>();
-        table.put(new InterpolatingDouble(0.1), new LauncherState(Rotation2d.fromDegrees(45.0), new InterpolatingDouble(90.0)));
-        for(int k=0; k<size; k++) {
-            table.put(new InterpolatingDouble(distances[k]), new LauncherState(Rotation2d.fromDegrees(angles[k]), new InterpolatingDouble(rps[k])));
+        table.put(new InterpolatingDouble(0.1),
+            new LauncherState(Rotation2d.fromDegrees(45.0), new InterpolatingDouble(90.0)));
+        for (int k = 0; k < size; k++)
+        {
+            table.put(new InterpolatingDouble(distances[k]), new LauncherState(
+                Rotation2d.fromDegrees(angles[k]), new InterpolatingDouble(rps[k])));
         }
     }
 }

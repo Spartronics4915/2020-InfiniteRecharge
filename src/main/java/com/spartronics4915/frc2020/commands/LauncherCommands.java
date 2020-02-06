@@ -77,7 +77,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            System.out.println(mLauncher.getTurretDirection());
+            SmartDashboard.putNumber("Launcher/TurretDirection", mLauncher.getTurretDirection());
         }
     
         // Returns true when the command should end.
@@ -95,7 +95,47 @@ public class LauncherCommands
         }
     }
 
-
+    public class HoodTest extends CommandBase
+    {
+        Launcher mLauncher;
+    
+        // You should only use one subsystem per command. If multiple are needed, use a
+        // CommandGroup.
+        public HoodTest(Launcher launcher)
+        {
+            mLauncher = launcher;
+            addRequirements(launcher);
+        }
+    
+        // Called when the command is initially scheduled.
+        @Override
+        public void initialize()
+        {
+            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/HoodAngle",0));
+        }
+    
+        // Called every time the scheduler runs while the command is scheduled.
+        @Override
+        public void execute()
+        {
+            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/HoodAngle",0));
+            mLauncher.rotateHood();
+        }
+    
+        // Returns true when the command should end.
+        @Override
+        public boolean isFinished()
+        {
+            return false;
+        }
+    
+        // Called once the command ends or is interrupted.
+        @Override
+        public void end(boolean interrupted)
+        {
+            mLauncher.reset();
+        }
+    }
     /*Default command of the launcher subsystem, makes the flywheel's target rps 0*/
     public class LauncherDefaultCommand extends CommandBase
     {
