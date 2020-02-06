@@ -150,4 +150,11 @@ public interface SpartronicsMotor {
      * @return The output current of the motor in amps.
      */
     double getOutputCurrent();
+
+    /**
+     * @return The motor following this motor, or null.
+     */
+    SpartronicsMotor getFollower();
+
+    int getDeviceNumber();
 }
