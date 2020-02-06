@@ -32,6 +32,10 @@ public class Indexer extends SpartronicsSubsystem
     private boolean mIsLaunching = false;
     private boolean mIsTransferring = false;
 
+    private int mBallsHeld = 0;
+
+    public boolean mIsFull = false;
+
     public Indexer()
     {
         // Set up Spinner
@@ -206,5 +210,20 @@ public class Indexer extends SpartronicsSubsystem
     public void stopSpinner()
     {
         mIndexerMotor.setNeutral();
+    }
+
+    public void addBalls(int i)
+    {
+        mBallsHeld = Math.min(5, Math.max(0, mBallsHeld+i));
+    }
+
+    public void setBalls(int i)
+    {
+        mBallsHeld = Math.min(5, Math.max(0, i));
+    }
+
+    public int getBalls()
+    {
+        return mBallsHeld;
     }
 }

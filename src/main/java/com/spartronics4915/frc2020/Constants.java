@@ -65,7 +65,7 @@ public final class Constants
         public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
         // Whether or not the optical flag is inverted
         public static final boolean kOpticalFlagReversed = false; 
-        public static final int kIntakeSensorId = -5; // DIO5 
+        public static final int kIntakeSensorId = 5; // DIO5 
     }
 
     public static final class Intake

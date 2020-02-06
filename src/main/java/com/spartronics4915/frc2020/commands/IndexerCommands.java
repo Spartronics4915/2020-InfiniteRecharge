@@ -1,15 +1,10 @@
 package com.spartronics4915.frc2020.commands;
 
 import com.spartronics4915.frc2020.subsystems.Indexer;
-import com.spartronics4915.frc2020.subsystems.Intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
@@ -43,13 +38,13 @@ public class IndexerCommands
         }
     }
     
-    public class RunStateMachine extends CommandBase
+    public class LoadBallToSlot extends CommandBase
     {
         private Indexer mIndexer;
 
         private boolean mLoad = false;
 
-        public RunStateMachine(Indexer indexer)
+        public LoadBallToSlot(Indexer indexer)
         {
             mIndexer = indexer;
             addRequirements(indexer);
@@ -78,6 +73,50 @@ public class IndexerCommands
         }
     }
 
+    public class ZeroSpinnerCommand extends CommandBase
+    {
+
+        private Indexer mIndexer;
+
+        // You should only use one subsystem per command. If multiple are needed, use a
+        // CommandGroup.
+        public ZeroSpinnerCommand(Indexer indexer)
+        {
+            mIndexer = indexer;
+            addRequirements(mIndexer);
+        }
+
+        // Called when the command is initially scheduled.
+        @Override
+        public void initialize()
+        {
+            mIndexer.spinAt(0.1);
+        }
+
+        // Called every time the scheduler runs while the command is scheduled.
+        @Override
+        public void execute()
+        {
+            // ex. mClimber.raise();
+        }
+
+        // Returns true when the command should end.
+        @Override
+        public boolean isFinished()
+        {
+            return mIndexer.checkFlag();
+        }
+
+        // Called once the command ends or is interrupted.
+        @Override
+        public void end(boolean interrupted)
+        {
+            mIndexer.setZero();
+            mIndexer.stopSpinner();
+            mIndexer.returnToHome();
+        }
+    }
+
     /**
      * An {@link InstantCommand} runs an action and immediately exits.
      * <p>
@@ -91,9 +130,9 @@ public class IndexerCommands
      * <p>
      * Note that the Intake only controls the front roller.
      */
-    public class Launch extends InstantCommand
+    public class StartLaunch extends InstantCommand
     {
-        public Launch(Indexer Indexer)
+        public StartLaunch(Indexer Indexer)
         {
             super(Indexer::launch, Indexer);
         }
@@ -107,9 +146,9 @@ public class IndexerCommands
         }
     }
 
-    public class Transfer extends InstantCommand
+    public class StartTransfer extends InstantCommand
     {
-        public Transfer(Indexer Indexer)
+        public StartTransfer(Indexer Indexer)
         {
             super(Indexer::transfer, Indexer);
         }
@@ -164,16 +203,63 @@ public class IndexerCommands
             mIndexer = indexer;
 
             addCommands(
+                new EndLaunch(indexer), // for safety
                 new WaitForBallHeld(indexer),
-                new RunStateMachine(indexer),
-                new Spin(indexer, 1)
-            );            
+                new LoadBallToSlot(indexer),
+                new Spin(indexer, 1),
+                new InstantCommand(() -> indexer.addBalls(1), indexer),
+                new Intake(indexer) // recursions
+            );         
         }
 
         @Override
         public boolean isFinished()
         {
-            return mIndexer.getIntakeBallLoaded() && mIndexer.getSlotBallLoaded();
+            return (mIndexer.getIntakeBallLoaded() && mIndexer.getSlotBallLoaded());
+        }
+    }
+
+    public class Launch extends SequentialCommandGroup
+    {
+        private Indexer mIndexer;
+
+        public Launch(Indexer indexer, int ballsToShoot)
+        {
+            mIndexer = indexer;
+
+            addCommands(
+                new StartLaunch(indexer),
+                new LaunchStep(indexer, ballsToShoot),
+                new EndLaunch(indexer)
+            );
+        }
+
+        public class LaunchStep extends SequentialCommandGroup
+        {
+            private Indexer mIndexer;
+            private int mBallsToShoot;
+
+            public LaunchStep(Indexer indexer, int ballsToShoot) {
+                mIndexer = indexer;
+
+                mBallsToShoot = ballsToShoot;
+                if (ballsToShoot == 0)
+                {
+                    addCommands();
+                } else
+                {
+                    addCommands(
+                        new Spin(indexer, 1),
+                        new LoadBallToSlot(indexer),
+                        new LaunchStep(indexer, ballsToShoot-1)
+                    );
+                }
+            }
+
+            public boolean isFinished() 
+            {
+                return mBallsToShoot == 0;
+            }
         }
     }
 }
