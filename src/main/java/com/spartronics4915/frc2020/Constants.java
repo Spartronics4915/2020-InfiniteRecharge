@@ -87,7 +87,7 @@ public final class Constants
         public static final int kBeamSensorUpId = 5;
         public static final boolean kBeamSensorUpReversed = false; // Whether or not the beam sensor is inverted
 
-        public static final int kLimitSwitchDownId = -1;
+        public static final int kLimitSwitchDownId = 6;
 
         public static final int kExtendMotorId = 13;
         public static final int kSpinMotorId = 14;
