@@ -24,7 +24,7 @@ public class PanelRotatorCommands
 
     /**
      * This Raise {@link FunctionalCommand} calls {@link PanelRotator}.raise
-     * repeatedly, until the upper beam sensor is broken, at which point the
+     * repeatedly, until the upper optical flag is broken, at which point the
      * motor will stop.
      * <p>
      * The motor will also stop raising if interrupted by another Command.
@@ -34,13 +34,13 @@ public class PanelRotatorCommands
         public Raise(PanelRotator PanelRotator)
         {
             super(() -> {}, PanelRotator::raise, (Boolean b) -> PanelRotator.stop(),
-                PanelRotator::getBeamSensorUp, PanelRotator);
+                PanelRotator::getOpticalFlagUp, PanelRotator);
         }
     }
 
     /**
      * This Lower {@link FunctionalCommand} will call {@link PanelRotator}.lower
-     * repeatedly, until the down beam sensor is broken, at which point the
+     * repeatedly, until the down limit switch is pressed, at which point the
      * motor will stop.
      * <p>
      * The motor will also stop lowering if interrupted by another Command.
