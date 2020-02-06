@@ -81,6 +81,7 @@ enum
 {
   OFF = 0,
   //NEEDS
+  BLING_COMMAND_OFF
   BLING_COMMAND_STARTUP,
   BLING_COMMAND_DISABLED,
   //WANTS
@@ -201,6 +202,10 @@ void loop()
     break;
 
 //NEEDS BELOW
+
+    case BLING_COMMAND_OFF:
+      solid(rgbColor_OFF);
+      break;
 
     case BLING_COMMAND_STARTUP:
       solid(rgbColor_ORANGE);
