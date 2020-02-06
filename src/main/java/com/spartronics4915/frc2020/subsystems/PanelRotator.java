@@ -56,8 +56,8 @@ public class PanelRotator extends SpartronicsSubsystem
             SensorModel.fromMultiplier(1));
         if (mSpinMotor.hadStartupError() || mExtendMotor.hadStartupError())
         {
-            mSpinMotor = new SpartronicsSimulatedMotor();
-            mExtendMotor = new SpartronicsSimulatedMotor();
+            mSpinMotor = new SpartronicsSimulatedMotor(Constants.PanelRotator.kSpinMotorId);
+            mExtendMotor = new SpartronicsSimulatedMotor(Constants.PanelRotator.kExtendMotorId);
             logInitialized(false);
         }
         else
@@ -149,26 +149,16 @@ public class PanelRotator extends SpartronicsSubsystem
 
         ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
 
-        if (match.color == kRedTarget)
-        {
+        if (match.color.equals(kRedTarget))
             sensedColor = "Red";
-        }
-        else if (match.color == kGreenTarget)
-        {
+        else if (match.color.equals(kGreenTarget))
             sensedColor = "Green";
-        }
-        else if (match.color == kBlueTarget)
-        {
+        else if (match.color.equals(kBlueTarget))
             sensedColor = "Blue";
-        }
-        else if (match.color == kYellowTarget)
-        {
+        else if (match.color.equals(kYellowTarget))
             sensedColor = "Yellow";
-        }
         else
-        {
             sensedColor = "Error";
-        }
 
         System.out.println(sensedColor);
         return sensedColor;

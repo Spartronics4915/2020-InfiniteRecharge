@@ -111,7 +111,7 @@ public class T265Camera
      */
     public T265Camera(Pose2d robotOffsetMeters, double odometryCovariance, String relocMapPath)
     {
-        if (mLinkError == null) {
+        if (mLinkError != null) {
             throw mLinkError;
         }
 

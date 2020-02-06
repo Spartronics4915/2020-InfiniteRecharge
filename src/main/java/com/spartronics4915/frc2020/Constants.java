@@ -2,10 +2,7 @@ package com.spartronics4915.frc2020;
 
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
-<<<<<<< HEAD
-=======
 
->>>>>>> 6994853066370995031bb4e51dab95c757325bfd
 import edu.wpi.first.wpilibj.util.Units;
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -72,9 +69,9 @@ public final class Constants
     public static final class Launcher
     {
         public static final int kFlywheelMasterId = 7;
-        public static final int kFlywheelFollowerId = 0; // Solid brass
-        public static final int kAngleAdjusterMasterId = 0;
-        public static final int kAngleAdjusterFollowerId = 1;
+        public static final int kFlywheelFollowerId = -1; // Solid brass
+        public static final int kAngleAdjusterMasterId = 0; // PWM0
+        public static final int kAngleAdjusterFollowerId = 1; // PWM1
         public static final int kTurretId = 8;
         public static final int kTurretPotentiometerId = 2; // A2
     }
@@ -87,15 +84,6 @@ public final class Constants
 
     public static final class PanelRotator
     {
-<<<<<<< HEAD
-        public static final int kBeamSensorUpID = 0;
-        public static final int kBeamSensorDownID = 0;
-
-        public static final int kExtendMotorID = 0;
-        public static final int kSpinMotorID = 0;
-
-        public static final double kExtendMotorSpeed = 0.1;
-=======
         public static final int kBeamSensorUpId = 2; // TODO: take up issue with electronics over these not being on the control map
         public static final int kBeamSensorDownId = 3;
 
@@ -104,7 +92,7 @@ public final class Constants
 
         public static final double kRaiseSpeed = 0.5;
         public static final double kLowerSpeed = -0.5;
->>>>>>> 6994853066370995031bb4e51dab95c757325bfd
+
         public static final double kSpinMotorSpeed = 0.5;
     }
 
@@ -196,7 +184,6 @@ public final class Constants
         public static final Pose2d kCameraOffset = new Pose2d();
         public static final double kMeasurementCovariance = 1;
     }
-<<<<<<< HEAD
 
     // Initialize blank fields that are robot-specific here
     static
@@ -226,4 +213,13 @@ public final class Constants
     }
 =======
 >>>>>>> 6994853066370995031bb4e51dab95c757325bfd
+=======
+
+
+    public static final class Vision
+    {
+        public static final String kTurretTargetKey = "/Vision/Target/Turret";
+        public static final String kPoseBroadcastKey = "/Vision/Control/RobotPose";
+    }
+>>>>>>> 0c4a60ce9534d9f2abfc7ab5c6ef8dda333c8ea1
 }

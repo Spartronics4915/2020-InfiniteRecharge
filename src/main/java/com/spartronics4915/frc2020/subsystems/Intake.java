@@ -21,7 +21,7 @@ public class Intake extends SpartronicsSubsystem
             SensorModel.fromMultiplier(1));
         if (mHarvestMotor.hadStartupError())
         {
-            mHarvestMotor = new SpartronicsSimulatedMotor();
+            mHarvestMotor = new SpartronicsSimulatedMotor(Constants.Intake.kHarvestMotorId);
             logInitialized(false);
         }
         else

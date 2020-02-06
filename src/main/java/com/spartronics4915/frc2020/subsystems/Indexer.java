@@ -39,8 +39,8 @@ public class Indexer extends SpartronicsSubsystem
 
         if (mSpinnerMotor.hadStartupError() || mLoaderMotor.hadStartupError())
         {
-            mSpinnerMotor = new SpartronicsSimulatedMotor();
-            mLoaderMotor = new SpartronicsSimulatedMotor();
+            mSpinnerMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Spinner.kMotorId);
+            mLoaderMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Loader.kMotorId);
             logInitialized(false);
         } else {
             logInitialized(true);
