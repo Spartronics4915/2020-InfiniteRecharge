@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 public class PanelRotator extends SpartronicsSubsystem
 {
-    private final SpartronicsMotor mSpinMotor;
-    private final SpartronicsMotor mRaiseMotor;
+    private SpartronicsMotor mSpinMotor;
+    private SpartronicsMotor mRaiseMotor;
     private final DigitalInput mOpticalFlagUp;
     private final DigitalInput mLimitSwitchDown;
     private final ColorSensorV3 mColorSensor;
