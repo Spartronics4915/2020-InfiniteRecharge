@@ -164,9 +164,9 @@ public class IndexerCommands
             mIndexer = indexer;
 
             addCommands(
-                // Add wait for ball held command
-                // add the run state machine command
-                new Spin(indexer, 1);
+                new WaitForBallHeld(indexer),
+                new RunStateMachine(indexer),
+                new Spin(indexer, 1)
             );            
         }
 

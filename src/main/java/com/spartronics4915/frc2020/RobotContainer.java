@@ -71,7 +71,7 @@ public class RobotContainer
     private final LED mLED;
     private final ClimberCommands mClimberCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
-    private final IndexerCommandFactory mExampleCommandFactory;
+    // private final IndexerCommandFactory mExampleCommandFactory; not ready yet
 
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
@@ -92,7 +92,7 @@ public class RobotContainer
         mLED = LED.getInstance();
         mClimberCommands = new ClimberCommands();
         mPanelRotatorCommands = new PanelRotatorCommands();
-        mExampleCommandFactory = new IndexerCommandFactory(mLED);
+        // mExampleCommandFactory = new IndexerCommandFactory(mLED);
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
@@ -103,9 +103,10 @@ public class RobotContainer
             slamra = new T265Camera(Constants.Estimator.kCameraOffset,
                 Constants.Estimator.kMeasurementCovariance);
         }
-        catch (CameraJNIException e)
+        catch (CameraJNIException | UnsatisfiedLinkError e)
         {
             slamra = null;
+            Logger.exception(e);
         }
         mDrive = new Drive();
         mStateEstimator = new RobotStateEstimator(mDrive,
@@ -200,13 +201,13 @@ public class RobotContainer
     public void configureTestCommands()
     {
         // in this style object construction happens in the CommandFactory
-        this.mExampleCommandFactory.MakeCmd(IndexerCommandFactory.CmdEnum.kTest1);
+        // this.mExampleCommandFactory.MakeCmd(IndexerCommandFactory.CmdEnum.kTest1);
 
         // in this mode we construct things here, we must pass in parameters
         // that are required during construction, since the outer class 
         // member variables aren't accessible until after construction.
-        this.mExampleCommandFactory.new Test5(this.mLED); // an InstantCommand
-        this.mExampleCommandFactory.new Test6(this.mLED); // a StartEndCommand
+        // this.mExampleCommandFactory.new Test5(this.mLED); // an InstantCommand
+        // this.mExampleCommandFactory.new Test6(this.mLED); // a StartEndCommand
     }
 
     /**

@@ -21,6 +21,7 @@ public class SpartronicsSRX implements SpartronicsMotor {
     private static final double kMetersPerSecondToMetersPer100ms = 1 / kMetersPer100msToMetersPerSecond;
 
     private final TalonSRX mTalonSRX;
+    private final TalonSRX mFollower;
     private final SpartronicsEncoder mEncoder;
     private final SensorModel mSensorModel;
     private final boolean mHadStartupError;
@@ -63,29 +64,32 @@ public class SpartronicsSRX implements SpartronicsMotor {
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel, FeedbackDevice feedbackDevice)
     {
         if (RobotBase.isSimulation()) {
-            return new SpartronicsSimulatedMotor();
+            return new SpartronicsSimulatedMotor(deviceNumber);
         }
-        return new SpartronicsSRX(new TalonSRX(deviceNumber), sensorModel, feedbackDevice);
+        return new SpartronicsSRX(new TalonSRX(deviceNumber), sensorModel, feedbackDevice, null);
     }
 
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel) {
         if (RobotBase.isSimulation()) {
-            return new SpartronicsSimulatedMotor();
+            return new SpartronicsSimulatedMotor(deviceNumber);
         }
-        return new SpartronicsSRX(new TalonSRX(deviceNumber), sensorModel, FeedbackDevice.QuadEncoder);
+        return new SpartronicsSRX(new TalonSRX(deviceNumber), sensorModel, FeedbackDevice.QuadEncoder, null);
     }
 
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel, int followerDeviceNumber) {
         if (RobotBase.isSimulation()) {
-            return new SpartronicsSimulatedMotor();
+            return new SpartronicsSimulatedMotor(deviceNumber);
         }
         var master = new TalonSRX(deviceNumber);
-        new TalonSRX(followerDeviceNumber).follow(master);
-        return new SpartronicsSRX(master, sensorModel, FeedbackDevice.QuadEncoder);
+        var follower = new TalonSRX(followerDeviceNumber);
+        follower.follow(master);
+
+        return new SpartronicsSRX(master, sensorModel, FeedbackDevice.QuadEncoder, follower);
     }
 
-    private SpartronicsSRX(TalonSRX talon, SensorModel sensorModel, FeedbackDevice encoder) {
+    private SpartronicsSRX(TalonSRX talon, SensorModel sensorModel, FeedbackDevice encoder, TalonSRX follower) {
         mTalonSRX = talon;
+        mFollower = follower;
         mSensorModel = sensorModel;
 
         ErrorCode err = mTalonSRX.configSelectedFeedbackSensor(encoder, 0, 5);
@@ -260,6 +264,18 @@ public class SpartronicsSRX implements SpartronicsMotor {
     public double getOutputCurrent()
     {
         return mTalonSRX.getStatorCurrent();
+    }
+
+    @Override
+    public SpartronicsMotor getFollower()
+    {
+        return new SpartronicsSRX(mFollower, mSensorModel, FeedbackDevice.None, null);
+    }
+
+    @Override
+    public int getDeviceNumber()
+    {
+        return mTalonSRX.getDeviceID();
     }
 
 }

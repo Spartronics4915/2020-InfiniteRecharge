@@ -22,6 +22,7 @@ public class SpartronicsMax implements SpartronicsMotor
     private final double kRPMtoRPS = 1 / 60;
 
     private final CANSparkMax mSparkMax;
+    private final CANSparkMax mFollower;
     private final SpartronicsEncoder mEncoder;
     private final SensorModel mSensorModel;
     private final boolean mHadStartupError;
@@ -38,9 +39,7 @@ public class SpartronicsMax implements SpartronicsMotor
     private CANEncoder mEncoderSensor;
     private CANAnalog mAnalogSensor;
     private CANPIDController mPIDController;
-
     private AnalogMode mAnalogMode;
-
     private FeedbackSensorType mFeedbackSensor;
 
 
@@ -109,9 +108,9 @@ public class SpartronicsMax implements SpartronicsMotor
     {
         if (RobotBase.isSimulation())
         {
-            return new SpartronicsSimulatedMotor();
+            return new SpartronicsSimulatedMotor(deviceNumber);
         }
-        return new SpartronicsMax(new CANSparkMax(deviceNumber, MotorType.kBrushless), sensorModel, feedbackSensor);
+        return new SpartronicsMax(new CANSparkMax(deviceNumber, MotorType.kBrushless), sensorModel, feedbackSensor, null);
     }
 
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel)
@@ -124,7 +123,7 @@ public class SpartronicsMax implements SpartronicsMotor
     {
         if (RobotBase.isSimulation())
         {
-            return new SpartronicsSimulatedMotor();
+            return new SpartronicsSimulatedMotor(deviceNumber);
         }
 
         // We only use SPARK MAXes for brushless motors
@@ -132,8 +131,7 @@ public class SpartronicsMax implements SpartronicsMotor
         var master = new CANSparkMax(deviceNumber, MotorType.kBrushless);
         CANSparkMax follower = new CANSparkMax(deviceNumber, MotorType.kBrushless);
         follower.follow(master);
-        follower.close(); // Gave a warning for a resource leak.
-        return new SpartronicsMax(master, sensorModel, feedbackSensor);
+        return new SpartronicsMax(master, sensorModel, feedbackSensor, follower);
     }
 
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel, int followerDeviceNumber)
@@ -141,9 +139,10 @@ public class SpartronicsMax implements SpartronicsMotor
         return makeMotor(deviceNumber, sensorModel, FeedbackSensorType.kPWM, followerDeviceNumber);
     }
 
-    private SpartronicsMax(CANSparkMax spark, SensorModel sensorModel, FeedbackSensorType feedbackSensor)
+    private SpartronicsMax(CANSparkMax spark, SensorModel sensorModel, FeedbackSensorType feedbackSensor, CANSparkMax follower)
     {
         mSparkMax = spark;
+        mFollower = follower;
         mSensorModel = sensorModel;
         mPIDController = mSparkMax.getPIDController();
         mFeedbackSensor = feedbackSensor;
@@ -366,6 +365,18 @@ public class SpartronicsMax implements SpartronicsMotor
     public double getOutputCurrent()
     {
         return mSparkMax.getOutputCurrent();
+    }
+
+    @Override
+    public SpartronicsMotor getFollower()
+    {
+        return new SpartronicsMax(mFollower, this.mSensorModel, this.mFeedbackSensor, null);
+    }
+
+    @Override
+    public int getDeviceNumber()
+    {
+        return mSparkMax.getDeviceId();
     }
 
 }

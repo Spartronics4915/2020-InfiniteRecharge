@@ -61,8 +61,8 @@ public class PanelRotator extends SpartronicsSubsystem
             SensorModel.fromMultiplier(1));
         if (mSpinMotor.hadStartupError() || mExtendMotor.hadStartupError())
         {
-            mSpinMotor = new SpartronicsSimulatedMotor();
-            mExtendMotor = new SpartronicsSimulatedMotor();
+            mSpinMotor = new SpartronicsSimulatedMotor(Constants.PanelRotator.kSpinMotorId);
+            mExtendMotor = new SpartronicsSimulatedMotor(Constants.PanelRotator.kExtendMotorId);
             logInitialized(false);
         }
         else
