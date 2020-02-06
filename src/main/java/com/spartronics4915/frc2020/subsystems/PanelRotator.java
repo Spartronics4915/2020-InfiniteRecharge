@@ -32,13 +32,6 @@ public class PanelRotator extends SpartronicsSubsystem
 
     private final ColorMatch mColorMatcher = new ColorMatch();
 
-    // see https://drive.google.com/file/d/1BfoFJmpJg31txUqTG-OrJjeWgQdQsCNC/view for a diagram of how these line up
-    // TODO: test all these
-    private final Color kRedTarget = ColorMatch.makeColor(0, 1, 0); // Blue
-    private final Color kGreenTarget = ColorMatch.makeColor(1, 1, 0); // Yellow
-    private final Color kBlueTarget = ColorMatch.makeColor(1, 0, 0); // Red
-    private final Color kYellowTarget = ColorMatch.makeColor(0, 1, 0); // Green
-
     public PanelRotator()
     {
         mOpticalFlagUp = new DigitalInput(Constants.PanelRotator.kOpticalFlagUpId);
@@ -49,10 +42,10 @@ public class PanelRotator extends SpartronicsSubsystem
             SensorModel.fromMultiplier(1));
 
         mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
-        mColorMatcher.addColorMatch(kRedTarget);
-        mColorMatcher.addColorMatch(kGreenTarget);
-        mColorMatcher.addColorMatch(kBlueTarget);
-        mColorMatcher.addColorMatch(kYellowTarget);
+        mColorMatcher.addColorMatch(Constants.PanelRotator.kRedTarget);
+        mColorMatcher.addColorMatch(Constants.PanelRotator.kGreenTarget);
+        mColorMatcher.addColorMatch(Constants.PanelRotator.kBlueTarget);
+        mColorMatcher.addColorMatch(Constants.PanelRotator.kYellowTarget);
 
         if (mSpinMotor.hadStartupError() || mExtendMotor.hadStartupError())
         {
@@ -130,22 +123,21 @@ public class PanelRotator extends SpartronicsSubsystem
 
     /**
      * Finds what color the color sensor is seeing.
-     *
      * @return A String color - either Red, Blue, Yellow, or Green
      */
     public String getActualColor()
     {
         // TODO: You will need to verify that this builtin functionality works.
-        private Color detectedColor = mColorSensor.getColor();
-        private ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
+        Color detectedColor = mColorSensor.getColor();
+        ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
 
-        if (match.color.equals(kRedTarget))
+        if (match.color.equals(Constants.PanelRotator.kRedTarget))
             sensedColor = "Red";
-        else if (match.color.equals(kGreenTarget))
+        else if (match.color.equals(Constants.PanelRotator.kGreenTarget))
             sensedColor = "Green";
-        else if (match.color.equals(kBlueTarget))
+        else if (match.color.equals(Constants.PanelRotator.kBlueTarget))
             sensedColor = "Blue";
-        else if (match.color.equals(kYellowTarget))
+        else if (match.color.equals(Constants.PanelRotator.kYellowTarget))
             sensedColor = "Yellow";
         else
             sensedColor = "Error";
@@ -160,16 +152,15 @@ public class PanelRotator extends SpartronicsSubsystem
     public String getColorForDashboard()
     {
         Color detectedColor = mColorSensor.getColor();
-
         ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
 
-        if (match.color.equals(kRedTarget))
+        if (match.color.equals(Constants.PanelRotator.kRedTarget))
             sensedColor = "Blue";
-        else if (match.color.equals(kGreenTarget))
+        else if (match.color.equals(Constants.PanelRotator.kGreenTarget))
             sensedColor = "Yellow";
-        else if (match.color.equals(kBlueTarget))
+        else if (match.color.equals(Constants.PanelRotator.kBlueTarget))
             sensedColor = "Red";
-        else if (match.color.equals(kYellowTarget))
+        else if (match.color.equals(Constants.PanelRotator.kYellowTarget))
             sensedColor = "Green";
         else
             sensedColor = "Error";
@@ -179,21 +170,21 @@ public class PanelRotator extends SpartronicsSubsystem
 
     /**
      * Sees if the beam sensor on the top is triggered
+     * @return whether the optical flag is broken
      */
     public boolean getOpticalFlagUp()
     {
         return mOpticalFlagUp.get() == Constants.PanelRotator.kOpticalFlagBroken; // TODO: adjust the constant if backwards
     }
 
+    // TODO: Double-check this
     /**
-     * Sees if the limit switch on the bottom is triggered
+     * @return if the bottom limit switch is triggered
      */
     public boolean getLimitSwitchDown()
     {
         return mLimitSwitchDown.get();
     }
-
-    // TODO: A discussion needs to be had on the relevance and implementation of getRotations...
 
     // TODO: Multiple stop() methods are redundant unless we use motor safety
 
@@ -213,7 +204,9 @@ public class PanelRotator extends SpartronicsSubsystem
         mSpinMotor.setDutyCycle(0);
     }
 
-    /** stops the two motors */
+    /** 
+     * Universal stop method
+     */
     public void stop()
     {
         mSpinMotor.setDutyCycle(0);
