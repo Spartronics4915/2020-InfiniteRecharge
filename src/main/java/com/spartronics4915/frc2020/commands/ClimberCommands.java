@@ -4,6 +4,8 @@ import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.RobotContainer;
 import com.spartronics4915.frc2020.subsystems.Climber;
 
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
@@ -87,19 +89,72 @@ public class ClimberCommands
         }
     }
 
-    public class extendToMax extends StartEndCommand
+    public class extendToMax extends CommandBase
     {
-        public extendToMax(Climber climber)
+        private Climber mClimber;
+        private double targetTime;
+        
+        public extendToMax()
         {
-            super(() -> climber.extend(), climber::stop, climber);
+            
+        }
+
+        @Override
+        public void initialize()
+        {
+            targetTime = Timer.getMatchTime() + Constants.Climber.kTimerExtenderMax;
+        }
+
+        @Override
+        public void execute()
+        {
+            mClimber.extend();
+        }
+
+        @Override
+        public boolean isFinished()
+        {
+            return targetTime <= Timer.getMatchTime(); 
+        }
+
+        @Override
+        public void end(boolean interrupted)
+        {
+            mClimber.stop();
         }
     }
 
-    /*public class extendToMin extends StartEndCommand
+    public class extendToMin extends CommandBase
     {
+        private Climber mClimber;
+        private double targetTime;
         public extendToMin(Climber climber)
         {
-            super(() -> )
+
         }
-    }*/
+
+        @Override
+        public void initialize()
+        {
+            targetTime = Timer.getMatchTime() + Constants.Climber.kTimerExtenderMin;
+        }
+
+        @Override
+        public void execute()
+        {
+            mClimber.extend();
+        }
+
+        @Override
+        public boolean isFinished()
+        {
+            return targetTime <= Timer.getMatchTime();
+        }
+
+        @Override
+        public void end(boolean interrupted)
+        {
+            mClimber.stop();
+        }
+    }
 }

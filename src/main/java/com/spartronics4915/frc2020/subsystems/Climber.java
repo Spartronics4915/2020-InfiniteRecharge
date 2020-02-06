@@ -3,6 +3,7 @@ package com.spartronics4915.frc2020.subsystems;
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
+
 import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
@@ -88,4 +89,5 @@ public class Climber extends SpartronicsSubsystem
     {
         return mWinchMotor.getOutputCurrent() >= Constants.Climber.kStallThreshold;
     }
+
 }

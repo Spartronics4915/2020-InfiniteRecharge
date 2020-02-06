@@ -23,6 +23,8 @@ public final class Constants
         public static final double kRetractSpeed = -1.0;
         public static final double kReverseWinchSpeed = -1.0;
         public static final double kStallThreshold = 10.0;
+        public static final double kTimerExtenderMin = 3.0;
+        public static final double kTimerExtenderMax = 5.0;
         public static final boolean kStalled = true;
     }
 
