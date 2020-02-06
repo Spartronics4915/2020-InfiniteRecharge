@@ -126,7 +126,8 @@ public class Launcher extends SpartronicsSubsystem
      */
     public void turnTurret(double absoluteAngle)
     {
-        // need enc or pot\
+        // need enc or pot
+        // FIXME
         // mTurretMotor.setPosition(absoluteAngle);
     }
 

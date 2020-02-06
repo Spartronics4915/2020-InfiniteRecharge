@@ -8,44 +8,43 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 
 public class LauncherCommands
 {
-    /* 
-    Command for testing, runs flywheel at a given RPS
-    !DO NOT MAKE THE RPS MORE THAN 90!
-    */
+    /*
+     * Command for testing, runs flywheel at a given RPS
+     * !DO NOT MAKE THE RPS MORE THAN 90!
+     */
     public class ShootBallTest extends CommandBase
     {
-    
-        Launcher mLauncher;
-    
+        private final Launcher mLauncher;
+
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public ShootBallTest(Launcher launcher)
+        public ShootBallTest(Launcher Launcher)
         {
-            mLauncher = launcher;
-            addRequirements(launcher);
+            mLauncher = Launcher;
+            addRequirements(mLauncher);
         }
-    
+
         // Called when the command is initially scheduled.
         @Override
         public void initialize()
         {
             mLauncher.setRPS(SmartDashboard.getNumber("Launcher/FlywheelRPS", 0));
         }
-    
+
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
             mLauncher.runFlywheel();
         }
-    
+
         // Returns true when the command should end.
         @Override
         public boolean isFinished()
         {
             return false;
         }
-    
+
         // Called once the command ends or is interrupted.
         @Override
         public void end(boolean interrupted)
@@ -54,39 +53,38 @@ public class LauncherCommands
         }
     }
 
-
     public class TurretTest extends CommandBase
     {
-        Launcher mLauncher;
-    
+        private final Launcher mLauncher;
+
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public TurretTest(Launcher launcher)
+        public TurretTest(Launcher Launcher)
         {
-            mLauncher = launcher;
-            addRequirements(launcher);
+            mLauncher = Launcher;
+            addRequirements(mLauncher);
         }
-    
+
         // Called when the command is initially scheduled.
         @Override
         public void initialize()
         {
         }
-    
+
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
             SmartDashboard.putNumber("Launcher/TurretDirection", mLauncher.getTurretDirection());
         }
-    
+
         // Returns true when the command should end.
         @Override
         public boolean isFinished()
         {
             return false;
         }
-    
+
         // Called once the command ends or is interrupted.
         @Override
         public void end(boolean interrupted)
@@ -97,38 +95,38 @@ public class LauncherCommands
 
     public class HoodTest extends CommandBase
     {
-        Launcher mLauncher;
-    
+        private final Launcher mLauncher;
+
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public HoodTest(Launcher launcher)
+        public HoodTest(Launcher Launcher)
         {
-            mLauncher = launcher;
-            addRequirements(launcher);
+            mLauncher = Launcher;
+            addRequirements(mLauncher);
         }
-    
+
         // Called when the command is initially scheduled.
         @Override
         public void initialize()
         {
-            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/HoodAngle",0));
+            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle",0));
         }
-    
+
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
-            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/HoodAngle",0));
+            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle",0));
             mLauncher.rotateHood();
         }
-    
+
         // Returns true when the command should end.
         @Override
         public boolean isFinished()
         {
             return false;
         }
-    
+
         // Called once the command ends or is interrupted.
         @Override
         public void end(boolean interrupted)
@@ -136,41 +134,43 @@ public class LauncherCommands
             mLauncher.reset();
         }
     }
-    /*Default command of the launcher subsystem, makes the flywheel's target rps 0*/
+
+    /*
+     * Default command of the launcher subsystem, makes the flywheel's target rps 0
+     */
     public class LauncherDefaultCommand extends CommandBase
     {
-    
-        Launcher mLauncher;
-    
+        private final Launcher mLauncher;
+
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public LauncherDefaultCommand(Launcher launcher)
+        public LauncherDefaultCommand(Launcher Launcher)
         {
-            mLauncher = launcher;
-            addRequirements(launcher);
+            mLauncher = Launcher;
+            addRequirements(mLauncher);
         }
-    
+
         // Called when the command is initially scheduled.
         @Override
         public void initialize()
         {
             mLauncher.setRPS(0);
         }
-    
+
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
             mLauncher.runFlywheel();
         }
-    
+
         // Returns true when the command should end.
         @Override
         public boolean isFinished()
         {
             return false;
         }
-    
+
         // Called once the command ends or is interrupted.
         @Override
         public void end(boolean interrupted)

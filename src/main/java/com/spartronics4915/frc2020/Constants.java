@@ -13,7 +13,6 @@ import com.spartronics4915.lib.util.Logger;
 
 public final class Constants
 {
-
     public static final class Climber
     {
         public static final int kLiftMotorId = 5;
@@ -53,8 +52,7 @@ public final class Constants
 
         public static final int kProxSensorId = 4; // DIO4 // Proximity Sensor (index slot one)
         public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
-        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag
-                                                                  // is inverted
+        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag is inverted
         public static final int kIntakeSensorId = -1; // 
     }
 
