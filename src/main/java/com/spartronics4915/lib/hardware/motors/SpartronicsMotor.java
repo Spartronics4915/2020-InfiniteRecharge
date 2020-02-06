@@ -151,5 +151,10 @@ public interface SpartronicsMotor {
      */
     double getOutputCurrent();
 
-    
+    /**
+     * @return The motor following this motor, or null.
+     */
+    SpartronicsMotor getFollower();
+
+    int getDeviceNumber();
 }

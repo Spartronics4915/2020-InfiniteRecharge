@@ -63,7 +63,8 @@ public class Launcher extends SpartronicsSubsystem
             SensorModel.fromMultiplier(1));
         if (mFlywheelMasterMotor.hadStartupError())
         {
-            mFlywheelMasterMotor = new SpartronicsSimulatedMotor();
+            mFlywheelMasterMotor = new SpartronicsSimulatedMotor(Constants.Launcher.kFlywheelMasterId);
+            mTurretMotor = new SpartronicsSimulatedMotor(Constants.Launcher.kTurretId);
             logInitialized(false);
         }
         else

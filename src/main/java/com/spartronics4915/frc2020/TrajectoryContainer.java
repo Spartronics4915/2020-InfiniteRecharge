@@ -95,7 +95,6 @@ public class TrajectoryContainer
         {
             for (var entry : trajectories.entrySet())
             {
-                System.out.println(entry.getKey().hashCode());
                 var trajectory = entry.getKey().createTrajectory(mStartPoint, entry.getValue());
                 mTrajectories.put(entry.getKey(), trajectory);
             }
