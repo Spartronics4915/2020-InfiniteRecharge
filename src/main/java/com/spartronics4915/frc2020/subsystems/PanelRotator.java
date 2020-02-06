@@ -47,10 +47,10 @@ public class PanelRotator extends SpartronicsSubsystem
         mColorMatcher.addColorMatch(Constants.PanelRotator.kBlueTarget);
         mColorMatcher.addColorMatch(Constants.PanelRotator.kYellowTarget);
 
-        if (mSpinMotor.hadStartupError() || mExtendMotor.hadStartupError())
+        if (mSpinMotor.hadStartupError() || mRaiseMotor.hadStartupError())
         {
             mSpinMotor = new SpartronicsSimulatedMotor(Constants.PanelRotator.kSpinMotorId);
-            mExtendMotor = new SpartronicsSimulatedMotor(Constants.PanelRotator.kRaiseMotorId);
+            mRaiseMotor = new SpartronicsSimulatedMotor(Constants.PanelRotator.kRaiseMotorId);
             logInitialized(false);
         }
         else
@@ -80,7 +80,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void spin()
     {
-        mSpinMotor.setDutyCycle(Constants.PanelRotator.kSpinMotorSpeed);
+        mSpinMotor.setDutyCycle(Constants.PanelRotator.kSpinSpeed);
     }
 
     // TODO: What will this return before Stage Two?
@@ -191,9 +191,9 @@ public class PanelRotator extends SpartronicsSubsystem
     /**
      * Stops the extension motor
      */
-    public void stopExtendMotor()
+    public void stopRaiseMotor()
     {
-        mExtendMotor.setDutyCycle(0);
+        mRaiseMotor.setDutyCycle(0);
     }
 
     /**
@@ -210,6 +210,6 @@ public class PanelRotator extends SpartronicsSubsystem
     public void stop()
     {
         mSpinMotor.setDutyCycle(0);
-        mExtendMotor.setDutyCycle(0);
+        mRaiseMotor.setDutyCycle(0);
     }
 }
