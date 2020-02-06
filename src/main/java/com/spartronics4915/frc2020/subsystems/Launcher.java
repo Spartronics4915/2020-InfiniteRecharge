@@ -80,7 +80,8 @@ public class Launcher extends SpartronicsSubsystem
         // One NEO 550 motor for turret
         // mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretId,
         // SensorModel.toRadians(360));
-        /*if (mTurretMotor.hadStartupError())
+        /*
+        if (mTurretMotor.hadStartupError())
         {
             mTurretMotor = new SpartronicsSimulatedMotor();
             logInitialized(false);
@@ -88,7 +89,8 @@ public class Launcher extends SpartronicsSubsystem
         else
         {
             logInitialized(true);
-        }*/
+        }
+        */
         mTurretPotentiometer = new AnalogPotentiometer(Constants.Launcher.kTurretPotentiometerId,
             360, -180);
 
@@ -154,12 +156,18 @@ public class Launcher extends SpartronicsSubsystem
     }
 
     /**
-     * Sets target rpm for flywheel to given rpm
+     * Sets target rpm for flywheel to given RPS
+     * <p>
+     * Does not allow values greater than 90 (currently, 
+     * refer to Constants.Launcher.kMaxRPS) RPS.
      * @param rpm RPM you want the flywheel to target
      */
     public void setRPS(double rps)
     {
-        targetRPS = rps;
+        if (rps > Constants.Launcher.kMaxRPS)
+            targetRPS = Constants.Launcher.kMaxRPS;
+        else
+            targetRPS = rps;
     }
 
     /**
