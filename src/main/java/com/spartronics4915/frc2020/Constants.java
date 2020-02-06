@@ -84,8 +84,10 @@ public final class Constants
 
     public static final class PanelRotator
     {
-        public static final int kBeamSensorId = 2; // A2 // Optical Flag for Zeroing
-        public static final boolean kBeamSensorReversed = false; // Whether or not the beam sensor is inverted
+        public static final int kBeamSensorUpId = 2; // A2 // Optical Flag for Zeroing
+        public static final boolean kBeamSensorUpReversed = false; // Whether or not the beam sensor is inverted
+
+        public static final int kLimitSwitchDownId = -1;
 
         public static final int kExtendMotorId = 13;
         public static final int kSpinMotorId = 14;

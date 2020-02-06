@@ -22,7 +22,7 @@ public class PanelRotator extends SpartronicsSubsystem
     private SpartronicsMotor mExtendMotor;
 
     private final DigitalInput mBeamSensorUp;
-    
+
     private final DigitalInput mLimitSwitchDown;
 
     private final ColorSensorV3 mColorSensor;
@@ -50,7 +50,7 @@ public class PanelRotator extends SpartronicsSubsystem
     public PanelRotator()
     {
         mBeamSensorUp = new DigitalInput(Constants.PanelRotator.kBeamSensorUpId);
-        mLimitSwitchDown = new DigitalInput(Constants.PanelRotator.kBeamSensorDownId);
+        mLimitSwitchDown = new DigitalInput(Constants.PanelRotator.kLimitSwitchDownId);
         mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId,
             SensorModel.fromMultiplier(1));
         mExtendMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kExtendMotorId,
@@ -202,7 +202,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public boolean getBeamSensorUp()
     {
-        return mBeamSensorUp.get(); // TODO: maybe backwards
+        return mBeamSensorUp.get() == Constants.PanelRotator.kBeamSensorUpReversed; // TODO: adjust the constant if backwards
     }
 
     /**
@@ -210,7 +210,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public boolean getLimitSwitchDown()
     {
-        return mLimitSwitchDown.get(); // TODO: maybe backwards
+        return mLimitSwitchDown.get();
     }
 
     // TODO: A discussion needs to be had on the relevance and implementation of getRotations...
