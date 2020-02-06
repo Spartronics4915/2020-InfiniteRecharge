@@ -15,7 +15,7 @@ public class TestClimber
     @Test
     public void testExtend()
     {
-        var commandToRun = (new ClimberCommands()).new WinchPrimary(new Climber());
+        var commandToRun = new ClimberCommands().new WinchPrimary(new Climber());
 
         var sim = new DriverStationSim();
         sim.setAutonomous(false);
