@@ -1,4 +1,4 @@
-/*package com.spartronics4915.frc2020.subsystems;
+package com.spartronics4915.frc2020.subsystems;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -8,10 +8,16 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 
 import org.junit.jupiter.api.Test;
 
+import edu.wpi.first.hal.HAL;
 import edu.wpi.first.hal.sim.DriverStationSim;
 
 public class TestClimber
 {
+    static
+    {
+        HAL.initialize(0, 0);
+    }
+
     @Test
     public void testExtend()
     {
@@ -28,4 +34,4 @@ public class TestClimber
         simmedMotor.setOutputCurrent(11);
         assertFalse(commandToRun.isScheduled());
     }
-}*/
+}
