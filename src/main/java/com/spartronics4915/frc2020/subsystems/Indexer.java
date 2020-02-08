@@ -180,7 +180,8 @@ public class Indexer extends SpartronicsSubsystem
         return mIsLaunching;
     }
 
-    public void transfer() {
+    public void transfer() 
+    {
         mIsTransferring = true;
         mTransferMotor.setVelocity(Constants.Indexer.Transfer.kSpeed);
     }
@@ -191,7 +192,8 @@ public class Indexer extends SpartronicsSubsystem
         mTransferMotor.setVelocity(0);
     }
 
-    public boolean isTransferring() {
+    public boolean isTransferring() 
+    {
         return mIsTransferring;
     }
 
