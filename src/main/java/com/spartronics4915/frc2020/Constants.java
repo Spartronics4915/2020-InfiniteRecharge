@@ -134,6 +134,49 @@ public final class Constants
         public static final double kLeftA;
     }
 
+    // Initialize blank fields that are robot-specific here
+    static
+    {
+        String config = "default";
+        Path machineIDPath = FileSystems.getDefault().getPath(System.getProperty("user.home"),
+            "machineid");
+        try
+        {
+            config = Files.readString(machineIDPath).trim().toLowerCase();
+        }
+        catch (IOException e)
+        {
+        }
+        Logger.notice("Running on " + config + " constants");
+
+        switch (config)
+        {
+            case "test chassis":
+                kTrackWidthMeters = Units.inchesToMeters(23.75);
+                kWheelDiameter = Units.inchesToMeters(6.2554245800704);
+                kScrubFactor = 1.063;
+                kLeftS = 0.6995;
+                kLeftV = 0.2066;
+                kLeftA = 0.0107;
+                kRightS = 0.6815;
+                kRightV = 0.2194;
+                kRightA = 0.0340;
+                break;
+            default:
+                kTrackWidthMeters = 1; // TODO: find track width
+                kWheelDiameter = Units.inchesToMeters(8);
+                //TODO characterize
+                kScrubFactor = 1;
+                kLeftS = 1;
+                kLeftV = 1;
+                kLeftA = 1;
+                kRightS = 1;
+                kRightV = 1;
+                kRightA = 1;
+                break;
+        }
+    }
+
     public static final class Trajectory
     {
         public static final double kStartVelocityMetersPerSec = 0;
