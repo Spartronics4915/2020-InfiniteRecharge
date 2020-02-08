@@ -54,11 +54,20 @@ public final class Constants
             public static final double kConversionRatio = 1;
             public static final double kSpeed = 1;
         }
+        public static final class Transfer
+        {
+            public static final int kMotorId = 11;
+            public static final double kVelocityP = 1;
+            public static final double kVelocityD = 1;
+            public static final double kPositionP = 1;
+            public static final double kPositionD = 1;
+            public static final double kConversionRatio = 1;
+            public static final double kSpeed = 1;
+        }
 
-        public static final int kProxSensorId = 4; // DIO4 // Proximity Sensor (index slot one)
+        public static final int kSlotProxSensorId = 4; // DIO4 // Proximity Sensor (index slot one)
         public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
-        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag is inverted
-        public static final int kIntakeSensorId = -1; // 
+        public static final int kIntakeSensorId = 5; // DIO5 
     }
 
     public static final class Intake

@@ -75,7 +75,7 @@ public class RobotContainer
     private final ClimberCommands mClimberCommands;
     private final LauncherCommands mLauncherCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
-    private final ExampleCommandFactory mExampleCommandFactory;
+    // private final IndexerCommandFactory mExampleCommandFactory; not ready yet
 
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
@@ -97,7 +97,7 @@ public class RobotContainer
         mClimberCommands = new ClimberCommands();
         mLauncherCommands = new LauncherCommands();
         mPanelRotatorCommands = new PanelRotatorCommands();
-        mExampleCommandFactory = new ExampleCommandFactory(mLED);
+        // mExampleCommandFactory = new IndexerCommandFactory(mLED);
 
         //mClimber.setDefaultCommand(mClimberCommands.new ClimberDefaultCommand(mClimber));
         //mIntake.setDefaultCommand(mIntakeCommands.new IntakeDefaultCommand(mIntake));
@@ -216,13 +216,13 @@ public class RobotContainer
     public void configureTestCommands()
     {
         // in this style object construction happens in the CommandFactory
-        this.mExampleCommandFactory.MakeCmd(ExampleCommandFactory.CmdEnum.kTest1);
+        // this.mExampleCommandFactory.MakeCmd(IndexerCommandFactory.CmdEnum.kTest1);
 
         // in this mode we construct things here, we must pass in parameters
         // that are required during construction, since the outer class
         // member variables aren't accessible until after construction.
-        this.mExampleCommandFactory.new Test5(this.mLED); // an InstantCommand
-        this.mExampleCommandFactory.new Test6(this.mLED); // a StartEndCommand
+        // this.mExampleCommandFactory.new Test5(this.mLED); // an InstantCommand
+        // this.mExampleCommandFactory.new Test6(this.mLED); // a StartEndCommand
     }
 
     /**
