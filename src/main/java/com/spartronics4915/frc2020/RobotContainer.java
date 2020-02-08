@@ -126,8 +126,8 @@ public class RobotContainer
         configureJoystickBindings();
         configureButtonBoardBindings();
 
-        System.out
-            .println(new TrajectoryContainer.DestinationCouple(Destination.ShieldGeneratorFarRight,
+        System.out.println(
+          new TrajectoryContainer.DestinationCouple(Destination.ShieldGeneratorFarRight,
                 Destination.MiddleShootingPosition).hashCode());
 
         mAutoModes = new AutoMode[] {kDefaultAutoMode, new AutoMode("Drive Straight",
@@ -195,7 +195,7 @@ public class RobotContainer
         new JoystickButton(mButtonBoard, 8)
             .whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
         new JoystickButton(mButtonBoard, 9)
-            .whenPressed(mPanelRotatorCommands.new SpinRotation(mPanelRotator));
+            .whenPressed(mPanelRotatorCommands.new SpinOnce(mPanelRotator));
 
         new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber));
         new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Retract(mClimber));
