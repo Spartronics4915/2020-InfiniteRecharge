@@ -13,7 +13,6 @@ import com.spartronics4915.lib.util.Logger;
 
 public final class Constants
 {
-
     public static final class Climber
     {
         public static final int kLiftMotorId = 5;
@@ -23,6 +22,8 @@ public final class Constants
         public static final double kRetractSpeed = -1.0;
         public static final double kReverseWinchSpeed = -1.0;
         public static final double kStallThreshold = 10.0;
+        public static final double kTimerExtenderMin = 3.0;
+        public static final double kTimerExtenderMax = 5.0;
         public static final boolean kStalled = true;
     }
 
@@ -63,9 +64,14 @@ public final class Constants
 
         public static final int kSlotProxSensorId = 4; // DIO4 // Proximity Sensor (index slot one)
         public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
+<<<<<<< HEAD
         // Whether or not the optical flag is inverted
         public static final boolean kOpticalFlagReversed = false; 
         public static final int kIntakeSensorId = 5; // DIO5 
+=======
+        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag is inverted
+        public static final int kIntakeSensorId = -1; // 
+>>>>>>> 5cc3524e42c769719c378a9d4f1921f5bdf00b83
     }
 
     public static final class Intake
@@ -82,7 +88,21 @@ public final class Constants
         public static final int kAngleAdjusterMasterId = 0; // PWM0
         public static final int kAngleAdjusterFollowerId = 1; // PWM1
         public static final int kTurretId = 8;
-        public static final int kTurretPotentiometerId = 2; // A2
+        public static final int kTurretPotentiometerId = 2;
+        
+        // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
+        public static final double kP = 0.00154;
+        public static final double kS = 0.0638;
+        public static final double kV = 0.121;
+        public static final double kA = 0.0252;
+        
+        // Vals for interpolating lookup table
+        public static final int LookupTableSize = 0;
+        public static final double[] DistanceTable = null;
+        public static final double[] AngleTable = null;
+        public static final double[] RPSTable = null;
+
+        public static final double kMaxRPS = 90.0;
     }
 
     public static final class OI
@@ -106,6 +126,11 @@ public final class Constants
 
     public static final class Drive
     {
+        public static final boolean kRightOutputInverted = true;
+        public static final boolean kRightFollowerOutputInverted = true;
+        public static final boolean kLeftOutputInverted = false;
+        public static final boolean kLeftFollowerOutputInverted = false;
+        
         public static final int kRightDriveMaster = 1;
         public static final int kRightDriveFollower = 2;
         public static final int kLeftDriveMaster = 3;
@@ -114,7 +139,7 @@ public final class Constants
         public static final double kWheelDiameter;
         public static final double kTrackWidthMeters;
         public static final double kScrubFactor;
-        public static final int kNativeUnitsPerRevolution = 1; // TODO: get ratio
+        public static final double kNativeUnitsPerRevolution;
 
         public static final double kRobotMassKg = 1;
         public static final double kMoi = 1;
@@ -147,7 +172,6 @@ public final class Constants
             {
                 case "test chassis":
                     kTrackWidthMeters = Units.inchesToMeters(23.75);
-                    kWheelDiameter = Units.inchesToMeters(6.2554245800704);
                     kScrubFactor = 1.063;
                     kLeftS = 0.6995;
                     kLeftV = 0.2066;
@@ -155,6 +179,8 @@ public final class Constants
                     kRightS = 0.6815;
                     kRightV = 0.2194;
                     kRightA = 0.0340;
+                    kWheelDiameter = Units.inchesToMeters(6);
+                    kNativeUnitsPerRevolution = 1440.0;
                     break;
                 default:
                     kTrackWidthMeters = 1; // TODO: find track width
@@ -167,6 +193,7 @@ public final class Constants
                     kRightS = 1;
                     kRightV = 1;
                     kRightA = 1;
+                    kNativeUnitsPerRevolution = 10.71;
                     break;
             }
         }
@@ -176,21 +203,22 @@ public final class Constants
     {
         public static final double kStartVelocityMetersPerSec = 0;
         public static final double kEndVelocityMetersPerSec = 0;
-        public static final double kMaxVelocityMetersPerSec = 1;
-        public static final double kMaxAccelerationMeterPerSecSq = 1;
+        public static final double kMaxVelocityMetersPerSec = .2;
+        public static final double kMaxAccelerationMeterPerSecSq = .1;
 
         public static final Pose2d kStartPointLeft = new Pose2d(Units.inchesToMeters(508),
-            Units.inchesToMeters(138), Rotation2d.fromDegrees(0));
+            Units.inchesToMeters(138), Rotation2d.fromDegrees(180));
         public static final Pose2d kStartPointMiddle = new Pose2d(Units.inchesToMeters(508),
-            Units.inchesToMeters(-54), Rotation2d.fromDegrees(0));
+            Units.inchesToMeters(-54), Rotation2d.fromDegrees(180));
+            //(x:508, y:-54, r:180) (x:400, y:-40, r:135)
         public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(508),
-            Units.inchesToMeters(-138), Rotation2d.fromDegrees(0));
+            Units.inchesToMeters(-138), Rotation2d.fromDegrees(180));
     }
 
     public static final class Estimator
     {
         public static final Pose2d kCameraOffset = new Pose2d();
-        public static final double kMeasurementCovariance = 1;
+        public static final double kMeasurementCovariance = 0.001;
     }
 
 

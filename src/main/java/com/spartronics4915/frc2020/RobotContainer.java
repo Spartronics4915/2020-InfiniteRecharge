@@ -13,8 +13,11 @@ import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
 import com.spartronics4915.lib.subsystems.drive.CharacterizeDriveBaseCommand;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2dWithCurvature;
+import com.spartronics4915.lib.math.twodim.geometry.Rectangle2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
+import com.spartronics4915.lib.math.twodim.geometry.Translation2d;
 import com.spartronics4915.lib.math.twodim.trajectory.constraints.TimingConstraint;
+import com.spartronics4915.lib.math.twodim.trajectory.constraints.VelocityLimitRegionConstraint;
 import com.spartronics4915.lib.math.twodim.trajectory.types.TimedTrajectory;
 import com.spartronics4915.lib.subsystems.drive.TrajectoryTrackerCommand;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
@@ -70,6 +73,7 @@ public class RobotContainer
     private final PanelRotator mPanelRotator;
     private final LED mLED;
     private final ClimberCommands mClimberCommands;
+    private final LauncherCommands mLauncherCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
     // private final IndexerCommandFactory mExampleCommandFactory; not ready yet
 
@@ -91,8 +95,14 @@ public class RobotContainer
         mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
         mClimberCommands = new ClimberCommands();
+        mLauncherCommands = new LauncherCommands();
         mPanelRotatorCommands = new PanelRotatorCommands();
         // mExampleCommandFactory = new IndexerCommandFactory(mLED);
+
+        //mClimber.setDefaultCommand(mClimberCommands.new ClimberDefaultCommand(mClimber));
+        //mIntake.setDefaultCommand(mIntakeCommands.new IntakeDefaultCommand(mIntake));
+        mLauncher.setDefaultCommand(mLauncherCommands.new LauncherDefaultCommand(mLauncher));
+        //mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new PanelRotatorDefaultCommand(mPanelRotator));
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
@@ -116,15 +126,18 @@ public class RobotContainer
         configureJoystickBindings();
         configureButtonBoardBindings();
 
-        System.out.println(TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight));
+        System.out
+            .println(new TrajectoryContainer.DestinationCouple(Destination.ShieldGeneratorFarRight,
+                Destination.MiddleShootingPosition).hashCode());
 
-        mAutoModes = new AutoMode[] {kDefaultAutoMode,
-            new AutoMode("Drive Straight",
-                new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.middle.getTrajectory(Destination.ShieldGeneratorFarRight),
-                    mRamseteController, mStateEstimator.getCameraRobotStateMap())),
+        mAutoModes = new AutoMode[] {kDefaultAutoMode, new AutoMode("Drive Straight",
+            new TrajectoryTrackerCommand(mDrive,
+                TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight),
+                mRamseteController, mStateEstimator.getEncoderRobotStateMap())),
             new AutoMode("Characterize Drive",
                 new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter))};
+
+        mStateEstimator.resetRobotStateMaps(TrajectoryContainer.middle.mStartPoint);
 
         String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
             .collect(Collectors.joining(","));
@@ -154,9 +167,13 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
-        new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(mLauncher));
-        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive,
-            throughTrench(), mRamseteController, mStateEstimator.getCameraRobotStateMap()));
+        new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
+        new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
+        new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
+        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
+            this::throughTrench, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
+        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
+            this::toControlPanel, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
     }
 
     private void configureButtonBoardBindings()
@@ -173,10 +190,8 @@ public class RobotContainer
         new JoystickButton(mButtonBoard, 5).whenPressed(new LauncherCommands.AimHigh(mLauncher));
         */
 
-        new JoystickButton(mButtonBoard, 6)
-            .whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
-        new JoystickButton(mButtonBoard, 7)
-            .whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
+        new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
+        new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
         new JoystickButton(mButtonBoard, 8)
             .whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
         new JoystickButton(mButtonBoard, 9)
@@ -196,15 +211,15 @@ public class RobotContainer
     }
 
     // configureTestCommands is not actually run. It is declared public to
-    // quell warnings. Its use is to test out different construction idioms 
-    // for externally defined commands. 
+    // quell warnings. Its use is to test out different construction idioms
+    // for externally defined commands.
     public void configureTestCommands()
     {
         // in this style object construction happens in the CommandFactory
         // this.mExampleCommandFactory.MakeCmd(IndexerCommandFactory.CmdEnum.kTest1);
 
         // in this mode we construct things here, we must pass in parameters
-        // that are required during construction, since the outer class 
+        // that are required during construction, since the outer class
         // member variables aren't accessible until after construction.
         // this.mExampleCommandFactory.new Test5(this.mLED); // an InstantCommand
         // this.mExampleCommandFactory.new Test6(this.mLED); // a StartEndCommand
@@ -244,7 +259,7 @@ public class RobotContainer
             intermediate[i] = new Pose2d(pose.getTranslation().getX() - Units.inchesToMeters(312.5),
                 pose.getTranslation().getY(), pose.getRotation());
         }
-        RobotStateMap stateMap = mStateEstimator.getCameraRobotStateMap();
+        RobotStateMap stateMap = mStateEstimator.getEncoderRobotStateMap();
         Pose2d robotPose = stateMap.getLatestState().pose;
         double robotX = robotPose.getTranslation().getX();
         if (robotX < Units.inchesToMeters(312.5))
@@ -268,6 +283,31 @@ public class RobotContainer
             waypoints.add(pose);
         }
         ArrayList<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
+        return TrajectoryContainer.generateTrajectory(waypoints, constraints);
+    }
+
+    public TimedTrajectory<Pose2dWithCurvature> toControlPanel()
+    {
+        ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
+        Pose2d pose = mStateEstimator.getEncoderRobotStateMap().getLatestState().pose;
+        waypoints.add(pose);
+        Translation2d p = pose.getTranslation();
+        Pose2d nextToControlPanel;
+        if (p.getX() < Units.inchesToMeters(359))
+        {
+            nextToControlPanel = new Pose2d(Units.inchesToMeters(328), Units.inchesToMeters(135),
+                Rotation2d.fromDegrees(0));
+        }
+        else
+        {
+            nextToControlPanel = new Pose2d(Units.inchesToMeters(390), Units.inchesToMeters(135),
+                Rotation2d.fromDegrees(180));
+        }
+        waypoints.add(nextToControlPanel);
+        ArrayList<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
+        constraints.add(new VelocityLimitRegionConstraint(new Rectangle2d(
+            new Translation2d(Units.inchesToMeters(290), Units.inchesToMeters(161.6)),
+            new Translation2d(Units.inchesToMeters(428), Units.inchesToMeters(90))), .5));
         return TrajectoryContainer.generateTrajectory(waypoints, constraints);
     }
 }

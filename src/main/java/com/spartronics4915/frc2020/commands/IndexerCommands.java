@@ -42,8 +42,6 @@ public class IndexerCommands
     {
         private Indexer mIndexer;
 
-        private boolean mLoad = false;
-
         public LoadBallToSlot(Indexer indexer)
         {
             mIndexer = indexer;
@@ -51,17 +49,14 @@ public class IndexerCommands
         }
 
         public void initialize() {
-            if (mIndexer.getSlotBallLoaded() && !mIndexer.getIntakeBallLoaded()) {
-                mLoad = true;
-                return;
-            }
-            mLoad = false;
         }
 
         public void execute() {
-            if (mLoad) {
+            if (mIndexer.getSlotBallLoaded() && !mIndexer.getIntakeBallLoaded() && mIndexer.isInSafeSpace()) {
                 mIndexer.transfer();
             }
+            else
+                mIndexer.endTransfer();
         }
 
         public void end(boolean interrupted) {

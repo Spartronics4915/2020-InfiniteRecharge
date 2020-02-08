@@ -26,9 +26,9 @@ public class TrajectoryTrackerCommand implements Command {
     }
 
     public TrajectoryTrackerCommand(Subsystem driveSubsystem, TrajectoryTrackerDriveBase driveBase,
-            TimedTrajectory<Pose2dWithCurvature> trajectorySupplier, TrajectoryTracker tracker,
+            TimedTrajectory<Pose2dWithCurvature> trajectory, TrajectoryTracker tracker,
             RobotStateMap robotPositionMap) {
-        this(driveSubsystem, driveBase, () -> trajectorySupplier, tracker, robotPositionMap);
+        this(driveSubsystem, driveBase, () -> trajectory, tracker, robotPositionMap);
     }
 
     public TrajectoryTrackerCommand(Subsystem driveSubsystem, TrajectoryTrackerDriveBase driveBase,
