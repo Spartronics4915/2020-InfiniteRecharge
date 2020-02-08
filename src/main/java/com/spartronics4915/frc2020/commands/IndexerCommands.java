@@ -27,11 +27,9 @@ public class IndexerCommands
      */
 
     /**
-     * This {@link FunctionalCommand} harvests balls by running {@link Intake}.intake continuously,
-     * unless terminated by a second press of the Harvest button or
-     * a positive reading from {@link Intake}.isBallHeld.
+     * Waits until a ball is held, then ends.
      */
-    public class WaitForBallHeld extends FunctionalCommand
+     public class WaitForBallHeld extends FunctionalCommand
     {
         public WaitForBallHeld(Indexer indexer)
         {
@@ -39,6 +37,9 @@ public class IndexerCommands
         }
     }
 
+    /**
+     * Loads the ball into the indexer by moving the spinny bit
+     */
     public class LoadBallToSlot extends CommandBase
     {
         private Indexer mIndexer;
@@ -46,7 +47,7 @@ public class IndexerCommands
         public LoadBallToSlot(Indexer indexer)
         {
             mIndexer = indexer;
-            addRequirements(indexer);
+            addRequirements(mIndexer);
         }
 
         public void initialize()
@@ -75,6 +76,10 @@ public class IndexerCommands
         }
     }
 
+    /**
+     * Moves the indexer to a zero position,
+     * which is one of four perfectly aligned positions
+     */
     public class ZeroSpinnerCommand extends CommandBase
     {
 
@@ -134,41 +139,41 @@ public class IndexerCommands
      */
     public class StartLaunch extends InstantCommand
     {
-        public StartLaunch(Indexer Indexer)
+        public StartLaunch(Indexer indexer)
         {
-            super(Indexer::launch, Indexer);
+            super(indexer::launch, indexer);
         }
     }
 
     public class EndLaunch extends InstantCommand
     {
-        public EndLaunch(Indexer Indexer)
+        public EndLaunch(Indexer indexer)
         {
-            super(Indexer::endLaunch, Indexer);
+            super(indexer::endLaunch, indexer);
         }
     }
 
     public class StartTransfer extends InstantCommand
     {
-        public StartTransfer(Indexer Indexer)
+        public StartTransfer(Indexer indexer)
         {
-            super(Indexer::transfer, Indexer);
+            super(indexer::transfer, indexer);
         }
     }
 
     public class EndTransfer extends InstantCommand
     {
-        public EndTransfer(Indexer Indexer)
+        public EndTransfer(Indexer indexer)
         {
-            super(Indexer::endTransfer, Indexer);
+            super(indexer::endTransfer, indexer);
         }
     }
 
     public class Spin extends InstantCommand
     {
-        public Spin(Indexer Indexer, int N)
+        public Spin(Indexer indexer, int N)
         {
-            super(() -> Indexer.rotateN(N), Indexer);
+            super(() -> indexer.rotateN(N), indexer);
         }
     }
 
@@ -197,9 +202,13 @@ public class IndexerCommands
         {
             mIndexer = indexer;
 
-            addCommands(new EndLaunch(indexer), // for safety
-                new WaitForBallHeld(indexer), new LoadBallToSlot(indexer), new Spin(indexer, 1),
-                new InstantCommand(() -> indexer.addBalls(1), indexer), new Intake(indexer) // recursions
+            addCommands(
+                new EndLaunch(mIndexer), // for safety
+                new WaitForBallHeld(mIndexer), 
+                new LoadBallToSlot(mIndexer), 
+                new Spin(mIndexer, 1),
+                new InstantCommand(() -> mIndexer.addBalls(1), mIndexer), 
+                new Intake(mIndexer) // recursions
             );
         }
 
