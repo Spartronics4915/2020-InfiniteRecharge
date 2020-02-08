@@ -155,7 +155,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            Pose2d fieldToTurret = mStateMap.getLatestFieldToVehicle().transformBy(Constants.Launcher.kHoodOffset);
+            Pose2d fieldToTurret = mStateMap.getLatestFieldToVehicle().transformBy(Constants.Launcher.kTurretOffset);
             Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(mTargetPose);
             Rotation2d fieldAnglePointingToTarget = new Rotation2d(turretToTarget.getTranslation().getX(), turretToTarget.getTranslation().getY(), true).inverse();
             Rotation2d turretAngle = fieldAnglePointingToTarget.rotateBy(fieldToTurret.getRotation());
