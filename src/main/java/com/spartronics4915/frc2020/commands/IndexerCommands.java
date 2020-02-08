@@ -224,37 +224,12 @@ public class IndexerCommands
             mIndexer = indexer;
 
             addCommands(
-                new StartLaunch(indexer),
-                new LaunchStep(indexer, ballsToShoot),
-                new EndLaunch(indexer)
+                new StartLaunch(mIndexer),
+                new ParallelCommandGroup(
+                    new Spin(mIndexer, ballsToShoot),
+                    new LoadBallToSlot(mIndexer)),
+                new EndLaunch(mIndexer)
             );
-        }
-
-        public class LaunchStep extends ParallelCommandGroup
-        {
-            private Indexer mIndexer;
-            private int mBallsToShoot;
-
-            public LaunchStep(Indexer indexer, int ballsToShoot) {
-                mIndexer = indexer;
-
-                mBallsToShoot = ballsToShoot;
-                if (ballsToShoot == 0)
-                {
-                    addCommands();
-                } else
-                {
-                    addCommands(
-                        new Spin(indexer, ballsToShoot),
-                        new LoadBallToSlot(indexer)
-                    );
-                }
-            }
-
-            public boolean isFinished() 
-            {
-                return mBallsToShoot == 0;
-            }
         }
     }
 }
