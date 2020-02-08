@@ -38,7 +38,7 @@ public class IndexerCommands
             super(() -> {}, () -> {}, (Boolean b) -> {}, indexer::getIntakeBallLoaded, indexer);
         }
     }
-    
+
     public class LoadBallToSlot extends CommandBase
     {
         private Indexer mIndexer;
@@ -49,22 +49,28 @@ public class IndexerCommands
             addRequirements(indexer);
         }
 
-        public void initialize() {
+        public void initialize()
+        {
         }
 
-        public void execute() {
-            if (mIndexer.getSlotBallLoaded() && !mIndexer.getIntakeBallLoaded() && mIndexer.isInSafeSpace()) {
+        public void execute()
+        {
+            if (mIndexer.getSlotBallLoaded() && !mIndexer.getIntakeBallLoaded()
+                && mIndexer.isInSafeSpace())
+            {
                 mIndexer.transfer();
             }
             else
                 mIndexer.endTransfer();
         }
 
-        public void end(boolean interrupted) {
+        public void end(boolean interrupted)
+        {
             mIndexer.endTransfer();
         }
 
-        public boolean isFInished() {
+        public boolean isFInished()
+        {
             return (!mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded());
         }
     }
@@ -157,7 +163,7 @@ public class IndexerCommands
             super(Indexer::endTransfer, Indexer);
         }
     }
-    
+
     public class Spin extends InstantCommand
     {
         public Spin(Indexer Indexer, int N)
@@ -184,10 +190,10 @@ public class IndexerCommands
      */
     // public class WaitForBallHeld extends StartEndCommand
     // {
-    //     public WaitForBallHeld(Indexer indexer)
-    //     {
-    //         super(() -> {}, Indexer::getIntakeBallLoaded, indexer);
-    //     }
+    // public WaitForBallHeld(Indexer indexer)
+    // {
+    // super(() -> {}, Indexer::getIntakeBallLoaded, indexer);
+    // }
     // }
 
     public class Intake extends SequentialCommandGroup
@@ -198,14 +204,10 @@ public class IndexerCommands
         {
             mIndexer = indexer;
 
-            addCommands(
-                new EndLaunch(indexer), // for safety
-                new WaitForBallHeld(indexer),
-                new LoadBallToSlot(indexer),
-                new Spin(indexer, 1),
-                new InstantCommand(() -> indexer.addBalls(1), indexer),
-                new Intake(indexer) // recursions
-            );         
+            addCommands(new EndLaunch(indexer), // for safety
+                new WaitForBallHeld(indexer), new LoadBallToSlot(indexer), new Spin(indexer, 1),
+                new InstantCommand(() -> indexer.addBalls(1), indexer), new Intake(indexer) // recursions
+            );
         }
 
         @Override

@@ -88,7 +88,7 @@ public class Indexer extends SpartronicsSubsystem
      */
     public boolean checkFlag()
     {
-        return (Constants.Indexer.kOpticalFlagReversed ? mOpticalFlag.get() : !mOpticalFlag.get());
+        return mOpticalFlag.get();
     }
 
     /**
