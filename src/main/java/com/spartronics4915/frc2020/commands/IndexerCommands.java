@@ -5,6 +5,7 @@ import com.spartronics4915.frc2020.subsystems.Indexer;g
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
@@ -229,7 +230,7 @@ public class IndexerCommands
             );
         }
 
-        public class LaunchStep extends SequentialCommandGroup
+        public class LaunchStep extends ParallelCommandGroup
         {
             private Indexer mIndexer;
             private int mBallsToShoot;
@@ -244,9 +245,8 @@ public class IndexerCommands
                 } else
                 {
                     addCommands(
-                        new Spin(indexer, 1),
-                        new LoadBallToSlot(indexer),
-                        new LaunchStep(indexer, ballsToShoot-1)
+                        new Spin(indexer, ballsToShoot),
+                        new LoadBallToSlot(indexer)
                     );
                 }
             }

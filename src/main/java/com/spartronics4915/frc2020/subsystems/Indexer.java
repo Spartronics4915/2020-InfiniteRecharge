@@ -230,7 +230,7 @@ public class Indexer extends SpartronicsSubsystem
 
     public boolean isInSafeSpace()
     {
-        int positionMod90 = ((int) mIndexerMotor.getEncoder().getPosition()) % 90;
+        double positionMod90 = mIndexerMotor.getEncoder().getPosition() % 90;
         return (positionMod90 >= 85 || positionMod90 <= 5); // if in a safe space to load a ball
     }
 }
