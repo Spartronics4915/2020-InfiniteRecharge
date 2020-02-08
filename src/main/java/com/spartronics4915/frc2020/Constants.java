@@ -132,12 +132,9 @@ public final class Constants
         public static final double kLeftS;
         public static final double kLeftV;
         public static final double kLeftA;
-    }
 
-    // Initialize blank fields that are robot-specific here
-    static
-    {
-        switch (config)
+        // Initialize blank fields that are robot-specific here
+        static
         {
             String config = "default";
             Path machineIDPath = FileSystems.getDefault().getPath(System.getProperty("user.home"),
