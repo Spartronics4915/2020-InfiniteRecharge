@@ -73,6 +73,7 @@ public class RobotContainer
     private final PanelRotator mPanelRotator;
     private final LED mLED;
     private final ClimberCommands mClimberCommands;
+    private final LauncherCommands mLauncherCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
     private final ExampleCommandFactory mExampleCommandFactory;
 
@@ -94,8 +95,14 @@ public class RobotContainer
         mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
         mClimberCommands = new ClimberCommands();
+        mLauncherCommands = new LauncherCommands();
         mPanelRotatorCommands = new PanelRotatorCommands();
         mExampleCommandFactory = new ExampleCommandFactory(mLED);
+
+        //mClimber.setDefaultCommand(mClimberCommands.new ClimberDefaultCommand(mClimber));
+        //mIntake.setDefaultCommand(mIntakeCommands.new IntakeDefaultCommand(mIntake));
+        mLauncher.setDefaultCommand(mLauncherCommands.new LauncherDefaultCommand(mLauncher));
+        //mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new PanelRotatorDefaultCommand(mPanelRotator));
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
@@ -160,7 +167,9 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
-        new JoystickButton(mJoystick, 1).toggleWhenPressed(new ShootBallTest(mLauncher));
+        new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
+        new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
+        new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
         new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
             this::throughTrench, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
         new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
@@ -181,10 +190,8 @@ public class RobotContainer
         new JoystickButton(mButtonBoard, 5).whenPressed(new LauncherCommands.AimHigh(mLauncher));
         */
 
-        new JoystickButton(mButtonBoard, 6)
-            .whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
-        new JoystickButton(mButtonBoard, 7)
-            .whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
+        new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
+        new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
         new JoystickButton(mButtonBoard, 8)
             .whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
         new JoystickButton(mButtonBoard, 9)

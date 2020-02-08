@@ -13,7 +13,6 @@ import com.spartronics4915.lib.util.Logger;
 
 public final class Constants
 {
-
     public static final class Climber
     {
         public static final int kLiftMotorId = 5;
@@ -55,8 +54,7 @@ public final class Constants
 
         public static final int kProxSensorId = 4; // DIO4 // Proximity Sensor (index slot one)
         public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
-        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag
-                                                                  // is inverted
+        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag is inverted
         public static final int kIntakeSensorId = -1; // 
     }
 
@@ -74,7 +72,21 @@ public final class Constants
         public static final int kAngleAdjusterMasterId = 0; // PWM0
         public static final int kAngleAdjusterFollowerId = 1; // PWM1
         public static final int kTurretId = 8;
-        public static final int kTurretPotentiometerId = 2; // A2
+        public static final int kTurretPotentiometerId = 2;
+        
+        // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
+        public static final double kP = 0.00154;
+        public static final double kS = 0.0638;
+        public static final double kV = 0.121;
+        public static final double kA = 0.0252;
+        
+        // Vals for interpolating lookup table
+        public static final int LookupTableSize = 0;
+        public static final double[] DistanceTable = null;
+        public static final double[] AngleTable = null;
+        public static final double[] RPSTable = null;
+
+        public static final double kMaxRPS = 90.0;
     }
 
     public static final class OI
