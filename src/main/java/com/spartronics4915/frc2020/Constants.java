@@ -137,18 +137,6 @@ public final class Constants
     // Initialize blank fields that are robot-specific here
     static
     {
-        String config = "default";
-        Path machineIDPath = FileSystems.getDefault().getPath(System.getProperty("user.home"),
-            "machineid");
-        try
-        {
-            config = Files.readString(machineIDPath).trim().toLowerCase();
-        }
-        catch (IOException e)
-        {
-        }
-        Logger.notice("Running on " + config + " constants");
-
         switch (config)
         {
             String config = "default";
@@ -211,33 +199,6 @@ public final class Constants
     {
         public static final Pose2d kCameraOffset = new Pose2d();
         public static final double kMeasurementCovariance = 1;
-    }
-
-    // Initialize blank fields that are robot-specific here
-    static
-    {
-        String config = "default";
-        Path machineIDPath = FileSystems.getDefault().getPath(System.getProperty("user.home"),
-            "machineid");
-        try
-        {
-            config = Files.readString(machineIDPath).trim().toLowerCase();
-        }
-        catch (IOException e)
-        {
-        }
-        Logger.notice("Running on " + config + " constants");
-
-        switch (config)
-        {
-            case "test chassis":
-                // Put constants here
-                break;
-            case "default":
-            case "real robot":
-                // Or here
-                break;
-        }
     }
 
     public static final class Vision
