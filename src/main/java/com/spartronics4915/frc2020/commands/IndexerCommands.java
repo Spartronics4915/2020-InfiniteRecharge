@@ -199,7 +199,6 @@ public class IndexerCommands
 
     public class Intake extends SequentialCommandGroup
     {
-        public static boolean mStopLoop = false;
         private Indexer mIndexer;
 
         public Intake(Indexer indexer)
