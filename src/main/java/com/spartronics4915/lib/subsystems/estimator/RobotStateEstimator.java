@@ -85,7 +85,7 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         if (mSLAMCamera != null) {
             mSLAMCamera.setPose(pose);
         }
-        // mDrive.setIMUHeading(pose.getRotation()); TODO: Put back when I get a real IMU
+        mDrive.setIMUHeading(pose.getRotation());
     }
 
     @Override
@@ -183,7 +183,7 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         final Twist2d normalizedIVal = iVal.scaled(loopintervalToSeconds);
 
         if (mSLAMCamera != null) {
-            mSLAMCamera.sendOdometry(pVal);
+            mSLAMCamera.sendOdometry(normalizedIVal);
         }
     }
 
