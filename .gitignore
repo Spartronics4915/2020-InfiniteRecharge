@@ -155,6 +155,7 @@ gradle-app.setting
 .project
 .settings
 !.settings/org.eclipse.jdt.core.prefs
+!.settings/org.eclipse.buildsihp.core.prefs
 bin/
 imgui.ini
 
