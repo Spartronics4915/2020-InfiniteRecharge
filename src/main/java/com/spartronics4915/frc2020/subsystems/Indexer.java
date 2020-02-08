@@ -130,9 +130,11 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void rotateN(int N)
     {
-        double deltaPosition = 0.25 * ((double) N); // Cast N to double and convert to rotations
-        targetPosition += deltaPosition;
-        mIndexerMotor.setPosition(targetPosition); // Rotate Spinner to target.
+        if (N > 0) {
+            double deltaPosition = 0.25 * ((double) N); // Cast N to double and convert to rotations
+            targetPosition += deltaPosition;
+            mIndexerMotor.setPosition(targetPosition); // Rotate Spinner to target.
+        }
     }
 
     /**

@@ -43,15 +43,18 @@ public class IndexerCommands
     public class LoadBallToSlot extends CommandBase
     {
         private Indexer mIndexer;
+        private int mSpinCount;
 
-        public LoadBallToSlot(Indexer indexer)
+        public LoadBallToSlot(Indexer indexer, int spinCount)
         {
             mIndexer = indexer;
+            mSpinCount = spinCount;
             addRequirements(mIndexer);
         }
 
         public void initialize()
         {
+            mIndexer.rotateN(mSpinCount);
         }
 
         public void execute()
@@ -196,6 +199,7 @@ public class IndexerCommands
 
     public class Intake extends SequentialCommandGroup
     {
+        public static boolean mStopLoop = false;
         private Indexer mIndexer;
 
         public Intake(Indexer indexer)
@@ -205,7 +209,7 @@ public class IndexerCommands
             addCommands(
                 new EndLaunch(mIndexer), // for safety
                 new WaitForBallHeld(mIndexer), 
-                new LoadBallToSlot(mIndexer), 
+                new LoadBallToSlot(mIndexer, 0), 
                 new Spin(mIndexer, 1),
                 new InstantCommand(() -> mIndexer.addBalls(1), mIndexer), 
                 new Intake(mIndexer) // recursions
@@ -229,9 +233,7 @@ public class IndexerCommands
 
             addCommands(
                 new StartLaunch(mIndexer),
-                new ParallelCommandGroup(
-                    new Spin(mIndexer, ballsToShoot),
-                    new LoadBallToSlot(mIndexer)),
+                new LoadBallToSlot(mIndexer, ballsToShoot),
                 new EndLaunch(mIndexer)
             );
         }
