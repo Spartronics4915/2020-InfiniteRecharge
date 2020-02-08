@@ -188,13 +188,6 @@ public class IndexerCommands
      * Note that this is not an Unjam command. The {@link Intake} subsystem only
      * controls the mechanical vector roller.
      */
-    // public class WaitForBallHeld extends StartEndCommand
-    // {
-    // public WaitForBallHeld(Indexer indexer)
-    // {
-    // super(() -> {}, Indexer::getIntakeBallLoaded, indexer);
-    // }
-    // }
 
     public class Intake extends SequentialCommandGroup
     {
