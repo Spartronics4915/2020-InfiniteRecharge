@@ -219,11 +219,11 @@ public class IndexerCommands
         }
     }
 
-    public class Launch extends SequentialCommandGroup
+    public class LoadToLauncher extends SequentialCommandGroup
     {
         private Indexer mIndexer;
 
-        public Launch(Indexer indexer, int ballsToShoot)
+        public LoadToLauncher(Indexer indexer, int ballsToShoot)
         {
             mIndexer = indexer;
 
