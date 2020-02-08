@@ -43,15 +43,18 @@ public class IndexerCommands
     public class LoadBallToSlot extends CommandBase
     {
         private Indexer mIndexer;
+        private int mSpinCount;
 
-        public LoadBallToSlot(Indexer indexer)
+        public LoadBallToSlot(Indexer indexer, int spinCount)
         {
             mIndexer = indexer;
+            mSpinCount = spinCount;
             addRequirements(mIndexer);
         }
 
         public void initialize()
         {
+            mIndexer.rotateN(mSpinCount);
         }
 
         public void execute()
@@ -133,7 +136,7 @@ public class IndexerCommands
 
     /**
      * This {@link InstantCommand} stops the intake by calling
-     * {@link Intake}.stop once.
+     * {@link LoadFromIntake}.stop once.
      * <p>
      * Note that the Intake only controls the front roller.
      */
@@ -188,27 +191,27 @@ public class IndexerCommands
 
     /**
      * This {@link StartEndCommand} runs the intake motor backwards by calling
-     * {@link Intake}.reverse repeatedly.
+     * {@link LoadFromIntake}.reverse repeatedly.
      * <p>
-     * Note that this is not an Unjam command. The {@link Intake} subsystem only
+     * Note that this is not an Unjam command. The {@link LoadFromIntake} subsystem only
      * controls the mechanical vector roller.
      */
 
-    public class Intake extends SequentialCommandGroup
+    public class LoadFromIntake extends SequentialCommandGroup
     {
         private Indexer mIndexer;
 
-        public Intake(Indexer indexer)
+        public LoadFromIntake(Indexer indexer)
         {
             mIndexer = indexer;
 
             addCommands(
                 new EndLaunch(mIndexer), // for safety
                 new WaitForBallHeld(mIndexer), 
-                new LoadBallToSlot(mIndexer), 
+                new LoadBallToSlot(mIndexer, 0), 
                 new Spin(mIndexer, 1),
                 new InstantCommand(() -> mIndexer.addBalls(1), mIndexer), 
-                new Intake(mIndexer) // recursions
+                new LoadFromIntake(mIndexer) // recursions
             );
         }
 
@@ -229,9 +232,7 @@ public class IndexerCommands
 
             addCommands(
                 new StartLaunch(mIndexer),
-                new ParallelCommandGroup(
-                    new Spin(mIndexer, ballsToShoot),
-                    new LoadBallToSlot(mIndexer)),
+                new LoadBallToSlot(mIndexer, ballsToShoot),
                 new EndLaunch(mIndexer)
             );
         }
