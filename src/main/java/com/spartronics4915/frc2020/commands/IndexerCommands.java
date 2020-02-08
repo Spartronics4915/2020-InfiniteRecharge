@@ -136,7 +136,7 @@ public class IndexerCommands
 
     /**
      * This {@link InstantCommand} stops the intake by calling
-     * {@link Intake}.stop once.
+     * {@link LoadFromIntake}.stop once.
      * <p>
      * Note that the Intake only controls the front roller.
      */
@@ -191,17 +191,17 @@ public class IndexerCommands
 
     /**
      * This {@link StartEndCommand} runs the intake motor backwards by calling
-     * {@link Intake}.reverse repeatedly.
+     * {@link LoadFromIntake}.reverse repeatedly.
      * <p>
-     * Note that this is not an Unjam command. The {@link Intake} subsystem only
+     * Note that this is not an Unjam command. The {@link LoadFromIntake} subsystem only
      * controls the mechanical vector roller.
      */
 
-    public class Intake extends SequentialCommandGroup
+    public class LoadFromIntake extends SequentialCommandGroup
     {
         private Indexer mIndexer;
 
-        public Intake(Indexer indexer)
+        public LoadFromIntake(Indexer indexer)
         {
             mIndexer = indexer;
 
@@ -211,7 +211,7 @@ public class IndexerCommands
                 new LoadBallToSlot(mIndexer, 0), 
                 new Spin(mIndexer, 1),
                 new InstantCommand(() -> mIndexer.addBalls(1), mIndexer), 
-                new Intake(mIndexer) // recursions
+                new LoadFromIntake(mIndexer) // recursions
             );
         }
 
