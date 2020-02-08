@@ -1,7 +1,12 @@
 package com.spartronics4915.frc2020.commands;
 
+import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.subsystems.Launcher;
+import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
+import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
+import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -133,6 +138,27 @@ public class LauncherCommands
         public void end(boolean interrupted)
         {
             mLauncher.reset();
+        }
+    }
+
+    public class HoodToFieldPosition extends CommandBase {
+        private final Launcher mLauncher;
+        private final RobotStateMap mStateMap;
+        private final Pose2d mTargetPose;
+
+        public HoodToFieldPosition(Launcher launcher, Pose2d targetPose, RobotStateMap stateMap) {
+            mLauncher = launcher;
+            mTargetPose = targetPose;
+            mStateMap = stateMap;
+        }
+
+        @Override
+        public void execute()
+        {
+            Pose2d fieldToTurret = mStateMap.getLatestFieldToVehicle().transformBy(Constants.Launcher.kHoodOffset);
+            Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(mTargetPose);
+            Rotation2d fieldAnglePointingToTarget = new Rotation2d(turretToTarget.getTranslation().getX(), turretToTarget.getTranslation().getY(), true).inverse();
+            Rotation2d turretAngle = fieldAnglePointingToTarget.rotateBy(fieldToTurret.getRotation());
         }
     }
 

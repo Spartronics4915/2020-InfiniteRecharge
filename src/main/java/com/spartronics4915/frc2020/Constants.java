@@ -73,6 +73,9 @@ public final class Constants
         public static final int kAngleAdjusterFollowerId = 1; // PWM1
         public static final int kTurretId = 8;
         public static final int kTurretPotentiometerId = 2;
+
+        // TODO: Find translation of turret from the center of the robot
+        public static final Pose2d kTurretOffset = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180.0));
         
         // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
         public static final double kP = 0.00154;
