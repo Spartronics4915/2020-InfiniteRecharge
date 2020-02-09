@@ -11,7 +11,6 @@ import java.text.DecimalFormat;
  */
 public class Rotation2d implements Interpolable<Rotation2d>
 {
-
     private final double mCosAngle;
     private final double mSinAngle;
 
@@ -24,7 +23,8 @@ public class Rotation2d implements Interpolable<Rotation2d>
     {
         if (normalize)
         {
-            // From trig, we know that sin^2 + cos^2 == 1, but as we do math on this object we might accumulate rounding errors.
+            // From trig, we know that sin^2 + cos^2 == 1, but as we do math on this object
+            // we might accumulate rounding errors.
             // Normalizing forces us to re-scale the sin and cos to reset rounding errors.
             double magnitude = Math.hypot(x, y);
             if (magnitude > Util.kEpsilon)
@@ -113,7 +113,7 @@ public class Rotation2d implements Interpolable<Rotation2d>
     public Rotation2d rotateBy(final Rotation2d other)
     {
         return new Rotation2d(mCosAngle * other.mCosAngle - mSinAngle * other.mSinAngle,
-                mCosAngle * other.mSinAngle + mSinAngle * other.mCosAngle, true);
+            mCosAngle * other.mSinAngle + mSinAngle * other.mCosAngle, true);
     }
 
     public Rotation2d normal()

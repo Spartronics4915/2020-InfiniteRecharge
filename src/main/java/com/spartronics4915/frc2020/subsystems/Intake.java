@@ -17,8 +17,7 @@ public class Intake extends SpartronicsSubsystem
 
     public Intake()
     {
-        mHarvestMotor = SpartronicsSRX.makeMotor(Constants.Intake.kHarvestMotorId,
-            SensorModel.fromMultiplier(1));
+        mHarvestMotor = SpartronicsSRX.makeMotor(Constants.Intake.kHarvestMotorId);
         if (mHarvestMotor.hadStartupError())
         {
             mHarvestMotor = new SpartronicsSimulatedMotor(Constants.Intake.kHarvestMotorId);
