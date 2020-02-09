@@ -99,6 +99,11 @@ class Quaternion
      * @param precise - if true, input is assumed to be a precise rotation 
      *   matrix and a faster algorithm is used. If in doubt, set to false.
      */
+    public Quaternion(Affine3 a)
+    {
+        this(a, false); // not the precise/fast method...
+    }
+
     public Quaternion(Affine3 a, boolean precise)
     {
         // quaternion_from_matrix
@@ -231,11 +236,12 @@ class Quaternion
     {
         DMatrix4x4 result = new DMatrix4x4();
         DMatrix4 q = this.mQ;
-        double dot = CommonOps_DDF4.dot(q, q);
-        if(dot < kEpsilon)
+        double n = CommonOps_DDF4.dot(q, q);
+        if(n < kEpsilon)
             CommonOps_DDF4.setIdentity(result);
         else
         {
+            CommonOps_DDF4.scale(Math.sqrt(2.0/n), q);
             /* outer product(q,q) */
             DMatrix4x4 qq = new DMatrix4x4();
             qq.a11 = q.a1 * q.a1;
@@ -290,6 +296,13 @@ class Quaternion
         if(Math.abs(this.mQ.a3-rhs.mQ.a3) > epsilon) return false;
         if(Math.abs(this.mQ.a4-rhs.mQ.a4) > epsilon) return false;
         return true;
+    }
+
+    String asString()
+    {
+        return String.format("q %g %g %g %g", this.mQ.a1, this.mQ.a2,
+                                    this.mQ.a3, this.mQ.a4);
+
     }
 
 

@@ -125,6 +125,7 @@ class AffineTests
         {
             assert(v.equals(A1ans[i++]));
         }
+
     }
 
     @Test
@@ -138,25 +139,16 @@ class AffineTests
         Quaternion q4 = new Quaternion();
         assert(q3.equals(q4));
 
+        Affine3 a1 = Affine3.fromRotation(30, new Vec3(1,1,1));
+        Quaternion q5 = new Quaternion(a1);
+        String q5s = q5.asString();
+        assertEquals(q5s, "q 0.965926 0.149429 0.149429 0.149429");
+        a1.print();
+        Affine3 a2 = Affine3.fromQuaternion(q5);
+        a2.print();
+        assert(a1.equals(a2, kEpsilon));
         
         /*
-        >>> q = quaternion_from_matrix(numpy.diag([1, -1, -1, 1]))
-        >>> numpy.allclose(q, [0, 1, 0, 0]) or numpy.allclose(q, [0, -1, 0, 0])
-        True
-        >>> R = rotation_matrix(0.123, (1, 2, 3))
-        >>> q = quaternion_from_matrix(R, True)
-        >>> numpy.allclose(q, [0.9981095, 0.0164262, 0.0328524, 0.0492786])
-        True
-        >>> R = [[-0.545, 0.797, 0.260, 0], [0.733, 0.603, -0.313, 0],
-        ...      [-0.407, 0.021, -0.913, 0], [0, 0, 0, 1]]
-        >>> q = quaternion_from_matrix(R)
-        >>> numpy.allclose(q, [0.19069, 0.43736, 0.87485, -0.083611])
-        True
-        >>> R = [[0.395, 0.362, 0.843, 0], [-0.626, 0.796, -0.056, 0],
-        ...      [-0.677, -0.498, 0.529, 0], [0, 0, 0, 1]]
-        >>> q = quaternion_from_matrix(R)
-        >>> numpy.allclose(q, [0.82336615, -0.13610694, 0.46344705, -0.29792603])
-        True
         >>> R = random_rotation_matrix()
         >>> q = quaternion_from_matrix(R)
         >>> is_same_transform(R, quaternion_matrix(q))
