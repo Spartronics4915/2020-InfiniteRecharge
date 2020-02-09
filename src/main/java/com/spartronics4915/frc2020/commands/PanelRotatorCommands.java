@@ -31,10 +31,10 @@ public class PanelRotatorCommands
      */
     public class Raise extends FunctionalCommand
     {
-        public Raise(PanelRotator PanelRotator)
+        public Raise(PanelRotator panelRotator)
         {
-            super(() -> {}, PanelRotator::raise, (Boolean b) -> PanelRotator.stop(),
-                PanelRotator::getOpticalFlagUp, PanelRotator);
+            super(() -> {}, panelRotator::raise, (Boolean b) -> panelRotator.stop(),
+                panelRotator::getOpticalFlagUp, panelRotator);
         }
     }
 
@@ -47,10 +47,10 @@ public class PanelRotatorCommands
      */
     public class Lower extends FunctionalCommand
     {
-        public Lower(PanelRotator PanelRotator)
+        public Lower(PanelRotator panelRotator)
         {
-            super(() -> {}, PanelRotator::lower, (Boolean b) -> PanelRotator.stop(),
-                PanelRotator::getLimitSwitchDown, PanelRotator);
+            super(() -> {}, panelRotator::lower, (Boolean b) -> panelRotator.stop(),
+                panelRotator::getLimitSwitchDown, panelRotator);
         }
     }
 
@@ -75,9 +75,9 @@ public class PanelRotatorCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public SpinToColor(PanelRotator PanelRotator)
+        public SpinToColor(PanelRotator panelRotator)
         {
-            mPanelRotator = PanelRotator;
+            mPanelRotator = panelRotator;
             addRequirements(mPanelRotator);
         }
 
@@ -141,9 +141,9 @@ public class PanelRotatorCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public SpinOnce(PanelRotator PanelRotator)
+        public SpinOnce(PanelRotator panelRotator)
         {
-            mPanelRotator = PanelRotator;
+            mPanelRotator = panelRotator;
             addRequirements(mPanelRotator);
         }
 
@@ -195,9 +195,9 @@ public class PanelRotatorCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public ColorSensorTesting(PanelRotator PanelRotator)
+        public ColorSensorTesting(PanelRotator panelRotator)
         {
-            mPanelRotator = PanelRotator;
+            mPanelRotator = panelRotator;
             addRequirements(mPanelRotator);
         }
 

@@ -30,9 +30,9 @@ public class ClimberCommands
      */
     public class Extend extends StartEndCommand
     {
-        public Extend(Climber Climber)
+        public Extend(Climber climber)
         {
-            super(Climber::extend, Climber::stop, Climber);
+            super(climber::extend, climber::stop, climber);
         }
     }
 
@@ -46,9 +46,9 @@ public class ClimberCommands
      */
     public class Retract extends StartEndCommand
     {
-        public Retract(Climber Climber)
+        public Retract(Climber climber)
         {
-            super(Climber::retract, Climber::stop, Climber);
+            super(climber::retract, climber::stop, climber);
         }
     }
 
@@ -80,10 +80,10 @@ public class ClimberCommands
      */
     public class WinchPrimary extends FunctionalCommand
     {
-        public WinchPrimary(Climber Climber)
+        public WinchPrimary(Climber climber)
         {
-            super(() -> {}, () -> Climber.winch(!Constants.Climber.kStalled),
-                (Boolean b) -> Climber.stop(), Climber::isStalled, Climber);
+            super(() -> {}, () -> climber.winch(!Constants.Climber.kStalled),
+                (Boolean b) -> climber.stop(), climber::isStalled, climber);
         }
     }
 
@@ -98,9 +98,9 @@ public class ClimberCommands
      */
     public class WinchSecondary extends StartEndCommand
     {
-        public WinchSecondary(Climber Climber)
+        public WinchSecondary(Climber climber)
         {
-            super(() -> Climber.winch(Constants.Climber.kStalled), Climber::stop, Climber);
+            super(() -> climber.winch(Constants.Climber.kStalled), climber::stop, climber);
         }
     }
 
@@ -108,11 +108,11 @@ public class ClimberCommands
     {
         private final Climber mClimber;
         private double targetTime;
-        
-        public ExtendAutoMax(Climber Climber)
+
+        public ExtendAutoMax(Climber climber)
         {
-            mClimber = Climber;
-            addRequirements(mClimber);            
+            mClimber = climber;
+            addRequirements(mClimber);
         }
 
         @Override
@@ -130,7 +130,7 @@ public class ClimberCommands
         @Override
         public boolean isFinished()
         {
-            return targetTime <= Timer.getMatchTime(); 
+            return targetTime <= Timer.getMatchTime();
         }
 
         @Override
@@ -145,9 +145,9 @@ public class ClimberCommands
         private final Climber mClimber;
         private double targetTime;
 
-        public ExtendAutoMin(Climber Climber)
+        public ExtendAutoMin(Climber climber)
         {
-            mClimber = Climber;
+            mClimber = climber;
             addRequirements(mClimber);
         }
 
