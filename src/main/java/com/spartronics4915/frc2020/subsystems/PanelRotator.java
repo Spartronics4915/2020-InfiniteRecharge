@@ -36,10 +36,8 @@ public class PanelRotator extends SpartronicsSubsystem
     {
         mOpticalFlagUp = new DigitalInput(Constants.PanelRotator.kOpticalFlagUpId);
         mLimitSwitchDown = new DigitalInput(Constants.PanelRotator.kLimitSwitchDownId);
-        mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId,
-            SensorModel.fromMultiplier(1));
-        mRaiseMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId,
-            SensorModel.fromMultiplier(1));
+        mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId);
+        mRaiseMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId);
 
         mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         mColorMatcher.addColorMatch(Constants.PanelRotator.kRedTarget);
@@ -93,7 +91,7 @@ public class PanelRotator extends SpartronicsSubsystem
         return DriverStation.getInstance().getGameSpecificMessage();
     }
 
-    /** 
+    /**
      * this gets the 18-bit output (max is 2^18 - 1, I think)
      */
     public String get18BitRGB()
@@ -107,7 +105,7 @@ public class PanelRotator extends SpartronicsSubsystem
         return RGB;
     }
 
-    /** 
+    /**
      * this gets the 18-bit output but divided by 262143 to make a fraction between 0 & 1
      */
     public String getFloatRGB()
@@ -182,7 +180,7 @@ public class PanelRotator extends SpartronicsSubsystem
         mSpinMotor.setDutyCycle(0);
     }
 
-    /** 
+    /**
      * Universal stop method
      */
     public void stop()
