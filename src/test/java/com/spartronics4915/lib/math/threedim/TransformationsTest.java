@@ -1,8 +1,10 @@
 package com.spartronics4915.lib.math.threedim;
 
 import java.lang.Math;
+import java.util.ArrayList;
 import java.util.Random;
 import org.ejml.data.DMatrix4x4;
+import org.ejml.data.DMatrix4;
 import org.ejml.data.DMatrix3x3;
 
 import org.junit.jupiter.api.Test;
@@ -112,6 +114,29 @@ class TransformationsTest
         Affine3 R0e = Affine3.fromRotation(90, randDir.asUnit(), randPt);
         double t = R0e.trace();
         assert(Math.abs(2 - t) < kEpsilon);
+
+        Affine3 A1 = Affine3.fromAxes(new Vec3(0, -1, 0), 
+                                      new Vec3(0, 0, 1), 
+                                      new Vec3(-1, 0, 0));
+        ArrayList<Vec3> A1ret = A1.transformBases();
+        Vec3[] A1ans = {new Vec3(0, -1, 0), new Vec3(0, 0, 1), new Vec3(-1, 0, 0)};
+        int i=0;
+        for(Vec3 v : A1ret)
+        {
+            assert(v.equals(A1ans[i++]));
+        }
+    }
+
+    @Test
+    void testQuaternion()
+    {
+        Quaternion q1 = new Quaternion(Math.toDegrees(.123), new Vec3(1, 0, 0));
+        DMatrix4x4 m1 = q1.asDMatrix4x4();
+        Quaternion q2 = new Quaternion(0.99810947, 0.06146124, 0, 0);
+        DMatrix4x4 m2 = q2.asDMatrix4x4();
+        m1.print();
+        m2.print();
+        assert(q1.equals(q2));
     }
 
     @Test

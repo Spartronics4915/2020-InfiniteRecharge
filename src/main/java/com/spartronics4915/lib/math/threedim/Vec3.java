@@ -41,7 +41,7 @@ public class Vec3 extends DMatrix3
         return new Vec3(this.a1-rhs.a1, this.a2-rhs.a2, this.a3-rhs.a3);
     }
 
-    public void mult(double f)
+    public void multiply(double f)
     {
         this.a1 *= f;
         this.a2 *= f;
@@ -91,6 +91,7 @@ public class Vec3 extends DMatrix3
     public Vec3 asUnit()
     {
         Vec3 result = new Vec3(this);
+
         result.normalize();
         return result;
     }
