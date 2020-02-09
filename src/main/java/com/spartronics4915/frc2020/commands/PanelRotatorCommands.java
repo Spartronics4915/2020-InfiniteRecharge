@@ -69,7 +69,6 @@ public class PanelRotatorCommands
      */
     public class SpinToColor extends CommandBase
     {
-        // TODO: This might be better as a FunctionalCommand.
         private final PanelRotator mPanelRotator;
         private String mTargetColor;
 
@@ -103,11 +102,11 @@ public class PanelRotatorCommands
             // Note that this is a comparison of Strings.
             // Conversions from native ColorSensorV3 values to one of four values is
             // done in PanelRotator.
-            if (mPanelRotator.getActualColor().equals(mTargetColor))
+            if (mPanelRotator.getRotatedColor().equals(mTargetColor))
                 return true;
-            else if (mPanelRotator.getActualColor().equals("Error"))
+            else if (mPanelRotator.getRotatedColor().equals("Error"))
             {
-                System.out.println("error—no data provided");
+                mPanelRotator.logError("Color Sensor: No data provided");
                 return true;
             }
             else
@@ -152,7 +151,7 @@ public class PanelRotatorCommands
         public void initialize()
         {
             eighths = 0;
-            currentColor = mPanelRotator.getActualColor();
+            currentColor = mPanelRotator.getRotatedColor();
             lastColor = currentColor;
         }
 
@@ -168,7 +167,7 @@ public class PanelRotatorCommands
         public boolean isFinished()
         {
             // If the detected color has changed, iterate the eighths counter.
-            currentColor = mPanelRotator.getActualColor();
+            currentColor = mPanelRotator.getRotatedColor(); // TODO: does this have issues with the white stripes?
             if (currentColor != lastColor)
                 eighths++;
             lastColor = currentColor;
@@ -179,6 +178,10 @@ public class PanelRotatorCommands
                 return true;
             else
                 return false;
+
+            // TODO: In the event we drive away from the control panel while spinning it,
+            // this subsystem should be able to tell and end appropriately.
+            // Look into exposing and using the confidence value of the ColorMatch.
         }
 
         // Called once the command ends or is interrupted.
@@ -205,9 +208,9 @@ public class PanelRotatorCommands
         @Override
         public void initialize()
         {
-            System.out.println("\nPredicted color: " + mPanelRotator.getActualColor());
-            System.out.println("18-bit: " + mPanelRotator.get18BitRGB());
-            System.out.println("Float: " + mPanelRotator.getFloatRGB());
+            mPanelRotator.logDebug("Predicted color: " + mPanelRotator.getActualColor());
+            mPanelRotator.logDebug("18-bit: " + mPanelRotator.get18BitRGB());
+            mPanelRotator.logDebug("Float: " + mPanelRotator.getFloatRGB());
         }
 
         // Called every time the scheduler runs while the command is scheduled.
