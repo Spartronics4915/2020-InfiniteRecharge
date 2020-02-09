@@ -9,23 +9,19 @@ import com.spartronics4915.lib.math.twodim.trajectory.types.TimedTrajectory.Time
  * odometry. Hence it feeds the path's target velocities and accelerations
  * forward to the drivetrain, without modification.
  */
-public class FeedForwardTracker extends TrajectoryTracker {
-
+public class FeedForwardTracker extends TrajectoryTracker
+{
     @Override
-	protected TrajectoryTrackerVelocityOutput calculateState(
-        TimedIterator<Pose2dWithCurvature> iterator,
-        Pose2d currentRobotPoseMeters
-    ) {
+    protected TrajectoryTrackerVelocityOutput calculateState(
+        TimedIterator<Pose2dWithCurvature> iterator, Pose2d currentRobotPoseMeters)
+    {
         var referenceState = iterator.getCurrentSample().state;
 
         double vLinear, vAngular;
         vLinear = referenceState.velocity;
         vAngular = vLinear * referenceState.state.getCurvature();
 
-		return new TrajectoryTrackerVelocityOutput(
-            vLinear,
-            vAngular
-        );
-	}
+        return new TrajectoryTrackerVelocityOutput(vLinear, vAngular);
+    }
 
 }
