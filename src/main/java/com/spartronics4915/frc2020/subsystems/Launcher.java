@@ -59,8 +59,7 @@ public class Launcher extends SpartronicsSubsystem
     public Launcher()
     {
         // ONE NEO for flywheel
-        mFlywheelMasterMotor = SpartronicsMax.makeMotor(/*Constants.Launcher.kFlywheelMasterId*/2,
-            SensorModel.fromMultiplier(1));
+        mFlywheelMasterMotor = SpartronicsMax.makeMotor(/*Constants.Launcher.kFlywheelMasterId*/2);
         if (mFlywheelMasterMotor.hadStartupError())
         {
             mFlywheelMasterMotor = new SpartronicsSimulatedMotor(Constants.Launcher.kFlywheelMasterId);
@@ -158,7 +157,7 @@ public class Launcher extends SpartronicsSubsystem
     /**
      * Sets target rpm for flywheel to given RPS
      * <p>
-     * Does not allow values greater than 90 (currently, 
+     * Does not allow values greater than 90 (currently,
      * refer to Constants.Launcher.kMaxRPS) RPS.
      * @param rpm RPM you want the flywheel to target
      */
