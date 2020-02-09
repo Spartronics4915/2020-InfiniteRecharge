@@ -1,8 +1,17 @@
 package com.spartronics4915.lib.math.threedim;
 import org.ejml.data.DMatrix4x4;
 import org.ejml.data.DMatrix4;
+import org.ejml.data.DMatrixRMaj;
 import org.ejml.dense.fixed.CommonOps_DDF4;
-/* http://ejml.org/javadoc/org/ejml/dense/fixed/CommonOps_DDF4.html */
+import org.ejml.dense.row.factory.DecompositionFactory_DDRM;
+import org.ejml.interfaces.decomposition.EigenDecomposition;
+
+/* 
+ * bizarre usage of ejml:
+ * 
+ * http://ejml.org/javadoc/org/ejml/dense/fixed/CommonOps_DDF4.html 
+ * https://ejml.org/wiki/index.php?title=Matlab_to_EJML
+*/
 
 /**
  *  Robust+compact representation of 3D rotation
@@ -11,8 +20,8 @@ import org.ejml.dense.fixed.CommonOps_DDF4;
  *  see: 
  *      ttps://eater.net/quaternions/intro
  *      https://www.youtube.com/watch?v=jlskQDR8-bY  (Mathoma)
- *      https://www.youtube.com/watch?v=d5EgbgTm0Bg (3Blue1Brown)
- *      https://www.youtube.com/watch?v=zjMuIxRvygQ (3Blue1Brown)
+ *      https://www.youtube.com/watch?v=d4EgbgTm0Bg (3Blue1Brown)
+ *      https://eater.net/quaternions (Ben Eater)
  */
 
 class Quaternion
@@ -81,8 +90,81 @@ class Quaternion
     {
     }
 
-    public Quaternion(DMatrix4x4 m)
+    /**
+     * 
+     * @param a - an Affine3 to decompose
+     * @param precise - if true, input is assumed to be a precise rotation 
+     *   matrix and a faster algorithm is used. If in doubt, set to false.
+     */
+    public Quaternion(Affine3 a, boolean precise)
     {
+        // quaternion_from_matrix
+        DMatrix4x4 m = a.asMatrix();
+        this.mQ = new DMatrix4();
+        if(precise)
+        {    
+            // If precise is True, the input matrix is assumed to be a precise 
+            // rotation matrix and a faster algorithm is used.
+            double t = a.trace();
+            if(t > m.a44)
+            {
+                this.mQ.a1 = t;
+                this.mQ.a2 = m.a21 - m.a12;
+                this.mQ.a3 = m.a13 - m.a31;
+                this.mQ.a4 = m.a32 - m.a23;
+            }
+            else
+            {
+                int i=0, j=1, k=2;
+                if(m.a22 > m.a11)
+                {
+                    i = 1; j = 2; k = 0;
+                }
+                // m.get has index origin of 0 !!
+                if(m.a33 > m.get(i, i)) 
+                {
+                    i = 2; j = 0; k = 1;
+                }
+                t = m.get(i, i) - (m.get(j, j) + m.get(k, k)) + m.a44;
+                double[] q = {0,0,0,0};
+                q[i] = t;
+                q[j] = m.get(i, j) + m.get(j, i);
+                q[k] = m.get(k, i) + m.get(i, k);
+                q[3] = m.get(k, j) - m.get(j, k);
+                this.mQ.a1 = q[3];
+                this.mQ.a2 = q[0];
+                this.mQ.a3 = q[1];
+                this.mQ.a4 = q[2];
+            }
+            double rescale = .5 / Math.sqrt(t * m.a44);
+            CommonOps_DDF4.scale(rescale, this.mQ);
+        }
+        else
+        {
+            DMatrix4x4 k = new DMatrix4x4();
+            k.a11 = m.a11 - m.a22 - m.a33; 
+            k.a12 = 0; 
+            k.a13 = 0; 
+            k.a14 = 0;
+            k.a21 = m.a12 + m.a21; 
+            k.a22 = m.a22 - m.a11 - m.a33; 
+            k.a23 = 0; 
+            k.a24 = 0;
+            k.a31 = m.a13 + m.a31;
+            k.a32 = m.a23 + m.a32;
+            k.a33 = m.a33 - m.a11 - m.a22;
+            k.a34 = 0;
+            k.a41 = m.a32 - m.a23; 
+            k.a42 = m.a13 - m.a31; 
+            k.a43 = m.a21 - m.a12; 
+            k.a44 = m.a11 + m.a22 + m.a33; 
+            CommonOps_DDF4.scale(1./3, k);
+            // quaternion is eigenvector of K that corresponds to largest eigenvalue
+            // XXX: as far as I can tell, EiginDecomposition requires DMatrixRMaj
+            DMatrixRMaj kk = new DMatrixRMaj(k);
+            EigenDecomposition<DMatrixRMaj> eig = DecompositionFactory_DDRM.eig(4, true, true);
+            eig.decompose(kk);
+        }
     }
 
     DMatrix4 asDMatrix4()

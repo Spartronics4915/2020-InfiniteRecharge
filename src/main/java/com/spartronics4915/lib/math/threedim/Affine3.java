@@ -10,6 +10,10 @@ import org.ejml.dense.fixed.CommonOps_DDF4;
 /* Affine3 is a specialization of DMatrix4x4.  Its purpose is to
  * present a constrained interface to users, focused on the expression
  * and manipulation of coordinate frames in the context of FRC robotics.
+ * Strictly speaking we require a 3x4 matrix to capture affine transforms.
+ * It's common in CGI applications to use a 4x4 because it can also be
+ * use to represent projective transformations as occur in camera lenses.
+ * 
  * There are many learning resources for affine transformations.
  * Here are a few:
  *  - http://graphics.cs.cmu.edu/nsp/course/15-462/Spring04/slides/04-transform.pdf
@@ -68,6 +72,11 @@ class Affine3
         return new Affine3(angle, axis, pivot);
     }
 
+    public static Affine3 fromAxes(Vec3 x, Vec3 y, Vec3 z)
+    {
+        return new Affine3(x, y, z);
+    }
+
     public static Affine3 fromTranslation(double x, double y, double z)
     {
         return new Affine3(x, y, z);
@@ -77,30 +86,6 @@ class Affine3
     {
         return new Affine3(q); 
     } 
-
-    /**
-     * return Affine3 representing rotation of axes to targets. NB:
-     * all targets should be unit vectors.
-     * @param xtgt
-     * @param ytgt
-     * @param ztgt
-     * @return
-     */
-    public static Affine3 fromAxes(final Vec3 xtgt, final Vec3 ytgt, 
-                                   final Vec3 ztgt)
-    {
-        Affine3 a = new Affine3();
-        a.mMatrix.a11 = xtgt.a1;
-        a.mMatrix.a21 = xtgt.a2;
-        a.mMatrix.a31 = xtgt.a3;
-        a.mMatrix.a12 = ytgt.a1;
-        a.mMatrix.a22 = ytgt.a2;
-        a.mMatrix.a32 = ytgt.a3;
-        a.mMatrix.a13 = ztgt.a1;
-        a.mMatrix.a23 = ztgt.a2;
-        a.mMatrix.a33 = ztgt.a3;
-        return a;
-    }
 
     public static Affine3 concatenate(Affine3 ... alist)
     {
@@ -137,6 +122,28 @@ class Affine3
         this.mMatrix.a14 = x;
         this.mMatrix.a24 = y;
         this.mMatrix.a34 = z;
+    }
+
+    /**
+     * Construct Affine3 representing rotation of axes to targets. NB:
+     * all targets should be unit vectors.
+     * @param xtgt
+     * @param ytgt
+     * @param ztgt
+     */
+    Affine3(final Vec3 xtgt, final Vec3 ytgt, final Vec3 ztgt)
+    {
+        this.mMatrix = new DMatrix4x4();
+        CommonOps_DDF4.setIdentity(this.mMatrix);
+        this.mMatrix.a11 = xtgt.a1;
+        this.mMatrix.a21 = xtgt.a2;
+        this.mMatrix.a31 = xtgt.a3;
+        this.mMatrix.a12 = ytgt.a1;
+        this.mMatrix.a22 = ytgt.a2;
+        this.mMatrix.a32 = ytgt.a3;
+        this.mMatrix.a13 = ztgt.a1;
+        this.mMatrix.a23 = ztgt.a2;
+        this.mMatrix.a33 = ztgt.a3;
     }
 
     /**
@@ -245,7 +252,7 @@ class Affine3
 
     public String asString()
     {
-        Quaternion q = new Quaternion(this.mMatrix);
+        Quaternion q = new Quaternion(this, false); // extract quaternion
         DMatrix4 qm = q.asDMatrix4();
         String result = String.format("o %g %g %g q %g %g %g %g", this.mMatrix.a14, 
                                 this.mMatrix.a24, this.mMatrix.a34,
