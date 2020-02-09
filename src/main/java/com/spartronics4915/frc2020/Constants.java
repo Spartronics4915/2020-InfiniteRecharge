@@ -2,18 +2,20 @@ package com.spartronics4915.frc2020;
 
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
+import com.spartronics4915.lib.util.Logger;
 
+import com.revrobotics.ColorMatch;
+
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Units;
+
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import com.spartronics4915.lib.util.Logger;
-
 public final class Constants
 {
-
     public static final class Climber
     {
         public static final int kLiftMotorId = 5;
@@ -23,6 +25,8 @@ public final class Constants
         public static final double kRetractSpeed = -1.0;
         public static final double kReverseWinchSpeed = -1.0;
         public static final double kStallThreshold = 10.0;
+        public static final double kTimerExtenderMin = 3.0;
+        public static final double kTimerExtenderMax = 5.0;
         public static final boolean kStalled = true;
     }
 
@@ -50,12 +54,20 @@ public final class Constants
             public static final double kConversionRatio = 1;
             public static final double kSpeed = 1;
         }
+        public static final class Transfer
+        {
+            public static final int kMotorId = 11;
+            public static final double kVelocityP = 1;
+            public static final double kVelocityD = 1;
+            public static final double kPositionP = 1;
+            public static final double kPositionD = 1;
+            public static final double kConversionRatio = 1;
+            public static final double kSpeed = 1;
+        }
 
-        public static final int kProxSensorId = 4; // DIO4 // Proximity Sensor (index slot one)
-        public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
-        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag
-                                                                  // is inverted
-        public static final int kIntakeSensorId = -1; // 
+        public static final int kOpticalFlagId = 8; // A8
+        public static final int kSlotProxSensorId = 4; // DIO4
+        public static final int kIntakeSensorId = 5; // DIO5
     }
 
     public static final class Intake
@@ -72,7 +84,24 @@ public final class Constants
         public static final int kAngleAdjusterMasterId = 0; // PWM0
         public static final int kAngleAdjusterFollowerId = 1; // PWM1
         public static final int kTurretId = 8;
-        public static final int kTurretPotentiometerId = 2; // A2
+        public static final int kTurretPotentiometerId = 0;
+
+        // TODO: Find translation of turret from the center of the robot
+        public static final Pose2d kTurretOffset = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180.0));
+
+        // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
+        public static final double kP = 0.00154;
+        public static final double kS = 0.0638;
+        public static final double kV = 0.121;
+        public static final double kA = 0.0252;
+
+        // Vals for interpolating lookup table
+        public static final int LookupTableSize = 0;
+        public static final double[] DistanceTable = null;
+        public static final double[] AngleTable = null;
+        public static final double[] RPSTable = null;
+
+        public static final double kMaxRPS = 90.0;
     }
 
     public static final class OI
@@ -83,19 +112,37 @@ public final class Constants
 
     public static final class PanelRotator
     {
-        public static final int kBeamSensorUpId = 2; // TODO: take up issue with electronics over these not being on the control map
-        public static final int kBeamSensorDownId = 3;
-
-        public static final int kExtendMotorId = 13;
+        public static final int kLimitSwitchDownId = 6;
+        public static final int kOpticalFlagUpId = 7;
+        public static final int kRaiseMotorId = 13;
         public static final int kSpinMotorId = 14;
 
         public static final double kRaiseSpeed = 0.5;
         public static final double kLowerSpeed = -0.5;
-        public static final double kSpinMotorSpeed = 0.5;
+        public static final double kSpinSpeed = 0.5;
+
+        // Whether or not something has triggered the optical flag, as a constant to be unambiguous
+        public static final boolean kOpticalFlagBroken = false;
+
+        /* The position of our color sensor and the field's has a difference of π/2, so
+         * we need to adjust targets accordingly.
+         * <p>
+         * See https://drive.google.com/file/d/1BfoFJmpJg31txUqTG-OrJjeWgQdQsCNC/view
+         * for a diagram of how these line up.
+         */
+        public static final Color kRedTarget = ColorMatch.makeColor(0, 1, 0); // Blue
+        public static final Color kGreenTarget = ColorMatch.makeColor(1, 1, 0); // Yellow
+        public static final Color kBlueTarget = ColorMatch.makeColor(1, 0, 0); // Red
+        public static final Color kYellowTarget = ColorMatch.makeColor(0, 1, 0); // Green
     }
 
     public static final class Drive
     {
+        public static final boolean kRightOutputInverted = true;
+        public static final boolean kRightFollowerOutputInverted = true;
+        public static final boolean kLeftOutputInverted = false;
+        public static final boolean kLeftFollowerOutputInverted = false;
+
         public static final int kRightDriveMaster = 1;
         public static final int kRightDriveFollower = 2;
         public static final int kLeftDriveMaster = 3;
@@ -104,7 +151,7 @@ public final class Constants
         public static final double kWheelDiameter;
         public static final double kTrackWidthMeters;
         public static final double kScrubFactor;
-        public static final int kNativeUnitsPerRevolution = 1; // TODO: get ratio
+        public static final double kNativeUnitsPerRevolution;
 
         public static final double kRobotMassKg = 1;
         public static final double kMoi = 1;
@@ -137,7 +184,6 @@ public final class Constants
             {
                 case "test chassis":
                     kTrackWidthMeters = Units.inchesToMeters(23.75);
-                    kWheelDiameter = Units.inchesToMeters(6.2554245800704);
                     kScrubFactor = 1.063;
                     kLeftS = 0.6995;
                     kLeftV = 0.2066;
@@ -145,6 +191,8 @@ public final class Constants
                     kRightS = 0.6815;
                     kRightV = 0.2194;
                     kRightA = 0.0340;
+                    kWheelDiameter = Units.inchesToMeters(6);
+                    kNativeUnitsPerRevolution = 1440.0;
                     break;
                 default:
                     kTrackWidthMeters = 1; // TODO: find track width
@@ -157,6 +205,7 @@ public final class Constants
                     kRightS = 1;
                     kRightV = 1;
                     kRightA = 1;
+                    kNativeUnitsPerRevolution = 10.71;
                     break;
             }
         }
@@ -166,23 +215,23 @@ public final class Constants
     {
         public static final double kStartVelocityMetersPerSec = 0;
         public static final double kEndVelocityMetersPerSec = 0;
-        public static final double kMaxVelocityMetersPerSec = 1;
-        public static final double kMaxAccelerationMeterPerSecSq = 1;
+        public static final double kMaxVelocityMetersPerSec = .2;
+        public static final double kMaxAccelerationMeterPerSecSq = .1;
 
         public static final Pose2d kStartPointLeft = new Pose2d(Units.inchesToMeters(508),
-            Units.inchesToMeters(138), Rotation2d.fromDegrees(0));
+            Units.inchesToMeters(138), Rotation2d.fromDegrees(180));
         public static final Pose2d kStartPointMiddle = new Pose2d(Units.inchesToMeters(508),
-            Units.inchesToMeters(-54), Rotation2d.fromDegrees(0));
+            Units.inchesToMeters(-54), Rotation2d.fromDegrees(180));
+            //(x:508, y:-54, r:180) (x:400, y:-40, r:135)
         public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(508),
-            Units.inchesToMeters(-138), Rotation2d.fromDegrees(0));
+            Units.inchesToMeters(-138), Rotation2d.fromDegrees(180));
     }
 
     public static final class Estimator
     {
         public static final Pose2d kCameraOffset = new Pose2d();
-        public static final double kMeasurementCovariance = 1;
+        public static final double kMeasurementCovariance = 0.001;
     }
-
 
     public static final class Vision
     {

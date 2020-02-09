@@ -24,33 +24,33 @@ public class PanelRotatorCommands
 
     /**
      * This Raise {@link FunctionalCommand} calls {@link PanelRotator}.raise
-     * repeatedly, until the upper beam sensor is broken, at which point the
+     * repeatedly, until the upper optical flag is broken, at which point the
      * motor will stop.
      * <p>
      * The motor will also stop raising if interrupted by another Command.
      */
     public class Raise extends FunctionalCommand
     {
-        public Raise(PanelRotator PanelRotator)
+        public Raise(PanelRotator panelRotator)
         {
-            super(() -> {}, PanelRotator::raise, (Boolean b) -> PanelRotator.stop(),
-                PanelRotator::getBeamSensorUp, PanelRotator);
+            super(() -> {}, panelRotator::raise, (Boolean b) -> panelRotator.stop(),
+                panelRotator::getOpticalFlagUp, panelRotator);
         }
     }
 
     /**
      * This Lower {@link FunctionalCommand} will call {@link PanelRotator}.lower
-     * repeatedly, until the down beam sensor is broken, at which point the
+     * repeatedly, until the down limit switch is pressed, at which point the
      * motor will stop.
      * <p>
      * The motor will also stop lowering if interrupted by another Command.
      */
     public class Lower extends FunctionalCommand
     {
-        public Lower(PanelRotator PanelRotator)
+        public Lower(PanelRotator panelRotator)
         {
-            super(() -> {}, PanelRotator::lower, (Boolean b) -> PanelRotator.stop(),
-                PanelRotator::getBeamSensorDown, PanelRotator);
+            super(() -> {}, panelRotator::lower, (Boolean b) -> panelRotator.stop(),
+                panelRotator::getLimitSwitchDown, panelRotator);
         }
     }
 
@@ -75,9 +75,9 @@ public class PanelRotatorCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public SpinToColor(PanelRotator PanelRotator)
+        public SpinToColor(PanelRotator panelRotator)
         {
-            mPanelRotator = PanelRotator;
+            mPanelRotator = panelRotator;
             addRequirements(mPanelRotator);
         }
 
@@ -103,10 +103,16 @@ public class PanelRotatorCommands
             // Note that this is a comparison of Strings.
             // Conversions from native ColorSensorV3 values to one of four values is
             // done in PanelRotator.
-            if (mPanelRotator.getActualColor() == mTargetColor)
+            if (mPanelRotator.getActualColor().equals(mTargetColor))
                 return true;
+            else if (mPanelRotator.getActualColor().equals("Error"))
+            {
+                System.out.println("error—no data provided");
+                return true;
+            }
             else
                 return false;
+
         }
 
         // Called once the command ends or is interrupted.
@@ -125,19 +131,19 @@ public class PanelRotatorCommands
      * Do note that it only spins the Color Wheel once. The operator will have to
      * push the corresponding button at least three times to complete Stage Two.
      */
-    public class SpinRotation extends CommandBase
+    public class SpinOnce extends CommandBase
     {
         private final PanelRotator mPanelRotator;
 
         private int eighths;
-        private String lastColor;
         private String currentColor;
+        private String lastColor;
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public SpinRotation(PanelRotator PanelRotator)
+        public SpinOnce(PanelRotator panelRotator)
         {
-            mPanelRotator = PanelRotator;
+            mPanelRotator = panelRotator;
             addRequirements(mPanelRotator);
         }
 
@@ -180,6 +186,47 @@ public class PanelRotatorCommands
         public void end(boolean interrupted)
         {
             mPanelRotator.stop();
+        }
+    }
+
+    public class ColorSensorTesting extends CommandBase
+    {
+        private final PanelRotator mPanelRotator;
+
+        // You should only use one subsystem per command. If multiple are needed, use a
+        // CommandGroup.
+        public ColorSensorTesting(PanelRotator panelRotator)
+        {
+            mPanelRotator = panelRotator;
+            addRequirements(mPanelRotator);
+        }
+
+        // Called when the command is initially scheduled.
+        @Override
+        public void initialize()
+        {
+            System.out.println("\nPredicted color: " + mPanelRotator.getActualColor());
+            System.out.println("18-bit: " + mPanelRotator.get18BitRGB());
+            System.out.println("Float: " + mPanelRotator.getFloatRGB());
+        }
+
+        // Called every time the scheduler runs while the command is scheduled.
+        @Override
+        public void execute()
+        {
+        }
+
+        // Returns true when the command should end.
+        @Override
+        public boolean isFinished()
+        {
+            return true;
+        }
+
+        // Called once the command ends or is interrupted.
+        @Override
+        public void end(boolean interrupted)
+        {
         }
     }
 }

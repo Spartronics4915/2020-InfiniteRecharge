@@ -30,9 +30,9 @@ public class IntakeCommands
      */
     public class Harvest extends FunctionalCommand
     {
-        public Harvest(Intake Intake)
+        public Harvest(Intake intake)
         {
-            super(() -> {}, Intake::intake, (Boolean b) -> Intake.stop(), Intake::isBallHeld, Intake);
+            super(() -> {}, intake::harvest, (Boolean b) -> intake.stop(), intake::isBallHeld, intake);
         }
     }
 
@@ -51,9 +51,9 @@ public class IntakeCommands
      */
     public class Stop extends InstantCommand
     {
-        public Stop(Intake Intake)
+        public Stop(Intake intake)
         {
-            super(Intake::stop, Intake);
+            super(intake::stop, intake);
         }
     }
 
@@ -75,9 +75,9 @@ public class IntakeCommands
      */
     public class Eject extends StartEndCommand
     {
-        public Eject(Intake Intake)
+        public Eject(Intake intake)
         {
-            super(Intake::reverse, Intake::stop, Intake);
+            super(intake::reverse, intake::stop, intake);
         }
     }
 }

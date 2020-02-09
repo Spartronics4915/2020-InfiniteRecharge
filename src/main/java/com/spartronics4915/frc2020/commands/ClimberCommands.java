@@ -4,6 +4,8 @@ import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.RobotContainer;
 import com.spartronics4915.frc2020.subsystems.Climber;
 
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
@@ -28,9 +30,9 @@ public class ClimberCommands
      */
     public class Extend extends StartEndCommand
     {
-        public Extend(Climber Climber)
+        public Extend(Climber climber)
         {
-            super(Climber::extend, Climber::stop, Climber);
+            super(climber::extend, climber::stop, climber);
         }
     }
 
@@ -44,9 +46,9 @@ public class ClimberCommands
      */
     public class Retract extends StartEndCommand
     {
-        public Retract(Climber Climber)
+        public Retract(Climber climber)
         {
-            super(Climber::retract, Climber::stop, Climber);
+            super(climber::retract, climber::stop, climber);
         }
     }
 
@@ -78,10 +80,10 @@ public class ClimberCommands
      */
     public class WinchPrimary extends FunctionalCommand
     {
-        public WinchPrimary(Climber Climber)
+        public WinchPrimary(Climber climber)
         {
-            super(() -> {}, () -> Climber.winch(!Constants.Climber.kStalled),
-                (Boolean b) -> Climber.stop(), Climber::isStalled, Climber);
+            super(() -> {}, () -> climber.winch(!Constants.Climber.kStalled),
+                (Boolean b) -> climber.stop(), climber::isStalled, climber);
         }
     }
 
@@ -96,9 +98,81 @@ public class ClimberCommands
      */
     public class WinchSecondary extends StartEndCommand
     {
-        public WinchSecondary(Climber Climber)
+        public WinchSecondary(Climber climber)
         {
-            super(() -> Climber.winch(Constants.Climber.kStalled), Climber::stop, Climber);
+            super(() -> climber.winch(Constants.Climber.kStalled), climber::stop, climber);
+        }
+    }
+
+    public class ExtendAutoMax extends CommandBase
+    {
+        private final Climber mClimber;
+        private double targetTime;
+
+        public ExtendAutoMax(Climber climber)
+        {
+            mClimber = climber;
+            addRequirements(mClimber);
+        }
+
+        @Override
+        public void initialize()
+        {
+            targetTime = Timer.getMatchTime() + Constants.Climber.kTimerExtenderMax;
+        }
+
+        @Override
+        public void execute()
+        {
+            mClimber.extend();
+        }
+
+        @Override
+        public boolean isFinished()
+        {
+            return targetTime <= Timer.getMatchTime();
+        }
+
+        @Override
+        public void end(boolean interrupted)
+        {
+            mClimber.stop();
+        }
+    }
+
+    public class ExtendAutoMin extends CommandBase
+    {
+        private final Climber mClimber;
+        private double targetTime;
+
+        public ExtendAutoMin(Climber climber)
+        {
+            mClimber = climber;
+            addRequirements(mClimber);
+        }
+
+        @Override
+        public void initialize()
+        {
+            targetTime = Timer.getMatchTime() + Constants.Climber.kTimerExtenderMin;
+        }
+
+        @Override
+        public void execute()
+        {
+            mClimber.extend();
+        }
+
+        @Override
+        public boolean isFinished()
+        {
+            return targetTime <= Timer.getMatchTime();
+        }
+
+        @Override
+        public void end(boolean interrupted)
+        {
+            mClimber.stop();
         }
     }
 }

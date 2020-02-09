@@ -33,7 +33,7 @@ public class Intake extends SpartronicsSubsystem
     /**
      * Activates the mechanum "vector" wheels in intake
      */
-    public void intake()
+    public void harvest()
     {
         mHarvestMotor.setDutyCycle(Constants.Intake.kHarvestSpeed);
     }
