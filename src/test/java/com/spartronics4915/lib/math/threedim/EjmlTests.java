@@ -2,20 +2,13 @@ package com.spartronics4915.lib.math.threedim;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Random;
-
+import org.ejml.data.Complex_F64;
 import org.ejml.data.DMatrix4x4;
 import org.ejml.data.DMatrixRMaj;
 import org.ejml.dense.fixed.CommonOps_DDF4;
-import org.ejml.dense.row.NormOps_DDRM;
-import org.ejml.dense.row.CommonOps_DDRM;
+import org.ejml.dense.row.decomposition.eig.SymmetricQRAlgorithmDecomposition_DDRM;
 import org.ejml.dense.row.factory.DecompositionFactory_DDRM;
 import org.ejml.interfaces.decomposition.EigenDecomposition;
-import org.ejml.dense.row.decomposition.eig.symm.SymmetricQrAlgorithm_DDRM;
-import org.ejml.dense.row.decomposition.eig.SymmetricQRAlgorithmDecomposition_DDRM;
-import org.ejml.data.Complex_F64;
-import org.ejml.dense.row.misc.TransposeAlgs_DDRM;
-
 import org.junit.jupiter.api.Test;
 
 class EjmlTests
@@ -112,7 +105,6 @@ class EjmlTests
         }
         else
             assert(false);
-
     }
 
     @Test

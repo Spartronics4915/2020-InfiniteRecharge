@@ -5,6 +5,8 @@ import org.ejml.data.DMatrixRMaj;
 import org.ejml.dense.fixed.CommonOps_DDF4;
 import org.ejml.dense.row.factory.DecompositionFactory_DDRM;
 import org.ejml.interfaces.decomposition.EigenDecomposition;
+import org.ejml.dense.row.decomposition.eig.SymmetricQRAlgorithmDecomposition_DDRM;
+import org.ejml.data.Complex_F64;
 
 /* 
  * bizarre usage of ejml:
@@ -88,6 +90,7 @@ class Quaternion
      */
     public Quaternion(double ai, double aj, double ak, String axes)
     {
+        assert(false); // XXX: implement me if need-be
     }
 
     /**
@@ -141,6 +144,7 @@ class Quaternion
         }
         else
         {
+            double[] w = {0,0,0,0}; // same w as numpy.eigh
             DMatrix4x4 k = new DMatrix4x4();
             k.a11 = m.a11 - m.a22 - m.a33; 
             k.a12 = 0; 
@@ -159,11 +163,57 @@ class Quaternion
             k.a43 = m.a21 - m.a12; 
             k.a44 = m.a11 + m.a22 + m.a33; 
             CommonOps_DDF4.scale(1./3, k);
-            // quaternion is eigenvector of K that corresponds to largest eigenvalue
-            // XXX: as far as I can tell, EiginDecomposition requires DMatrixRMaj
-            DMatrixRMaj kk = new DMatrixRMaj(k);
-            EigenDecomposition<DMatrixRMaj> eig = DecompositionFactory_DDRM.eig(4, true, true);
-            eig.decompose(kk);
+            // This shorthand represents 0 as placeholders for the symmetric
+            // components.  numpy.linalg.eigh defaults to using the lower
+            // diagonal, while it appears the ejml uses the entire matrix;
+            k.a12 = k.a21;
+            k.a13 = k.a31;
+            k.a14 = k.a41;
+            k.a23 = k.a32;
+            k.a24 = k.a42;
+            k.a34 = k.a43;
+            // k.print();
+            DMatrixRMaj rm2 = new DMatrixRMaj(k);
+            EigenDecomposition<DMatrixRMaj> eig = DecompositionFactory_DDRM.eig(true, true);
+            // EigenDecomposition<DMatrixRMaj> eig = DecompositionFactory_DDRM.eig(4, true);
+            eig.decompose(rm2);
+            // find eigenvector associated with largest eigenvalue
+            if(eig instanceof SymmetricQRAlgorithmDecomposition_DDRM)
+            {
+                DMatrixRMaj[] VT = {null, null, null, null};
+                int argMax = -1; 
+                double magMax2 = 0;
+                for(int i=0;i<eig.getNumberOfEigenvalues(); i++)
+                {
+                    Complex_F64 v = ((SymmetricQRAlgorithmDecomposition_DDRM)eig).getEigenvalue(i);
+                    assert(v.isReal());
+                    w[i] = v.getReal();
+                    VT[i] = eig.getEigenVector(i);
+                    double mag2 = v.getMagnitude2();
+                    if(mag2 > magMax2)
+                    {
+                        magMax2 = mag2;
+                        argMax = i;
+                    }
+                }
+                assert(argMax > -1);
+
+                // re-arrange
+                this.mQ.a1 = VT[argMax].get(3, 0);
+                this.mQ.a2 = VT[argMax].get(0, 0);
+                this.mQ.a3 = VT[argMax].get(1, 0);
+                this.mQ.a4 = VT[argMax].get(2, 0);
+
+                if(this.mQ.a1 < 0)
+                {
+                    this.mQ.a1 *= -1;
+                    this.mQ.a2 *= -1;
+                    this.mQ.a3 *= -1;
+                    this.mQ.a4 *= -1;
+                }
+            }
+            else
+                assert(false);
         }
     }
 
