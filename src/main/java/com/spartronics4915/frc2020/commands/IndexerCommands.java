@@ -134,16 +134,12 @@ public class IndexerCommands
      * @param Subsystem requirement For both the CommandScheduler and the above method reference.
      */
 
-    /**
-     * This {@link InstantCommand} stops the intake by calling
-     * {@link LoadFromIntake}.stop once.
-     * <p>
-     * Note that the Intake only controls the front roller.
-     */
+    
     public class StartLaunch extends InstantCommand
     {
         public StartLaunch(Indexer indexer)
         {
+
             super(indexer::launch, indexer);
         }
     }
@@ -177,6 +173,14 @@ public class IndexerCommands
         public Spin(Indexer indexer, int N)
         {
             super(() -> indexer.rotateN(N), indexer);
+        }
+    }
+
+    public class Align extends InstantCommand
+    {
+        public Align(Indexer indexer)
+        {
+            super(indexer::toNearestQuarterRotation, indexer);
         }
     }
 
@@ -235,6 +239,11 @@ public class IndexerCommands
                 new LoadBallToSlot(mIndexer, ballsToShoot),
                 new EndLaunch(mIndexer)
             );
+        }
+
+        public LoadToLauncher(Indexer indexer)
+        {
+            this(indexer, 5);
         }
     }
 }

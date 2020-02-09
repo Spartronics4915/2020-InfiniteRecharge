@@ -17,6 +17,23 @@ public class Indexer extends SpartronicsSubsystem
 {
     private double targetPosition = 0;
 
+    public static enum Motors {
+        INDEXER(Constants.Indexer.Spinner.kMotorId),
+        LOADER(Constants.Indexer.Loader.kMotorId),
+        TRANSFER(Constants.Indexer.Transfer.kMotorId);
+
+        private int mId;
+
+        Motors(int id)
+        {
+            mId = id;
+        }
+        public int valueOf()
+        {
+            return mId;
+        }
+    }
+
     private SpartronicsMotor mIndexerMotor;
     private SpartronicsMotor mLoaderMotor;
     private SpartronicsMotor mTransferMotor;
@@ -236,5 +253,10 @@ public class Indexer extends SpartronicsSubsystem
     {
         double positionMod90 = mIndexerMotor.getEncoder().getPosition() % 90;
         return (positionMod90 >= 85 || positionMod90 <= 5); // if in a safe space to load a ball
+    }
+
+    public int getMotorId()
+    {
+        return 0;
     }
 }

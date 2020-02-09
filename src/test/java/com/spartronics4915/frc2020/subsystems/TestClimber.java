@@ -1,33 +1,32 @@
-/*
-package com.spartronics4915.frc2020.subsystems;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+// package com.spartronics4915.frc2020.subsystems;
 
-import com.spartronics4915.frc2020.commands.ClimberCommands;
-import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
+// import static org.junit.jupiter.api.Assertions.assertFalse;
+// import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
+// import com.spartronics4915.frc2020.commands.ClimberCommands;
+// import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 
-import edu.wpi.first.hal.sim.DriverStationSim;
+// import org.junit.jupiter.api.Test;
 
-public class TestClimber
-{
-    @Test
-    public void testExtend()
-    {
-        var commandToRun = new ClimberCommands().new WinchPrimary(new Climber());
+// import edu.wpi.first.hal.sim.DriverStationSim;
 
-        var sim = new DriverStationSim();
-        // sim.setAutonomous(false);
-        // sim.setEnabled(true);
+// public class TestClimber
+// {
+//     @Test
+//     public void testExtend()
+//     {
+//         var commandToRun = new ClimberCommands().new WinchPrimary(new Climber());
 
-        commandToRun.schedule();
+//         var sim = new DriverStationSim();
+//         // sim.setAutonomous(false);
+//         // sim.setEnabled(true);
 
-        var simmedMotor = SpartronicsSimulatedMotor.getFromId(6);
-        assertTrue(commandToRun.isScheduled());
-        simmedMotor.setOutputCurrent(11);
-        assertFalse(commandToRun.isScheduled());
-    }
-}
-*/
+//         commandToRun.schedule();
+
+//         var simmedMotor = SpartronicsSimulatedMotor.getFromId(6);
+//         assertTrue(commandToRun.isScheduled());
+//         simmedMotor.setOutputCurrent(11);
+//         assertFalse(commandToRun.isScheduled());
+//     }
+// }
