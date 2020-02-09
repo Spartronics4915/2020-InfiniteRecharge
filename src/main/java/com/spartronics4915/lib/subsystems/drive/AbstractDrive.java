@@ -19,25 +19,26 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
      * This constructor will set up everything you need. It's protected to allow for
      * a singleton drivetrain.
      */
-    protected AbstractDrive(
-        SpartronicsMotor leftMotor,
-        SpartronicsMotor rightMotor,
-        SpartronicsIMU imu,
-        DifferentialDrive differentialDrive
-    )
+    protected AbstractDrive(SpartronicsMotor leftMotor, SpartronicsMotor rightMotor,
+        SpartronicsIMU imu, DifferentialDrive differentialDrive)
     {
-        if (leftMotor.hadStartupError() || rightMotor.hadStartupError()) {
+        if (leftMotor.hadStartupError() || rightMotor.hadStartupError())
+        {
             mLeftMotor = new SpartronicsSimulatedMotor(leftMotor.getDeviceNumber());
             mRightMotor = new SpartronicsSimulatedMotor(rightMotor.getDeviceNumber());
-            mIMU = new SpartronicsIMU() {
+            mIMU = new SpartronicsIMU()
+            {
                 @Override
-                public Rotation2d getYaw() {
+                public Rotation2d getYaw()
+                {
                     return new Rotation2d();
                 }
             };
 
             logInitialized(false);
-        } else {
+        }
+        else
+        {
             mLeftMotor = leftMotor;
             mRightMotor = rightMotor;
             mIMU = imu;
@@ -52,7 +53,7 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
      * This sets the heading of the IMU, but this should almost exclusively be
      * called by RobotStateEstimator, because that is the single source of truth for
      * robot heading.
-     * 
+     *
      * @param heading Heading to set the IMU to.
      */
     public void setIMUHeading(Rotation2d heading)
@@ -64,7 +65,7 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
      * This gets the heading of the IMU, but this should almost exclusively be
      * called by RobotStateMap, which is the single source of truth for all matters
      * of robot pose (including heading).
-     * 
+     *
      * @return Heading of the IMU.
      */
     public Rotation2d getIMUHeading()
@@ -74,7 +75,8 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
 
     public void arcadeDrive(double linearPercent, double rotationPercent)
     {
-        double maxInput = Math.copySign(Math.max(Math.abs(linearPercent), Math.abs(rotationPercent)), linearPercent);
+        double maxInput = Math
+            .copySign(Math.max(Math.abs(linearPercent), Math.abs(rotationPercent)), linearPercent);
 
         double leftMotorOutput, rightMotorOutput;
 
@@ -117,17 +119,20 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
     }
 
     @Override
-    public SpartronicsMotor getLeftMotor() {
+    public SpartronicsMotor getLeftMotor()
+    {
         return mLeftMotor;
     }
 
     @Override
-    public SpartronicsMotor getRightMotor() {
+    public SpartronicsMotor getRightMotor()
+    {
         return mRightMotor;
     }
 
     @Override
-    public DifferentialDrive getDifferentialDrive() {
+    public DifferentialDrive getDifferentialDrive()
+    {
         return mDifferentialDrive;
     }
 }
