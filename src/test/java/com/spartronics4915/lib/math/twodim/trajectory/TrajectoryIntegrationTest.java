@@ -69,7 +69,7 @@ public class TrajectoryIntegrationTest {
             tracker.getReferencePoint();
             var out = tracker.nextState(iterator.getCurrentSample().state.state.getPose(), iterator.getProgress());
 
-            System.out.println(out.linearVelocity);
+            // System.out.println(out.linearVelocity);
 
             distanceMeters += out.linearVelocity * 0.1;
 
@@ -153,7 +153,7 @@ public class TrajectoryIntegrationTest {
             //         ", a: " + fmt.format(Units.metersToInches(state.acceleration))
             // );
 
-            System.out.println(state.velocity + "," + state.acceleration);
+            // System.out.println(state.velocity + "," + state.acceleration);
         }
     }
 

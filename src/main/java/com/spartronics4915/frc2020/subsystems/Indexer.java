@@ -145,10 +145,10 @@ public class Indexer extends SpartronicsSubsystem
      * Rotate the spinner a certain amount of rotations
      * @param N the number of quarter rotations to perform
      */
-    public void rotateN(int N)
+    public void rotateN(double N)
     {
         if (N != 0) {
-            double deltaPosition = 0.25 * ((double) N); // Cast N to double and convert to rotations
+            double deltaPosition = 0.25 * N; // Cast N to double and convert to rotations
             targetPosition += deltaPosition;
             mIndexerMotor.setPosition(targetPosition); // Rotate Spinner to target.
         }
