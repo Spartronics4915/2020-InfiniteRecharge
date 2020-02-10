@@ -86,7 +86,7 @@ public final class Constants
         public static final int kAngleAdjusterMasterId = 0; // PWM
         public static final int kAngleAdjusterFollowerId = 1; // PWM
         public static final int kTurretId = 8;
-        public static final int kTurretPotentiometerId = 0;
+        public static final int kTurretPotentiometerId = 0; // Analog
 
         // TODO: Find translation of turret from the center of the robot
         public static final Pose2d kTurretOffset = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180.0));
@@ -104,6 +104,8 @@ public final class Constants
         public static final double[] RPSTable = null;
 
         public static final double kMaxRPS = 90.0;
+        public static final double kMaxAngle = 30.0;
+        public static final double kMaxRotation = 60.0; // FIXME
     }
 
     public static final class OI

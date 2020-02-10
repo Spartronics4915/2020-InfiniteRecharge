@@ -16,7 +16,9 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 
-// TODO: Rework this whole "set then run" method thing
+/**
+ * TODO: Discuss merits of using Rotation2d vs Doubles internally
+ */
 public class Launcher extends SpartronicsSubsystem
 {
     private SpartronicsMotor mFlywheelMasterMotor;
@@ -29,7 +31,8 @@ public class Launcher extends SpartronicsSubsystem
     private InterpolatingTreeMap<InterpolatingDouble, LauncherState> table;
 
     private double targetRPS;
-    private Rotation2d targetAngle;
+    private double targetAngle;
+    private double targetRotation;
 
     private SimpleMotorFeedforward mFeedforwardCalculator;
 
@@ -65,12 +68,11 @@ public class Launcher extends SpartronicsSubsystem
         {
             logInitialized(true);
         }
-
-        mFlywheelMasterMotor.setVelocityGains(0.000389, 0, 0, 0);
-        mFeedforwardCalculator = new SimpleMotorFeedforward(Constants.Launcher.kS,
-            Constants.Launcher.kV, Constants.Launcher.kA);
+        mFlywheelMasterMotor.setVelocityGains(0.000389, 0, 0, 0); // TODO: Constants???
         mFlywheelMasterMotor.setOutputInverted(true);
         mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
+        mFeedforwardCalculator = new SimpleMotorFeedforward(
+            Constants.Launcher.kS, Constants.Launcher.kV, Constants.Launcher.kA);
 
         mTurretMotor = SpartronicsMax.makeMotor(Constants.Launcher.kTurretId, SensorModel.toRadians(360));
         if (mTurretMotor.hadStartupError())
@@ -82,89 +84,61 @@ public class Launcher extends SpartronicsSubsystem
         {
             logInitialized(true);
         }
-
-        mTurretPotentiometer = new AnalogPotentiometer(Constants.Launcher.kTurretPotentiometerId, 360, -180);
+        mTurretPotentiometer = new AnalogPotentiometer(Constants.Launcher.kTurretPotentiometerId, 360, -180); // TODO: Constants???
 
         mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterId);
         mAngleAdjusterFollowerServo = new Servo(Constants.Launcher.kAngleAdjusterFollowerId);
 
         setUpLookupTable(Constants.Launcher.LookupTableSize, Constants.Launcher.DistanceTable,
             Constants.Launcher.AngleTable, Constants.Launcher.RPSTable);
-        turnTurret(0);
 
+        reset();
         dashboardPutNumber("Flywheel RPS", 0);
     }
 
     /**
-     * Call this in execute() method of a command to have the motor constantly run at the target RPM
+     * Sets target RPS for flywheel to given RPS.
+     * Call this in execute() method of a command to have the motor
+     * constantly run at the target RPS.
+     * <p>
+     * Does not allow values greater than 90 RPS (currently, refer to
+     * Constants.Launcher.kMaxRPS).
+     * @param rps RPS you want the flywheel to target
      */
-    public void runFlywheel()
+    public void runFlywheel(double rps)
     {
+        if (rps > Constants.Launcher.kMaxRPS)
+            targetRPS = Constants.Launcher.kMaxRPS;
+        else
+            targetRPS = rps;
         mFlywheelMasterMotor.setVelocity(targetRPS, mFeedforwardCalculator.calculate(targetRPS));
+        dashboardPutNumber("targetRPS", targetRPS);
     }
 
     /**
-     * Raises the hood to the targetAngle
+     * Raises the hood to the targetAngle.
+     * @param angle Angle in degrees above horizontal you want the angle adjuster to go to.
      */
-    public void adjustHood()
+    public void adjustHood(double angle)
     {
-        mAngleAdjusterMasterServo.setAngle(targetAngle.getDegrees());
-        mAngleAdjusterFollowerServo.setAngle(targetAngle.getDegrees());
+        if (angle > Constants.Launcher.kMaxAngle)
+            targetAngle = Constants.Launcher.kMaxAngle;
+        else
+            targetAngle = angle;
+        mAngleAdjusterMasterServo.setAngle(targetAngle);
+        mAngleAdjusterFollowerServo.setAngle(targetAngle);
+        dashboardPutNumber("targetAngle", targetAngle);
     }
 
     /**
      * Rotates turret to a specific angle relative to the home position
      * @param absoluteAngle Angle in degrees you want to turn the turret relative to the home position
      */
-    public void turnTurret(double absoluteAngle)
+    public void rotateTurret(double absoluteAngle)
     {
-        // need enc or pot
         // FIXME
-        // mTurretMotor.setPosition(absoluteAngle);
-    }
-
-    /**
-     * Returns the current angle the turret is facing relative to straight ahead/home position
-     * @return Current angle in degrees the turret is facing relative to the home position (forwards)
-     */
-    public double getTurretDirection()
-    {
-        return mTurretPotentiometer.get();
-    }
-
-    /**
-     * Sets target angle to given angle
-     * @param angle Angle in degrees above horizontal you want the angle adjuster to go to
-     */
-    public void setPitch(double angle)
-    {
-        if (angle > 30.0)
-            angle = 30.0;
-        targetAngle = Rotation2d.fromDegrees(angle);
-    }
-
-    /**
-     * Sets target rpm for flywheel to given RPS
-     * <p>
-     * Does not allow values greater than 90 (currently, refer to Constants.Launcher.kMaxRPS) RPS.
-     *
-     * @param rpm RPM you want the flywheel to target
-     */
-    public void setRPS(double rps)
-    {
-        if (rps > Constants.Launcher.kMaxRPS)
-            targetRPS = Constants.Launcher.kMaxRPS;
-        else
-            targetRPS = rps;
-    }
-
-    /**
-     * Returns current target angle of angle adjuster
-     * @return Angle in degrees above horizontal that the angle adjuster is targeting
-     */
-    public Rotation2d getTargetPitch()
-    {
-        return targetAngle;
+        // need enc or pot
+        mTurretMotor.setPosition(absoluteAngle);
     }
 
     /**
@@ -177,16 +151,6 @@ public class Launcher extends SpartronicsSubsystem
     }
 
     /**
-     * Returns current angle of angle adjuster
-     * @return Current angle in degrees above horizontal of the angle adjuster
-     */
-    public double getCurrentPitch()
-    {
-        // NEED ENC OR POT
-        return mAngleAdjusterMasterServo.getPosition();
-    }
-
-    /**
      * Returns current RPS of shooter
      * @return The current RPS of the flywheel
      */
@@ -196,26 +160,40 @@ public class Launcher extends SpartronicsSubsystem
     }
 
     /**
-     * Computes and returns angle for angle adjuster based on input distance
-     * @param distance Horizontal distance in meters from the shooter to the target
-     * @return The angle in degrees above horizontal that is calculated to be necessary to hit the target based off of the input distance
+     * Returns target angle of angle adjuster
+     * @return Angle in degrees above horizontal that the angle adjuster is targeting
      */
-    public Rotation2d calcPitch(double distance)
+    public double getTargetAngle()
     {
-        Rotation2d angle = table.getInterpolated(new InterpolatingDouble(distance)).hoodAngle;
-        return angle;
+        return targetAngle;
     }
 
     /**
-     * Computes and returns RPS based on input distance
-     * @param distance Horizontal distance in meters from the shooter to the target
-     * @return RPS calculated to be necessary to hit the target based of of the input distance
+     * Returns current angle of angle adjuster
+     * @return Current angle in degrees above horizontal of the angle adjuster
      */
-    public double calcRPS(double distance)
+    public double getCurrentAngle()
     {
-        double RPS = table
-            .getInterpolated(new InterpolatingDouble(distance)).flywheelSpeedRPS.value;
-        return RPS;
+        // NEED ENC OR POT
+        return mAngleAdjusterMasterServo.getPosition();
+    }
+
+    /**
+     * Returns the target angle the turret is facing relative to straight ahead / home position
+     * @return Target angle in degrees the turret is facing relative to the home position (forwards)
+     */
+    public double getTargetRotation()
+    {
+        return targetRotation;
+    }
+
+    /**
+     * Returns the current angle the turret is facing relative to straight ahead/home position
+     * @return Current angle in degrees the turret is facing relative to the home position (forwards)
+     */
+    public double getCurrentRotation()
+    {
+        return mTurretPotentiometer.get();
     }
 
     /**
@@ -236,20 +214,32 @@ public class Launcher extends SpartronicsSubsystem
      */
     public boolean inRange()
     {
-        // FIXME lol
+        // FIXME
         boolean inRange = true;
         return inRange;
     }
 
     /**
-     * Resets shooter and stops flywheel
+     * Computes and returns RPS based on input distance
+     * @param distance Horizontal distance in meters from the shooter to the target
+     * @return RPS calculated to be necessary to hit the target based of of the input distance
      */
-    public void reset()
+    public double calcRPS(double distance)
     {
-        setRPS(0);
-        mFlywheelMasterMotor.setBrakeMode(true);
-        setPitch(0);
-        turnTurret(0);
+        return table.getInterpolated(
+            new InterpolatingDouble(distance)).flywheelSpeedRPS.value;
+    }
+
+    /**
+     * Computes and returns angle for angle adjuster based on input distance
+     * @param distance Horizontal distance in meters from the shooter to the target
+     * @return The angle in degrees above horizontal that is calculated to be necessary
+     * to hit the target based off of the input distance
+     */
+    public Rotation2d calcPitch(double distance)
+    {
+        Rotation2d angle = table.getInterpolated(new InterpolatingDouble(distance)).hoodAngle;
+        return angle;
     }
 
     public void setUpLookupTable(int size, double[] distances, double[] angles, double[] rps)
@@ -262,5 +252,15 @@ public class Launcher extends SpartronicsSubsystem
             table.put(new InterpolatingDouble(distances[k]), new LauncherState(
                 Rotation2d.fromDegrees(angles[k]), new InterpolatingDouble(rps[k])));
         }
+    }
+
+    /**
+     * Resets shooter and stops flywheel
+     */
+    public void reset()
+    {
+        runFlywheel(0);
+        adjustHood(0);
+        rotateTurret(0);
     }
 }

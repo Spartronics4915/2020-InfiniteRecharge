@@ -126,7 +126,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            mLauncher.dashboardPutNumber("Launcher/TurretDirection", mLauncher.getTurretDirection());
+            mLauncher.dashboardPutNumber("Launcher/TurretDirection", mLauncher.getCurrentRotation());
         }
 
         // Returns true when the command should end.
