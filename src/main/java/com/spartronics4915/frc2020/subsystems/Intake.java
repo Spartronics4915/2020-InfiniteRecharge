@@ -2,6 +2,9 @@ package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
@@ -14,6 +17,7 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 public class Intake extends SpartronicsSubsystem
 {
     private SpartronicsMotor mHarvestMotor;
+    private DigitalInput mProximitySensor;
 
     public Intake()
     {
@@ -27,6 +31,8 @@ public class Intake extends SpartronicsSubsystem
         {
             logInitialized(true);
         }
+
+        mProximitySensor = new DigitalInput(Constants.Intake.kProximitySensorId);
     }
 
     /**
@@ -47,16 +53,15 @@ public class Intake extends SpartronicsSubsystem
 
     /**
      * Checks to see if a ball is held in the intake chamber
-     * with a proximity sensor returning a digital value
+     * with a proximity sensor returning a digital value.
      * <p>
-     * The style of proximity sensor we use requires MANUAL calibration
+     * The style of proximity sensor we use requires MANUAL calibration.
      *
      * @return Whether a ball is held
      */
     public boolean isBallHeld()
     {
-        // TODO: Implement this functionality with the digital Proximity Sensor
-        return false;
+        return mProximitySensor.get();
     }
 
     /**

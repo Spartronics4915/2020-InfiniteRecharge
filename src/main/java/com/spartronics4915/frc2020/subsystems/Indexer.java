@@ -53,7 +53,9 @@ public class Indexer extends SpartronicsSubsystem
             mIndexerMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Spinner.kMotorId);
             mLoaderMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Loader.kMotorId);
             logInitialized(false);
-        } else {
+        }
+        else
+        {
             logInitialized(true);
         }
         // Set up gains for spinner
@@ -182,7 +184,7 @@ public class Indexer extends SpartronicsSubsystem
         return mIsLaunching;
     }
 
-    public void transfer() 
+    public void transfer()
     {
         mIsTransferring = true;
         mTransferMotor.setVelocity(Constants.Indexer.Transfer.kSpeed);
@@ -194,7 +196,7 @@ public class Indexer extends SpartronicsSubsystem
         mTransferMotor.setVelocity(0);
     }
 
-    public boolean isTransferring() 
+    public boolean isTransferring()
     {
         return mIsTransferring;
     }
