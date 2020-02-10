@@ -5,6 +5,7 @@ import com.spartronics4915.frc2020.subsystems.PanelRotator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class PanelRotatorCommands
 {
@@ -123,7 +124,6 @@ public class PanelRotatorCommands
         }
     }
 
-    // FIXME: specify noninterruptible
     /**
      * The {@link CommandBase} SpinRotation calls {@link PanelRotator}.spin until
      * it detects (through use of the color sensor) that the wheel has been spun
@@ -132,7 +132,7 @@ public class PanelRotatorCommands
      * Do note that it only spins the Color Wheel once. The operator will have to
      * push the corresponding button at least three times to complete Stage Two.
      */
-    public class SpinOnce extends CommandBase
+    public class SpinOneRotation extends CommandBase
     {
         private final PanelRotator mPanelRotator;
 
@@ -142,7 +142,7 @@ public class PanelRotatorCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public SpinOnce(PanelRotator panelRotator)
+        public SpinOneRotation(PanelRotator panelRotator)
         {
             mPanelRotator = panelRotator;
             addRequirements(mPanelRotator);
@@ -168,14 +168,16 @@ public class PanelRotatorCommands
         @Override
         public boolean isFinished()
         {
-            // If the detected color has changed, iterate the eighths counter.
-            currentColor = mPanelRotator.getRotatedColor();
-
+            // If the confidence in Color is too low, we're likely looking up at the ceiling and
+            // not aligned with the Control Panel.
             if (mPanelRotator.getColorConfidence() < Constants.PanelRotator.kConfidenceMinimum)
             {
                 mPanelRotator.logError("Confidence too low!");
                 return true;
             }
+
+            // If the detected color has changed, iterate the eighths counter.
+            currentColor = mPanelRotator.getRotatedColor();
             if (currentColor != lastColor)
                 eighths++;
             lastColor = currentColor;
@@ -186,10 +188,6 @@ public class PanelRotatorCommands
                 return true;
             else
                 return false;
-
-            // TODO: In the event we drive away from the control panel while spinning it,
-            // this subsystem should be able to tell and end appropriately.
-            // Look into exposing and using the confidence value of the ColorMatch.
         }
 
         // Called once the command ends or is interrupted.
@@ -197,6 +195,18 @@ public class PanelRotatorCommands
         public void end(boolean interrupted)
         {
             mPanelRotator.stop();
+        }
+    }
+
+    /**
+     * This {@link SequentialCommandGroup} queues the SpinOneRotation Command four times.
+     */
+    public class SpinFourRotations extends SequentialCommandGroup
+    {
+        public SpinFourRotations(PanelRotator panelRotator)
+        {
+            super(new SpinOneRotation(panelRotator), new SpinOneRotation(panelRotator),
+                new SpinOneRotation(panelRotator), new SpinOneRotation(panelRotator));
         }
     }
 }

@@ -3,7 +3,6 @@ package com.spartronics4915.frc2020.commands;
 import com.spartronics4915.frc2020.subsystems.Intake;
 
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 public class IntakeCommands

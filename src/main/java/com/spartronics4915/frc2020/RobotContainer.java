@@ -34,9 +34,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -182,20 +181,30 @@ public class RobotContainer
         // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(LauncherCommands.new Rev(mLauncher));
 
         new JoystickButton(mButtonBoard, 2).toggleWhenPressed(mIntakeCommands.new Harvest(mIntake));
-        new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake)); // TODO: This should be an Unjam command
+        new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
 
         new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));
         new JoystickButton(mButtonBoard, 5).whileHeld(mClimberCommands.new Extend(mClimber));
 
         new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
         new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
-        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinOnce(mPanelRotator)); // TODO: set noninterruptable
+        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinOneRotation(mPanelRotator)); // TODO: set noninterruptable
         new JoystickButton(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
 
         new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber)
             .withTimeout(Constants.Climber.kTimerExtenderMin));
         new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Extend(mClimber)
             .withTimeout(Constants.Climber.kTimerExtenderMax));
+
+        new JoystickButton(mButtonBoard, 12).whenPressed(new SequentialCommandGroup(
+            mPanelRotatorCommands.new Raise(mPanelRotator),
+            mPanelRotatorCommands.new SpinFourRotations(mPanelRotator),
+            mPanelRotatorCommands.new Lower(mPanelRotator))); // TODO: will the act of lowering spin the wheel?
+
+        new JoystickButton(mButtonBoard, 13).whenPressed(new SequentialCommandGroup(
+            mPanelRotatorCommands.new Raise(mPanelRotator),
+            mPanelRotatorCommands.new SpinToColor(mPanelRotator),
+            mPanelRotatorCommands.new Lower(mPanelRotator)));
 
         new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new WinchPrimary(mClimber)
             .andThen(mClimberCommands.new WinchSecondary(mClimber)));
