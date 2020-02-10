@@ -154,7 +154,7 @@ public class PanelRotator extends SpartronicsSubsystem
      * The position of our color sensor and the field's has a difference of π/2, so
      * we need to adjust targets accordingly.
      * <p>
-     * See https://drive.google.com/file/d/1BfoFJmpJg31txUqTG-OrJjeWgQdQsCNC/view
+     * See https://drive.google.com/uc?id=1BfoFJmpJg31txUqTG-OrJjeWgQdQsCNC
      * for a diagram of how these line up.
      * <p>
      * This code could be less redundant by taking a String parameter and converting it,
@@ -181,6 +181,19 @@ public class PanelRotator extends SpartronicsSubsystem
         dashboardPutString("Current Color (field)", rotatedColor);
         dashboardPutNumber("ColorMatch Confidence", match.confidence);
         return rotatedColor;
+    }
+
+    /**
+     * {@link ColorMatchResult} includes a confidence value.
+     *
+     * @return a percentage value from 0 to 1 with the
+     */
+    public double getColorConfidence()
+    {
+        Color detectedColor = mColorSensor.getColor();
+        ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
+
+        return match.confidence;
     }
 
     /**

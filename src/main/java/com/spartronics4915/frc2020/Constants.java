@@ -120,6 +120,7 @@ public final class Constants
         public static final double kRaiseSpeed = 0.5;
         public static final double kLowerSpeed = -0.5;
         public static final double kSpinSpeed = 0.5;
+        public static final double kConfidenceMinimum = 0.3;
 
         public static final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
         public static final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);

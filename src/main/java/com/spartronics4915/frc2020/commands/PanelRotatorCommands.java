@@ -1,5 +1,6 @@
 package com.spartronics4915.frc2020.commands;
 
+import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.subsystems.PanelRotator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -122,6 +123,7 @@ public class PanelRotatorCommands
         }
     }
 
+    // FIXME: specify noninterruptible
     /**
      * The {@link CommandBase} SpinRotation calls {@link PanelRotator}.spin until
      * it detects (through use of the color sensor) that the wheel has been spun
@@ -167,14 +169,20 @@ public class PanelRotatorCommands
         public boolean isFinished()
         {
             // If the detected color has changed, iterate the eighths counter.
-            currentColor = mPanelRotator.getRotatedColor(); // TODO: does this have issues with the white stripes?
+            currentColor = mPanelRotator.getRotatedColor();
+
+            if (mPanelRotator.getColorConfidence() < Constants.PanelRotator.kConfidenceMinimum)
+            {
+                mPanelRotator.logError("Confidence too low!");
+                return true;
+            }
             if (currentColor != lastColor)
                 eighths++;
             lastColor = currentColor;
 
             // The color wheel is made up of two each of four total colors,
             // for a total of eight.
-            if (eighths == 8) // TODO: double check for off-by-one errors
+            if (eighths == 8)
                 return true;
             else
                 return false;
@@ -189,47 +197,6 @@ public class PanelRotatorCommands
         public void end(boolean interrupted)
         {
             mPanelRotator.stop();
-        }
-    }
-
-    public class ColorSensorTesting extends CommandBase
-    {
-        private final PanelRotator mPanelRotator;
-
-        // You should only use one subsystem per command. If multiple are needed, use a
-        // CommandGroup.
-        public ColorSensorTesting(PanelRotator panelRotator)
-        {
-            mPanelRotator = panelRotator;
-            addRequirements(mPanelRotator);
-        }
-
-        // Called when the command is initially scheduled.
-        @Override
-        public void initialize()
-        {
-            mPanelRotator.logDebug("Predicted color: " + mPanelRotator.getActualColor());
-            mPanelRotator.logDebug("18-bit: " + mPanelRotator.get18BitRGB());
-            mPanelRotator.logDebug("Float: " + mPanelRotator.getFloatRGB());
-        }
-
-        // Called every time the scheduler runs while the command is scheduled.
-        @Override
-        public void execute()
-        {
-        }
-
-        // Returns true when the command should end.
-        @Override
-        public boolean isFinished()
-        {
-            return true;
-        }
-
-        // Called once the command ends or is interrupted.
-        @Override
-        public void end(boolean interrupted)
-        {
         }
     }
 }
