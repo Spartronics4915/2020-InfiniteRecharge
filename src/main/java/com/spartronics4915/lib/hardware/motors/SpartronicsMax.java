@@ -130,7 +130,7 @@ public class SpartronicsMax implements SpartronicsMotor
     {
         if (RobotBase.isSimulation())
         {
-            return new SpartronicsSimulatedMotor(deviceNumber);
+            return new SpartronicsSimulatedMotor(deviceNumber, followerDeviceNumber);
         }
 
         // We only use SPARK MAXes for brushless motors

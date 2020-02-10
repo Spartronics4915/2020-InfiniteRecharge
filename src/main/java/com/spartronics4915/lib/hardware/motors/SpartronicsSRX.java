@@ -79,12 +79,12 @@ public class SpartronicsSRX implements SpartronicsMotor
         return new SpartronicsSRX(new TalonSRX(deviceNumber), sensorModel, feedbackDevice, null);
     }
 
-    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel) 
+    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel)
     {
         return makeMotor(deviceNumber, sensorModel, FeedbackDevice.QuadEncoder);
     }
 
-    public static SpartronicsMotor makeMotor(int deviceNumber) 
+    public static SpartronicsMotor makeMotor(int deviceNumber)
     {
         return makeMotor(deviceNumber, SensorModel.fromMultiplier(1));
     }
@@ -94,7 +94,7 @@ public class SpartronicsSRX implements SpartronicsMotor
     {
         if (RobotBase.isSimulation())
         {
-            return new SpartronicsSimulatedMotor(deviceNumber);
+            return new SpartronicsSimulatedMotor(deviceNumber, followerDeviceNumber);
         }
         var master = new TalonSRX(deviceNumber);
         var follower = new TalonSRX(followerDeviceNumber);
