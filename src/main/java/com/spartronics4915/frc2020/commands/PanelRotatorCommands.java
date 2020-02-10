@@ -1,9 +1,11 @@
 package com.spartronics4915.frc2020.commands;
 
+import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.subsystems.PanelRotator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class PanelRotatorCommands
 {
@@ -69,7 +71,6 @@ public class PanelRotatorCommands
      */
     public class SpinToColor extends CommandBase
     {
-        // TODO: This might be better as a FunctionalCommand.
         private final PanelRotator mPanelRotator;
         private String mTargetColor;
 
@@ -103,11 +104,11 @@ public class PanelRotatorCommands
             // Note that this is a comparison of Strings.
             // Conversions from native ColorSensorV3 values to one of four values is
             // done in PanelRotator.
-            if (mPanelRotator.getActualColor().equals(mTargetColor))
+            if (mPanelRotator.getRotatedColor().equals(mTargetColor))
                 return true;
-            else if (mPanelRotator.getActualColor().equals("Error"))
+            else if (mPanelRotator.getRotatedColor().equals("Error"))
             {
-                System.out.println("error—no data provided");
+                mPanelRotator.logError("Color Sensor: No data provided");
                 return true;
             }
             else
@@ -131,7 +132,7 @@ public class PanelRotatorCommands
      * Do note that it only spins the Color Wheel once. The operator will have to
      * push the corresponding button at least three times to complete Stage Two.
      */
-    public class SpinOnce extends CommandBase
+    public class SpinOneRotation extends CommandBase
     {
         private final PanelRotator mPanelRotator;
 
@@ -141,7 +142,7 @@ public class PanelRotatorCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public SpinOnce(PanelRotator panelRotator)
+        public SpinOneRotation(PanelRotator panelRotator)
         {
             mPanelRotator = panelRotator;
             addRequirements(mPanelRotator);
@@ -152,7 +153,7 @@ public class PanelRotatorCommands
         public void initialize()
         {
             eighths = 0;
-            currentColor = mPanelRotator.getActualColor();
+            currentColor = mPanelRotator.getRotatedColor();
             lastColor = currentColor;
         }
 
@@ -167,15 +168,23 @@ public class PanelRotatorCommands
         @Override
         public boolean isFinished()
         {
+            // If the confidence in Color is too low, we're likely looking up at the ceiling and
+            // not aligned with the Control Panel.
+            if (mPanelRotator.getColorConfidence() < Constants.PanelRotator.kConfidenceMinimum)
+            {
+                mPanelRotator.logError("Confidence too low!");
+                return true;
+            }
+
             // If the detected color has changed, iterate the eighths counter.
-            currentColor = mPanelRotator.getActualColor();
+            currentColor = mPanelRotator.getRotatedColor();
             if (currentColor != lastColor)
                 eighths++;
             lastColor = currentColor;
 
             // The color wheel is made up of two each of four total colors,
             // for a total of eight.
-            if (eighths == 8) // TODO: double check for off-by-one errors
+            if (eighths == 8)
                 return true;
             else
                 return false;
@@ -189,44 +198,15 @@ public class PanelRotatorCommands
         }
     }
 
-    public class ColorSensorTesting extends CommandBase
+    /**
+     * This {@link SequentialCommandGroup} queues the SpinOneRotation Command four times.
+     */
+    public class SpinFourRotations extends SequentialCommandGroup
     {
-        private final PanelRotator mPanelRotator;
-
-        // You should only use one subsystem per command. If multiple are needed, use a
-        // CommandGroup.
-        public ColorSensorTesting(PanelRotator panelRotator)
+        public SpinFourRotations(PanelRotator panelRotator)
         {
-            mPanelRotator = panelRotator;
-            addRequirements(mPanelRotator);
-        }
-
-        // Called when the command is initially scheduled.
-        @Override
-        public void initialize()
-        {
-            System.out.println("\nPredicted color: " + mPanelRotator.getActualColor());
-            System.out.println("18-bit: " + mPanelRotator.get18BitRGB());
-            System.out.println("Float: " + mPanelRotator.getFloatRGB());
-        }
-
-        // Called every time the scheduler runs while the command is scheduled.
-        @Override
-        public void execute()
-        {
-        }
-
-        // Returns true when the command should end.
-        @Override
-        public boolean isFinished()
-        {
-            return true;
-        }
-
-        // Called once the command ends or is interrupted.
-        @Override
-        public void end(boolean interrupted)
-        {
+            super(new SpinOneRotation(panelRotator), new SpinOneRotation(panelRotator),
+                new SpinOneRotation(panelRotator), new SpinOneRotation(panelRotator));
         }
     }
 }
