@@ -26,9 +26,7 @@ public class PanelRotator extends SpartronicsSubsystem
     private final ColorSensorV3 mColorSensor;
 
     private String sensedColor;
-    private int red;
-    private int green;
-    private int blue;
+    private String rotatedColor;
 
     private final ColorMatch mColorMatcher = new ColorMatch();
 
@@ -84,6 +82,7 @@ public class PanelRotator extends SpartronicsSubsystem
     // TODO: What will this return before Stage Two?
     /**
      * Gets the color the robot needs to spin to through game specific messages
+     *
      * @return A String color - either Red, Blue, Yellow, or Green
      */
     public String getTargetColor()
@@ -92,7 +91,9 @@ public class PanelRotator extends SpartronicsSubsystem
     }
 
     /**
-     * this gets the 18-bit output (max is 2^18 - 1, I think)
+     * This gets the 18-bit output (max is 2^18 - 1, I think)
+     *
+     * @return a comma-separated String of raw RGB values
      */
     public String get18BitRGB()
     {
@@ -106,7 +107,9 @@ public class PanelRotator extends SpartronicsSubsystem
     }
 
     /**
-     * this gets the 18-bit output but divided by 262143 to make a fraction between 0 & 1
+     * This gets the 18-bit output but divided by 262143 to make a fraction between 0 & 1
+     *
+     * @return a comma-separated String of RGB values, as a percentage
      */
     public String getFloatRGB()
     {
@@ -120,12 +123,12 @@ public class PanelRotator extends SpartronicsSubsystem
     }
 
     /**
-     * Finds what color the color sensor is seeing.
+     * Finds what actual color the color sensor is seeing.
+     *
      * @return A String color - either Red, Blue, Yellow, or Green
      */
     public String getActualColor()
     {
-        // TODO: You will need to verify that this builtin functionality works.
         Color detectedColor = mColorSensor.getColor();
         ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
 
@@ -140,44 +143,77 @@ public class PanelRotator extends SpartronicsSubsystem
         else
             sensedColor = "Error";
 
-        System.out.println(sensedColor);
+        dashboardPutString("Current Color (robot)", sensedColor);
+        dashboardPutNumber("ColorMatch Confidence", match.confidence);
         return sensedColor;
     }
 
     /**
-     * Sees if the beam sensor on the top is triggered
-     * @return whether the optical flag is broken
+     * The position of our color sensor and the field's has a difference of π/2, so
+     * we need to adjust targets accordingly.
+     * <p>
+     * See https://drive.google.com/uc?id=1BfoFJmpJg31txUqTG-OrJjeWgQdQsCNC
+     * for a diagram of how these line up.
+     * <p>
+     * This code could be less redundant by taking a String parameter and converting it,
+     * but it'll work out to be the same amount of code anyways, and this is clearer.
+     *
+     * @return The current Color of the wheel as detected by the FMS.
+     */
+    public String getRotatedColor()
+    {
+        Color detectedColor = mColorSensor.getColor();
+        ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
+
+        if (match.color.equals(Constants.PanelRotator.kRedTarget))
+            rotatedColor = "Blue";
+        else if (match.color.equals(Constants.PanelRotator.kGreenTarget))
+            rotatedColor = "Yellow";
+        else if (match.color.equals(Constants.PanelRotator.kBlueTarget))
+            rotatedColor = "Red";
+        else if (match.color.equals(Constants.PanelRotator.kYellowTarget))
+            rotatedColor = "Green";
+        else
+            rotatedColor = "Error";
+
+        dashboardPutString("Current Color (field)", rotatedColor);
+        dashboardPutNumber("ColorMatch Confidence", match.confidence);
+        return rotatedColor;
+    }
+
+    /**
+     * {@link ColorMatchResult} includes a confidence value.
+     *
+     * @return a percentage value from 0 to 1 with the
+     */
+    public double getColorConfidence()
+    {
+        Color detectedColor = mColorSensor.getColor();
+        ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
+
+        return match.confidence;
+    }
+
+    /**
+     * Checks if the top optical flag is broken
+     *
+     * @return whether the PanelManipulator is raised
      */
     public boolean getOpticalFlagUp()
     {
-        return mOpticalFlagUp.get() == Constants.PanelRotator.kOpticalFlagBroken; // TODO: adjust the constant if backwards
+        // TODO: Double-check this
+        return mOpticalFlagUp.get();
     }
 
-    // TODO: Double-check this
     /**
-     * @return if the bottom limit switch is triggered
+     * Checks if the bottom limit switch is triggered
+     *
+     * @return whether the PanelManipulator is lowered
      */
     public boolean getLimitSwitchDown()
     {
+        // TODO: Double-check this
         return mLimitSwitchDown.get();
-    }
-
-    // TODO: Multiple stop() methods are redundant unless we use motor safety
-
-    /**
-     * Stops the extension motor
-     */
-    public void stopRaiseMotor()
-    {
-        mRaiseMotor.setDutyCycle(0);
-    }
-
-    /**
-     * Stops the wheel motor
-     */
-    public void stopSpin()
-    {
-        mSpinMotor.setDutyCycle(0);
     }
 
     /**
