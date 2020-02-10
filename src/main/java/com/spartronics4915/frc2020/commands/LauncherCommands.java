@@ -7,12 +7,56 @@ import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
+/**
+ * Command overview:
+ *
+ *
+ * Indexer controls:
+ *
+ * VisionAutoAlign // NOTE: To my knowledge, revving takes longer than auto aligning, making a VisionAutoAlignWithoutRevving Command useless.
+ *
+ */
 public class LauncherCommands
 {
+    public class Target extends CommandBase
+    {
+        private final Launcher mLauncher;
+
+        public Target(Launcher launcher)
+        {
+            mLauncher = launcher;
+            addRequirements(mLauncher);
+        }
+
+        @Override
+        public void initialize()
+        {
+        }
+
+        @Override
+        public void execute()
+        {
+            mLauncher.runFlywheel();
+        }
+
+        @Override
+        public boolean isFinished()
+        {
+            // return true if at the correct angle and rotation
+            return false;
+        }
+
+        @Override
+        public void end(boolean interrupted)
+        {
+
+        }
+    }
+
     /*
      * Command for testing, runs flywheel at a given RPS
      * !DO NOT MAKE THE RPS MORE THAN 90!
@@ -33,14 +77,14 @@ public class LauncherCommands
         @Override
         public void initialize()
         {
-            mLauncher.setRPS(SmartDashboard.getNumber("Launcher/FlywheelRPS", 0));
+            mLauncher.setRPS((double) mLauncher.dashboardGetNumber("FlywheelRPS", 0));
         }
 
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
-            mLauncher.setRPS(SmartDashboard.getNumber("Launcher/FlywheelRPS", 0));
+            mLauncher.setRPS((double) mLauncher.dashboardGetNumber("FlywheelRPS", 0));
             mLauncher.runFlywheel();
         }
 
@@ -81,7 +125,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            SmartDashboard.putNumber("Launcher/TurretDirection", mLauncher.getTurretDirection());
+            mLauncher.dashboardPutNumber("Launcher/TurretDirection", mLauncher.getTurretDirection());
         }
 
         // Returns true when the command should end.
@@ -115,15 +159,15 @@ public class LauncherCommands
         @Override
         public void initialize()
         {
-            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle", 0));
+            mLauncher.setPitch((double) mLauncher.dashboardGetNumber("Launcher/TurretAimAngle", 0));
         }
 
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
-            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle", 0));
-            mLauncher.rotateHood();
+            mLauncher.setPitch((double) mLauncher.dashboardGetNumber("Launcher/TurretAimAngle", 0));
+            mLauncher.raiseHood();
         }
 
         // Returns true when the command should end.
