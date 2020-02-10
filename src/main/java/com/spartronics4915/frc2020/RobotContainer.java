@@ -90,8 +90,8 @@ public class RobotContainer
     public RobotContainer()
     {
         mClimber = new Climber();
-        mLauncher = new Launcher();
         mIntake = new Intake();
+        mLauncher = new Launcher();
         mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
         mClimberCommands = new ClimberCommands();
@@ -99,13 +99,17 @@ public class RobotContainer
         mLauncherCommands = new LauncherCommands();
         mPanelRotatorCommands = new PanelRotatorCommands();
 
-        // mClimber.setDefaultCommand(new InstantCommand(mClimber::stop, mClimber));
-        // mIntake.setDefaultCommand(mIntakeCommands.new IntakeDefaultCommand(mIntake));
+        // 👏 Motor 👏 Safety 👏
+        mClimber.setDefaultCommand(new InstantCommand(mClimber::stop, mClimber));
+        mIntake.setDefaultCommand(new InstantCommand(mIntake::stop, mIntake));
         mLauncher.setDefaultCommand(mLauncherCommands.new LauncherDefaultCommand(mLauncher));
-        // mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new PanelRotatorDefaultCommand(mPanelRotator));
+        mPanelRotator.setDefaultCommand(new InstantCommand(mPanelRotator::stop, mPanelRotator));
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
+
+        configureJoystickBindings();
+        configureButtonBoardBindings();
 
         T265Camera slamra;
         try
@@ -118,29 +122,31 @@ public class RobotContainer
             slamra = null;
             Logger.exception(e);
         }
-        mDrive = new Drive();
-        mStateEstimator = new RobotStateEstimator(mDrive,
-            new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
-            slamra);
 
-        configureJoystickBindings();
-        configureButtonBoardBindings();
+        mDrive = new Drive();
+        mStateEstimator =
+            new RobotStateEstimator(mDrive,
+                new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
+                    slamra);
 
         System.out.println(
           new TrajectoryContainer.DestinationCouple(Destination.ShieldGeneratorFarRight,
                 Destination.MiddleShootingPosition).hashCode());
 
-        mAutoModes = new AutoMode[] {kDefaultAutoMode, new AutoMode("Drive Straight",
-            new TrajectoryTrackerCommand(mDrive,
+        mAutoModes = new AutoMode[]
+        {
+            kDefaultAutoMode,
+            new AutoMode("Drive Straight",
+                new TrajectoryTrackerCommand(mDrive,
                 TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight),
                 mRamseteController, mStateEstimator.getEncoderRobotStateMap())),
             new AutoMode("Characterize Drive",
-                new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter))};
+                new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter))
+        };
 
         mStateEstimator.resetRobotStateMaps(TrajectoryContainer.middle.mStartPoint);
 
-        String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
-            .collect(Collectors.joining(","));
+        String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name).collect(Collectors.joining(","));
         SmartDashboard.putString(kAutoOptionsKey, autoModeList);
     }
 
@@ -167,17 +173,9 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
-
-        new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
-        new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
-        new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
-        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
-            this::throughTrench, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
-        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
-            this::toControlPanel, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
     }
 
-s    private void configureButtonBoardBindings()
+    private void configureButtonBoardBindings()
     {
         new JoystickButton(mButtonBoard, 0).whenPressed(mIntakeCommands.new Harvest(mIntake));
         new JoystickButton(mButtonBoard, 1).whenPressed(mIntakeCommands.new Stop(mIntake));
@@ -250,11 +248,13 @@ s    private void configureButtonBoardBindings()
     public TimedTrajectory<Pose2dWithCurvature> throughTrench()
     {
         ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
-        Pose2d[] intermediate = new Pose2d[] {
+        Pose2d[] intermediate = new Pose2d[]
+        {
             new Pose2d(Units.inchesToMeters(424), Units.inchesToMeters(135),
                 Rotation2d.fromDegrees(180)),
             new Pose2d(Units.inchesToMeters(207), Units.inchesToMeters(135),
-                Rotation2d.fromDegrees(180))};
+                Rotation2d.fromDegrees(180))
+        };
         for (int i = 0; i < intermediate.length; i++)
         {
             Pose2d pose = intermediate[i];
