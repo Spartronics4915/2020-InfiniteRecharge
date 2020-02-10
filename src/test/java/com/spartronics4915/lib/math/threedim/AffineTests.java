@@ -167,7 +167,13 @@ class AffineTests
     @Test
     void testApplication()
     {
+        String camToMountStr = "o 10 10 8 q .92388 .38683 0 0";
+        String mountToRobotStr = "o 0 0 0 q .5 .5 -.5 -.5";
 
+        Affine3 camToMount = new Affine3(camToMountStr);
+        Affine3 mountToRobot = new Affine3(mountToRobotStr);
+        
+        Vec3 targetInCamera = new Vec3(0, 0, -120);
 
     }
 
