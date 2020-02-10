@@ -7,10 +7,11 @@ import java.util.stream.Collectors;
 
 import com.spartronics4915.frc2020.TrajectoryContainer.Destination;
 import com.spartronics4915.frc2020.commands.*;
+import com.spartronics4915.frc2020.subsystems.*;
+import com.spartronics4915.frc2020.subsystems.LED.BlingState;
 import com.spartronics4915.lib.hardware.sensors.T265Camera;
 import com.spartronics4915.lib.hardware.sensors.T265Camera.CameraJNIException;
 import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
-import com.spartronics4915.lib.subsystems.drive.CharacterizeDriveBaseCommand;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2dWithCurvature;
 import com.spartronics4915.lib.math.twodim.geometry.Rectangle2d;
@@ -19,12 +20,11 @@ import com.spartronics4915.lib.math.twodim.geometry.Translation2d;
 import com.spartronics4915.lib.math.twodim.trajectory.constraints.TimingConstraint;
 import com.spartronics4915.lib.math.twodim.trajectory.constraints.VelocityLimitRegionConstraint;
 import com.spartronics4915.lib.math.twodim.trajectory.types.TimedTrajectory;
+import com.spartronics4915.lib.subsystems.drive.CharacterizeDriveBaseCommand;
 import com.spartronics4915.lib.subsystems.drive.TrajectoryTrackerCommand;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 import com.spartronics4915.lib.util.Kinematics;
-import com.spartronics4915.frc2020.subsystems.*;
-import com.spartronics4915.frc2020.subsystems.LED.BlingState;
 import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -73,9 +73,9 @@ public class RobotContainer
     private final PanelRotator mPanelRotator;
     private final LED mLED;
     private final ClimberCommands mClimberCommands;
+    private final IntakeCommands mIntakeCommands;
     private final LauncherCommands mLauncherCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
-    // private final IndexerCommandFactory mExampleCommandFactory; not ready yet
 
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
@@ -89,20 +89,20 @@ public class RobotContainer
      */
     public RobotContainer()
     {
-        mLauncher = new Launcher();
         mClimber = new Climber();
+        mLauncher = new Launcher();
         mIntake = new Intake();
         mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
         mClimberCommands = new ClimberCommands();
+        mIntakeCommands = new IntakeCommands();
         mLauncherCommands = new LauncherCommands();
         mPanelRotatorCommands = new PanelRotatorCommands();
-        // mExampleCommandFactory = new IndexerCommandFactory(mLED);
 
-        //mClimber.setDefaultCommand(mClimberCommands.new ClimberDefaultCommand(mClimber));
-        //mIntake.setDefaultCommand(mIntakeCommands.new IntakeDefaultCommand(mIntake));
+        // mClimber.setDefaultCommand(new InstantCommand(mClimber::stop, mClimber));
+        // mIntake.setDefaultCommand(mIntakeCommands.new IntakeDefaultCommand(mIntake));
         mLauncher.setDefaultCommand(mLauncherCommands.new LauncherDefaultCommand(mLauncher));
-        //mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new PanelRotatorDefaultCommand(mPanelRotator));
+        // mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new PanelRotatorDefaultCommand(mPanelRotator));
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
@@ -167,6 +167,7 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
+
         new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
         new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
         new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
@@ -176,13 +177,11 @@ public class RobotContainer
             this::toControlPanel, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
     }
 
-    private void configureButtonBoardBindings()
+s    private void configureButtonBoardBindings()
     {
-        /*
-        new JoystickButton(mButtonBoard, 0).whenPressed(new IntakeCommands.Intake(mIntake));
-        new JoystickButton(mButtonBoard, 1).whenPressed(new IntakeCommands.Stop(mIntake));
-        new JoystickButton(mButtonBoard, 2).whileHeld(new IntakeCommands.Unjam(mIntake));
-        */
+        new JoystickButton(mButtonBoard, 0).whenPressed(mIntakeCommands.new Harvest(mIntake));
+        new JoystickButton(mButtonBoard, 1).whenPressed(mIntakeCommands.new Stop(mIntake));
+        new JoystickButton(mButtonBoard, 2).whileHeld(mIntakeCommands.new Eject(mIntake)); // TODO: This should be an Unjam command
 
         /*
         new JoystickButton(mButtonBoard, 3).whenPressed(new LauncherCommands.AimLow(mLauncher));
@@ -192,15 +191,15 @@ public class RobotContainer
 
         new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
         new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
-        new JoystickButton(mButtonBoard, 8)
-            .whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
-        new JoystickButton(mButtonBoard, 9)
-            .whenPressed(mPanelRotatorCommands.new SpinOnce(mPanelRotator));
+        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
+        new JoystickButton(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinOnce(mPanelRotator)); // TODO: set noninterruptable
 
         new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber));
         new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Retract(mClimber));
         new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new WinchPrimary(mClimber)
             .andThen(mClimberCommands.new WinchSecondary(mClimber)));
+
+        // TODO: Move timed Command implementation into here
 
         /*
         new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
@@ -210,19 +209,22 @@ public class RobotContainer
         */
     }
 
-    // configureTestCommands is not actually run. It is declared public to
-    // quell warnings. Its use is to test out different construction idioms
-    // for externally defined commands.
+    /**
+     * configureTestCommands is not actually run. It is declared public to quell warnings.
+     * Its use is to test out different construction idioms for externally defined commands.
+     */
     public void configureTestCommands()
     {
-        // in this style object construction happens in the CommandFactory
-        // this.mExampleCommandFactory.MakeCmd(IndexerCommandFactory.CmdEnum.kTest1);
-
-        // in this mode we construct things here, we must pass in parameters
-        // that are required during construction, since the outer class
-        // member variables aren't accessible until after construction.
-        // this.mExampleCommandFactory.new Test5(this.mLED); // an InstantCommand
-        // this.mExampleCommandFactory.new Test6(this.mLED); // a StartEndCommand
+        /**
+         * in this style object construction happens in the CommandFactory
+         * this.mExampleCommandFactory.MakeCmd(IndexerCommandFactory.CmdEnum.kTest1);
+         *
+         * in this mode we construct things here, we must pass in parameters
+         * that are required during construction, since the outer class
+         * member variables aren't accessible until after construction.
+         * this.mExampleCommandFactory.new Test5(this.mLED); // an InstantCommand
+         * this.mExampleCommandFactory.new Test6(this.mLED); // a StartEndCommand
+         */
     }
 
     /**
