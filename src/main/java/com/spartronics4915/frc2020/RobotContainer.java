@@ -178,29 +178,29 @@ public class RobotContainer
 
     private void configureButtonBoardBindings()
     {
-        new JoystickButton(mButtonBoard, 0).whenPressed(mIntakeCommands.new Harvest(mIntake));
-        new JoystickButton(mButtonBoard, 1).whenPressed(mIntakeCommands.new Stop(mIntake)); // Somewhat redundant, but works well
-        new JoystickButton(mButtonBoard, 2).whileHeld(mIntakeCommands.new Eject(mIntake)); // TODO: This should be an Unjam command
+        // new JoystickButton(mButtonBoard, 0).whenPressed(LauncherCommands.new Launch(mLauncher));
+        // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(LauncherCommands.new Rev(mLauncher));
 
-        /*
-        new JoystickButton(mButtonBoard, 3).whenPressed(new LauncherCommands.AimLow(mLauncher));
-        new JoystickButton(mButtonBoard, 4).whenPressed(new LauncherCommands.Launch(mLauncher));
-        new JoystickButton(mButtonBoard, 5).whenPressed(new LauncherCommands.AimHigh(mLauncher));
-        */
+        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(mIntakeCommands.new Harvest(mIntake));
+        new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake)); // TODO: This should be an Unjam command
+
+        new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));
+        new JoystickButton(mButtonBoard, 5).whileHeld(mClimberCommands.new Extend(mClimber));
 
         new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
         new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
-        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
-        new JoystickButton(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinOnce(mPanelRotator)); // TODO: set noninterruptable
+        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinOnce(mPanelRotator)); // TODO: set noninterruptable
+        new JoystickButton(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
 
-        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber));
-        new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Retract(mClimber));
+        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber)
+            .withTimeout(Constants.Climber.kTimerExtenderMin));
+        new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Extend(mClimber)
+            .withTimeout(Constants.Climber.kTimerExtenderMax));
+
         new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new WinchPrimary(mClimber)
             .andThen(mClimberCommands.new WinchSecondary(mClimber)));
 
-        // TODO: Move timed Command implementation into here
-
-        /*
+        /* Four-way Joystick
         new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
         new JoystickButton(mButtonBoard, 16).whenHeld(new TurretLowerCommand(mLauncher));
         new JoystickButton(mButtonBoard, 17).whenHeld(new TurretLeftCommand(mLauncher));
