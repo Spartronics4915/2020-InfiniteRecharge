@@ -16,9 +16,6 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 
-/**
- * TODO: Discuss merits of using Rotation2d vs Doubles internally
- */
 public class Launcher extends SpartronicsSubsystem
 {
     private SpartronicsMotor mFlywheelMasterMotor;
@@ -93,7 +90,6 @@ public class Launcher extends SpartronicsSubsystem
             Constants.Launcher.AngleTable, Constants.Launcher.RPSTable);
 
         reset();
-        dashboardPutNumber("Flywheel RPS", 0);
     }
 
     /**
@@ -138,7 +134,9 @@ public class Launcher extends SpartronicsSubsystem
     {
         // FIXME
         // need enc or pot
+        // check if exceeds limits
         mTurretMotor.setPosition(absoluteAngle);
+        dashboardPutNumber("targetRotation", targetRotation);
     }
 
     /**
@@ -238,7 +236,8 @@ public class Launcher extends SpartronicsSubsystem
      */
     public Rotation2d calcPitch(double distance)
     {
-        Rotation2d angle = mLookupTable.getInterpolated(new InterpolatingDouble(distance)).hoodAngle;
+        Rotation2d angle = mLookupTable.getInterpolated(
+            new InterpolatingDouble(distance)).hoodAngle;
         return angle;
     }
 
