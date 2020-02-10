@@ -65,14 +65,16 @@ public final class Constants
             public static final double kSpeed = 1;
         }
 
-        public static final int kOpticalFlagId = 8; // A8
-        public static final int kSlotProxSensorId = 4; // DIO4
-        public static final int kIntakeSensorId = 5; // DIO5
+        public static final int kOpticalFlagId = 8; // Analog
+        public static final int kSlotProxSensorId = 4; // Digital
+        public static final int kIntakeSensorId = 5; // Digital
     }
 
     public static final class Intake
     {
         public static final int kHarvestMotorId = 12;
+        public static final int kProximitySensorId = 5; // Digital
+
         public static final double kHarvestSpeed = 0.5;
         public static final double kEjectSpeed = -0.5;
     }
@@ -81,8 +83,8 @@ public final class Constants
     {
         public static final int kFlywheelMasterId = 7;
         public static final int kFlywheelFollowerId = -1; // Solid brass
-        public static final int kAngleAdjusterMasterId = 0; // PWM0
-        public static final int kAngleAdjusterFollowerId = 1; // PWM1
+        public static final int kAngleAdjusterMasterId = 0; // PWM
+        public static final int kAngleAdjusterFollowerId = 1; // PWM
         public static final int kTurretId = 8;
         public static final int kTurretPotentiometerId = 0;
 
@@ -114,8 +116,8 @@ public final class Constants
     {
         public static final int kLimitSwitchDownId = 6;
         public static final int kOpticalFlagUpId = 7;
-        public static final int kRaiseMotorId = 13;
-        public static final int kSpinMotorId = 14;
+        public static final int kSpinMotorId = 13;
+        public static final int kRaiseMotorId = 14;
 
         public static final double kRaiseSpeed = 0.5;
         public static final double kLowerSpeed = -0.5;
