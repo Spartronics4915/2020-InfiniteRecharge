@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -100,10 +101,10 @@ public class RobotContainer
         mPanelRotatorCommands = new PanelRotatorCommands();
 
         // 👏 Motor 👏 Safety 👏
-        mClimber.setDefaultCommand(new InstantCommand(mClimber::stop, mClimber));
-        mIntake.setDefaultCommand(new InstantCommand(mIntake::stop, mIntake));
+        mClimber.setDefaultCommand(new RunCommand(mClimber::stop, mClimber));
+        mIntake.setDefaultCommand(new RunCommand(mIntake::stop, mIntake));
         mLauncher.setDefaultCommand(mLauncherCommands.new LauncherDefaultCommand(mLauncher));
-        mPanelRotator.setDefaultCommand(new InstantCommand(mPanelRotator::stop, mPanelRotator));
+        mPanelRotator.setDefaultCommand(new RunCommand(mPanelRotator::stop, mPanelRotator));
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
@@ -178,7 +179,7 @@ public class RobotContainer
     private void configureButtonBoardBindings()
     {
         new JoystickButton(mButtonBoard, 0).whenPressed(mIntakeCommands.new Harvest(mIntake));
-        new JoystickButton(mButtonBoard, 1).whenPressed(mIntakeCommands.new Stop(mIntake));
+        new JoystickButton(mButtonBoard, 1).whenPressed(mIntakeCommands.new Stop(mIntake)); // Somewhat redundant, but works well
         new JoystickButton(mButtonBoard, 2).whileHeld(mIntakeCommands.new Eject(mIntake)); // TODO: This should be an Unjam command
 
         /*

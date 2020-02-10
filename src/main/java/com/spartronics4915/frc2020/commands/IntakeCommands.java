@@ -73,7 +73,7 @@ public class IntakeCommands
      * Note that this is not an Unjam command. The {@link Intake} subsystem only
      * controls the mechanical vector roller.
      */
-    public class Eject extends StartEndCommand
+    public class Eject extends StartEndCommand // TODO: Does this execute(), or initialize()?
     {
         public Eject(Intake intake)
         {
