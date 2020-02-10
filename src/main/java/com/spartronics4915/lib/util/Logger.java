@@ -18,7 +18,7 @@ public class Logger
 {
 
     private static final UUID sRunInstanceUUID = UUID.randomUUID();
-    public static int sVerbosity = 2; // 0: notices and above,  1: info and above, 2: all
+    public static int sVerbosity = 2; // 0: notices and above, 1: info and above, 2: all
     private static final DateFormat sDateFormat = new SimpleDateFormat("hh:mm:ss");
 
     public static void setVerbosity(String nm)
@@ -82,8 +82,7 @@ public class Logger
     {
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
-        logMarker("EXCEPT  " + e.getMessage() + 
-            " trace:\n" + sw.toString());
+        logMarker("EXCEPT  " + e.getMessage() + " trace:\n" + sw.toString());
     }
 
     public static void error(String m)
@@ -139,7 +138,8 @@ public class Logger
         printMarker(mark);
         if (nullableException != null)
             nullableException.printStackTrace();
-        try (PrintWriter writer = new PrintWriter(new FileWriter(Paths.get(System.getProperty("user.home"), "crash_tracking.txt").toString(), true)))
+        try (PrintWriter writer = new PrintWriter(new FileWriter(
+            Paths.get(System.getProperty("user.home"), "crash_tracking.txt").toString(), true)))
         {
             writer.print(sRunInstanceUUID.toString());
             writer.print(", ");

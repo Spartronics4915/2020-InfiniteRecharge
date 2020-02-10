@@ -10,14 +10,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  * We introduce an abstract SpartronicsSubsystem class to provide uniformity
  * in logging, smartdashboard and initialization behavior to all subclasses.
- * 
+ *
  * The Subsystem abstract class, which serves as a basic framework for all robot
- * subsystems. Each subsystem outputs commands to SmartDashboard, has a stop 
+ * subsystems. Each subsystem outputs commands to SmartDashboard, has a stop
  * routine (for after each match), and a routine to zero all sensors, which helps
  * with calibration.
  * <p>
  * All Subsystems only have one instance (after all, one robot does not have two
- * drivetrains), and functions get the instance of the drivetrain and act 
+ * drivetrains), and functions get the instance of the drivetrain and act
  * accordingly.
  */
 public abstract class SpartronicsSubsystem extends SubsystemBase
@@ -134,6 +134,6 @@ public abstract class SpartronicsSubsystem extends SubsystemBase
         // this.mName/currentCommand contains the current command for
         // a subsystem.
         dashboardPutString("currentCommand",
-                currentCommand != null ? currentCommand.getName() : "none");
+            currentCommand != null ? currentCommand.getName() : "none");
     }
 }

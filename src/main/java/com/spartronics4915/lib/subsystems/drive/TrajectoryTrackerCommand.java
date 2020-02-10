@@ -12,28 +12,32 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
-public class TrajectoryTrackerCommand implements Command {
-
+public class TrajectoryTrackerCommand implements Command
+{
     private final Subsystem mSubsystemToRequire;
     private final TrajectoryTrackerDriveBase mDriveBase;
     private final Supplier<TimedTrajectory<Pose2dWithCurvature>> mTrajectory;
     private final TrajectoryTracker mTracker;
     private final RobotStateMap mRobotPositionMap;
 
-    public TrajectoryTrackerCommand(AbstractDrive driveSubsystem, TimedTrajectory<Pose2dWithCurvature> trajectory,
-            TrajectoryTracker tracker, RobotStateMap robotPositionMap) {
+    public TrajectoryTrackerCommand(AbstractDrive driveSubsystem,
+        TimedTrajectory<Pose2dWithCurvature> trajectory, TrajectoryTracker tracker,
+        RobotStateMap robotPositionMap)
+    {
         this(driveSubsystem, driveSubsystem, trajectory, tracker, robotPositionMap);
     }
 
     public TrajectoryTrackerCommand(Subsystem driveSubsystem, TrajectoryTrackerDriveBase driveBase,
-            TimedTrajectory<Pose2dWithCurvature> trajectory, TrajectoryTracker tracker,
-            RobotStateMap robotPositionMap) {
+        TimedTrajectory<Pose2dWithCurvature> trajectory, TrajectoryTracker tracker,
+        RobotStateMap robotPositionMap)
+    {
         this(driveSubsystem, driveBase, () -> trajectory, tracker, robotPositionMap);
     }
 
     public TrajectoryTrackerCommand(Subsystem driveSubsystem, TrajectoryTrackerDriveBase driveBase,
-            Supplier<TimedTrajectory<Pose2dWithCurvature>> trajectorySupplier, TrajectoryTracker tracker,
-            RobotStateMap robotPositionMap) {
+        Supplier<TimedTrajectory<Pose2dWithCurvature>> trajectorySupplier,
+        TrajectoryTracker tracker, RobotStateMap robotPositionMap)
+    {
         mSubsystemToRequire = driveSubsystem;
         mDriveBase = driveBase;
         mTrajectory = trajectorySupplier;
@@ -42,29 +46,35 @@ public class TrajectoryTrackerCommand implements Command {
     }
 
     @Override
-    public void initialize() {
+    public void initialize()
+    {
         mTracker.reset(mTrajectory.get());
     }
 
     @Override
-    public void execute() {
-        var nextState = mTracker.nextState(mRobotPositionMap.getFieldToVehicle(Timer.getFPGATimestamp()),
-                Timer.getFPGATimestamp());
+    public void execute()
+    {
+        var nextState = mTracker.nextState(
+            mRobotPositionMap.getFieldToVehicle(Timer.getFPGATimestamp()),
+            Timer.getFPGATimestamp());
         mDriveBase.setOutput(nextState);
     }
 
     @Override
-    public void end(boolean interrupted) {
+    public void end(boolean interrupted)
+    {
         mDriveBase.zeroOutputs();
     }
 
     @Override
-    public boolean isFinished() {
+    public boolean isFinished()
+    {
         return mTracker.isFinished();
     }
 
     @Override
-    public Set<Subsystem> getRequirements() {
+    public Set<Subsystem> getRequirements()
+    {
         return Set.of(mSubsystemToRequire);
     }
 }
