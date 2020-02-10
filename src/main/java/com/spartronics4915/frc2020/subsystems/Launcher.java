@@ -28,7 +28,7 @@ public class Launcher extends SpartronicsSubsystem
     private Servo mAngleAdjusterMasterServo;
     private Servo mAngleAdjusterFollowerServo;
 
-    private InterpolatingTreeMap<InterpolatingDouble, LauncherState> table;
+    private InterpolatingTreeMap<InterpolatingDouble, LauncherState> mLookupTable;
 
     private double targetRPS;
     private double targetAngle;
@@ -226,7 +226,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public double calcRPS(double distance)
     {
-        return table.getInterpolated(
+        return mLookupTable.getInterpolated(
             new InterpolatingDouble(distance)).flywheelSpeedRPS.value;
     }
 
@@ -238,18 +238,18 @@ public class Launcher extends SpartronicsSubsystem
      */
     public Rotation2d calcPitch(double distance)
     {
-        Rotation2d angle = table.getInterpolated(new InterpolatingDouble(distance)).hoodAngle;
+        Rotation2d angle = mLookupTable.getInterpolated(new InterpolatingDouble(distance)).hoodAngle;
         return angle;
     }
 
     public void setUpLookupTable(int size, double[] distances, double[] angles, double[] rps)
     {
-        table = new InterpolatingTreeMap<>();
-        table.put(new InterpolatingDouble(0.1),
+        mLookupTable = new InterpolatingTreeMap<>();
+        mLookupTable.put(new InterpolatingDouble(0.1),
             new LauncherState(Rotation2d.fromDegrees(45.0), new InterpolatingDouble(90.0)));
         for (int k = 0; k < size; k++)
         {
-            table.put(new InterpolatingDouble(distances[k]), new LauncherState(
+            mLookupTable.put(new InterpolatingDouble(distances[k]), new LauncherState(
                 Rotation2d.fromDegrees(angles[k]), new InterpolatingDouble(rps[k])));
         }
     }
