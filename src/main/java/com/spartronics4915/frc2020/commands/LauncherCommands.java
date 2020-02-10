@@ -47,6 +47,7 @@ public class LauncherCommands
         public boolean isFinished()
         {
             // return true if at the correct angle and rotation
+            // will kick out to defaultcommand and continue to run until out of range
             return false;
         }
 
@@ -167,7 +168,7 @@ public class LauncherCommands
         public void execute()
         {
             mLauncher.setPitch((double) mLauncher.dashboardGetNumber("Launcher/TurretAimAngle", 0));
-            mLauncher.raiseHood();
+            mLauncher.adjustHood();
         }
 
         // Returns true when the command should end.

@@ -106,7 +106,7 @@ public class Launcher extends SpartronicsSubsystem
     /**
      * Raises the hood to the targetAngle
      */
-    public void raiseHood()
+    public void adjustHood()
     {
         mAngleAdjusterMasterServo.setAngle(targetAngle.getDegrees());
         mAngleAdjusterFollowerServo.setAngle(targetAngle.getDegrees());
