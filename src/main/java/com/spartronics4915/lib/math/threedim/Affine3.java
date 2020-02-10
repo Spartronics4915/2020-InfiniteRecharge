@@ -58,9 +58,10 @@ import org.ejml.dense.fixed.CommonOps_DDF4;
  * with other graphics systems, e.g. OpenGL's glMultMatrixd().
  */
 
-class Affine3
+public class Affine3
 {
-    /* static convenience methods  -------------------------------------*/
+    /* static convenience methods and objects --------------------------------*/
+    public final static Affine3 Identity = new Affine3();
 
     public static Affine3 fromRotation(double angle, Vec3 axis)
     {
@@ -77,6 +78,11 @@ class Affine3
         return new Affine3(x, y, z);
     }
 
+    public static Affine3 fromTranslation(Vec3 xlate)
+    {
+        return new Affine3(xlate);
+    }
+
     public static Affine3 fromTranslation(double x, double y, double z)
     {
         return new Affine3(x, y, z);
@@ -91,7 +97,7 @@ class Affine3
     {
         Affine3 result = new Affine3();
         for(Affine3 a : alist)
-            result.concatenate(a);
+            result.multiply(a);
         return result;
     }
 
@@ -107,6 +113,15 @@ class Affine3
     public Affine3(DMatrix4x4 m)
     {
         this.mMatrix = m;
+    }
+
+    /**
+     * Construct an affine matrix as a translation
+     * @param xlate - A Vec3 expressing the translation amount.
+     */
+    public Affine3(Vec3 xlate)
+    {
+        this(xlate.a1, xlate.a2, xlate.a3);
     }
 
     /**
@@ -175,6 +190,10 @@ class Affine3
         this.mMatrix = result.mMatrix;
     } 
 
+    /**
+     * Construct an Affine3 given a Quaternion.
+     * @param q - A quaternion representation of rotation.
+     */
     public Affine3(Quaternion q)
     {
         this.mMatrix = q.asDMatrix4x4();
@@ -243,13 +262,18 @@ class Affine3
 
     /**
      * Expose our matrix represention to the outer world.
-     * @return
+     * @return ejml DMatrix4x4 
      */
     public DMatrix4x4 asMatrix()
     {
         return this.mMatrix;
     }
 
+    /**
+     * Convert the matrix to a compact string representation suitable for
+     * atomic transmission via networkt tables.
+     * @return compact string representation
+     */
     public String asString()
     {
         Quaternion q = new Quaternion(this, false); // extract quaternion
@@ -311,10 +335,10 @@ class Affine3
      * @param dir - unit vector representing the rotational pole
      * @return this (for chaining)
      */
-    Affine3 rotate(double angle, Vec3 dir)
+    public Affine3 rotate(double angle, Vec3 dir)
     {
         Affine3 rot = Affine3.fromRotation(angle, dir);
-        this.concatenate(rot);
+        this.multiply(rot);
         return this;
     }
 
@@ -324,15 +348,15 @@ class Affine3
      * @param v - vector representing translation
      * @return this (for chaining)
      */
-    Affine3 translate(Vec3 v)
+    public Affine3 translate(Vec3 v)
     {
         return this.translate(v.a1, v.a2, v.a3);
     }
 
-    Affine3 translate(double x, double y, double z)
+    public Affine3 translate(double x, double y, double z)
     {
         Affine3 xlate = Affine3.fromTranslation(x, y, z);
-        this.concatenate(xlate);
+        this.multiply(xlate);
         return this;
     }
 
@@ -342,26 +366,47 @@ class Affine3
     }
     
     /**
-     * Applies the inversion operation to this.
-     * @return this (for chaining)
+     * Applies the matrix inverse operation to this.
      */
-    Affine3 invert()
+    public void invert()
     {
         DMatrix4x4 inv = new DMatrix4x4();
         CommonOps_DDF4.invert(this.mMatrix, inv);
         this.mMatrix = inv;
-        return this;
     }
 
     /**
-     * Combine the effects of rhs with the current transformation.
+     * Compute matrix inverse
+     * @return the inverse of this Affine3
+     */
+    public Affine3 asInverse()
+    {
+        DMatrix4x4 inv = new DMatrix4x4();
+        CommonOps_DDF4.invert(this.mMatrix, inv);
+        return new Affine3(inv);
+    }
+
+    /**
+     * Apply the transform to this via matrix multiplication.
      * @param rhs
      */
-    public void concatenate(final Affine3 rhs)
+    public void multiply(final Affine3 rhs)
     {
         DMatrix4x4 result = new DMatrix4x4();
         CommonOps_DDF4.mult(this.mMatrix, rhs.mMatrix, result);
         this.mMatrix = result;
+    }
+
+    /**
+     * return the result of matrix multiplication of this and rhs.
+     * @param rhs
+     * @return the product of this and rhs.
+     */
+    public Affine3 asProduct(final Affine3 rhs)
+    {
+        DMatrix4x4 result = new DMatrix4x4();
+        CommonOps_DDF4.mult(this.mMatrix, rhs.mMatrix, result);
+        return new Affine3(result);
     }
 
     public Vec3 transformPoint(final Vec3 in)

@@ -67,24 +67,50 @@ class AffineTests
         assertEquals(v2.a2, 4, kEpsilon);
         assertEquals(v2.a3, 6, kEpsilon);
 
-        Vec3 xAxis = new Vec3(1,0,0);
-        Vec3 yAxis = new Vec3(0,1,0);
-        Vec3 zAxis = new Vec3(0,0,1);
-        Vec3 origin = new Vec3(0,0,0);
-
         // simple rotation
-        Affine3 R1 = Affine3.fromRotation(90, zAxis);
-        R1.print();
-        Vec3 p1 = R1.transformVector(xAxis);
-        p1.print();
-        assert(p1.equals(yAxis, kEpsilon));
+        Affine3 R1 = Affine3.fromRotation(90, Vec3.ZAxis);
+        Vec3 p1 = R1.transformVector(Vec3.XAxis);
+        assert(p1.equals(Vec3.YAxis, kEpsilon));
 
         // rotation around the point [1,0,0]
-        Affine3 R2 = Affine3.fromRotation(90, zAxis, new Vec3(1,0,0));
-        R2.print();
-        Vec3 p2 = R2.transformPoint(origin);
-        p2.print();
+        Affine3 R2 = Affine3.fromRotation(90, Vec3.ZAxis, new Vec3(1,0,0));
+        Vec3 p2 = R2.transformPoint(Vec3.ZeroPt);
         assert(p2.equals(new Vec3(1, -1, 0), kEpsilon));
+    }
+
+    @Test
+    public void testConcat()
+    {
+        // test concatenation
+        Affine3 C1 = Affine3.fromRotation(15, Vec3.ZAxis);
+        Affine3 C = new Affine3();
+        // 6x15deg concats => 90 degree
+        C.multiply(C1);
+        C.multiply(C1);
+        C.multiply(C1);
+        C.multiply(C1);
+        C.multiply(C1);
+        C.multiply(C1);
+        assert(C.equals(Affine3.fromRotation(90, Vec3.ZAxis), kEpsilon));
+
+        // rotate before translate
+        Vec3 diag = new Vec3(1,1,1);
+        Affine3 T1 = Affine3.fromRotation(15, diag);
+        T1.translate(3,4,5);
+        Vec3 t1p = T1.transformPoint(Vec3.ZeroPt);
+        assertEquals(t1p.a1, 3.183503, 1e-5);
+        assertEquals(t1p.a2, 3.701142, 1e-5);
+        assertEquals(t1p.a3, 5.115355, 1e-5);
+        Vec3 t1d = T1.transformVector(diag);
+        assert(t1d.equals(diag, kEpsilon));
+
+        // translate before rotate
+        Affine3 T2 = Affine3.fromTranslation(3,4,5);
+        T2.rotate(15, new Vec3(1,1,1));
+        Vec3 t2p = T2.transformPoint(Vec3.ZeroPt);
+        assert(t2p.equals(new Vec3(3,4,5), kEpsilon));
+        Vec3 t2d = T2.transformVector(diag);
+        assert(t2d.equals(diag, kEpsilon));
     }
 
     @Test
@@ -125,7 +151,6 @@ class AffineTests
         {
             assert(v.equals(A1ans[i++]));
         }
-
     }
 
     @Test
@@ -163,18 +188,4 @@ class AffineTests
         """
         */
     }
-
-    @Test
-    void testApplication()
-    {
-        String camToMountStr = "o 10 10 8 q .92388 .38683 0 0";
-        String mountToRobotStr = "o 0 0 0 q .5 .5 -.5 -.5";
-
-        Affine3 camToMount = new Affine3(camToMountStr);
-        Affine3 mountToRobot = new Affine3(mountToRobotStr);
-        
-        Vec3 targetInCamera = new Vec3(0, 0, -120);
-
-    }
-
 }
