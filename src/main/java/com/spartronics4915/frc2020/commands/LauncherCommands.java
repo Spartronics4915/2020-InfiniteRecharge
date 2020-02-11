@@ -33,29 +33,27 @@ public class LauncherCommands
         }
 
         @Override
-        public void initialize()
-        {
-        }
-
-        @Override
         public void execute()
         {
+            // TODO: set appropriate Hood and
             // TODO: Pull from vision + RobotStateMap + ILT
-            mLauncher.runFlywheel(0);
+            mLauncher.runFlywheel(mLauncher.calcRPS(/* TODO: Pull from networktables? */0));
+            mLauncher.adjustHood(mLauncher.calcPitch(/*TODO*/0));
+            mLauncher.rotateTurret(mLauncher.calcRotation());
         }
 
         @Override
         public boolean isFinished()
         {
-            // return true if at the correct angle and rotation
             // will kick out to defaultcommand and continue to run until out of range
-            return false;
-        }
-
-        @Override
-        public void end(boolean interrupted)
-        {
-
+            if ((mLauncher.getTargetRPS() == mLauncher.getCurrentRPS())
+                && (mLauncher.getTargetAngle() == mLauncher.getCurrentAngle())
+                && (mLauncher.getTargetRotation() == mLauncher.getCurrentRotation()))
+                return true;
+            if (!mLauncher.inRange())
+                return true;
+            else
+                return false;
         }
     }
 }

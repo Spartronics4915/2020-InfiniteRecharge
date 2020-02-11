@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 
+/**
+ * FIXME: all the calc methods need to work properly with a Rotation2d
+ */
 public class Launcher extends SpartronicsSubsystem
 {
     private SpartronicsMotor mFlywheelMasterMotor;
@@ -37,19 +40,6 @@ public class Launcher extends SpartronicsSubsystem
     {
         public final Rotation2d hoodAngle;
         public final InterpolatingDouble flywheelSpeedRPS;
-
-        public LauncherState(Rotation2d hoodAngle, InterpolatingDouble speedRPS)
-        {
-            this.hoodAngle = hoodAngle;
-            this.flywheelSpeedRPS = speedRPS;
-        }
-
-        @Override
-        public LauncherState interpolate(LauncherState endValue, double x)
-        {
-            return new LauncherState(hoodAngle.interpolate(endValue.hoodAngle, x),
-                flywheelSpeedRPS.interpolate(endValue.flywheelSpeedRPS, x));
-        }
     }
 
     public Launcher()
@@ -195,7 +185,7 @@ public class Launcher extends SpartronicsSubsystem
     }
 
     /**
-     * Returns whether or not the target is within the range that the turret can rotate to, used by driver
+     * Returns whether or not the target is within the range that the turret can rotate to
      * @return True if the target is within the turret's range of rotation, else false
      */
     public boolean inFOV()
@@ -239,6 +229,12 @@ public class Launcher extends SpartronicsSubsystem
         Rotation2d angle = mLookupTable.getInterpolated(
             new InterpolatingDouble(distance)).hoodAngle;
         return angle;
+    }
+
+    // FIXME
+    public double calcRotation(Rotation2d rotation)
+    {
+        return -1;
     }
 
     public void setUpLookupTable(int size, double[] distances, double[] angles, double[] rps)
