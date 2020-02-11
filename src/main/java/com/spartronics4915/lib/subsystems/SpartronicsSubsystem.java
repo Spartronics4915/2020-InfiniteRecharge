@@ -1,11 +1,15 @@
 package com.spartronics4915.lib.subsystems;
 
-import com.spartronics4915.lib.util.Logger;
+import java.util.Set;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.spartronics4915.lib.util.Logger;
+
 
 /**
  * We introduce an abstract SpartronicsSubsystem class to provide uniformity
@@ -22,6 +26,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public abstract class SpartronicsSubsystem extends SubsystemBase
 {
+    // We install a default command for diagnostic purposes.  Subclasses
+    // should override the default command during construction.
+    private class SpartronicsMissingDefaultCommand implements Command
+    {
+        public Set<Subsystem> getRequirements()
+        {
+            return Set.of(SpartronicsSubsystem.this);
+        }
+    };
 
     // All subsystems should set mInitialized upon successful init.
     private boolean mInitialized = false;
@@ -34,6 +47,8 @@ public abstract class SpartronicsSubsystem extends SubsystemBase
 
     protected SpartronicsSubsystem()
     {
+        // NB: SubsystemBase posts some interesting info to dashboard
+        // using our class name.
         String classname = this.getClass().getName();
         int tail = classname.lastIndexOf('.');
         if (tail == -1)
@@ -44,6 +59,7 @@ public abstract class SpartronicsSubsystem extends SubsystemBase
         {
             this.mName = classname.substring(tail + 1);
         }
+        this.setDefaultCommand(new SpartronicsMissingDefaultCommand());
     }
 
     public String getClassName()
