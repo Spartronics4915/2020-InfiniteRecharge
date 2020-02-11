@@ -1,5 +1,6 @@
 package com.spartronics4915.frc2020.subsystems;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -35,30 +36,31 @@ public class TestIndexer
 
         
         // testing startlaunch
-        System.out.print("Testing StartLaunch...");
+        indexer.logInfo("Testing StartLaunch...");
         startLaunch.schedule();
         assertTrue(startLaunch.isScheduled()); // make sure it doesn't just crash
-        System.out.println("Success!");
+        assertEquals(simmedLoaderMotor, 1.0);
+        indexer.logInfo("Success!");
         
         // testing endlaunch
-        System.out.print("Testing EndLaunch...");
+        indexer.logInfo("Testing EndLaunch...");
         endLaunch.schedule();
         assertTrue(endLaunch.isScheduled());
-        System.out.println("Success!");
+        indexer.logInfo("Success!");
 
         // testing loadBallToSlot
-        System.out.print("Testing LoadBallToSlot...");
+        indexer.logInfo("Testing LoadBallToSlot...");
         loadBallToSlot.schedule();
         assertTrue(loadBallToSlot.isScheduled());
-        System.out.println("Success!");
+        indexer.logInfo("Success!");
 
         // testing loadToLauncher
-        System.out.print("Testing LoadToLauncher...");
+        indexer.logInfo("Testing LoadToLauncher...");
         loadToLauncher.schedule();
         assertTrue(loadToLauncher.isScheduled());
-        System.out.println("Success!");
+        indexer.logInfo("Success!");
 
-        System.out.println("Loading Test successful!");
+        indexer.logInfo("Loading Test successful!");
     }
 
     @Test
@@ -75,9 +77,9 @@ public class TestIndexer
         sim.setEnabled(true);
 
         // testing LoadFromIntake
-        System.out.print("Testing LoadFromIntake...");
+        indexer.logInfo("Testing LoadFromIntake...");
         loadFromIntake.schedule();
         assertTrue(loadFromIntake.isScheduled());
-        System.out.println("Success!!")
+        indexer.logInfo("Success!!");
     }
 }
