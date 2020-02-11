@@ -22,14 +22,14 @@ public class TestIndexer
         IndexerCommands mIndexerCommands = new IndexerCommands();
 
         // Defining Commands
-        Command startLaunch = mIndexerCommands.new StartLaunch(indexer);
-        Command endLaunch = mIndexerCommands.new EndLaunch(indexer);
-        Command loadBallToSlot = mIndexerCommands.new LoadBallToSlot(indexer, 0);
-        Command loadToLauncher = mIndexerCommands.new LoadToLauncher(indexer);
+        Command startLaunch = mIndexerCommands.new StartLaunch(mIndexer);
+        Command endLaunch = mIndexerCommands.new EndLaunch(mIndexer);
+        Command loadBallToSlot = mIndexerCommands.new LoadBallToSlot(mIndexer, 0);
+        Command loadToLauncher = mIndexerCommands.new LoadToLauncher(mIndexer);
 
         // Defining Motors
-        SpartronicsMotor simmedLoaderMotor = SpartronicsSimulatedMotor.getFromId(Indexer.Motors.LOADER.valueOf());
-        SpartronicsMotor simmedIndexerMotor = SpartronicsSimulatedMotor.getFromId(Indexer.Motors.INDEXER.valueOf());
+        SpartronicsMotor simmedLoaderMotor = SpartronicsSimulatedMotor.getFromId(Constants.Indexer.Loader.kMotorId);
+        SpartronicsMotor simmedIndexerMotor = SpartronicsSimulatedMotor.getFromId(Constants.Indexer.Spinner.kMotorId);
 
         DriverStationSim mSim = new DriverStationSim();
         mSim.setAutonomous(false);
@@ -70,7 +70,7 @@ public class TestIndexer
         IndexerCommands mIndexerCommands = new IndexerCommands();
 
         // Defining Command
-        var loadFromIntake = mIndexerCommands.new LoadFromIntake(indexer);
+        Command loadFromIntake = mIndexerCommands.new LoadFromIntake(mIndexer);
 
         DriverStationSim mSim = new DriverStationSim();
         mSim.setAutonomous(false);
