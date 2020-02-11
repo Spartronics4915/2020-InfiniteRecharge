@@ -67,24 +67,50 @@ class AffineTests
         assertEquals(v2.a2, 4, kEpsilon);
         assertEquals(v2.a3, 6, kEpsilon);
 
-        Vec3 xAxis = new Vec3(1,0,0);
-        Vec3 yAxis = new Vec3(0,1,0);
-        Vec3 zAxis = new Vec3(0,0,1);
-        Vec3 origin = new Vec3(0,0,0);
-
         // simple rotation
-        Affine3 R1 = Affine3.fromRotation(90, zAxis);
-        R1.print();
-        Vec3 p1 = R1.transformVector(xAxis);
-        p1.print();
-        assert(p1.equals(yAxis, kEpsilon));
+        Affine3 R1 = Affine3.fromRotation(90, Vec3.ZAxis);
+        Vec3 p1 = R1.transformVector(Vec3.XAxis);
+        assert(p1.equals(Vec3.YAxis, kEpsilon));
 
         // rotation around the point [1,0,0]
-        Affine3 R2 = Affine3.fromRotation(90, zAxis, new Vec3(1,0,0));
-        R2.print();
-        Vec3 p2 = R2.transformPoint(origin);
-        p2.print();
+        Affine3 R2 = Affine3.fromRotation(90, Vec3.ZAxis, new Vec3(1,0,0));
+        Vec3 p2 = R2.transformPoint(Vec3.ZeroPt);
         assert(p2.equals(new Vec3(1, -1, 0), kEpsilon));
+    }
+
+    @Test
+    public void testConcat()
+    {
+        // test concatenation
+        Affine3 C1 = Affine3.fromRotation(15, Vec3.ZAxis);
+        Affine3 C = new Affine3();
+        // 6x15deg concats => 90 degree
+        C.multiply(C1);
+        C.multiply(C1);
+        C.multiply(C1);
+        C.multiply(C1);
+        C.multiply(C1);
+        C.multiply(C1);
+        assert(C.equals(Affine3.fromRotation(90, Vec3.ZAxis), kEpsilon));
+
+        // rotate before translate
+        Vec3 diag = new Vec3(1,1,1);
+        Affine3 T1 = Affine3.fromRotation(15, diag);
+        T1.translate(3,4,5);
+        Vec3 t1p = T1.transformPoint(Vec3.ZeroPt);
+        assertEquals(t1p.a1, 3.183503, 1e-5);
+        assertEquals(t1p.a2, 3.701142, 1e-5);
+        assertEquals(t1p.a3, 5.115355, 1e-5);
+        Vec3 t1d = T1.transformVector(diag);
+        assert(t1d.equals(diag, kEpsilon));
+
+        // translate before rotate
+        Affine3 T2 = Affine3.fromTranslation(3,4,5);
+        T2.rotate(15, new Vec3(1,1,1));
+        Vec3 t2p = T2.transformPoint(Vec3.ZeroPt);
+        assert(t2p.equals(new Vec3(3,4,5), kEpsilon));
+        Vec3 t2d = T2.transformVector(diag);
+        assert(t2d.equals(diag, kEpsilon));
     }
 
     @Test
@@ -138,25 +164,16 @@ class AffineTests
         Quaternion q4 = new Quaternion();
         assert(q3.equals(q4));
 
+        Affine3 a1 = Affine3.fromRotation(30, new Vec3(1,1,1));
+        Quaternion q5 = new Quaternion(a1);
+        String q5s = q5.asString();
+        assertEquals(q5s, "q 0.965926 0.149429 0.149429 0.149429");
+        a1.print();
+        Affine3 a2 = Affine3.fromQuaternion(q5);
+        a2.print();
+        assert(a1.equals(a2, kEpsilon));
         
         /*
-        >>> q = quaternion_from_matrix(numpy.diag([1, -1, -1, 1]))
-        >>> numpy.allclose(q, [0, 1, 0, 0]) or numpy.allclose(q, [0, -1, 0, 0])
-        True
-        >>> R = rotation_matrix(0.123, (1, 2, 3))
-        >>> q = quaternion_from_matrix(R, True)
-        >>> numpy.allclose(q, [0.9981095, 0.0164262, 0.0328524, 0.0492786])
-        True
-        >>> R = [[-0.545, 0.797, 0.260, 0], [0.733, 0.603, -0.313, 0],
-        ...      [-0.407, 0.021, -0.913, 0], [0, 0, 0, 1]]
-        >>> q = quaternion_from_matrix(R)
-        >>> numpy.allclose(q, [0.19069, 0.43736, 0.87485, -0.083611])
-        True
-        >>> R = [[0.395, 0.362, 0.843, 0], [-0.626, 0.796, -0.056, 0],
-        ...      [-0.677, -0.498, 0.529, 0], [0, 0, 0, 1]]
-        >>> q = quaternion_from_matrix(R)
-        >>> numpy.allclose(q, [0.82336615, -0.13610694, 0.46344705, -0.29792603])
-        True
         >>> R = random_rotation_matrix()
         >>> q = quaternion_from_matrix(R)
         >>> is_same_transform(R, quaternion_matrix(q))
@@ -171,12 +188,4 @@ class AffineTests
         """
         */
     }
-
-    @Test
-    void testApplication()
-    {
-
-
-    }
-
 }

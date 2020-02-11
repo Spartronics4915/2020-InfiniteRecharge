@@ -16,6 +16,11 @@ public class Vec3 extends DMatrix3
 {
     private static final long serialVersionUID = -6151934040052916311L;
 
+    public final static Vec3 XAxis = new Vec3(1,0,0);
+    public final static Vec3 YAxis = new Vec3(0,1,0);
+    public final static Vec3 ZAxis = new Vec3(0,0,1);
+    public final static Vec3 ZeroPt = new Vec3(0,0,0);
+
     public Vec3()
     {
         super();
