@@ -13,6 +13,36 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 
 public class LauncherCommands
 {
+    public class Target extends CommandBase
+    {
+        private final Launcher mLauncher;
+
+        public Target(Launcher launcher)
+        {
+            mLauncher = launcher;
+            addRequirements(mLauncher);
+        }
+
+        // Called every time the scheduler runs while the command is scheduled.
+        @Override
+        public void execute()
+        {
+            mLauncher.runFlywheel(/*calculated RPS*/);
+            mLauncher.rotateHood(/*calculated Rotation2d*/);
+            // mLauncher.rotateTurret();
+        }
+
+        // Returns true when the command should end.
+        @Override
+        public boolean isFinished()
+        {
+            if (!mLauncher.inRange() /*|| mLauncher.atTarget()*/)
+                return true;
+            else
+                return false;
+        }
+    }
+
     /*
      * Command for testing, runs flywheel at a given RPS
      * !DO NOT MAKE THE RPS MORE THAN 90!
@@ -115,14 +145,14 @@ public class LauncherCommands
         @Override
         public void initialize()
         {
-            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/HoodAngle", 0));
+            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle", 0));
         }
 
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
-            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/HoodAngle", 0));
+            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle", 0));
             mLauncher.rotateHood();
         }
 
@@ -141,12 +171,14 @@ public class LauncherCommands
         }
     }
 
-    public class AutoAimTurret extends CommandBase {
+    public class HoodToFieldPosition extends CommandBase
+    {
         private final Launcher mLauncher;
         private final RobotStateMap mStateMap;
         private final Pose2d mTargetPose;
 
-        public AutoAimTurret(Launcher launcher, Pose2d targetPose, RobotStateMap stateMap) {
+        public HoodToFieldPosition(Launcher launcher, Pose2d targetPose, RobotStateMap stateMap)
+        {
             mLauncher = launcher;
             mTargetPose = targetPose;
             mStateMap = stateMap;
@@ -159,59 +191,11 @@ public class LauncherCommands
             Pose2d fieldToTurret = mStateMap.getLatestFieldToVehicle()
                 .transformBy(Constants.Launcher.kTurretOffset);
             Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(mTargetPose);
-            Rotation2d fieldAnglePointingToTarget = new Rotation2d(turretToTarget.getTranslation().getX(), turretToTarget.getTranslation().getY(), true).inverse();
-            Rotation2d turretAngle = fieldAnglePointingToTarget.rotateBy(fieldToTurret.getRotation());
-            if(turretAngle.getDegrees() > 45.0) {
-                turretAngle = Rotation2d.fromDegrees(45.0);
-            } else if (turretAngle.getDegrees() < -45.0) {
-                turretAngle = Rotation2d.fromDegrees(-45.0);
-            }
-            mLauncher.turnTurret(turretAngle);
-            mLauncher.setPitch(mLauncher.calcPitch(turretToTarget.distance(mTargetPose)).getDegrees());
-        }
-    }
-
-    /*
-     * Default command of the launcher subsystem, makes the flywheel's target rps 0
-     */
-    public class LauncherDefaultCommand extends CommandBase
-    {
-        private final Launcher mLauncher;
-
-        // You should only use one subsystem per command. If multiple are needed, use a
-        // CommandGroup.
-        public LauncherDefaultCommand(Launcher launcher)
-        {
-            mLauncher = launcher;
-            addRequirements(mLauncher);
-        }
-
-        // Called when the command is initially scheduled.
-        @Override
-        public void initialize()
-        {
-            mLauncher.setRPS(0);
-        }
-
-        // Called every time the scheduler runs while the command is scheduled.
-        @Override
-        public void execute()
-        {
-            mLauncher.runFlywheel();
-        }
-
-        // Returns true when the command should end.
-        @Override
-        public boolean isFinished()
-        {
-            return false;
-        }
-
-        // Called once the command ends or is interrupted.
-        @Override
-        public void end(boolean interrupted)
-        {
-            mLauncher.reset();
+            Rotation2d fieldAnglePointingToTarget = new Rotation2d(
+                turretToTarget.getTranslation().getX(), turretToTarget.getTranslation().getY(),
+                true).inverse();
+            Rotation2d turretAngle = fieldAnglePointingToTarget
+                .rotateBy(fieldToTurret.getRotation());
         }
     }
 }
