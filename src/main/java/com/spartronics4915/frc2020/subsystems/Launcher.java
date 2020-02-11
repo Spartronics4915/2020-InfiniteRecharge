@@ -122,10 +122,13 @@ public class Launcher extends SpartronicsSubsystem
      */
     public void rotateTurret(double absoluteAngle)
     {
-        // FIXME
-        // need enc or pot
-        // check if exceeds limits
-        mTurretMotor.setPosition(absoluteAngle);
+        if (absoluteAngle > Constants.Launcher.kMaxRotation)
+            targetRotation = Constants.Launcher.kMaxRotation;
+        else if (absoluteAngle < -Constants.Launcher.kMaxRotation)
+            targetRotation = -Constants.Launcher.kMaxRotation;
+        else
+            targetRotation = absoluteAngle;
+        mTurretMotor.setPosition(targetRotation);
         dashboardPutNumber("targetRotation", targetRotation);
     }
 
