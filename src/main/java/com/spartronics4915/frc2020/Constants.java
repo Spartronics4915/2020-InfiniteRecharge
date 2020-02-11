@@ -65,14 +65,16 @@ public final class Constants
             public static final double kSpeed = 1;
         }
 
-        public static final int kOpticalFlagId = 8; // A8
-        public static final int kSlotProxSensorId = 4; // DIO4
-        public static final int kIntakeSensorId = 5; // DIO5
+        public static final int kOpticalFlagId = 8; // Analog
+        public static final int kSlotProxSensorId = 4; // Digital
+        public static final int kIntakeSensorId = 5; // Digital
     }
 
     public static final class Intake
     {
         public static final int kHarvestMotorId = 12;
+        public static final int kProximitySensorId = 5; // Digital
+
         public static final double kHarvestSpeed = 0.5;
         public static final double kEjectSpeed = -0.5;
     }
@@ -81,8 +83,8 @@ public final class Constants
     {
         public static final int kFlywheelMasterId = 7;
         public static final int kFlywheelFollowerId = -1; // Solid brass
-        public static final int kAngleAdjusterMasterId = 0; // PWM0
-        public static final int kAngleAdjusterFollowerId = 1; // PWM1
+        public static final int kAngleAdjusterMasterId = 0; // PWM
+        public static final int kAngleAdjusterFollowerId = 1; // PWM
         public static final int kTurretId = 8;
         public static final int kTurretPotentiometerId = 0;
 
@@ -114,26 +116,18 @@ public final class Constants
     {
         public static final int kLimitSwitchDownId = 6;
         public static final int kOpticalFlagUpId = 7;
-        public static final int kRaiseMotorId = 13;
-        public static final int kSpinMotorId = 14;
+        public static final int kSpinMotorId = 13;
+        public static final int kRaiseMotorId = 14;
 
         public static final double kRaiseSpeed = 0.5;
         public static final double kLowerSpeed = -0.5;
         public static final double kSpinSpeed = 0.5;
+        public static final double kConfidenceMinimum = 0.3;
 
-        // Whether or not something has triggered the optical flag, as a constant to be unambiguous
-        public static final boolean kOpticalFlagBroken = false;
-
-        /* The position of our color sensor and the field's has a difference of π/2, so
-         * we need to adjust targets accordingly.
-         * <p>
-         * See https://drive.google.com/file/d/1BfoFJmpJg31txUqTG-OrJjeWgQdQsCNC/view
-         * for a diagram of how these line up.
-         */
-        public static final Color kRedTarget = ColorMatch.makeColor(0, 1, 0); // Blue
-        public static final Color kGreenTarget = ColorMatch.makeColor(1, 1, 0); // Yellow
-        public static final Color kBlueTarget = ColorMatch.makeColor(1, 0, 0); // Red
-        public static final Color kYellowTarget = ColorMatch.makeColor(0, 1, 0); // Green
+        public static final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
+        public static final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
+        public static final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
+        public static final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
     }
 
     public static final class Drive
@@ -235,6 +229,7 @@ public final class Constants
 
     public static final class Vision
     {
+        /* Camera mount geometry is located in CamToField2020.java */
         public static final String kTurretTargetKey = "/Vision/Target/Turret";
         public static final String kPoseBroadcastKey = "/Vision/Control/RobotPose";
     }

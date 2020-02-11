@@ -9,7 +9,6 @@ import com.spartronics4915.lib.math.twodim.trajectory.types.State;
  */
 public class Pose2d implements State<Pose2d>
 {
-
     private final Translation2d mTranslation;
     private final Rotation2d mRotation;
 
@@ -65,7 +64,7 @@ public class Pose2d implements State<Pose2d>
             halfCos = -(halfDtheta * getRotation().getSin()) / cosMinusOne;
         }
         final Translation2d transPart = getTranslation()
-                .rotateBy(new Rotation2d(halfCos, -halfDtheta, false));
+            .rotateBy(new Rotation2d(halfCos, -halfDtheta, false));
         return new Twist2d(transPart.getX(), transPart.getY(), Rotation2d.fromRadians(dtheta));
     }
 
@@ -90,23 +89,22 @@ public class Pose2d implements State<Pose2d>
     public Pose2d transformBy(final Pose2d other)
     {
         return new Pose2d(mTranslation.translateBy(other.mTranslation.rotateBy(mRotation)),
-                mRotation.rotateBy(other.mRotation));
+            mRotation.rotateBy(other.mRotation));
     }
 
     /**
      * This transforms the pose directionally. E.g.:
      * if we're at 0, 0, 0 and we transform by 3,
      * we would be at 3, 0, 0.
-     * 
+     *
      * @param scalar A scalar to transform this directionally by
      * @return This translated by the scalar in the direction of the rotation
      */
     public Pose2d transformBy(final double scalar)
     {
-        return new Pose2d(
-                this.getRotation().getCos() * scalar + this.getTranslation().getX(),
-                this.getRotation().getSin() * scalar + this.getTranslation().getY(),
-                this.getRotation());
+        return new Pose2d(this.getRotation().getCos() * scalar + this.getTranslation().getX(),
+            this.getRotation().getSin() * scalar + this.getTranslation().getY(),
+            this.getRotation());
     }
 
     /**
@@ -114,7 +112,7 @@ public class Pose2d implements State<Pose2d>
      *
      * For p = new Pose2d(10, 10, -30deg)
      *     np = p.inverse()
-     * 
+     *
      * @return The opposite of this transform.
      */
     public Pose2d inverse()
@@ -123,7 +121,8 @@ public class Pose2d implements State<Pose2d>
         return new Pose2d(mTranslation.inverse().rotateBy(invRot), invRot);
     }
 
-    public Pose2d inFrameReferenceOf(Pose2d fieldRelativeOrigin) {
+    public Pose2d inFrameReferenceOf(Pose2d fieldRelativeOrigin)
+    {
         return fieldRelativeOrigin.inverse().transformBy(this);
     }
 
@@ -140,13 +139,14 @@ public class Pose2d implements State<Pose2d>
         if (!getRotation().isParallel(other.getRotation()))
             return false;
         final Twist2d twist = inverse().transformBy(other).log();
-        return (Util.epsilonEquals(twist.dy, 0.0) && Util.epsilonEquals(twist.dtheta.getRadians(), 0.0));
+        return (Util.epsilonEquals(twist.dy, 0.0)
+            && Util.epsilonEquals(twist.dtheta.getRadians(), 0.0));
     }
 
     public boolean epsilonEquals(final Pose2d other, double epsilon)
     {
         return getTranslation().epsilonEquals(other.getTranslation(), epsilon)
-                && getRotation().isParallel(other.getRotation());
+            && getRotation().isParallel(other.getRotation());
     }
 
     /**
@@ -194,6 +194,7 @@ public class Pose2d implements State<Pose2d>
 
     public Pose2d mirror()
     {
-        return new Pose2d(new Translation2d(getTranslation().getX(), -getTranslation().getY()), getRotation().inverse());
+        return new Pose2d(new Translation2d(getTranslation().getX(), -getTranslation().getY()),
+            getRotation().inverse());
     }
 }

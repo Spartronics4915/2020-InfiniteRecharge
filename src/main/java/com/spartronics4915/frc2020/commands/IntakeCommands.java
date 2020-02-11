@@ -3,7 +3,6 @@ package com.spartronics4915.frc2020.commands;
 import com.spartronics4915.frc2020.subsystems.Intake;
 
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 public class IntakeCommands
@@ -37,27 +36,6 @@ public class IntakeCommands
     }
 
     /**
-     * An {@link InstantCommand} runs an action and immediately exits.
-     * <p>
-     * @param Runnable toRun A reference to a subsystem method
-     * @param Subsystem requirement For both the CommandScheduler and the above method reference.
-     */
-
-    /**
-     * This {@link InstantCommand} stops the intake by calling
-     * {@link Intake}.stop once.
-     * <p>
-     * Note that the Intake only controls the front roller.
-     */
-    public class Stop extends InstantCommand
-    {
-        public Stop(Intake intake)
-        {
-            super(intake::stop, intake);
-        }
-    }
-
-    /**
      * A {@link StartEndCommand} allows us to specify an execute() and end()
      * condition, and runs until interrupted.
      *
@@ -73,7 +51,7 @@ public class IntakeCommands
      * Note that this is not an Unjam command. The {@link Intake} subsystem only
      * controls the mechanical vector roller.
      */
-    public class Eject extends StartEndCommand
+    public class Eject extends StartEndCommand // TODO: Does this execute(), or initialize()?
     {
         public Eject(Intake intake)
         {
