@@ -17,24 +17,6 @@ public class Indexer extends SpartronicsSubsystem
 {
     private double targetPosition = 0;
 
-    public static enum Motors
-    {
-        INDEXER(Constants.Indexer.Spinner.kMotorId),
-        LOADER(Constants.Indexer.Loader.kMotorId),
-        TRANSFER(Constants.Indexer.Transfer.kMotorId);
-
-        private int mId;
-
-        Motors(int id)
-        {
-            mId = id;
-        }
-        public int valueOf()
-        {
-            return mId;
-        }
-    }
-
     private SpartronicsMotor mIndexerMotor;
     private SpartronicsMotor mLoaderMotor;
     private SpartronicsMotor mTransferMotor;
