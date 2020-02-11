@@ -19,17 +19,20 @@ class CamToFieldTests
         ctof.updateTurretAngle(0);
 
         // robot at center of field, pointing right
-        ctof.updateRobotPose(320, 0, 0, timestamp); 
+        ctof.updateRobotPose(320, 0, 0, timestamp);
         timestamp += .01;
 
         Vec3 camOnField = ctof.getPointOnField(new Vec3(0, 0, 0));
+        assert(camOnField.equals(new Vec3(305,12,8) , kEpsilon));
         Vec3 camDirOnField = ctof.getDirOnField(new Vec3(0, 0, -1));
+        assertEquals(camDirOnField.a1, -1, .2); // camera tilts into z-up
+        assertEquals(camDirOnField.a2, 0, kEpsilon); // camera tilts into z-up
 
         // let's see where a point 100 inches away from camera is
-        // should be "behind the robot" on at y == 0
+        // should be "behind the robot" on at y == 12 (which is cam offset)
         Vec3 p1 = ctof.getPointOnField(new Vec3(0, 0, -100));
         p1.print();
-        assertEquals(p1.a2, 0, kEpsilon);
+        assertEquals(p1.a2, 12, kEpsilon);
     }
 
     private Affine3 getRToField(Vec3 pos, double heading)
@@ -124,16 +127,14 @@ class CamToFieldTests
         // verify turret's mount offset
         assert(mountToRobot.transformPoint(Vec3.ZeroPt).equals(mountPos, kEpsilon));
 
-        Affine3 camToRobot = Affine3.concatenate(camToMount, mountToRobot);
+        Affine3 camToRobot = Affine3.concatenate(mountToRobot, camToMount);
         Vec3 camOnRobot = camToRobot.transformPoint(Vec3.ZeroPt);
-        System.out.println("cam relative to robot  ");
-        camOnRobot.print();
+        assert(camOnRobot.equals(new Vec3(-15, 12, 8)));
 
         Affine3 robotToField = this.getRToField(new Vec3(320, 0, 0), 0);
-        Affine3 camToField = Affine3.concatenate(camToRobot, robotToField);
+        Affine3 camToField = Affine3.concatenate(robotToField, camToRobot);
         Vec3 camOnField = camToField.transformPoint(Vec3.ZeroPt);
-        System.out.println("cam relative to field  ");
-        camOnField.print();
+        assert(camOnField.equals(new Vec3(305, 12, 8), kEpsilon));
 
     }
 

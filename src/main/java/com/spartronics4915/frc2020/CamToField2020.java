@@ -58,8 +58,12 @@ class CamToField2020 extends CameraToField
 {
     // camera to mount -----------------------------------------------------
     // camTilt represents the amount the camera is pointed up, measured in
-    // degress around camera's x axis.
-    private final double mCamTilt = 15.0; 
+    // degrees around camera's x axis. To measure it, point the camera at
+    // a wall from a perpendicular orientation.  Mark the center of the 
+    // camera with a mark.  Measure the distance from height of the mark
+    // to the camera origin.  Measure the distance from the wall.  Use
+    // degrees(atan2(mark, dist)) to compute the tilt angle.
+    private final double mCamTilt = 15; // if you change this also change
 
     // camPos represents offset of camera's origin relative to turret origin.
     // (measured in inches).  Camera origin is the center of the focal point.
@@ -123,7 +127,7 @@ class CamToField2020 extends CameraToField
 
     public Vec3 getDirOnField(final Vec3 camDir)
     {
-        return this.transformPoint(camDir);
+        return this.transformVector(camDir);
     }
 
 };
