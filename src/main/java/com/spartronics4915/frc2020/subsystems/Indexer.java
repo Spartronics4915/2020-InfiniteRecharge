@@ -17,7 +17,8 @@ public class Indexer extends SpartronicsSubsystem
 {
     private double targetPosition = 0;
 
-    public static enum Motors {
+    public static enum Motors 
+    {
         INDEXER(Constants.Indexer.Spinner.kMotorId),
         LOADER(Constants.Indexer.Loader.kMotorId),
         TRANSFER(Constants.Indexer.Transfer.kMotorId);
@@ -70,7 +71,9 @@ public class Indexer extends SpartronicsSubsystem
             mIndexerMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Spinner.kMotorId);
             mLoaderMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Loader.kMotorId);
             logInitialized(false);
-        } else {
+        } 
+        else 
+        {
             logInitialized(true);
         }
         // Set up gains for spinner
@@ -147,7 +150,8 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void rotateN(double N)
     {
-        if (N != 0) {
+        if (N != 0) 
+        {
             double deltaPosition = 0.25 * N; // Cast N to double and convert to rotations
             targetPosition += deltaPosition;
             mIndexerMotor.setPosition(targetPosition); // Rotate Spinner to target.
@@ -248,15 +252,9 @@ public class Indexer extends SpartronicsSubsystem
         return mBallsHeld;
     }
 
-
     public boolean isInSafeSpace()
     {
         double positionMod90 = mIndexerMotor.getEncoder().getPosition() % 90;
         return (positionMod90 >= 85 || positionMod90 <= 5); // if in a safe space to load a ball
-    }
-
-    public int getMotorId()
-    {
-        return 0;
     }
 }
