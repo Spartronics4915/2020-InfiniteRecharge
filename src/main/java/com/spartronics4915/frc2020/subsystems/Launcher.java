@@ -139,6 +139,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public void turnTurret(Rotation2d absoluteAngle)
     {
+        // FIXME: The turret should expose methods similar to getTarget/CurrentPitch
         double output = mTurretPIDController.calculate(mTurretEncoder.get(), absoluteAngle.getDegrees());
         mTurretMotor.setDutyCycle(output);
     }
@@ -174,10 +175,10 @@ public class Launcher extends SpartronicsSubsystem
      * Returns current angle of angle adjuster
      * @return Current angle in degrees above horizontal of the angle adjuster
      */
-    public double getCurrentPitch()
+    public Rotation2d getCurrentPitch() // TODO: Verify degrees vs. radians
     {
         // NEED ENC OR POT
-        return mAngleAdjusterMasterServo.getPosition();
+        return Rotation2d.fromDegrees(mAngleAdjusterMasterServo.getPosition());
     }
 
     /**
@@ -223,12 +224,22 @@ public class Launcher extends SpartronicsSubsystem
     }
 
     /**
+     * Returns whether or not the turret is at the intended velocity, angle, and rotation
+     * @return true if the turret is ready
+     */
+    public boolean atTarget()
+    {
+        // FIXME: Include the turret rotation
+        return (getTargetRPS() == getCurrentRPS())
+            && (getTargetPitch() == getCurrentPitch());
+    }
+
+    /**
      * Resets shooter and stops flywheel
      */
     public void reset()
     {
         runFlywheel(0);
-        mFlywheelMasterMotor.setBrakeMode(true);
         adjustHood(Rotation2d.fromDegrees(0));
         turnTurret(Rotation2d.fromDegrees(0));
     }
@@ -250,6 +261,6 @@ public class Launcher extends SpartronicsSubsystem
     {
         dashboardPutNumber("turretAngle", getTurretDirection());
         dashboardPutNumber("currentFlywheelRPS", getCurrentRPS());
-        dashboardPutNumber("currentHoodAngle", getCurrentPitch());
+        dashboardPutNumber("currentHoodAngle", getCurrentPitch().getDegrees());
     }
 }

@@ -33,7 +33,7 @@ public class LauncherCommands
         @Override
         public boolean isFinished()
         {
-            if (!mLauncher.inRange() /*|| mLauncher.atTarget()*/)
+            if (!mLauncher.inRange() || mLauncher.atTarget())
                 return true;
             else
                 return false;
