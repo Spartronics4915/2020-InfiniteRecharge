@@ -54,8 +54,8 @@ public class Drive extends AbstractDrive {
                 )
             )
         );
-        mLeftMotor.getFollower().setOutputInverted(Constants.Drive.kLeftFollowerOutputInverted);
-        mRightMotor.getFollower().setOutputInverted(Constants.Drive.kRightFollowerOutputInverted);
+        // mLeftMotor.getFollower().setOutputInverted(Constants.Drive.kLeftFollowerOutputInverted);
+        // mRightMotor.getFollower().setOutputInverted(Constants.Drive.kRightFollowerOutputInverted);
         mLeftMotor.setOutputInverted(Constants.Drive.kLeftOutputInverted);
         mRightMotor.setOutputInverted(Constants.Drive.kRightOutputInverted);
     }

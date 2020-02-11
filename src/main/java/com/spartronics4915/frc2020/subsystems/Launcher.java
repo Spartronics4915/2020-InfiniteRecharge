@@ -6,6 +6,7 @@ import com.revrobotics.CANAnalog.AnalogMode;
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.commands.LauncherCommands;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
+import com.spartronics4915.lib.hardware.motors.SpartronicsAnalogEncoder;
 import com.spartronics4915.lib.hardware.motors.SpartronicsEncoder;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
@@ -17,7 +18,11 @@ import com.spartronics4915.lib.util.Interpolable;
 import com.spartronics4915.lib.util.InterpolatingDouble;
 import com.spartronics4915.lib.util.InterpolatingTreeMap;
 
+import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.AnalogTrigger;
+import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -27,10 +32,10 @@ public class Launcher extends SpartronicsSubsystem
 {
     private SpartronicsMotor mFlywheelMasterMotor;
     private SpartronicsEncoder mFlywheelEncoder;
-    private Servo mAngleAdjusterMasterServo;
-    private Servo mAngleAdjusterFollowerServo;
     private SpartronicsMotor mTurretMotor;
-    private AnalogPotentiometer mTurretPotentiometer;
+    private final Servo mAngleAdjusterMasterServo;
+    private final Servo mAngleAdjusterFollowerServo;
+    private final SpartronicsAnalogEncoder mTurretEncoder;
 
     private InterpolatingTreeMap<InterpolatingDouble, LauncherState> table;
 
@@ -91,8 +96,11 @@ public class Launcher extends SpartronicsSubsystem
         {
             logInitialized(true);
         }
-        mTurretPotentiometer = new AnalogPotentiometer(Constants.Launcher.kTurretPotentiometerId,
-            360, -180);
+        
+        var analogInput = new AnalogInput(Constants.Launcher.kTurretPotentiometerId);
+        analogInput.setAverageBits(4);
+        mTurretEncoder = new SpartronicsAnalogEncoder(analogInput);
+        mTurretEncoder.setDistancePerRotation(1);
         mTurretPIDController = new PIDController(Constants.Launcher.kTurretP, 0, Constants.Launcher.kTurretD);
 
         // Two Servos for angle adjustement
@@ -120,7 +128,7 @@ public class Launcher extends SpartronicsSubsystem
     public void rotateHood()
     {
         mAngleAdjusterMasterServo.setAngle(targetAngle.getDegrees());
-        mAngleAdjusterFollowerServo.setAngle(targetAngle.getDegrees());
+        mAngleAdjusterFollowerServo.setAngle(180 - targetAngle.getDegrees());
     }
 
     /**
@@ -129,7 +137,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public void turnTurret(Rotation2d absoluteAngle)
     {
-        double output = mTurretPIDController.calculate(mTurretPotentiometer.get(), absoluteAngle.getDegrees());
+        double output = mTurretPIDController.calculate(mTurretEncoder.get(), absoluteAngle.getDegrees());
         mTurretMotor.setDutyCycle(output);
     }
 
@@ -139,7 +147,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public double getTurretDirection()
     {
-        return mTurretPotentiometer.get();
+        return mTurretEncoder.get();
     }
 
     /**

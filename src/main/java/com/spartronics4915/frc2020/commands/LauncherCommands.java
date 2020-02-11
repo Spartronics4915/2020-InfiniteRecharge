@@ -115,14 +115,14 @@ public class LauncherCommands
         @Override
         public void initialize()
         {
-            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle", 0));
+            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/HoodAngle", 0));
         }
 
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
-            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle", 0));
+            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/HoodAngle", 0));
             mLauncher.rotateHood();
         }
 
