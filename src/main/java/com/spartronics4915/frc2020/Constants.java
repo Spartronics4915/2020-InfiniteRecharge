@@ -230,7 +230,7 @@ public final class Constants
     public static final class Vision
     {
         /* Camera mount geometry is located in CamToField2020.java */
-        public static final String kTurretTargetKey = "/Vision/Target/Turret";
-        public static final String kPoseBroadcastKey = "/Vision/Control/RobotPose";
+        public static final String kTurretTargetTable = "/Vision/Target"
+        public static final String kTurretTargetPoseEstimate = "/Vision/Target/PoseEstimate";
     }
 }
