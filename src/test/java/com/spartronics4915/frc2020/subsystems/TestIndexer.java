@@ -60,4 +60,24 @@ public class TestIndexer
 
         System.out.println("Loading Test successful!");
     }
+
+    @Test
+    public void testIndexerIntake()
+    {
+        var indexer = new Indexer();
+        var commands = new IndexerCommands();
+
+        /****Defing Command****/
+        var loadFromIntake = commands.new LoadFromIntake(indexer);
+
+        var sim = new DriverStationSim();
+        sim.setAutonomous(false);
+        sim.setEnabled(true);
+
+        // testing LoadFromIntake
+        System.out.print("Testing LoadFromIntake...");
+        loadFromIntake.schedule();
+        assertTrue(loadFromIntake.isScheduled());
+        System.out.println("Success!!")
+    }
 }
