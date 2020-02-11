@@ -27,8 +27,8 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            mLauncher.runFlywheel(/*calculated RPS*/);
-            mLauncher.rotateHood(/*calculated Rotation2d*/);
+            mLauncher.runFlywheel(/*calculated RPS*/0);
+            mLauncher.adjustHood(/*calculated Rotation2d*/Rotation2d.fromDegrees(0));
             // mLauncher.rotateTurret();
         }
 
@@ -59,19 +59,11 @@ public class LauncherCommands
             addRequirements(mLauncher);
         }
 
-        // Called when the command is initially scheduled.
-        @Override
-        public void initialize()
-        {
-            mLauncher.setRPS(SmartDashboard.getNumber("Launcher/FlywheelRPS", 0));
-        }
-
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
-            mLauncher.setRPS(SmartDashboard.getNumber("Launcher/FlywheelRPS", 0));
-            mLauncher.runFlywheel();
+            mLauncher.runFlywheel(SmartDashboard.getNumber("Launcher/FlywheelRPS", 0));
         }
 
         // Returns true when the command should end.
@@ -141,19 +133,11 @@ public class LauncherCommands
             addRequirements(mLauncher);
         }
 
-        // Called when the command is initially scheduled.
-        @Override
-        public void initialize()
-        {
-            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle", 0));
-        }
-
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
-            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle", 0));
-            mLauncher.rotateHood();
+            mLauncher.adjustHood(Rotation2d.fromDegrees(SmartDashboard.getNumber("Launcher/TurretAimAngle", 0)));
         }
 
         // Returns true when the command should end.

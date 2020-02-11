@@ -1,10 +1,6 @@
 package com.spartronics4915.frc2020.subsystems;
 
-import com.revrobotics.CANAnalog;
-import com.revrobotics.CANPIDController;
-import com.revrobotics.CANAnalog.AnalogMode;
 import com.spartronics4915.frc2020.Constants;
-import com.spartronics4915.frc2020.commands.LauncherCommands;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsAnalogEncoder;
 import com.spartronics4915.lib.hardware.motors.SpartronicsEncoder;
@@ -26,7 +22,6 @@ import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Launcher extends SpartronicsSubsystem
 {
@@ -86,7 +81,7 @@ public class Launcher extends SpartronicsSubsystem
         // One BAG motor for turret
         mTurretMotor = SpartronicsSRX.makeMotor(Constants.Launcher.kTurretId,
             SensorModel.toRadians(360));
-        
+
         if (mTurretMotor.hadStartupError())
         {
             mTurretMotor = new SpartronicsSimulatedMotor(Constants.Launcher.kTurretId);
@@ -96,7 +91,7 @@ public class Launcher extends SpartronicsSubsystem
         {
             logInitialized(true);
         }
-        
+
         var analogInput = new AnalogInput(Constants.Launcher.kTurretPotentiometerId);
         analogInput.setAverageBits(4);
         mTurretEncoder = new SpartronicsAnalogEncoder(analogInput);
@@ -112,21 +107,32 @@ public class Launcher extends SpartronicsSubsystem
         setUpLookupTable(Constants.Launcher.LookupTableSize, Constants.Launcher.DistanceTable,
             Constants.Launcher.AngleTable, Constants.Launcher.RPSTable);
 
-        SmartDashboard.putNumber("Launcher/FlywheelRPS", 0);
+        dashboardPutNumber("Launcher/FlywheelRPS", 0);
     }
 
     /**
-     * call this in execute() method of a command to have the motor constantly run at the target rpm
+     * Sets target RPS for flywheel to given RPS.
+     * Call this in execute() method of a command to have the motor
+     * constantly run at the target RPS.
+     * <p>
+     * Does not allow values greater than 90 RPS (currently, refer to
+     * Constants.Launcher.kMaxRPS).
+     * @param rps RPS you want the flywheel to target
      */
-    public void runFlywheel()
+    public void runFlywheel(double rps)
     {
+        targetRPS = Math.min(rps, Constants.Launcher.kMaxRPS);
         mFlywheelMasterMotor.setVelocity(targetRPS, mFeedforwardCalculator.calculate(targetRPS / 60.0));
-        // System.out.println("Flywheel's current rps is " + getCurrentRPS());
     }
 
-
-    public void rotateHood()
+    /**
+     * Raises the hood to the angle.
+     * @param angle A Rotation2d for how far above horizontal you want the angle adjuster to go.
+     */
+    public void adjustHood(Rotation2d angle)
     {
+        targetAngle = Rotation2d.fromDegrees(Math.min(angle.getDegrees(),
+            Constants.Launcher.kMaxAngle.getDegrees()));
         mAngleAdjusterMasterServo.setAngle(targetAngle.getDegrees());
         mAngleAdjusterFollowerServo.setAngle(180 - targetAngle.getDegrees());
     }
@@ -148,34 +154,6 @@ public class Launcher extends SpartronicsSubsystem
     public double getTurretDirection()
     {
         return mTurretEncoder.get();
-    }
-
-    /**
-     * Sets target angle to given angle
-     * @param angle Angle in degrees above horizontal you want the angle adjuster to go to
-     */
-    public void setPitch(double angle)
-    {
-        if (angle > 30)
-        {
-            angle = 30;
-        }
-        targetAngle = Rotation2d.fromDegrees(angle);
-    }
-
-    /**
-     * Sets target rpm for flywheel to given RPS
-     * <p>
-     * Does not allow values greater than 90 (currently,
-     * refer to Constants.Launcher.kMaxRPS) RPS.
-     * @param rpm RPM you want the flywheel to target
-     */
-    public void setRPS(double rps)
-    {
-        if (rps > Constants.Launcher.kMaxRPS)
-            targetRPS = Constants.Launcher.kMaxRPS;
-        else
-            targetRPS = rps;
     }
 
     /**
@@ -263,9 +241,9 @@ public class Launcher extends SpartronicsSubsystem
      */
     public void reset()
     {
-        setRPS(0);
+        runFlywheel(0);
         mFlywheelMasterMotor.setBrakeMode(true);
-        setPitch(0);
+        adjustHood(Rotation2d.fromDegrees(0));
         turnTurret(Rotation2d.fromDegrees(0));
     }
 

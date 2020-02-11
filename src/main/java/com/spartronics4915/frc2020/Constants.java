@@ -96,7 +96,7 @@ public final class Constants
         public static final double kS = 0.0634;//0.0654;
         public static final double kV = 7.23;//7.18;
         public static final double kA = 5.07;
-        
+
         public static double kTurretP = 0;
         public static double kTurretI = 0;
         public static double kTurretD = 0;
@@ -107,9 +107,10 @@ public final class Constants
         public static final double[] RPSTable = null;
 
         public static final double kMaxRPS = 90.0;
+        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(60.0);
 
         public static Pose2d goalLocation = null;
-        
+
     }
 
     public static final class OI
