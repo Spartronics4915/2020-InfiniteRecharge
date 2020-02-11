@@ -86,7 +86,7 @@ public final class Constants
         public static final int kAngleAdjusterMasterId = 0; // PWM
         public static final int kAngleAdjusterFollowerId = 1; // PWM
         public static final int kTurretId = 8;
-        public static final int kTurretPotentiometerId = 2;
+        public static final int kTurretPotentiometerId = 0;
 
         // TODO: Find translation of turret from the center of the robot
         public static final Pose2d kTurretOffset = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180.0));
