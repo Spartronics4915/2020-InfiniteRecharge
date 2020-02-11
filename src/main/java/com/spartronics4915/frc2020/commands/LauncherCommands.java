@@ -141,15 +141,16 @@ public class LauncherCommands
         }
     }
 
-    public class HoodToFieldPosition extends CommandBase {
+    public class AutoAimTurret extends CommandBase {
         private final Launcher mLauncher;
         private final RobotStateMap mStateMap;
         private final Pose2d mTargetPose;
 
-        public HoodToFieldPosition(Launcher launcher, Pose2d targetPose, RobotStateMap stateMap) {
+        public AutoAimTurret(Launcher launcher, Pose2d targetPose, RobotStateMap stateMap) {
             mLauncher = launcher;
             mTargetPose = targetPose;
             mStateMap = stateMap;
+            addRequirements(mLauncher);
         }
 
         @Override
@@ -159,6 +160,13 @@ public class LauncherCommands
             Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(mTargetPose);
             Rotation2d fieldAnglePointingToTarget = new Rotation2d(turretToTarget.getTranslation().getX(), turretToTarget.getTranslation().getY(), true).inverse();
             Rotation2d turretAngle = fieldAnglePointingToTarget.rotateBy(fieldToTurret.getRotation());
+            if(turretAngle.getDegrees() > 45.0) {
+                turretAngle = Rotation2d.fromDegrees(45.0);
+            } else if (turretAngle.getDegrees() < -45.0) {
+                turretAngle = Rotation2d.fromDegrees(-45.0);
+            }
+            mLauncher.turnTurret(turretAngle);
+            mLauncher.setPitch(mLauncher.calcPitch(turretToTarget.distance(mTargetPose)).getDegrees());
         }
     }
 

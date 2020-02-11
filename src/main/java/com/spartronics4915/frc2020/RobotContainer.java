@@ -170,10 +170,11 @@ public class RobotContainer
         new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
         new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
         new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
-        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
+         new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
             this::throughTrench, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
         new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
             this::toControlPanel, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
+        new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new AutoAimTurret(mLauncher,Constants.Launcher.goalLocation,mStateEstimator.getEncoderRobotStateMap()));
     }
 
     private void configureButtonBoardBindings()
@@ -196,12 +197,12 @@ public class RobotContainer
             .whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
         new JoystickButton(mButtonBoard, 9)
             .whenPressed(mPanelRotatorCommands.new SpinRotation(mPanelRotator));
-
+        
         new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber));
         new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Retract(mClimber));
         new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new WinchPrimary(mClimber)
             .andThen(mClimberCommands.new WinchSecondary(mClimber)));
-
+        
         /*
         new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
         new JoystickButton(mButtonBoard, 16).whenHeld(new TurretLowerCommand(mLauncher));
