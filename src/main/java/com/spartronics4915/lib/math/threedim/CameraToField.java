@@ -13,10 +13,10 @@ package com.spartronics4915.lib.math.threedim;
  * don't need to know its exact coords.
  * 
  * Field
- *                          y
- *                    ._____|______. 
- *     Blue Alliance  |     |      |  Red Alliance
- *                    |     o-----x
+ *                    y (+) (-312,312)
+ *                    |_____ ______. 
+ *     Blue Alliance  |            |  Red Alliance
+ *                    o-----x      | (0,640)
  *                    |         R  |
  *                    |____________| 
  *
@@ -180,10 +180,10 @@ public class CameraToField
     {
         if(this.mDirty)
         {
-            this.mCamToRobot = Affine3.concatenate(this.mCamToMount, 
-                                                this.mMountToRobot);
-            this.mCamToField = Affine3.concatenate(this.mCamToRobot,
-                                                this.mRobotToField);
+            this.mCamToRobot = Affine3.concatenate(this.mMountToRobot,
+                                                this.mCamToMount);
+            this.mCamToField = Affine3.concatenate(this.mRobotToField, 
+                                                this.mCamToRobot);
             this.mDirty = false;
         }
     }
