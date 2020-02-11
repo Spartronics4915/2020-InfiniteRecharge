@@ -26,7 +26,7 @@ public class Vision extends SpartronicsSubsystem
     {
         this.mRSE = rse;
         this.mNetTab = NetworkTableInstance.getDefault();
-        this.mNetTab.addEntryListener(Constants.Vision.kTurretTargetKey,
+        this.mNetTab.addEntryListener(Constants.Vision.kTurretTargetPoseEstimate,
                                       this::turretTargetUpdate, 
                                       EntryListenerFlags.kUpdate);
     }
