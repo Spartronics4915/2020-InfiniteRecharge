@@ -2,7 +2,7 @@ package com.spartronics4915.lib.subsystems;
 
 import java.util.Set;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -28,11 +28,11 @@ public abstract class SpartronicsSubsystem extends SubsystemBase
 {
     // We install a default command for diagnostic purposes.  Subclasses
     // should override the default command during construction.
-    private class SpartronicsMissingDefaultCommand implements Command
+    private class SpartronicsMissingDefaultCommand extends CommandBase
     {
-        public Set<Subsystem> getRequirements()
+        SpartronicsMissingDefaultCommand()
         {
-            return Set.of(SpartronicsSubsystem.this);
+            this.addRequirements(SpartronicsSubsystem.this);
         }
     };
 
