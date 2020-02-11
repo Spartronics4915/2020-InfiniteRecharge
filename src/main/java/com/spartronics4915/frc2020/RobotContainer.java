@@ -99,7 +99,7 @@ public class RobotContainer
         mLauncherCommands = new LauncherCommands();
         mPanelRotatorCommands = new PanelRotatorCommands();
 
-        // 👏 Motor 👏 Safety 👏
+        // Motor Safety
         mClimber.setDefaultCommand(new RunCommand(mClimber::stop, mClimber));
         mIntake.setDefaultCommand(new RunCommand(mIntake::stop, mIntake));
         mLauncher.setDefaultCommand(mLauncherCommands.new LauncherDefaultCommand(mLauncher));
