@@ -5,81 +5,81 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.spartronics4915.frc2020.commands.IndexerCommands;
+import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 
 import org.junit.jupiter.api.Test;
 
 import edu.wpi.first.hal.sim.DriverStationSim;
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class TestIndexer
 {
     @Test
-    public void testLaunch() {
-        var indexer = new Indexer();
-        var commands = new IndexerCommands();
+    public void testLaunch() 
+    {
+        Indexer mIndexer = new Indexer();
+        IndexerCommands mIndexerCommands = new IndexerCommands();
 
-        /*****Defining Commands*****/
-        var startLaunch = commands.new StartLaunch(indexer);
+        // Defining Commands
+        Command startLaunch = mIndexerCommands.new StartLaunch(indexer);
+        Command endLaunch = mIndexerCommands.new EndLaunch(indexer);
+        Command loadBallToSlot = mIndexerCommands.new LoadBallToSlot(indexer, 0);
+        Command loadToLauncher = mIndexerCommands.new LoadToLauncher(indexer);
 
-        var endLaunch = commands.new EndLaunch(indexer);
+        // Defining Motors
+        SpartronicsMotor simmedLoaderMotor = SpartronicsSimulatedMotor.getFromId(Indexer.Motors.LOADER.valueOf());
+        SpartronicsMotor simmedIndexerMotor = SpartronicsSimulatedMotor.getFromId(Indexer.Motors.INDEXER.valueOf());
 
-        var loadBallToSlot = commands.new LoadBallToSlot(indexer, 0);
+        DriverStationSim mSim = new DriverStationSim();
+        mSim.setAutonomous(false);
+        mSim.setEnabled(true);
 
-        var loadToLauncher = commands.new LoadToLauncher(indexer);
-        /******Defining Motors******/
-        var simmedLoaderMotor = SpartronicsSimulatedMotor.getFromId(Indexer.Motors.LOADER.valueOf());
-        var simmedIndexerMotor = SpartronicsSimulatedMotor.getFromId(Indexer.Motors.INDEXER.valueOf());
-
-        var sim = new DriverStationSim();
-        sim.setAutonomous(false);
-        sim.setEnabled(true);
-
-        
-        // testing startlaunch
-        indexer.logInfo("Testing StartLaunch...");
+        // Testing startlaunch
+        mIndexer.logInfo("Testing StartLaunch...");
         startLaunch.schedule();
         assertTrue(startLaunch.isScheduled()); // make sure it doesn't just crash
         assertEquals(simmedLoaderMotor, 1.0);
-        indexer.logInfo("Success!");
-        
-        // testing endlaunch
-        indexer.logInfo("Testing EndLaunch...");
+        mIndexer.logInfo("Success!");
+
+        // Testing endlaunch
+        mIndexer.logInfo("Testing EndLaunch...");
         endLaunch.schedule();
         assertTrue(endLaunch.isScheduled());
-        indexer.logInfo("Success!");
+        mIndexer.logInfo("Success!");
 
-        // testing loadBallToSlot
-        indexer.logInfo("Testing LoadBallToSlot...");
+        // Testing loadBallToSlot
+        mIndexer.logInfo("Testing LoadBallToSlot...");
         loadBallToSlot.schedule();
         assertTrue(loadBallToSlot.isScheduled());
-        indexer.logInfo("Success!");
+        mIndexer.logInfo("Success!");
 
-        // testing loadToLauncher
-        indexer.logInfo("Testing LoadToLauncher...");
+        // Testing loadToLauncher
+        mIndexer.logInfo("Testing LoadToLauncher...");
         loadToLauncher.schedule();
         assertTrue(loadToLauncher.isScheduled());
-        indexer.logInfo("Success!");
+        mIndexer.logInfo("Success!");
 
-        indexer.logInfo("Loading Test successful!");
+        mIndexer.logInfo("Loading Test successful!");
     }
 
     @Test
     public void testIndexerIntake()
     {
-        var indexer = new Indexer();
-        var commands = new IndexerCommands();
+        Indexer mIndexer = new Indexer();
+        IndexerCommands mIndexerCommands = new IndexerCommands();
 
-        /****Defing Command****/
-        var loadFromIntake = commands.new LoadFromIntake(indexer);
+        // Defining Command
+        var loadFromIntake = mIndexerCommands.new LoadFromIntake(indexer);
 
-        var sim = new DriverStationSim();
-        sim.setAutonomous(false);
-        sim.setEnabled(true);
+        DriverStationSim mSim = new DriverStationSim();
+        mSim.setAutonomous(false);
+        mSim.setEnabled(true);
 
-        // testing LoadFromIntake
-        indexer.logInfo("Testing LoadFromIntake...");
+        // Testing LoadFromIntake
+        mIndexer.logInfo("Testing LoadFromIntake...");
         loadFromIntake.schedule();
         assertTrue(loadFromIntake.isScheduled());
-        indexer.logInfo("Success!!");
+        mIndexer.logInfo("Success!!");
     }
 }
