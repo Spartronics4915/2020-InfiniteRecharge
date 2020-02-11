@@ -23,9 +23,9 @@ public class LauncherCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public ShootBallTest(Launcher Launcher)
+        public ShootBallTest(Launcher launcher)
         {
-            mLauncher = Launcher;
+            mLauncher = launcher;
             addRequirements(mLauncher);
         }
 
@@ -65,9 +65,9 @@ public class LauncherCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public TurretTest(Launcher Launcher)
+        public TurretTest(Launcher launcher)
         {
-            mLauncher = Launcher;
+            mLauncher = launcher;
             addRequirements(mLauncher);
         }
 
@@ -105,9 +105,9 @@ public class LauncherCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public HoodTest(Launcher Launcher)
+        public HoodTest(Launcher launcher)
         {
-            mLauncher = Launcher;
+            mLauncher = launcher;
             addRequirements(mLauncher);
         }
 
@@ -115,14 +115,14 @@ public class LauncherCommands
         @Override
         public void initialize()
         {
-            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle",0));
+            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle", 0));
         }
 
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
-            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle",0));
+            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle", 0));
             mLauncher.rotateHood();
         }
 
@@ -156,7 +156,8 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            Pose2d fieldToTurret = mStateMap.getLatestFieldToVehicle().transformBy(Constants.Launcher.kTurretOffset);
+            Pose2d fieldToTurret = mStateMap.getLatestFieldToVehicle()
+                .transformBy(Constants.Launcher.kTurretOffset);
             Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(mTargetPose);
             Rotation2d fieldAnglePointingToTarget = new Rotation2d(turretToTarget.getTranslation().getX(), turretToTarget.getTranslation().getY(), true).inverse();
             Rotation2d turretAngle = fieldAnglePointingToTarget.rotateBy(fieldToTurret.getRotation());
@@ -179,9 +180,9 @@ public class LauncherCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public LauncherDefaultCommand(Launcher Launcher)
+        public LauncherDefaultCommand(Launcher launcher)
         {
-            mLauncher = Launcher;
+            mLauncher = launcher;
             addRequirements(mLauncher);
         }
 

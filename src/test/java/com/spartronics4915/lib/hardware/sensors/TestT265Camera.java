@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test;
 
 public class TestT265Camera
 {
-
     private boolean mDataRecieved = false;
     private final Object mLock = new Object();
 
@@ -26,8 +25,10 @@ public class TestT265Camera
     @Test
     public void testNewCamera() throws InterruptedException
     {
-        // This one is a little hard to unit test because we haven't simulated the hardware
-        // We mostly just make sure that we can get through this sequence without throwing an exception
+        // This one is a little hard to unit test because we haven't simulated the
+        // hardware
+        // We mostly just make sure that we can get through this sequence without
+        // throwing an exception
         // The rest is just a few sanity checks
 
         T265Camera cam = null;
@@ -38,8 +39,7 @@ public class TestT265Camera
             // Just make sure this doesn't throw
             cam.sendOdometry(new Twist2d(0, 0, new Rotation2d()));
 
-            cam.start((CameraUpdate update) ->
-            {
+            cam.start((CameraUpdate update) -> {
                 synchronized (mLock)
                 {
                     mDataRecieved = true;
@@ -47,16 +47,18 @@ public class TestT265Camera
                 System.out.println("Got pose with confidence " + update.pose);
             });
             Logger.debug(
-                    "Waiting 5 seconds to recieve data... Move the camera around in the path of the shape of a cross for best results. This will not work unless you get to High confidence.");
+                "Waiting 5 seconds to recieve data... Move the camera around in the path of the shape of a cross for best results. This will not work unless you get to High confidence.");
             Thread.sleep(5000);
             cam.stop();
             synchronized (mLock)
             {
-                assertTrue(mDataRecieved, "No pose data was recieved after 5 seconds... Try moving the camera?");
+                assertTrue(mDataRecieved,
+                    "No pose data was recieved after 5 seconds... Try moving the camera?");
             }
 
             Logger.debug("Got pose data, exporting relocalization map to java.io.tmpdir...");
-            Path mapPath = Paths.get(System.getProperty("java.io.tmpdir"), "map.bin").toAbsolutePath();
+            Path mapPath = Paths.get(System.getProperty("java.io.tmpdir"), "map.bin")
+                .toAbsolutePath();
             cam.exportRelocalizationMap(mapPath.toString());
 
             if (mapPath.toFile().length() <= 0)

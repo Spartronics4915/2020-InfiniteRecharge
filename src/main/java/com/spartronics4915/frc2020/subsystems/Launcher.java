@@ -62,8 +62,7 @@ public class Launcher extends SpartronicsSubsystem
     public Launcher()
     {
         // ONE NEO for flywheel
-        mFlywheelMasterMotor = SpartronicsMax.makeMotor(/*Constants.Launcher.kFlywheelMasterId*/2,
-            SensorModel.fromMultiplier(1));
+        mFlywheelMasterMotor = SpartronicsMax.makeMotor(Constants.Launcher.kFlywheelMasterId);
         if (mFlywheelMasterMotor.hadStartupError())
         {
             mFlywheelMasterMotor = new SpartronicsSimulatedMotor(Constants.Launcher.kFlywheelMasterId);
@@ -92,7 +91,6 @@ public class Launcher extends SpartronicsSubsystem
         {
             logInitialized(true);
         }
-        
         mTurretPotentiometer = new AnalogPotentiometer(Constants.Launcher.kTurretPotentiometerId,
             360, -180);
         mTurretPIDController = new PIDController(Constants.Launcher.kTurretP, 0, Constants.Launcher.kTurretD);
@@ -117,6 +115,7 @@ public class Launcher extends SpartronicsSubsystem
         mFlywheelMasterMotor.setVelocity(targetRPS, mFeedforwardCalculator.calculate(targetRPS / 60.0));
         // System.out.println("Flywheel's current rps is " + getCurrentRPS());
     }
+
 
     public void rotateHood()
     {
@@ -159,7 +158,7 @@ public class Launcher extends SpartronicsSubsystem
     /**
      * Sets target rpm for flywheel to given RPS
      * <p>
-     * Does not allow values greater than 90 (currently, 
+     * Does not allow values greater than 90 (currently,
      * refer to Constants.Launcher.kMaxRPS) RPS.
      * @param rpm RPM you want the flywheel to target
      */
@@ -252,22 +251,14 @@ public class Launcher extends SpartronicsSubsystem
     }
 
     /**
-     * Reverses flywheel motors
-     */
-    public void reverse()
-    {
-
-    }
-
-    /**
      * Resets shooter and stops flywheel
      */
     public void reset()
     {
-        /*setRPS(0);
+        setRPS(0);
         mFlywheelMasterMotor.setBrakeMode(true);
         setPitch(0);
-        turnTurret(0);*/
+        turnTurret(Rotation2d.fromDegrees(0));
     }
 
     public void setUpLookupTable(int size, double[] distances, double[] angles, double[] rps)
