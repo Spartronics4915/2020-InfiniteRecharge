@@ -14,11 +14,7 @@ import com.spartronics4915.lib.util.Interpolable;
 import com.spartronics4915.lib.util.InterpolatingDouble;
 import com.spartronics4915.lib.util.InterpolatingTreeMap;
 
-import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.AnalogTrigger;
-import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -107,7 +103,7 @@ public class Launcher extends SpartronicsSubsystem
         setUpLookupTable(Constants.Launcher.LookupTableSize, Constants.Launcher.DistanceTable,
             Constants.Launcher.AngleTable, Constants.Launcher.RPSTable);
 
-        dashboardPutNumber("Launcher/FlywheelRPS", 0);
+        reset();
     }
 
     /**
@@ -196,12 +192,12 @@ public class Launcher extends SpartronicsSubsystem
     /**
      * Computes and returns angle for angle adjuster based on input distance
      * @param distance Horizontal distance in meters from the shooter to the target
-     * @return The angle in degrees above horizontal that is calculated to be necessary to hit the target based off of the input distance
+     * @return The angle in degrees above horizontal that is calculated to be necessary
+     * to hit the target based off of the input distance
      */
     public Rotation2d calcPitch(double distance)
     {
-        Rotation2d angle = table.getInterpolated(new InterpolatingDouble(distance)).hoodAngle;
-        return angle;
+        return table.getInterpolated(new InterpolatingDouble(distance)).hoodAngle;
     }
 
     /**
@@ -211,27 +207,17 @@ public class Launcher extends SpartronicsSubsystem
      */
     public double calcRPS(double distance)
     {
-        double RPS = table
-            .getInterpolated(new InterpolatingDouble(distance)).flywheelSpeedRPS.value;
-        return RPS;
+        return table.getInterpolated(
+            new InterpolatingDouble(distance)).flywheelSpeedRPS.value;
     }
 
     /**
-     * Returns whether or not the target is within the range that the turret can rotate to, used by driver
-     * @return True if the target is within the turret's range of rotation, else false
-     */
-    public boolean inFOV()
-    {
-        boolean inRotationRange = true;
-        return inRotationRange;
-    }
-
-    /**
-     * Returns whether or not the target is within the range that the shooter can shoot, used by driver
-     * @return True if the target is within the horizontal distance from the target the shooter is capable of shooting to, else false
+     * Returns whether or not the target is within the range and FOV of the turret
+     * @return True if the target can be shot to
      */
     public boolean inRange()
     {
+        // FIXME
         boolean inRange = true;
         return inRange;
     }
@@ -265,6 +251,5 @@ public class Launcher extends SpartronicsSubsystem
         dashboardPutNumber("turretAngle", getTurretDirection());
         dashboardPutNumber("currentFlywheelRPS", getCurrentRPS());
         dashboardPutNumber("currentHoodAngle", getCurrentPitch());
-
     }
 }

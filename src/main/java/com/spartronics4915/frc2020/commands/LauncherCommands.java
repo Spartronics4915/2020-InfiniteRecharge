@@ -6,10 +6,7 @@ import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 
 public class LauncherCommands
 {
@@ -63,7 +60,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            mLauncher.runFlywheel(SmartDashboard.getNumber("Launcher/FlywheelRPS", 0));
+            mLauncher.runFlywheel((double) mLauncher.dashboardGetNumber("FlywheelRPS", 0));
         }
 
         // Returns true when the command should end.
@@ -103,7 +100,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            SmartDashboard.putNumber("Launcher/TurretDirection", mLauncher.getTurretDirection());
+            mLauncher.dashboardPutNumber("TurretDirection", mLauncher.getTurretDirection());
         }
 
         // Returns true when the command should end.
@@ -137,7 +134,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            mLauncher.adjustHood(Rotation2d.fromDegrees(SmartDashboard.getNumber("Launcher/TurretAimAngle", 0)));
+            mLauncher.adjustHood(Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("TurretAimAngle", 0)));
         }
 
         // Returns true when the command should end.

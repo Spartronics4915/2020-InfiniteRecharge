@@ -93,13 +93,14 @@ public final class Constants
 
         // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
         public static final double kP = 0.02;
-        public static final double kS = 0.0634;//0.0654;
-        public static final double kV = 7.23;//7.18;
+        public static final double kS = 0.0634; // 0.0654;
+        public static final double kV = 7.23; // 7.18;
         public static final double kA = 5.07;
 
         public static double kTurretP = 0;
         public static double kTurretI = 0;
         public static double kTurretD = 0;
+
         // Vals for interpolating lookup table
         public static final int LookupTableSize = 0;
         public static final double[] DistanceTable = null;
@@ -110,7 +111,6 @@ public final class Constants
         public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(60.0);
 
         public static Pose2d goalLocation = null;
-
     }
 
     public static final class OI
