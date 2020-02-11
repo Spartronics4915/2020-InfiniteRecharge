@@ -21,15 +21,10 @@ public class DCMotorTransmission
      * @param kV Volts / radians/sec
      * @param kA Volts / radians/sec^2
      */
-    public DCMotorTransmission(
-        double wheelRadiusMeters, double linearInertiaKg,
-        double kS, double kV, double kA)
+    public DCMotorTransmission(double wheelRadiusMeters, double linearInertiaKg, double kS,
+        double kV, double kA)
     {
-        this(
-            1 / kV,
-            Math.pow(wheelRadiusMeters, 2) * linearInertiaKg / (2.0 * kA),
-            kS
-        );
+        this(1 / kV, Math.pow(wheelRadiusMeters, 2) * linearInertiaKg / (2.0 * kA), kS);
     }
 
     /**
@@ -37,9 +32,8 @@ public class DCMotorTransmission
      * @param torquePerVolt N m / volt
      * @param frictionVoltage Volts to break static friction
      */
-    public DCMotorTransmission(final double speedPerVolt,
-            final double torquePerVolt,
-            final double frictionVoltage)
+    public DCMotorTransmission(final double speedPerVolt, final double torquePerVolt,
+        final double frictionVoltage)
     {
         mSpeedPerVolt = speedPerVolt;
         mTorquePerVolt = torquePerVolt;

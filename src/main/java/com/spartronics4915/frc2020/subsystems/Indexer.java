@@ -17,7 +17,7 @@ public class Indexer extends SpartronicsSubsystem
 {
     private double targetPosition = 0;
 
-    public static enum Motors 
+    public static enum Motors
     {
         INDEXER(Constants.Indexer.Spinner.kMotorId),
         LOADER(Constants.Indexer.Loader.kMotorId),
@@ -71,8 +71,8 @@ public class Indexer extends SpartronicsSubsystem
             mIndexerMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Spinner.kMotorId);
             mLoaderMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Loader.kMotorId);
             logInitialized(false);
-        } 
-        else 
+        }
+        else
         {
             logInitialized(true);
         }
@@ -100,7 +100,7 @@ public class Indexer extends SpartronicsSubsystem
 
         // Setup Proximity Sensors for indexing
         mOpticalProxSensor = new DigitalInput(Constants.Indexer.kSlotProxSensorId);
-        mIntakeProxSensor  = new DigitalInput(Constants.Indexer.kIntakeSensorId);
+        mIntakeProxSensor = new DigitalInput(Constants.Indexer.kIntakeSensorId);
     }
 
     /**
@@ -150,7 +150,7 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void rotateN(double N)
     {
-        if (N != 0) 
+        if (N != 0)
         {
             double deltaPosition = 0.25 * N; // Cast N to double and convert to rotations
             targetPosition += deltaPosition;
@@ -203,7 +203,7 @@ public class Indexer extends SpartronicsSubsystem
         return mIsLaunching;
     }
 
-    public void transfer() 
+    public void transfer()
     {
         mIsTransferring = true;
         mTransferMotor.setVelocity(Constants.Indexer.Transfer.kSpeed);
@@ -215,7 +215,7 @@ public class Indexer extends SpartronicsSubsystem
         mTransferMotor.setVelocity(0);
     }
 
-    public boolean isTransferring() 
+    public boolean isTransferring()
     {
         return mIsTransferring;
     }
