@@ -36,6 +36,9 @@ public class Vision extends SpartronicsSubsystem
     Vec3 mBlueTarget = new Vec3(Constants.Vision.kBlueGoalCoords);
     Vec3 mRedTarget = new Vec3(Constants.Vision.kRedGoalCoords);
     
+    /**
+     * ListenForTurretAndVision is this subsystem's default command.
+     */
     private class ListenForTurretAndVision extends CommandBase
     {
         public ListenForTurretAndVision()
@@ -49,6 +52,12 @@ public class Vision extends SpartronicsSubsystem
         }
     }
 
+    /**
+     * Vision subsystem needs read-only access to RobotStateEstimator and
+     * Launcher subsystem.
+     * @param rse
+     * @param launcherSubsys
+     */
     public Vision(RobotStateEstimator rse, Launcher launcherSubsys)
     {
         this.mOfficialRSM = rse.getCameraRobotStateMap();
@@ -72,6 +81,12 @@ public class Vision extends SpartronicsSubsystem
         return this.mVisionRSM;
     }
 
+    /**
+     * A currently-unused method that might be of use in the inverted scenario
+     * where we expect the raspi-Vision code to compute robot pose.  Currently
+     * we take the opposite tack: we esimate the pose whenever we receive a
+     * vision target update from raspi.
+     */
     public void BroadcastState()
     {
         // Here we might compose an easily parsable string containing
@@ -89,7 +104,10 @@ public class Vision extends SpartronicsSubsystem
         // Then we really have nothing to contribute yet.
     }
 
-    // we're called when robot receives turret update
+    /**
+     * Nettabcallback. Invoked when robot receives target updates from vision.
+     * @param event - information about the entry that triggered the callback.
+     */
     private void turretTargetUpdate(EntryNotification event)
     {
         NetworkTableValue v = event.getEntry().getValue();
