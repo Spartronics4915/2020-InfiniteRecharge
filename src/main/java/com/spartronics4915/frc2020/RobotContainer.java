@@ -67,11 +67,15 @@ public class RobotContainer
         .getTable("SmartDashboard").getEntry("AutoStrategy");
     public final AutoMode[] mAutoModes;
 
+    /* subsystems */
     private final Climber mClimber;
     private final Intake mIntake;
     private final Launcher mLauncher;
     private final PanelRotator mPanelRotator;
     private final LED mLED;
+    private final Vision mVision;
+
+    /* subsystem commands */
     private final ClimberCommands mClimberCommands;
     private final IntakeCommands mIntakeCommands;
     private final LauncherCommands mLauncherCommands;
@@ -134,6 +138,8 @@ public class RobotContainer
         mLauncher = new Launcher();
         mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
+        mVision = new Vision(mStateEstimator, mLauncher);
+
         mClimberCommands = new ClimberCommands();
         mIntakeCommands = new IntakeCommands();
         mLauncherCommands = new LauncherCommands();
