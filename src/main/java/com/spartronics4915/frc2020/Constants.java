@@ -204,7 +204,8 @@ public final class Constants
 
     public static final class Estimator
     {
-        public static final Pose2d kCameraOffset = new Pose2d();
+        public static final Pose2d kSlamraToRobot = new Pose2d(-0.390525, 0, new Rotation2d());
+        public static final Pose2d kVisionToRobot = new Pose2d(0.390525, 0, Rotation2d.fromDegrees(0));
         public static final double kMeasurementCovariance = 0.001;
     }
 

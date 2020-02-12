@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -99,10 +100,12 @@ public class RobotContainer
         mPanelRotatorCommands = new PanelRotatorCommands();
         mExampleCommandFactory = new ExampleCommandFactory(mLED);
 
-        //mClimber.setDefaultCommand(mClimberCommands.new ClimberDefaultCommand(mClimber));
-        //mIntake.setDefaultCommand(mIntakeCommands.new IntakeDefaultCommand(mIntake));
+        // mClimber.setDefaultCommand(mClimberCommands.new
+        // ClimberDefaultCommand(mClimber));
+        // mIntake.setDefaultCommand(mIntakeCommands.new IntakeDefaultCommand(mIntake));
         mLauncher.setDefaultCommand(mLauncherCommands.new LauncherDefaultCommand(mLauncher));
-        //mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new PanelRotatorDefaultCommand(mPanelRotator));
+        // mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new
+        // PanelRotatorDefaultCommand(mPanelRotator));
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
@@ -110,7 +113,7 @@ public class RobotContainer
         T265Camera slamra;
         try
         {
-            slamra = new T265Camera(Constants.Estimator.kCameraOffset,
+            slamra = new T265Camera(Constants.Estimator.kSlamraToRobot,
                 Constants.Estimator.kMeasurementCovariance);
         }
         catch (CameraJNIException | UnsatisfiedLinkError e)
@@ -122,6 +125,9 @@ public class RobotContainer
         mStateEstimator = new RobotStateEstimator(mDrive,
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
             slamra);
+        var slamraCommand = new StartEndCommand(() -> mStateEstimator.enable(),
+            () -> mStateEstimator.stop(), mStateEstimator);
+        mStateEstimator.setDefaultCommand(slamraCommand);
 
         configureJoystickBindings();
         configureButtonBoardBindings();
@@ -135,7 +141,13 @@ public class RobotContainer
                 TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight),
                 mRamseteController, mStateEstimator.getEncoderRobotStateMap())),
             new AutoMode("Characterize Drive",
-                new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter))};
+                new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter)),
+            new AutoMode("Laser Turret",
+                new LaserTurretToFieldPose(mStateEstimator.getCameraRobotStateMap())),
+            new AutoMode("Right: Through Trench",
+                new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.left.getTrajectory(null, Destination.LeftTrenchFar),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()))};
 
         mStateEstimator.resetRobotStateMaps(TrajectoryContainer.middle.mStartPoint);
 
@@ -167,9 +179,12 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
-        new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
-        new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
-        new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
+        new JoystickButton(mJoystick, 1)
+            .toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
+        new JoystickButton(mJoystick, 2)
+            .toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
+        new JoystickButton(mJoystick, 3)
+            .toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
         new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
             this::throughTrench, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
         new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
@@ -190,8 +205,10 @@ public class RobotContainer
         new JoystickButton(mButtonBoard, 5).whenPressed(new LauncherCommands.AimHigh(mLauncher));
         */
 
-        new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
-        new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
+        new JoystickButton(mButtonBoard, 6)
+            .whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
+        new JoystickButton(mButtonBoard, 7)
+            .whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
         new JoystickButton(mButtonBoard, 8)
             .whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
         new JoystickButton(mButtonBoard, 9)
