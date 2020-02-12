@@ -5,6 +5,7 @@ import com.spartronics4915.frc2020.RobotContainer;
 import com.spartronics4915.frc2020.subsystems.Climber;
 
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 public class ClimberCommands
@@ -99,6 +100,20 @@ public class ClimberCommands
         public WinchSecondary(Climber climber)
         {
             super(() -> climber.winch(Constants.Climber.kStalled), climber::stop, climber);
+        }
+    }
+
+    /**
+     * This {@link RunCommand} stops all Climber motors by calling
+     * Climber.stop() over and over.
+     * <p>
+     * It also happens to be our default command.
+     */
+    public class Stop extends RunCommand
+    {
+        public Stop(Climber climber)
+        {
+            super(climber::stop, climber);
         }
     }
 }
