@@ -34,6 +34,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -102,7 +104,8 @@ public class RobotContainer
         // Motor Safety
         mClimber.setDefaultCommand(new RunCommand(mClimber::stop, mClimber));
         mIntake.setDefaultCommand(new RunCommand(mIntake::stop, mIntake));
-        mLauncher.setDefaultCommand(mLauncherCommands.new LauncherDefaultCommand(mLauncher));
+        mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
+            new InstantCommand(mLauncher::reset), mLauncher::inRange));
         mPanelRotator.setDefaultCommand(new RunCommand(mPanelRotator::stop, mPanelRotator));
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
@@ -173,6 +176,15 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
+
+        // new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
+        // new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
+        // new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
+        // new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
+        //    this::throughTrench, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
+        // new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
+        //    this::toControlPanel, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
+        // new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new AutoAimTurret(mLauncher,Constants.Launcher.goalLocation,mStateEstimator.getEncoderRobotStateMap()));
     }
 
     private void configureButtonBoardBindings()
