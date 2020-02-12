@@ -103,7 +103,7 @@ public class RobotContainer
         mClimber.setDefaultCommand(mClimberCommands.new Stop(mClimber));
         mIntake.setDefaultCommand(mIntakeCommands.new Stop(mIntake));
         mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
-            mLauncherCommands.new Reset(mLauncher), mLauncher::inRange));
+            mLauncherCommands.new Adjust(mLauncher), mLauncher::inRange));
         mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
@@ -187,7 +187,7 @@ public class RobotContainer
     private void configureButtonBoardBindings()
     {
         // new JoystickButton(mButtonBoard, 0).whenPressed(LauncherCommands.new Launch(mLauncher));
-        // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(LauncherCommands.new Rev(mLauncher));
+        // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new ConditionalCommand(mLauncherCommands.new Target));
 
         new JoystickButton(mButtonBoard, 2).toggleWhenPressed(mIntakeCommands.new Harvest(mIntake));
         new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));

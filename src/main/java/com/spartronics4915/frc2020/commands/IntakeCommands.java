@@ -61,7 +61,7 @@ public class IntakeCommands
     }
 
     /**
-     * This {@link RunCommand} stops all intake motors by simplily calling
+     * This {@link RunCommand} stops all intake motors by simply calling
      * Intake.stop repeatedly.
      * <p>
      * It also happens to be our default command.

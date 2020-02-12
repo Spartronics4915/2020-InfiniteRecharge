@@ -25,9 +25,9 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            mLauncher.runFlywheel(/*calculated RPS*/0);
-            mLauncher.adjustHood(/*calculated Rotation2d*/Rotation2d.fromDegrees(0));
-            // mLauncher.rotateTurret();
+            mLauncher.runFlywheel(mLauncher.calcRPS(/*calculated distance*/0));
+            mLauncher.adjustHood(mLauncher.calcPitch(/*calculated distance*/0));
+            // FIXME: mLauncher.rotateTurret(/*calculated distance (doesn't need mlauncher.calc function, no ILT*/);
         }
 
         // Returns true when the command should end.
@@ -35,6 +35,42 @@ public class LauncherCommands
         public boolean isFinished()
         {
             if (!mLauncher.inRange() || mLauncher.atTarget())
+                return true;
+            else
+                return false;
+        }
+    }
+
+    public class Adjust extends CommandBase
+    {
+        private final Launcher mLauncher;
+
+        public Adjust(Launcher launcher)
+        {
+            mLauncher = launcher;
+            addRequirements(mLauncher);
+        }
+
+        // Called when the command is initially scheduled.
+        @Override
+        public void initialize()
+        {
+            mLauncher.runFlywheel(0);
+        }
+
+        // Called every time the scheduler runs while the command is scheduled.
+        @Override
+        public void execute()
+        {
+            mLauncher.adjustHood(mLauncher.calcPitch(/*calculated distance*/0));
+            // FIXME: mLauncher.rotateTurret(/*calculated distance (doesn't need mlauncher.calc function, no ILT*/);
+        }
+
+        // Returns true when the command should end.
+        @Override
+        public boolean isFinished()
+        {
+            if (mLauncher.atTarget())
                 return true;
             else
                 return false;
@@ -178,20 +214,6 @@ public class LauncherCommands
                 true).inverse();
             Rotation2d turretAngle = fieldAnglePointingToTarget
                 .rotateBy(fieldToTurret.getRotation());
-        }
-    }
-
-    /**
-     * This {@link RunCommand} resets the launcher to a known position by
-     * constantly calling Launcher.reset().
-     * <p>
-     * It also happens to be our default command.
-     */
-    public class Reset extends RunCommand
-    {
-        public Reset(Launcher launcher)
-        {
-            super(launcher::reset, launcher);
         }
     }
 }
