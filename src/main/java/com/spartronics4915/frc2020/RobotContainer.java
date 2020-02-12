@@ -89,28 +89,8 @@ public class RobotContainer
      */
     public RobotContainer()
     {
-        mClimber = new Climber();
-        mIntake = new Intake();
-        mLauncher = new Launcher();
-        mPanelRotator = new PanelRotator();
-        mLED = LED.getInstance();
-        mClimberCommands = new ClimberCommands();
-        mIntakeCommands = new IntakeCommands();
-        mLauncherCommands = new LauncherCommands();
-        mPanelRotatorCommands = new PanelRotatorCommands();
-
-        // Motor Safety
-        mClimber.setDefaultCommand(mClimberCommands.new Stop(mClimber));
-        mIntake.setDefaultCommand(mIntakeCommands.new Stop(mIntake));
-        mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
-            mLauncherCommands.new Adjust(mLauncher), mLauncher::inRange));
-        mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
-
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
-
-        configureJoystickBindings();
-        configureButtonBoardBindings();
 
         T265Camera slamra;
         try
@@ -148,6 +128,26 @@ public class RobotContainer
 
         String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name).collect(Collectors.joining(","));
         SmartDashboard.putString(kAutoOptionsKey, autoModeList);
+
+        mClimber = new Climber();
+        mIntake = new Intake();
+        mLauncher = new Launcher();
+        mPanelRotator = new PanelRotator();
+        mLED = LED.getInstance();
+        mClimberCommands = new ClimberCommands();
+        mIntakeCommands = new IntakeCommands();
+        mLauncherCommands = new LauncherCommands();
+        mPanelRotatorCommands = new PanelRotatorCommands();
+
+        // Default Commands run whenever no Command is scheduled to run for a subsystem
+        mClimber.setDefaultCommand(mClimberCommands.new Stop(mClimber));
+        mIntake.setDefaultCommand(mIntakeCommands.new Stop(mIntake));
+        mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
+            mLauncherCommands.new Adjust(mLauncher), mLauncher::inRange));
+        mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
+
+        configureJoystickBindings();
+        configureButtonBoardBindings();
     }
 
     private void configureJoystickBindings()
