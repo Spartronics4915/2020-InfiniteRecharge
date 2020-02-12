@@ -15,33 +15,47 @@ public class DifferentialDrive
 {
     // All units must be SI!
 
-    // Equivalent mass when accelerating purely linearly, in kg.
-    // This is "equivalent" in that it also absorbs the effects of drivetrain inertia.
-    // Measure by doing drivetrain acceleration characterization in a straight line.
-    /** Kilograms */
+    /**
+     * Equivalent mass when accelerating purely linearly, in kg.
+     * This is "equivalent" in that it also absorbs the effects of drivetrain inertia.
+     * Measure by doing drivetrain acceleration characterization in a straight line.
+     * <p>
+     * Kilograms
+     */
     protected final double mMass;
 
-    // Equivalent moment of inertia when accelerating purely angularly, in kg*m^2.
-    // This is "equivalent" in that it also absorbs the effects of drivetrain inertia.
-    // Measure by doing drivetrain acceleration characterization while turning in place.
-    /** kg*m^2 */
+    /**
+     * Equivalent moment of inertia when accelerating purely angularly, in kg*m^2.
+     * This is "equivalent" in that it also absorbs the effects of drivetrain inertia.
+     * Measure by doing drivetrain acceleration characterization while turning in place.
+     * <p>
+     * kg*m^2
+     */
     protected final double mMoi;
 
-    // Drag torque (proportional to angular velocity) that resists turning, in N*m/rad/s
-    // Empirical testing of our drivebase showed that there was an unexplained loss in torque ~proportional to angular
-    // velocity, likely due to scrub of wheels.
-    // NOTE: this may not be a purely linear term, and we have done limited testing, but this factor helps our model to
-    // better match reality.  For future seasons, we should investigate what's going on here...
-    /** N*m/rad/s */
+    /** Drag torque (proportional to angular velocity) that resists turning, in N*m/rad/s
+     * Empirical testing of our drivebase showed that there was an unexplained loss in torque ~proportional to angular
+     * velocity, likely due to scrub of wheels.
+     * NOTE: this may not be a purely linear term, and we have done limited testing, but this factor helps our model to
+     * better match reality.  For future seasons, we should investigate what's going on here...
+     * <p>
+     * N*m/rad/s
+     */
     protected final double mAngularDrag;
 
-    // Self-explanatory.  Measure by rolling the robot a known distance and counting encoder ticks.
-    /** Meters */
+    /**
+     * Self-explanatory.  Measure by rolling the robot a known distance and counting encoder ticks.
+     * <p>
+     * Meters
+     */
     protected final double mWheelRadius; // m
 
-    // "Effective" kinematic wheelbase radius.  Might be larger than theoretical to compensate for skid steer.  Measure
-    // by turning the robot in place several times and figuring out what the equivalent wheelbase radius is.
-    /** Meters */
+    /**
+     * "Effective" kinematic wheelbase radius.  Might be larger than theoretical to compensate for skid steer.  Measure
+     * by turning the robot in place several times and figuring out what the equivalent wheelbase radius is.
+     * <p>
+     * Meters
+     */
     protected final double mEffectiveWheelbaseRadius; // m
 
     // Transmissions for both sides of the drive.
@@ -66,15 +80,15 @@ public class DifferentialDrive
         mRightTransmission = rightTransmission;
     }
 
-    /** 
+    /**
      * @return Robot mass in kilograms
-     * */
+     */
     public double mass()
     {
         return mMass;
     }
 
-    /** 
+    /**
      * @return Robot moment of inertia in kilograms*meters^2
      */
     public double moi()

@@ -1,9 +1,11 @@
 package com.spartronics4915.frc2020.commands;
 
+import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.subsystems.PanelRotator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class PanelRotatorCommands
 {
@@ -24,33 +26,33 @@ public class PanelRotatorCommands
 
     /**
      * This Raise {@link FunctionalCommand} calls {@link PanelRotator}.raise
-     * repeatedly, until the upper beam sensor is broken, at which point the
+     * repeatedly, until the upper optical flag is broken, at which point the
      * motor will stop.
      * <p>
      * The motor will also stop raising if interrupted by another Command.
      */
     public class Raise extends FunctionalCommand
     {
-        public Raise(PanelRotator PanelRotator)
+        public Raise(PanelRotator panelRotator)
         {
-            super(() -> {}, PanelRotator::raise, (Boolean b) -> PanelRotator.stop(),
-                PanelRotator::getBeamSensorUp, PanelRotator);
+            super(() -> {}, panelRotator::raise, (Boolean b) -> panelRotator.stop(),
+                panelRotator::getOpticalFlagUp, panelRotator);
         }
     }
 
     /**
      * This Lower {@link FunctionalCommand} will call {@link PanelRotator}.lower
-     * repeatedly, until the down beam sensor is broken, at which point the
+     * repeatedly, until the down limit switch is pressed, at which point the
      * motor will stop.
      * <p>
      * The motor will also stop lowering if interrupted by another Command.
      */
     public class Lower extends FunctionalCommand
     {
-        public Lower(PanelRotator PanelRotator)
+        public Lower(PanelRotator panelRotator)
         {
-            super(() -> {}, PanelRotator::lower, (Boolean b) -> PanelRotator.stop(),
-                PanelRotator::getBeamSensorDown, PanelRotator);
+            super(() -> {}, panelRotator::lower, (Boolean b) -> panelRotator.stop(),
+                panelRotator::getLimitSwitchDown, panelRotator);
         }
     }
 
@@ -69,15 +71,14 @@ public class PanelRotatorCommands
      */
     public class SpinToColor extends CommandBase
     {
-        // TODO: This might be better as a FunctionalCommand.
         private final PanelRotator mPanelRotator;
         private String mTargetColor;
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public SpinToColor(PanelRotator PanelRotator)
+        public SpinToColor(PanelRotator panelRotator)
         {
-            mPanelRotator = PanelRotator;
+            mPanelRotator = panelRotator;
             addRequirements(mPanelRotator);
         }
 
@@ -103,10 +104,16 @@ public class PanelRotatorCommands
             // Note that this is a comparison of Strings.
             // Conversions from native ColorSensorV3 values to one of four values is
             // done in PanelRotator.
-            if (mPanelRotator.getActualColor() == mTargetColor)
+            if (mPanelRotator.getRotatedColor().equals(mTargetColor))
                 return true;
+            else if (mPanelRotator.getRotatedColor().equals("Error"))
+            {
+                mPanelRotator.logError("Color Sensor: No data provided");
+                return true;
+            }
             else
                 return false;
+
         }
 
         // Called once the command ends or is interrupted.
@@ -125,19 +132,19 @@ public class PanelRotatorCommands
      * Do note that it only spins the Color Wheel once. The operator will have to
      * push the corresponding button at least three times to complete Stage Two.
      */
-    public class SpinRotation extends CommandBase
+    public class SpinOneRotation extends CommandBase
     {
         private final PanelRotator mPanelRotator;
 
         private int eighths;
-        private String lastColor;
         private String currentColor;
+        private String lastColor;
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public SpinRotation(PanelRotator PanelRotator)
+        public SpinOneRotation(PanelRotator panelRotator)
         {
-            mPanelRotator = PanelRotator;
+            mPanelRotator = panelRotator;
             addRequirements(mPanelRotator);
         }
 
@@ -146,7 +153,7 @@ public class PanelRotatorCommands
         public void initialize()
         {
             eighths = 0;
-            currentColor = mPanelRotator.getActualColor();
+            currentColor = mPanelRotator.getRotatedColor();
             lastColor = currentColor;
         }
 
@@ -161,15 +168,23 @@ public class PanelRotatorCommands
         @Override
         public boolean isFinished()
         {
+            // If the confidence in Color is too low, we're likely looking up at the ceiling and
+            // not aligned with the Control Panel.
+            if (mPanelRotator.getColorConfidence() < Constants.PanelRotator.kConfidenceMinimum)
+            {
+                mPanelRotator.logError("Confidence too low!");
+                return true;
+            }
+
             // If the detected color has changed, iterate the eighths counter.
-            currentColor = mPanelRotator.getActualColor();
+            currentColor = mPanelRotator.getRotatedColor();
             if (currentColor != lastColor)
                 eighths++;
             lastColor = currentColor;
 
             // The color wheel is made up of two each of four total colors,
             // for a total of eight.
-            if (eighths == 8) // TODO: double check for off-by-one errors
+            if (eighths == 8)
                 return true;
             else
                 return false;
@@ -180,6 +195,18 @@ public class PanelRotatorCommands
         public void end(boolean interrupted)
         {
             mPanelRotator.stop();
+        }
+    }
+
+    /**
+     * This {@link SequentialCommandGroup} queues the SpinOneRotation Command four times.
+     */
+    public class SpinFourRotations extends SequentialCommandGroup
+    {
+        public SpinFourRotations(PanelRotator panelRotator)
+        {
+            super(new SpinOneRotation(panelRotator), new SpinOneRotation(panelRotator),
+                new SpinOneRotation(panelRotator), new SpinOneRotation(panelRotator));
         }
     }
 }

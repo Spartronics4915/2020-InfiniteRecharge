@@ -26,15 +26,18 @@ import com.spartronics4915.lib.math.twodim.geometry.Twist2d;
  */
 public class T265Camera
 {
-
     private static UnsatisfiedLinkError mLinkError = null;
 
     static
     {
         // FIXME: Use System.loadLibrary
-        try {
-            System.load(Paths.get(System.getProperty("user.home"), "libspartronicsnative.so").toAbsolutePath().toString());
-        } catch (UnsatisfiedLinkError e) {
+        try
+        {
+            System.load(Paths.get(System.getProperty("user.home"), "libspartronicsnative.so")
+                .toAbsolutePath().toString());
+        }
+        catch (UnsatisfiedLinkError e)
+        {
             mLinkError = e;
         }
 
@@ -48,15 +51,11 @@ public class T265Camera
 
     public static enum PoseConfidence
     {
-        Failed,
-        Low,
-        Medium,
-        High,
+        Failed, Low, Medium, High,
     }
 
     public static class CameraUpdate
     {
-
         /**
          * The robot's pose in meters.
          */
@@ -86,7 +85,7 @@ public class T265Camera
      * This method constructs a T265 camera and sets it up with the right info.
      * {@link T265Camera#start() start} will not be called, you must call it
      * yourself.
-     * 
+     *
      * @param robotOffset        Offset of the center of the robot from the center
      *                           of the camera.
      * @param odometryCovariance Covariance of the odometry input when doing
@@ -101,7 +100,7 @@ public class T265Camera
      * This method constructs a T265 camera and sets it up with the right info.
      * {@link T265Camera#start() start} will not be called, you must call it
      * yourself.
-     * 
+     *
      * @param robotOffsetMeters        Offset of the center of the robot from the center
      *                           of the camera. Units are meters.
      * @param odometryCovariance Covariance of the odometry input when doing
@@ -111,13 +110,15 @@ public class T265Camera
      */
     public T265Camera(Pose2d robotOffsetMeters, double odometryCovariance, String relocMapPath)
     {
-        if (mLinkError != null) {
+        if (mLinkError != null)
+        {
             throw mLinkError;
         }
 
         mNativeCameraObjectPointer = newCamera(relocMapPath);
-        setOdometryInfo((float) robotOffsetMeters.getTranslation().getX(), (float) robotOffsetMeters.getTranslation().getY(),
-                (float) robotOffsetMeters.getRotation().getRadians(), odometryCovariance);
+        setOdometryInfo((float) robotOffsetMeters.getTranslation().getX(),
+            (float) robotOffsetMeters.getTranslation().getY(),
+            (float) robotOffsetMeters.getRotation().getRadians(), odometryCovariance);
         mRobotOffset = robotOffsetMeters;
     }
 
@@ -128,7 +129,7 @@ public class T265Camera
      * This will not restart the camera following exportRelocalizationMap. You will
      * have to call {@link T265Camera#free()} and make a new {@link T265Camera}.
      * This is related to what appears to be a bug in librealsense.
-     * 
+     *
      * @param poseConsumer A method to be called every time we recieve a pose from
      *                     <i>from a different thread</i>! You must synchronize
      *                     memory access accross threads!
@@ -157,31 +158,34 @@ public class T265Camera
      * Exports a binary relocalization map file to the given path.
      * This will stop the camera. Because of a librealsense bug the camera isn't
      * restarted after you call this method. TODO: Fix that.
-     * 
+     *
      * @param path Path (with filename) to export to
      */
     public native void exportRelocalizationMap(String path);
 
     /**
      * Sends robot velocity as computed from wheel encoders.
-     * 
+     *
      * @param velocity    The robot's translational velocity in meters/sec.
      */
     public void sendOdometry(Twist2d velocity)
     {
         Pose2d transVel = velocity.exp();
         // Only 1 odometry sensor is supported for now (index 0)
-        sendOdometryRaw(0, (float) transVel.getTranslation().getX(), (float) transVel.getTranslation().getY());
+        sendOdometryRaw(0, (float) transVel.getTranslation().getX(),
+            (float) transVel.getTranslation().getY());
     }
 
     /**
      * This zeroes the camera pose to the provided new pose.
-     * 
+     *
      * @param newPose The pose the camera should be zeroed to.
      */
     public synchronized void setPose(Pose2d newPose)
     {
-        mZeroingOffset = newPose.transformBy(new Pose2d(mLastRecievedPose.getTranslation().inverse(), mLastRecievedPose.getRotation().inverse()));
+        mZeroingOffset = newPose
+            .transformBy(new Pose2d(mLastRecievedPose.getTranslation().inverse(),
+                mLastRecievedPose.getRotation().inverse()));
     }
 
     /**
@@ -191,7 +195,8 @@ public class T265Camera
      */
     public native void free();
 
-    private native void setOdometryInfo(float robotOffsetX, float robotOffsetY, float robotOffsetRads, double measurementCovariance);
+    private native void setOdometryInfo(float robotOffsetX, float robotOffsetY,
+        float robotOffsetRads, double measurementCovariance);
 
     private native void sendOdometryRaw(int sensorIndex, float xVel, float yVel);
 
@@ -199,16 +204,17 @@ public class T265Camera
 
     private static native void cleanup();
 
-    private synchronized void consumePoseUpdate(float x, float y, float radians, float dx, float dtheta, int confOrdinal)
+    private synchronized void consumePoseUpdate(float x, float y, float radians, float dx,
+        float dtheta, int confOrdinal)
     {
         // First we apply an offset to go from the camera coordinate system to the
         // robot coordinate system with an origin at the center of the robot. This
         // is not a directional transformation.
         // Then we transform the pose our camera is giving us so that it reports is
         // the robot's pose, not the camera's. This is a directional transformation.
-        final Pose2d currentPose =
-                new Pose2d(x - mRobotOffset.getTranslation().getX(), y - mRobotOffset.getTranslation().getY(), Rotation2d.fromRadians(radians))
-                        .transformBy(mRobotOffset);
+        final Pose2d currentPose = new Pose2d(x - mRobotOffset.getTranslation().getX(),
+            y - mRobotOffset.getTranslation().getY(), Rotation2d.fromRadians(radians))
+                .transformBy(mRobotOffset);
 
         mLastRecievedPose = currentPose;
 
@@ -221,26 +227,29 @@ public class T265Camera
         PoseConfidence confidence;
         switch (confOrdinal)
         {
-        case 0x0:
-            confidence = PoseConfidence.Failed;
-            break;
-        case 0x1:
-            confidence = PoseConfidence.Low;
-            break;
-        case 0x2:
-            confidence = PoseConfidence.Medium;
-            break;
-        case 0x3:
-            confidence = PoseConfidence.High;
-            break;
-        default:
-            throw new RuntimeException("Unknown confidence ordinal \"" + confOrdinal + "\" passed from native code");
+            case 0x0:
+                confidence = PoseConfidence.Failed;
+                break;
+            case 0x1:
+                confidence = PoseConfidence.Low;
+                break;
+            case 0x2:
+                confidence = PoseConfidence.Medium;
+                break;
+            case 0x3:
+                confidence = PoseConfidence.High;
+                break;
+            default:
+                throw new RuntimeException(
+                    "Unknown confidence ordinal \"" + confOrdinal + "\" passed from native code");
         }
 
-        final Pose2d transformedPose =
-                new Pose2d(currentPose.getTranslation().translateBy(mZeroingOffset.getTranslation()).rotateBy(mZeroingOffset.getRotation()),
-                        currentPose.getRotation().rotateBy(mZeroingOffset.getRotation()));
-        mPoseConsumer.accept(new CameraUpdate(transformedPose, new Twist2d(dx, 0.0, Rotation2d.fromRadians(dtheta)), confidence));
+        final Pose2d transformedPose = new Pose2d(
+            currentPose.getTranslation().translateBy(mZeroingOffset.getTranslation())
+                .rotateBy(mZeroingOffset.getRotation()),
+            currentPose.getRotation().rotateBy(mZeroingOffset.getRotation()));
+        mPoseConsumer.accept(new CameraUpdate(transformedPose,
+            new Twist2d(dx, 0.0, Rotation2d.fromRadians(dtheta)), confidence));
     }
 
     /**

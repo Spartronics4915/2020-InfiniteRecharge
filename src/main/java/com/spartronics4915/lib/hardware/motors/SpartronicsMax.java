@@ -120,12 +120,17 @@ public class SpartronicsMax implements SpartronicsMotor
         return makeMotor(deviceNumber, sensorModel, FeedbackSensorType.kPWM);
     }
 
+    public static SpartronicsMotor makeMotor(int deviceNumber)
+    {
+        return makeMotor(deviceNumber, SensorModel.fromMultiplier(1));
+    }
+
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel,
         FeedbackSensorType feedbackSensor, int followerDeviceNumber)
     {
         if (RobotBase.isSimulation())
         {
-            return new SpartronicsSimulatedMotor(deviceNumber);
+            return new SpartronicsSimulatedMotor(deviceNumber, followerDeviceNumber);
         }
 
         // We only use SPARK MAXes for brushless motors

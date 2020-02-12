@@ -22,5 +22,4 @@ public class TestSubsystem extends SpartronicsSubsystem
     {
         assertTrue(super.getClassName().equals("TestSubsystem"));
     }
-
 }
