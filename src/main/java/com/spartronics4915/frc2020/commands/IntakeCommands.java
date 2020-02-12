@@ -3,6 +3,7 @@ package com.spartronics4915.frc2020.commands;
 import com.spartronics4915.frc2020.subsystems.Intake;
 
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 public class IntakeCommands
@@ -56,6 +57,20 @@ public class IntakeCommands
         public Eject(Intake intake)
         {
             super(intake::reverse, intake::stop, intake);
+        }
+    }
+
+    /**
+     * This {@link RunCommand} stops all intake motors by simplily calling
+     * Intake.stop repeatedly.
+     * <p>
+     * It also happens to be our default command.
+     */
+    public class Stop extends RunCommand
+    {
+        public Stop(Intake intake)
+        {
+            super(intake::stop, intake);
         }
     }
 }

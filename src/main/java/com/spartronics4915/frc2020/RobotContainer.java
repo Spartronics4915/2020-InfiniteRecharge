@@ -35,8 +35,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -102,11 +100,11 @@ public class RobotContainer
         mPanelRotatorCommands = new PanelRotatorCommands();
 
         // Motor Safety
-        mClimber.setDefaultCommand(new RunCommand(mClimber::stop, mClimber));
-        mIntake.setDefaultCommand(new RunCommand(mIntake::stop, mIntake));
+        mClimber.setDefaultCommand(mClimberCommands.new Stop(mClimber));
+        mIntake.setDefaultCommand(mIntakeCommands.new Stop(mIntake));
         mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
-            new InstantCommand(mLauncher::reset), mLauncher::inRange));
-        mPanelRotator.setDefaultCommand(new RunCommand(mPanelRotator::stop, mPanelRotator));
+            mLauncherCommands.new Reset(mLauncher), mLauncher::inRange));
+        mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
@@ -127,13 +125,12 @@ public class RobotContainer
         }
 
         mDrive = new Drive();
-        mStateEstimator =
-            new RobotStateEstimator(mDrive,
-                new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
+        mStateEstimator = new RobotStateEstimator(mDrive,
+            new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
                     slamra);
 
         System.out.println(
-          new TrajectoryContainer.DestinationCouple(Destination.ShieldGeneratorFarRight,
+            new TrajectoryContainer.DestinationCouple(Destination.ShieldGeneratorFarRight,
                 Destination.MiddleShootingPosition).hashCode());
 
         mAutoModes = new AutoMode[]

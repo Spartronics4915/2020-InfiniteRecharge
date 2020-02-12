@@ -7,6 +7,7 @@ import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 public class LauncherCommands
 {
@@ -177,6 +178,20 @@ public class LauncherCommands
                 true).inverse();
             Rotation2d turretAngle = fieldAnglePointingToTarget
                 .rotateBy(fieldToTurret.getRotation());
+        }
+    }
+
+    /**
+     * This {@link RunCommand} resets the launcher to a known position by
+     * constantly calling Launcher.reset().
+     * <p>
+     * It also happens to be our default command.
+     */
+    public class Reset extends RunCommand
+    {
+        public Reset(Launcher launcher)
+        {
+            super(launcher::reset, launcher);
         }
     }
 }
