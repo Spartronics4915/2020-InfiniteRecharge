@@ -239,9 +239,10 @@ public final class Constants
         /* Camera mount geometry is located in CamToField2020.java */
         public static final String kTurretTargetTable = "/Vision/Target";
         public static final String kTargetResultKey = "/Vision/Target/Result"; /* from raspi */
-        public static final String kPoseEstimateKey = "/Vision/PoseEstimate";
-        public static final String kPoseErrorKey = "/Vision/PoseError";
-        public static final String kPoseLatencyKey = "/Vision/Latency";
+        public static final String kPoseEstimateKey = "/SmartDashboard/Vision/PoseEstimate";
+        public static final String kPoseErrorKey = "/SmartDashboard/Vision/PoseError";
+        public static final String kPoseLatencyKey = "/SmartDashboard/Vision/Latency";
+        public static final String kStatus = "/SmartDashboard/Vision/Status";
 
         public static final double kGoalHeight = 8*12 + 2.25; // 98.25in
         // Red Alliance on right, Red Target on upper left (ie: x:0, y positive)

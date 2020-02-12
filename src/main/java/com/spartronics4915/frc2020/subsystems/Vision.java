@@ -35,6 +35,7 @@ public class Vision extends SpartronicsSubsystem
     Launcher mLauncher;
     Vec3 mBlueTarget = new Vec3(Constants.Vision.kBlueGoalCoords);
     Vec3 mRedTarget = new Vec3(Constants.Vision.kRedGoalCoords);
+    String mStatus;
     
     /**
      * ListenForTurretAndVision is this subsystem's default command.
@@ -69,6 +70,7 @@ public class Vision extends SpartronicsSubsystem
                                       EntryListenerFlags.kUpdate);
         this.mCamToField = new CamToField2020();
         this.setDefaultCommand(new ListenForTurretAndVision());
+        this.dashboardPutString(Constants.Vision.kStatus, "ready+waiting");
     }
 
     /**
@@ -113,6 +115,7 @@ public class Vision extends SpartronicsSubsystem
         NetworkTableValue v = event.getEntry().getValue();
         if(v.isString())
         {
+            this.dashboardPutString(Constants.Vision.kStatus, "active");
             String val = v.getString();
             // this.logInfo("Turret Target received " + val);
             // here we parse the string and evaluate the field
