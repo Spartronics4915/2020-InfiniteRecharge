@@ -16,6 +16,28 @@ import java.nio.file.Path;
 
 public final class Constants
 {
+    /* static class "constructor" - shared by inner classes */
+    static public String sConfig = "default";
+    static
+    {
+        // make available the contents of the per-roborio "machineid" file.
+        // this allows us to tailor various constants according to the
+        // configuration and hopefully reduce console spewage.
+        String msg;
+        try
+        {
+            Path machineIDPath = FileSystems.getDefault().getPath(
+                                    System.getProperty("user.home"), "machineid");
+            sConfig = Files.readString(machineIDPath).trim().toLowerCase();
+            msg = "(via machineid)";
+        }
+        catch (IOException e)
+        {
+            msg = "(no machineid)";
+        }
+        Logger.notice("Running with " + sConfig + " configuration " + msg);
+    }
+
     public static final class Climber
     {
         public static final int kLiftMotorId = 5;
@@ -112,10 +134,58 @@ public final class Constants
         public static Pose2d goalLocation = null;
     }
 
+    /**
+     * Specify robot/testbed-specific device configurations so we minimize
+     * console spewage associated with missing joysticks.
+     * 
+     * Optionally declare button binding here.
+     */
     public static final class OI
     {
-        public static final int kJoystickId = 0;
-        public static final int kButtonBoardId = 1;
+        public static int kJoystickPort = 0; /* driverstation usb port */
+        public static int kButtonBoardPort = 1;
+
+        // Buttons start at button #1 so button0 is invalid
+        public static int[] kJoystickButtonMap = {-1,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+        public static int[] kButtonBoardButtonMap = {-1,1,2,3,4,5,6,7,8,9,10,11,12,13,14}; 
+        private static int[][] mOIMap = {kJoystickButtonMap, kButtonBoardButtonMap};
+
+        static
+        {
+            // default/initial config is based on roborio/machineid
+            applyConfig(sConfig); 
+        }
+
+        // reduce default availability of port or buttons here.
+        public static void applyConfig(final String str)
+        {
+            switch (str)
+            {
+                case "test chassis":
+                    // test chassis has no button board
+                    kButtonBoardPort = 0; 
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /**
+         * returns a new button index for the requested button
+         * @param port specifies which usb port housing the button
+         * @param id specifies a button id.
+         * @return -1 means no mapping, otherwise return is buttonid [1-N]
+         */
+        public static int getRemappedButton(int port, int id)
+        {
+            if(port < 0) return -1;
+            if(mOIMap.length >= port) return -1; // invalid port
+
+            int[] map = mOIMap[port];
+            if(id >= map.length) return -1; // invalid id
+
+            return mOIMap[port][id];
+        }
     }
 
     public static final class PanelRotator
@@ -168,19 +238,7 @@ public final class Constants
         // Initialize blank fields that are robot-specific here
         static
         {
-            String config = "default";
-            Path machineIDPath = FileSystems.getDefault().getPath(System.getProperty("user.home"),
-                "machineid");
-            try
-            {
-                config = Files.readString(machineIDPath).trim().toLowerCase();
-            }
-            catch (IOException e)
-            {
-            }
-            Logger.notice("Running on " + config + " constants");
-
-            switch (config)
+            switch (sConfig)
             {
                 case "test chassis":
                     kTrackWidthMeters = Units.inchesToMeters(23.75);

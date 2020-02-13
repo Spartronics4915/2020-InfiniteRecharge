@@ -35,10 +35,8 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class RobotContainer
 {
@@ -82,8 +80,8 @@ public class RobotContainer
     private final LauncherCommands mLauncherCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
 
-    private final Joystick mJoystick;
-    private final Joystick mButtonBoard;
+    private Joystick mJoystick = null; // only created if port is > -1
+    private Joystick mButtonBoard = null; // only created if port is > -1
 
     private final Drive mDrive;
     private final RamseteTracker mRamseteController = new RamseteTracker(2, 0.7);
@@ -94,8 +92,15 @@ public class RobotContainer
      */
     public RobotContainer()
     {
-        mJoystick = new Joystick(Constants.OI.kJoystickId);
-        mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
+        if(Constants.OI.kJoystickPort >= 0)
+            mJoystick = new Joystick(Constants.OI.kJoystickPort);
+        else
+            Logger.notice("RobotContainer skipping joystick");
+
+        if(Constants.OI.kButtonBoardPort >= 0)
+            mButtonBoard = new Joystick(Constants.OI.kButtonBoardPort);
+        else
+            Logger.notice("RobotContainer skipping buttonboard");
 
         T265Camera slamra;
         try
@@ -116,7 +121,8 @@ public class RobotContainer
             () -> mStateEstimator.stop(), mStateEstimator);
         mStateEstimator.setDefaultCommand(slamraCommand);
 
-        System.out.println(
+        // XXX: do we need to hold a reference the the DestinationCouple here?
+        Logger.info("Hash code for initial trajectory:"  + 
             new TrajectoryContainer.DestinationCouple(Destination.ShieldGeneratorFarRight,
                 Destination.MiddleShootingPosition).hashCode());
 
@@ -161,83 +167,93 @@ public class RobotContainer
             mLauncherCommands.new Adjust(mLauncher), mLauncher::inRange));
         mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
 
-        configureJoystickBindings();
-        configureButtonBoardBindings();
+        if(this.mJoystick != null)
+            configureJoystickBindings();
+
+        if(this.mButtonBoard != null)
+            configureButtonBoardBindings();
     }
 
     private void configureJoystickBindings()
     {
+        // NB: the need to keep a reference to a Joystick instance is
+        // obviated by the fact that the CommandScheduler holds one.
+        // In essence, the call to whenPressed and friends has
+        // the side-effect of registering the JoystickButton instance with
+        // CommandScheduler.
+
         // Note: changes to bling state can be augmented with:
         // .alongWith(new SetBlingStateCommand(mLED, BlingState.SOME_STATE)));
 
         /*
-        new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
-        new JoystickButton(mJoystick, 2).whenHeld(new LauncherCommands.Raise(mLauncher));
-        new JoystickButton(mJoystick, 3).whenHeld(new LauncherCommands.Lower(mLauncher));
-        new JoystickButton(mJoystick, 4).whenHeld(new LauncherCommands.Left(mLauncher));
-        new JoystickButton(mJoystick, 5).whenHeld(new LauncherCommands.Right(mLauncher));
+        ButtonFactory.Create(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
+        ButtonFactory.Create(mJoystick, 2).whenHeld(new LauncherCommands.Raise(mLauncher));
+        ButtonFactory.Create(mJoystick, 3).whenHeld(new LauncherCommands.Lower(mLauncher));
+        ButtonFactory.Create(mJoystick, 4).whenHeld(new LauncherCommands.Left(mLauncher));
+        ButtonFactory.Create(mJoystick, 5).whenHeld(new LauncherCommands.Right(mLauncher));
         */
 
         /* Switch Camera views
-        new JoystickButton(mJoystick, 6).whenPressed(
+        ButtonFactory.Create(mJoystick, 6).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kFrontId)));
-        new JoystickButton(mJoystick, 7).whenPressed(
+        ButtonFactory.Create(mJoystick, 7).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kRearId)));
-        new JoystickButton(mJoystick, 10).whenPressed(
+        ButtonFactory.Create(mJoystick, 10).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kIntakeId)));
-        new JoystickButton(mJoystick, 11).whenPressed(
+        ButtonFactory.Create(mJoystick, 11).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
 
-        // new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
-        // new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
-        // new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
-        // new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
+        // ButtonFactory.Create(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
+        // ButtonFactory.Create(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
+        // ButtonFactory.Create(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
+        // ButtonFactory.Create(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
         //    this::throughTrench, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
-        // new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
+        // ButtonFactory.Create(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
         //    this::toControlPanel, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
-        // new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new AutoAimTurret(mLauncher,Constants.Launcher.goalLocation,mStateEstimator.getEncoderRobotStateMap()));
+        // ButtonFactory.Create(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new AutoAimTurret(mLauncher,Constants.Launcher.goalLocation,mStateEstimator.getEncoderRobotStateMap()));
     }
 
     private void configureButtonBoardBindings()
     {
-        // new JoystickButton(mButtonBoard, 0).whenPressed(LauncherCommands.new Launch(mLauncher));
-        // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new ConditionalCommand(mLauncherCommands.new Target));
+        // XXX: ButtonId of 0 shouldn't exist?
+        // ButtonFactory JoystickButton(mButtonBoard, 0).whenPressed(LauncherCommands.new Launch(mLauncher));
+        // ButtonFactory JoystickButton(mButtonBoard, 1).toggleWhenPressed(new ConditionalCommand(mLauncherCommands.new Target));
 
-        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(mIntakeCommands.new Harvest(mIntake));
-        new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
+        ButtonFactory.Create(mButtonBoard, 2).toggleWhenPressed(mIntakeCommands.new Harvest(mIntake));
+        ButtonFactory.Create(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
 
-        new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));
-        new JoystickButton(mButtonBoard, 5).whileHeld(mClimberCommands.new Extend(mClimber));
+        ButtonFactory.Create(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));
+        ButtonFactory.Create(mButtonBoard, 5).whileHeld(mClimberCommands.new Extend(mClimber));
 
-        new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
-        new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
-        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinOneRotation(mPanelRotator), false);
-        new JoystickButton(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
+        ButtonFactory.Create(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
+        ButtonFactory.Create(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
+        ButtonFactory.Create(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinOneRotation(mPanelRotator), false);
+        ButtonFactory.Create(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
 
-        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber)
+        ButtonFactory.Create(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber)
             .withTimeout(Constants.Climber.kTimerExtenderMin));
-        new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Extend(mClimber)
+        ButtonFactory.Create(mButtonBoard, 11).whileHeld(mClimberCommands.new Extend(mClimber)
             .withTimeout(Constants.Climber.kTimerExtenderMax));
 
-        new JoystickButton(mButtonBoard, 12).whenPressed(new SequentialCommandGroup(
+        ButtonFactory.Create(mButtonBoard, 12).whenPressed(new SequentialCommandGroup(
             mPanelRotatorCommands.new Raise(mPanelRotator),
             mPanelRotatorCommands.new SpinFourRotations(mPanelRotator),
             mPanelRotatorCommands.new Lower(mPanelRotator))); // TODO: will the act of lowering spin the wheel?
 
-        new JoystickButton(mButtonBoard, 13).whenPressed(new SequentialCommandGroup(
+        ButtonFactory.Create(mButtonBoard, 13).whenPressed(new SequentialCommandGroup(
             mPanelRotatorCommands.new Raise(mPanelRotator),
             mPanelRotatorCommands.new SpinToColor(mPanelRotator),
             mPanelRotatorCommands.new Lower(mPanelRotator)));
 
-        new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new WinchPrimary(mClimber)
+        ButtonFactory.Create(mButtonBoard, 14).whenHeld(mClimberCommands.new WinchPrimary(mClimber)
             .andThen(mClimberCommands.new WinchSecondary(mClimber)));
 
         /* Four-way Joystick
-        new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
-        new JoystickButton(mButtonBoard, 16).whenHeld(new TurretLowerCommand(mLauncher));
-        new JoystickButton(mButtonBoard, 17).whenHeld(new TurretLeftCommand(mLauncher));
-        new JoystickButton(mButtonBoard, 18).whenHeld(new TurretRightCommand(mLauncher));
+        ButtonFactory.Create(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
+        ButtonFactory.Create(mButtonBoard, 16).whenHeld(new TurretLowerCommand(mLauncher));
+        ButtonFactory.Create(mButtonBoard, 17).whenHeld(new TurretLeftCommand(mLauncher));
+        ButtonFactory.Create(mButtonBoard, 18).whenHeld(new TurretRightCommand(mLauncher));
         */
     }
 
