@@ -36,14 +36,42 @@ public class Vec3 extends DMatrix3
         super(v);
     }
 
+    public Vec3(double[] v)
+    {
+        super(v[0], v[1], v[2]);
+        assert v.length == 3;
+    }
+
     public Vec3 add(final Vec3 rhs)
     {
         return new Vec3(this.a1+rhs.a1, this.a2+rhs.a2, this.a3+rhs.a3);
     }
 
+    public Vec3 add(double x,  double y, double z)
+    {
+        return new Vec3(this.a1+x, this.a2+y, this.a3+z);
+    }
+
+    public Vec3 add(double []v)
+    {
+        assert v.length == 3;
+        return this.add(v[0], v[1], v[2]);
+    }
+
     public Vec3 subtract(final Vec3 rhs)
     {
         return new Vec3(this.a1-rhs.a1, this.a2-rhs.a2, this.a3-rhs.a3);
+    }
+
+    public Vec3 subtract(double x, double y, double z)
+    {
+        return new Vec3(this.a1-x, this.a2-y, this.a3-z);
+    }
+
+    public Vec3 subtract(double [] v)
+    {
+        assert v.length == 3;
+        return this.subtract(v[0], v[1], v[2]);
     }
 
     public void multiply(double f)
@@ -53,9 +81,16 @@ public class Vec3 extends DMatrix3
         this.a3 *= f;
     }
 
-    public Vec3 getOpposite()
+    /**
+     * compute the angle between two vectors
+     * @param Vec3
+     * @return angle in degrees
+     */
+    public double angleWith(final Vec3 rhs)
     {
-        return new Vec3(-this.a1, -this.a2, -this.a3);
+        double d = this.asUnit().dot(rhs.asUnit());
+        double rads = Math.acos(d > 1.0 ? 1 : d < -1. ? -1. : d);
+        return Math.toDegrees(rads);
     }
 
     public double dot(final Vec3 rhs)
@@ -88,6 +123,11 @@ public class Vec3 extends DMatrix3
         return true;
     }
 
+    public double length()
+    {
+        return NormOps_DDF3.normF(this);
+    }
+
     public void normalize()
     {
         NormOps_DDF3.normalizeF(this);
@@ -101,9 +141,9 @@ public class Vec3 extends DMatrix3
         return result;
     }
 
-    public double length()
+    public Vec3 asOpposite()
     {
-        return NormOps_DDF3.normF(this);
+        return new Vec3(-this.a1, -this.a2, -this.a3);
     }
 
     public DMatrix3x3 outerProduct(Vec3 rhs)
