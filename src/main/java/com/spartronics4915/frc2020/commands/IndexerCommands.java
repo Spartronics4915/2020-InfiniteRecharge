@@ -36,10 +36,21 @@ public class IndexerCommands
         }
     }
 
+    public class LoadBallToSlotGroup extends SequentialCommandGroup
+    {
+        public LoadBallToSlotGroup(Indexer indexer, int spinCount)
+        {
+            addCommands(
+                new Align(indexer),
+                new LoadBallToSlot(indexer, spinCount)
+            );
+        }
+    }
+
     /**
      * Loads the ball into the indexer by moving the spinny bit
      */
-    public class LoadBallToSlot extends CommandBase
+    private class LoadBallToSlot extends CommandBase
     {
         private Indexer mIndexer;
         private double mSpinCount;
@@ -61,7 +72,7 @@ public class IndexerCommands
         public void execute()
         {
             if (mIndexer.getSlotBallLoaded() && !mIndexer.getIntakeBallLoaded()
-                && mIndexer.isInSafeSpace())
+                && mIndexer.areFinsAligned())
                 mIndexer.transfer();
             else
                 mIndexer.endTransfer();
@@ -123,7 +134,6 @@ public class IndexerCommands
         {
             mIndexer.setZero();
             mIndexer.stopSpinner();
-            mIndexer.returnToHome();
         }
     }
 
@@ -166,19 +176,19 @@ public class IndexerCommands
         }
     }
 
-    public class Spin extends InstantCommand
+    public class Spin extends FunctionalCommand
     {
         public Spin(Indexer indexer, double N)
         {
-            super(() -> indexer.rotateN(N), indexer);
+            super(() -> indexer.rotateN(N), () -> {}, (b) -> indexer.stopSpinner(), () -> indexer.isAtPositon(), indexer);
         }
     }
 
-    public class Align extends InstantCommand
+    public class Align extends FunctionalCommand
     {
         public Align(Indexer indexer)
         {
-            super(indexer::toNearestQuarterRotation, indexer);
+            super(indexer::toNearestQuarterRotation, () -> {}, (b) -> indexer.stopSpinner(), () -> indexer.isAtPositon(), indexer);
         }
     }
 
@@ -200,6 +210,7 @@ public class IndexerCommands
             mIndexer = indexer;
 
             addCommands(
+                new Align(mIndexer),
                 new EndLaunch(mIndexer), // for safety
                 new WaitForBallHeld(mIndexer),
                 new LoadBallToSlot(mIndexer, 0),
@@ -230,6 +241,7 @@ public class IndexerCommands
             double spinDistance = (mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded()) ? 0.5 : 0;
 
             addCommands(
+                new Align(mIndexer),
                 new Spin(mIndexer, -spinDistance),
                 new StartLaunch(mIndexer),
                 new LoadBallToSlot(mIndexer, ballsToShoot + spinDistance),
@@ -245,7 +257,6 @@ public class IndexerCommands
         @Override
         public void end(boolean interrupted)
         {
-            mIndexer.toNearestQuarterRotation();
         }
     }
 }

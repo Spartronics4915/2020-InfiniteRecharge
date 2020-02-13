@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
  */
 public class Indexer extends SpartronicsSubsystem
 {
-    private double targetPosition = 0;
+    private double mTargetPosition = 0;
 
     private SpartronicsMotor mIndexerMotor;
     private SpartronicsMotor mLoaderMotor;
@@ -135,8 +135,8 @@ public class Indexer extends SpartronicsSubsystem
         if (N != 0) 
         {
             double deltaPosition = 0.25 * N; // Cast N to double and convert to rotations
-            targetPosition += deltaPosition;
-            mIndexerMotor.setPosition(targetPosition); // Rotate Spinner to target.
+            mTargetPosition += deltaPosition;
+            mIndexerMotor.setPosition(mTargetPosition); // Rotate Spinner to target.
         }
     }
 
@@ -145,8 +145,8 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void returnToHome()
     {
-        targetPosition = 0;
-        mIndexerMotor.setPosition(targetPosition);
+        mTargetPosition = 0;
+        mIndexerMotor.setPosition(mTargetPosition);
     }
 
     /**
@@ -155,8 +155,8 @@ public class Indexer extends SpartronicsSubsystem
     public void toNearestQuarterRotation()
     {
         // Rotates to nearest quarter rotation
-        targetPosition = Math.ceil(mIndexerMotor.getEncoder().getPosition() * 4) / 4;
-        mIndexerMotor.setPosition(targetPosition);
+        mTargetPosition = Math.ceil(mIndexerMotor.getEncoder().getPosition() * 4) / 4;
+        mIndexerMotor.setPosition(mTargetPosition);
     }
 
     /**
@@ -219,6 +219,11 @@ public class Indexer extends SpartronicsSubsystem
         mIndexerMotor.setNeutral();
     }
 
+    public boolean isAtPositon()
+    {
+        return Math.abs(mTargetPosition - mIndexerMotor.getEncoder().getPosition()) > Constants.Indexer.Spinner.kPositionTolerance;
+    }
+
     public void addBalls(int i)
     {
         mBallsHeld = Math.min(5, Math.max(0, mBallsHeld+i));
@@ -234,7 +239,7 @@ public class Indexer extends SpartronicsSubsystem
         return mBallsHeld;
     }
 
-    public boolean isInSafeSpace()
+    public boolean areFinsAligned()
     {
         double positionMod90 = mIndexerMotor.getEncoder().getPosition() % 90;
         return (positionMod90 >= 85 || positionMod90 <= 5); // if in a safe space to load a ball

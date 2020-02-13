@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -72,6 +73,7 @@ public class RobotContainer
     /* subsystems */
     private final Climber mClimber;
     private final Intake mIntake;
+    private final Indexer mIndexer;
     private final Launcher mLauncher;
     private final PanelRotator mPanelRotator;
     private final LED mLED;
@@ -80,6 +82,7 @@ public class RobotContainer
     /* subsystem commands */
     private final ClimberCommands mClimberCommands;
     private final IntakeCommands mIntakeCommands;
+    private final IndexerCommands mIndexerCommands;
     private final LauncherCommands mLauncherCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
 
@@ -145,6 +148,7 @@ public class RobotContainer
 
         mClimber = new Climber();
         mIntake = new Intake();
+        mIndexer = new Indexer();
         mLauncher = new Launcher();
         mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
@@ -152,6 +156,7 @@ public class RobotContainer
 
         mClimberCommands = new ClimberCommands();
         mIntakeCommands = new IntakeCommands();
+        mIndexerCommands = new IndexerCommands();
         mLauncherCommands = new LauncherCommands(mStateEstimator.getCameraRobotStateMap(), new Pose2d());
         mPanelRotatorCommands = new PanelRotatorCommands();
 
@@ -205,7 +210,12 @@ public class RobotContainer
         // new JoystickButton(mButtonBoard, 0).whenPressed(LauncherCommands.new Launch(mLauncher));
         // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new ConditionalCommand(mLauncherCommands.new Target));
 
-        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(mIntakeCommands.new Harvest(mIntake));
+        var intakeParallelGroup = new ParallelCommandGroup(
+            mIntakeCommands.new Harvest(mIntake),
+            mIndexerCommands.new LoadFromIntake(mIndexer)
+        );
+
+        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(intakeParallelGroup);
         new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
 
         new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));
