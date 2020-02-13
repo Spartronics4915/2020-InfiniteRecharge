@@ -47,7 +47,6 @@ public class CameraToField
     private Affine3 mRobotToField;
     private Affine3 mCamToField;
     private String mRobotPose;
-    private double mTimestamp;
     private boolean mDirty;
 
     public CameraToField()
@@ -58,7 +57,6 @@ public class CameraToField
         mRobotToField = new Affine3();
         mCamToField = new Affine3();
         mRobotPose = null;
-        mTimestamp = 0;
         mDirty = true;
     }
 
@@ -114,9 +112,8 @@ public class CameraToField
     /**
      * Periodically update the robot pose via a string
      * @param rposeString "x y angle" (angle in degrees)
-     * @param timestamp time associated with pose
      */
-    public void updateRobotPose(String rposeString, double timestamp)
+    public void updateRobotPose(String rposeString)
     {
         this.mRobotPose = rposeString;
         String[] vals = rposeString.split(" ");
@@ -124,7 +121,7 @@ public class CameraToField
         double x = Double.parseDouble(vals[0]);
         double y = Double.parseDouble(vals[1]);
         double angle = Double.parseDouble(vals[2]);
-        this.updateRobotPose(x, y, angle, timestamp);
+        this.updateRobotPose(x, y, angle);
     }
 
     /**
@@ -133,15 +130,33 @@ public class CameraToField
      * @param y - y coordinate of robot origin on field
      * @param angle - heading of robot in degrees.  If x of robot points to 
      * x of field, the angle is zero.
-     * @param timestamp
      */
-    public void updateRobotPose(double x, double y, double angle, 
-                               double timestamp)
+    public void updateRobotPose(double x, double y, double angle)
     {
-        assert(timestamp > this.mTimestamp);
-        this.mTimestamp = timestamp;
         Affine3 xlate =  Affine3.fromTranslation(x, y, 0);
         Affine3 rot = Affine3.fromRotation(angle, new Vec3(0,0,1));
+        this.mRobotToField = Affine3.concatenate(xlate, rot);
+        this.mDirty = true;
+    }
+
+    /**
+     * Given a known robot heading, a measured target in robot coords
+     * and the known field coordinates of the same target, compute the
+     * full robotToField coordinates.
+     * @param knownHeading - measured in degrees in field coordinates
+     * @param robotTgt - target pt in robot coordinates (from vision)
+     * @param fieldTgt - known target location in field coords
+     */
+    public void updateRobotPose(double knownHeading, final Vec3 robotTgt, 
+                                final Vec3 fieldTgt)
+    {
+        Affine3 rot = Affine3.fromRotation(knownHeading, Vec3.ZAxis);
+        // transform robotTgtPt to field by applying xy rotation
+        Vec3 rotTgt = rot.transformPoint(robotTgt);
+        // to move robot origin to correct field location:
+        //  xf = x + dx
+        Vec3 dx = fieldTgt.subtract(rotTgt);
+        Affine3 xlate = Affine3.fromTranslation(dx);
         this.mRobotToField = Affine3.concatenate(xlate, rot);
         this.mDirty = true;
     }
@@ -153,11 +168,10 @@ public class CameraToField
      * of the camera frame 10 feet away would be (0, 0, -120).
      * @return the target point converted to field coordinates.
      */
-    public Vec3 transformPoint(Vec3 pt)
+    public Vec3 camPointToField(Vec3 pt)
     {
         this._rebuildTransforms();
         return this.mCamToField.transformPoint(pt);
-
     }
 
     /**
@@ -167,10 +181,61 @@ public class CameraToField
      * @param dir - unit-length direction vector in camera space.
      * @return the camera direction represented in field coordinates.
      */
-    public Vec3 transformVector(Vec3 dir)
+    public Vec3 camDirToField(Vec3 dir)
     {
         this._rebuildTransforms();
         return this.mCamToField.transformVector(dir);
+    }
+
+    /**
+     * This is the primary method to convert a camera-space point (a vision target)
+     * into robot coordinates. Additional work may be needed to infer robot
+     * position.
+     * @param pt - coordinates of target in camera space.  A point at the center
+     * of the camera frame 10 feet away would be (0, 0, -120).
+     * @return the target point converted to robot-relative coordinates.
+     */
+    public Vec3 camPointToRobot(Vec3 pt)
+    {
+        this._rebuildTransforms();
+        return this.mCamToRobot.transformPoint(pt);
+
+    }
+
+    /**
+     * This is the primary method to convert a camera-space direction into
+     * into robot coordinates. Additional work may be need infer robot
+     * orientation on the field.
+     * @param dir - unit-length direction vector in camera space.
+     * @return the camera direction represented in robot-relative coordinates.
+     */
+    public Vec3 camDirToRobot(Vec3 dir)
+    {
+        this._rebuildTransforms();
+        return this.mCamToRobot.transformVector(dir);
+    }
+
+
+    /**
+     * Convert a robot-space point into field coordinates.
+     * @param pt - a point in the robot's coordinate system
+     * @return - a point in the field's coordinate system
+     */
+    public Vec3 robotPointToField(Vec3 pt)
+    {
+        // no rebuild needed since there's no chain involved
+        return this.mRobotToField.transformPoint(pt);
+    }
+
+    /**
+     * Convert a robot-space direction into field coordinates.
+     * @param dir - a direction in the robot's coordinate system
+     * @return - a direction in the field's coordinate system
+     */
+    public Vec3 robotDirToField(Vec3 dir)
+    {
+        // no rebuild needed since there's no chain involved
+        return this.mRobotToField.transformVector(dir);
     }
 
     /**

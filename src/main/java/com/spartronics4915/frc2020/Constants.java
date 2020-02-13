@@ -92,10 +92,14 @@ public final class Constants
         public static final Pose2d kTurretOffset = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180.0));
 
         // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
-        public static final double kP = 0.00154;
-        public static final double kS = 0.0638;
-        public static final double kV = 0.121;
-        public static final double kA = 0.0252;
+        public static final double kP = 0.02;
+        public static final double kS = 0.0634; // 0.0654;
+        public static final double kV = 7.23; // 7.18;
+        public static final double kA = 5.07;
+
+        public static double kTurretP = 0;
+        public static double kTurretI = 0;
+        public static double kTurretD = 0;
 
         // Vals for interpolating lookup table
         public static final int LookupTableSize = 0;
@@ -104,6 +108,9 @@ public final class Constants
         public static final double[] RPSTable = null;
 
         public static final double kMaxRPS = 90.0;
+        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(60.0);
+
+        public static Pose2d goalLocation = null;
     }
 
     public static final class OI
@@ -223,14 +230,25 @@ public final class Constants
 
     public static final class Estimator
     {
-        public static final Pose2d kCameraOffset = new Pose2d();
+        public static final Pose2d kSlamraToRobot = new Pose2d(-0.390525, 0, new Rotation2d());
+        public static final Pose2d kVisionToRobot = new Pose2d(0.390525, 0, Rotation2d.fromDegrees(0));
         public static final double kMeasurementCovariance = 0.001;
     }
 
     public static final class Vision
     {
         /* Camera mount geometry is located in CamToField2020.java */
-        public static final String kTurretTargetKey = "/Vision/Target/Turret";
-        public static final String kPoseBroadcastKey = "/Vision/Control/RobotPose";
+        public static final String kTurretTargetTable = "/Vision/Target";
+        public static final String kTargetResultKey = "/Vision/Target/Result"; /* from raspi */
+        public static final String kPoseEstimateKey = "/SmartDashboard/Vision/PoseEstimate";
+        public static final String kPoseErrorKey = "/SmartDashboard/Vision/PoseError";
+        public static final String kPoseLatencyKey = "/SmartDashboard/Vision/Latency";
+        public static final String kStatus = "/SmartDashboard/Vision/Status";
+
+        public static final double kGoalHeight = 8*12 + 2.25; // 98.25in
+        // Red Alliance on right, Red Target on upper left (ie: x:0, y positive)
+        public static final double[] kRedGoalCoords = {0, 67.5, kGoalHeight};
+        // Blue Alliance on left, Blue Target on lower right (ie: x:xmax, y negative)
+        public static final double[] kBlueGoalCoords = {628, -67.5, kGoalHeight};
     }
 }

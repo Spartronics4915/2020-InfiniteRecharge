@@ -5,6 +5,7 @@ import com.spartronics4915.frc2020.subsystems.PanelRotator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class PanelRotatorCommands
@@ -207,6 +208,20 @@ public class PanelRotatorCommands
         {
             super(new SpinOneRotation(panelRotator), new SpinOneRotation(panelRotator),
                 new SpinOneRotation(panelRotator), new SpinOneRotation(panelRotator));
+        }
+    }
+
+    /**
+     * This {@link RunCommand} stops all PanelRotator motors by calling
+     * PanelRotator.stop() repeatedly.
+     * <p>
+     * It also happens to be our default command.
+     */
+    public class Stop extends RunCommand
+    {
+        public Stop(PanelRotator panelRotator)
+        {
+            super(panelRotator::stop, panelRotator);
         }
     }
 }

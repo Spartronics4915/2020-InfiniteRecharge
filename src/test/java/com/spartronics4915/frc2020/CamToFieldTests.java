@@ -1,9 +1,9 @@
 package com.spartronics4915.frc2020;
 
 import com.spartronics4915.lib.math.threedim.*;
+import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -14,25 +14,45 @@ class CamToFieldTests
     @Test
     public void usageExample()
     {
-        double timestamp = 0.01;
         CamToField2020 ctof = new CamToField2020();
-        ctof.updateTurretAngle(0);
+        ctof.updateTurretAngle(new Rotation2d());
 
         // robot at center of field, pointing right
-        ctof.updateRobotPose(320, 0, 0, timestamp);
-        timestamp += .01;
+        ctof.updateRobotPose(320, 0, 0);
 
-        Vec3 camOnField = ctof.getPointOnField(new Vec3(0, 0, 0));
+        Vec3 camOnField = ctof.camPointToField(new Vec3(0, 0, 0));
         assert(camOnField.equals(new Vec3(305,12,8) , kEpsilon));
-        Vec3 camDirOnField = ctof.getDirOnField(new Vec3(0, 0, -1));
+        Vec3 camDirOnField = ctof.camDirToField(new Vec3(0, 0, -1));
         assertEquals(camDirOnField.a1, -1, .2); // camera tilts into z-up
         assertEquals(camDirOnField.a2, 0, kEpsilon); // camera tilts into z-up
 
         // let's see where a point 100 inches away from camera is
         // should be "behind the robot" on at y == 12 (which is cam offset)
-        Vec3 p1 = ctof.getPointOnField(new Vec3(0, 0, -100));
-        p1.print();
+        Vec3 p1 = ctof.camPointToField(new Vec3(0, 0, -100));
         assertEquals(p1.a2, 12, kEpsilon);
+
+        // robot heading north, target below/right, 45 degrees,
+        // variant of updateRobotPose that estimates the robot transform
+        // given a measurement and an expected location.
+        double robotHeading = 90;
+        Vec3 robotRelativeTarget = new Vec3(-100, -100, 96);
+        Vec3 knownFieldLocationTarget = new Vec3(628, -67.5, 96);
+        ctof.updateRobotPose(robotHeading, robotRelativeTarget, knownFieldLocationTarget);
+        Vec3 robotLocation = ctof.robotPointToField(Vec3.ZeroPt);
+        Vec3 tMinusR = knownFieldLocationTarget.subtract(robotLocation);
+        assertEquals(robotRelativeTarget.length(), tMinusR.length(), kEpsilon);
+        assertEquals(tMinusR.a1, 100, kEpsilon);
+        assertEquals(tMinusR.a2, -100, kEpsilon);
+        assertEquals(tMinusR.a3, 96, kEpsilon);
+
+        // same as above, but now the target is exactly behind the robot so
+        // the y coord of tMinusR is 0
+        robotHeading = 135;
+        ctof.updateRobotPose(robotHeading, robotRelativeTarget, knownFieldLocationTarget);
+        robotLocation = ctof.robotPointToField(Vec3.ZeroPt);
+        tMinusR = knownFieldLocationTarget.subtract(robotLocation);
+        assertEquals(robotRelativeTarget.length(), tMinusR.length(), kEpsilon);
+        assertEquals(tMinusR.a2, 0, kEpsilon);
     }
 
     private Affine3 getRToField(Vec3 pos, double heading)
