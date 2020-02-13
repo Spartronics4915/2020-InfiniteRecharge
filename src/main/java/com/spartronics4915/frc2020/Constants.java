@@ -20,14 +20,14 @@ public final class Constants
     {
         public static final int kLiftMotorId = 5;
         public static final int kWinchMotorId = 6;
-        public static final double kExtendSpeed = 1.0;
-        public static final double kWinchSpeed = 1.0;
-        public static final double kRetractSpeed = -1.0;
-        public static final double kReverseWinchSpeed = -1.0;
-        public static final double kStallThreshold = 10.0;
-        public static final double kTimerExtenderMin = 3.0;
+        public static final double kExtendSpeed = 1.0; // XXX: test
+        public static final double kWinchSpeed = 1.0; // XXX: test
+        public static final double kRetractSpeed = -1.0; // XXX: test
+        public static final double kReverseWinchSpeed = -1.0; // XXX: test
+        public static final double kStallThreshold = 10.0; // FIXME: stand-in value
+        public static final double kTimerExtenderMin = 3.0; // FIXME: stand-in values
         public static final double kTimerExtenderMax = 5.0;
-        public static final boolean kStalled = true;
+        public static final boolean kStalled = true; // XXX: test
     }
 
     public static final class Indexer
@@ -35,7 +35,7 @@ public final class Constants
         public static final class Spinner
         {
             public static final int kMotorId = 9;
-            public static final double kVelocityP = 1;
+            public static final double kVelocityP = 1; // FIXME: stand-in values
             public static final double kVelocityD = 1;
             public static final double kPositionP = 1;
             public static final double kPositionD = 1;
@@ -47,7 +47,7 @@ public final class Constants
         public static final class Loader
         {
             public static final int kMotorId = 10;
-            public static final double kVelocityP = 1;
+            public static final double kVelocityP = 1; // FIXME: stand-in values
             public static final double kVelocityD = 1;
             public static final double kPositionP = 1;
             public static final double kPositionD = 1;
@@ -57,7 +57,7 @@ public final class Constants
         public static final class Transfer
         {
             public static final int kMotorId = 11;
-            public static final double kVelocityP = 1;
+            public static final double kVelocityP = 1; // FIXME: stand-in values
             public static final double kVelocityD = 1;
             public static final double kPositionP = 1;
             public static final double kPositionD = 1;
@@ -65,7 +65,7 @@ public final class Constants
             public static final double kSpeed = 1;
         }
 
-        public static final int kOpticalFlagId = 8; // Analog
+        public static final int kLimitSwitchId = 8; // Digital
         public static final int kSlotProxSensorId = 4; // Digital
         public static final int kIntakeSensorId = 5; // Digital
     }
@@ -75,8 +75,8 @@ public final class Constants
         public static final int kHarvestMotorId = 12;
         public static final int kProximitySensorId = 5; // Digital
 
-        public static final double kHarvestSpeed = 0.5;
-        public static final double kEjectSpeed = -0.5;
+        public static final double kHarvestSpeed = 0.5; // XXX: test
+        public static final double kEjectSpeed = -0.5;  // XXX: test
     }
 
     public static final class Launcher
@@ -86,29 +86,28 @@ public final class Constants
         public static final int kAngleAdjusterMasterId = 0; // PWM
         public static final int kAngleAdjusterFollowerId = 1; // PWM
         public static final int kTurretId = 8;
-        public static final int kTurretPotentiometerId = 0;
+        public static final int kTurretPotentiometerId = 0; // Analog
 
         // TODO: Find translation of turret from the center of the robot
         public static final Pose2d kTurretOffset = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180.0));
 
-        // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
-        public static final double kP = 0.02;
+        public static final double kP = 0.02; // FIXME: currently values for non-final launcher
         public static final double kS = 0.0634; // 0.0654;
         public static final double kV = 7.23; // 7.18;
         public static final double kA = 5.07;
 
-        public static double kTurretP = 0;
-        public static double kTurretI = 0;
-        public static double kTurretD = 0;
+        public static final double kTurretP = 0; // FIXME: stand-in values
+        public static final double kTurretI = 0;
+        public static final double kTurretD = 0;
 
         // Vals for interpolating lookup table
-        public static final int LookupTableSize = 0;
+        public static final int LookupTableSize = 0; // ???
         public static final double[] DistanceTable = null;
         public static final double[] AngleTable = null;
         public static final double[] RPSTable = null;
 
-        public static final double kMaxRPS = 90.0;
-        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(60.0);
+        public static final double kMaxRPS = 90.0; // Reasonable guess
+        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(30.0);
 
         public static Pose2d goalLocation = null;
     }
@@ -126,12 +125,12 @@ public final class Constants
         public static final int kSpinMotorId = 13;
         public static final int kRaiseMotorId = 14;
 
-        public static final double kRaiseSpeed = 0.5;
+        public static final double kRaiseSpeed = 0.5; // XXX: test
         public static final double kLowerSpeed = -0.5;
-        public static final double kSpinSpeed = 0.5;
-        public static final double kConfidenceMinimum = 0.3;
+        public static final double kSpinSpeed = 0.5; // XXX: test
+        public static final double kConfidenceMinimum = 0.3; // FIXME: almost certainly incorrect
 
-        public static final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
+        public static final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114); // XXX: test these values in a variety of conditions
         public static final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
         public static final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
         public static final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
