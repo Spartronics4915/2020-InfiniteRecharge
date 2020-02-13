@@ -78,7 +78,7 @@ public class Vision extends SpartronicsSubsystem
      * Note that only position reflects our computation.  The heading,  velocity
      * an acceleration are interpolated from RobotStateEstimator's tables.
      */
-    public RobotStateMap GetRobotStateMap()
+    public RobotStateMap getRobotStateM0p()
     {
         return this.mVisionRSM;
     }
@@ -89,7 +89,7 @@ public class Vision extends SpartronicsSubsystem
      * we take the opposite tack: we esimate the pose whenever we receive a
      * vision target update from raspi.
      */
-    public void BroadcastState()
+    public void broadcastState()
     {
         // Here we might compose an easily parsable string containing
         // current robot pose estimate and timestamp. We could
