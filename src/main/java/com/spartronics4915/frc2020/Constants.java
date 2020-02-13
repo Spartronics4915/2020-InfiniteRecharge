@@ -121,10 +121,13 @@ public final class Constants
          * See https://drive.google.com/file/d/1BfoFJmpJg31txUqTG-OrJjeWgQdQsCNC/view
          * for a diagram of how these line up.
          */
-        public static final Color kRedTarget = ColorMatch.makeColor(0, 1, 0); // Blue
-        public static final Color kGreenTarget = ColorMatch.makeColor(1, 1, 0); // Yellow
-        public static final Color kBlueTarget = ColorMatch.makeColor(1, 0, 0); // Red
-        public static final Color kYellowTarget = ColorMatch.makeColor(0, 1, 0); // Green
+
+        // FIXME: These values are calibrated without the cone!!! 
+        // Please recalibrate them upon getting the robot.
+        public static final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429); //actually blue
+        public static final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240); //actually green
+        public static final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114); //actually red
+        public static final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113); //actually yellow
     }
 
     public static final class Drive

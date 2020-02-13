@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Ultrasonic;
 
 public class PanelRotator extends SpartronicsSubsystem
 {
@@ -94,9 +95,9 @@ public class PanelRotator extends SpartronicsSubsystem
     }
 
     /** 
-     * this gets the 18-bit output (max is 2^18 - 1, I think)
+     * this gets the 18-bit output, putting a number (0-262143) on the dashboard
      */
-    public String get18BitRGB()
+    public void get18BitRGB()
     {
         int red = mColorSensor.getRed();
         int green = mColorSensor.getGreen();
@@ -104,13 +105,13 @@ public class PanelRotator extends SpartronicsSubsystem
 
         String RGB = red + ", " + green + ", " + blue;
 
-        return RGB;
+        this.dashboardPutString("Color sensor 18 Bit", RGB);
     }
 
     /** 
-     * this gets the 18-bit output but divided by 262143 to make a fraction between 0 & 1
+     * this gets the 18-bit output and divided by the max value, putting a number between 0 and 1 on the dashboard
      */
-    public String getFloatRGB()
+    public void getFloatRGB()
     {
         int redFloat = mColorSensor.getRed() / 262143;
         int greenFloat = mColorSensor.getGreen() / 262143;
@@ -118,7 +119,7 @@ public class PanelRotator extends SpartronicsSubsystem
 
         String RGB = redFloat + ", " + greenFloat + ", " + blueFloat;
 
-        return RGB;
+        this.dashboardPutString("Color sensor float", RGB);
     }
 
     /**
@@ -127,7 +128,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public String getActualColor()
     {
-        // TODO: You will need to verify that this builtin functionality works.
+        // TODO: You will need to verify that this built-in functionality works.
         Color detectedColor = mColorSensor.getColor();
         ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
 
@@ -142,8 +143,18 @@ public class PanelRotator extends SpartronicsSubsystem
         else
             sensedColor = "Error";
 
-        System.out.println(sensedColor);
+        //this.dashboardPutString("detectedColor", " " + detectedColor);
+        this.dashboardPutString("Color sensor match", sensedColor);
         return sensedColor;
+    }
+
+    /**
+     * Finds the distance between the sensor and what it is looking at; puts an 11-bit (0-2047) value on the dashboard
+     */
+    public void getDistance()
+    {
+        int distance = mColorSensor.getProximity();
+        this.dashboardPutNumber("Color sensor IR distance", distance);
     }
 
     /**
