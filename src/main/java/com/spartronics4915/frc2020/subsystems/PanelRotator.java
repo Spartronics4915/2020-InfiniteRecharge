@@ -27,9 +27,7 @@ public class PanelRotator extends SpartronicsSubsystem
     private final ColorSensorV3 mColorSensor;
 
     private String sensedColor;
-    private int red;
-    private int green;
-    private int blue;
+    private String rotatedColor;
 
     private final ColorMatch mColorMatcher = new ColorMatch();
 
@@ -37,10 +35,8 @@ public class PanelRotator extends SpartronicsSubsystem
     {
         mOpticalFlagUp = new DigitalInput(Constants.PanelRotator.kOpticalFlagUpId);
         mLimitSwitchDown = new DigitalInput(Constants.PanelRotator.kLimitSwitchDownId);
-        mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId,
-            SensorModel.fromMultiplier(1));
-        mRaiseMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId,
-            SensorModel.fromMultiplier(1));
+        mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId);
+        mRaiseMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId);
 
         mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         mColorMatcher.addColorMatch(Constants.PanelRotator.kRedTarget);
@@ -87,6 +83,7 @@ public class PanelRotator extends SpartronicsSubsystem
     // TODO: What will this return before Stage Two?
     /**
      * Gets the color the robot needs to spin to through game specific messages
+     *
      * @return A String color - either Red, Blue, Yellow, or Green
      */
     public String getTargetColor()
@@ -94,8 +91,10 @@ public class PanelRotator extends SpartronicsSubsystem
         return DriverStation.getInstance().getGameSpecificMessage();
     }
 
-    /** 
-     * this gets the 18-bit output, putting a number (0-262143) on the dashboard
+    /**
+     * This gets the 18-bit output (max is 2^18 - 1, I think)
+     *
+     * @return a comma-separated String of raw RGB values (to dashboard)
      */
     public void get18BitRGB()
     {
@@ -108,8 +107,10 @@ public class PanelRotator extends SpartronicsSubsystem
         this.dashboardPutString("Color sensor 18 Bit", RGB);
     }
 
-    /** 
-     * this gets the 18-bit output and divided by the max value, putting a number between 0 and 1 on the dashboard
+    /**
+     * This gets the 18-bit output but divided by 262143 to make a fraction between 0 & 1
+     *
+     * @return a comma-separated String of RGB values, as a percentage (to dashboard)
      */
     public void getFloatRGB()
     {
@@ -123,12 +124,12 @@ public class PanelRotator extends SpartronicsSubsystem
     }
 
     /**
-     * Finds what color the color sensor is seeing.
+     * Finds what actual color the color sensor is seeing.
+     *
      * @return A String color - either Red, Blue, Yellow, or Green
      */
     public String getActualColor()
     {
-        // TODO: You will need to verify that this built-in functionality works.
         Color detectedColor = mColorSensor.getColor();
         ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
 
@@ -143,13 +144,14 @@ public class PanelRotator extends SpartronicsSubsystem
         else
             sensedColor = "Error";
 
-        //this.dashboardPutString("detectedColor", " " + detectedColor);
-        this.dashboardPutString("Color sensor match", sensedColor);
+        dashboardPutString("Current Color (robot)", sensedColor);
+        dashboardPutNumber("ColorMatch Confidence", match.confidence);
         return sensedColor;
     }
 
     /**
-     * Finds the distance between the sensor and what it is looking at; puts an 11-bit (0-2047) value on the dashboard
+     * Finds the distance between the sensor and what it is looking at
+     * 11-bit (0-2047) value (to dashboard)
      */
     public void getDistance()
     {
@@ -158,42 +160,68 @@ public class PanelRotator extends SpartronicsSubsystem
     }
 
     /**
-     * Sees if the beam sensor on the top is triggered
-     * @return whether the optical flag is broken
+     * This code could be less redundant by taking a String parameter and converting it,
+     * but it'll work out to be the same amount of code anyways, and this is clearer.
+     *
+     * @return The current Color of the wheel as detected by the FMS.
+     */
+    public String getRotatedColor()
+    {
+        Color detectedColor = mColorSensor.getColor();
+        ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
+
+        if (match.color.equals(Constants.PanelRotator.kRedTarget))
+            rotatedColor = "Blue";
+        else if (match.color.equals(Constants.PanelRotator.kGreenTarget))
+            rotatedColor = "Yellow";
+        else if (match.color.equals(Constants.PanelRotator.kBlueTarget))
+            rotatedColor = "Red";
+        else if (match.color.equals(Constants.PanelRotator.kYellowTarget))
+            rotatedColor = "Green";
+        else
+            rotatedColor = "Error";
+
+        dashboardPutString("Current Color (field)", rotatedColor);
+        dashboardPutNumber("ColorMatch Confidence", match.confidence);
+        return rotatedColor;
+    }
+
+    /**
+     * {@link ColorMatchResult} includes a confidence value.
+     *
+     * @return a percentage value from 0 to 1 with the
+     */
+    public double getColorConfidence()
+    {
+        Color detectedColor = mColorSensor.getColor();
+        ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
+
+        return match.confidence;
+    }
+
+    /**
+     * Checks if the top optical flag is broken
+     *
+     * @return whether the PanelManipulator is raised
      */
     public boolean getOpticalFlagUp()
     {
-        return mOpticalFlagUp.get() == Constants.PanelRotator.kOpticalFlagBroken; // TODO: adjust the constant if backwards
+        // TODO: Double-check this
+        return mOpticalFlagUp.get();
     }
 
-    // TODO: Double-check this
     /**
-     * @return if the bottom limit switch is triggered
+     * Checks if the bottom limit switch is triggered
+     *
+     * @return whether the PanelManipulator is lowered
      */
     public boolean getLimitSwitchDown()
     {
+        // TODO: Double-check this
         return mLimitSwitchDown.get();
     }
 
-    // TODO: Multiple stop() methods are redundant unless we use motor safety
-
     /**
-     * Stops the extension motor
-     */
-    public void stopRaiseMotor()
-    {
-        mRaiseMotor.setDutyCycle(0);
-    }
-
-    /**
-     * Stops the wheel motor
-     */
-    public void stopSpin()
-    {
-        mSpinMotor.setDutyCycle(0);
-    }
-
-    /** 
      * Universal stop method
      */
     public void stop()

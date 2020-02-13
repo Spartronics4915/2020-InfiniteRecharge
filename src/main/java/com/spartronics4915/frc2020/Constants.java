@@ -54,16 +54,27 @@ public final class Constants
             public static final double kConversionRatio = 1;
             public static final double kSpeed = 1;
         }
+        public static final class Transfer
+        {
+            public static final int kMotorId = 11;
+            public static final double kVelocityP = 1;
+            public static final double kVelocityD = 1;
+            public static final double kPositionP = 1;
+            public static final double kPositionD = 1;
+            public static final double kConversionRatio = 1;
+            public static final double kSpeed = 1;
+        }
 
-        public static final int kProxSensorId = 4; // DIO4 // Proximity Sensor (index slot one)
-        public static final int kOpticalFlagId = 2; // A2 // Optical Flag for Zeroing
-        public static final boolean kOpticalFlagReversed = false; // Whether or not the optical flag is inverted
-        public static final int kIntakeSensorId = -1; // 
+        public static final int kOpticalFlagId = 8; // Analog
+        public static final int kSlotProxSensorId = 4; // Digital
+        public static final int kIntakeSensorId = 5; // Digital
     }
 
     public static final class Intake
     {
         public static final int kHarvestMotorId = 12;
+        public static final int kProximitySensorId = 5; // Digital
+
         public static final double kHarvestSpeed = 0.5;
         public static final double kEjectSpeed = -0.5;
     }
@@ -72,20 +83,24 @@ public final class Constants
     {
         public static final int kFlywheelMasterId = 7;
         public static final int kFlywheelFollowerId = -1; // Solid brass
-        public static final int kAngleAdjusterMasterId = 0; // PWM0
-        public static final int kAngleAdjusterFollowerId = 1; // PWM1
+        public static final int kAngleAdjusterMasterId = 0; // PWM
+        public static final int kAngleAdjusterFollowerId = 1; // PWM
         public static final int kTurretId = 8;
-        public static final int kTurretPotentiometerId = 2;
+        public static final int kTurretPotentiometerId = 0;
 
         // TODO: Find translation of turret from the center of the robot
         public static final Pose2d kTurretOffset = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180.0));
-        
+
         // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
-        public static final double kP = 0.00154;
-        public static final double kS = 0.0638;
-        public static final double kV = 0.121;
-        public static final double kA = 0.0252;
-        
+        public static final double kP = 0.02;
+        public static final double kS = 0.0634; // 0.0654;
+        public static final double kV = 7.23; // 7.18;
+        public static final double kA = 5.07;
+
+        public static double kTurretP = 0;
+        public static double kTurretI = 0;
+        public static double kTurretD = 0;
+
         // Vals for interpolating lookup table
         public static final int LookupTableSize = 0;
         public static final double[] DistanceTable = null;
@@ -93,6 +108,9 @@ public final class Constants
         public static final double[] RPSTable = null;
 
         public static final double kMaxRPS = 90.0;
+        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(60.0);
+
+        public static Pose2d goalLocation = null;
     }
 
     public static final class OI
@@ -105,15 +123,13 @@ public final class Constants
     {
         public static final int kLimitSwitchDownId = 6;
         public static final int kOpticalFlagUpId = 7;
-        public static final int kRaiseMotorId = 13;
-        public static final int kSpinMotorId = 14;
+        public static final int kSpinMotorId = 13;
+        public static final int kRaiseMotorId = 14;
 
         public static final double kRaiseSpeed = 0.5;
         public static final double kLowerSpeed = -0.5;
         public static final double kSpinSpeed = 0.5;
-
-        // Whether or not something has triggered the optical flag, as a constant to be unambiguous
-        public static final boolean kOpticalFlagBroken = false;
+        public static final double kConfidenceMinimum = 0.3;
 
         /* The position of our color sensor and the field's has a difference of π/2, so
          * we need to adjust targets accordingly.
@@ -121,13 +137,10 @@ public final class Constants
          * See https://drive.google.com/file/d/1BfoFJmpJg31txUqTG-OrJjeWgQdQsCNC/view
          * for a diagram of how these line up.
          */
-
-        // FIXME: These values are calibrated without the cone!!! 
-        // Please recalibrate them upon getting the robot.
-        public static final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429); //actually blue
-        public static final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240); //actually green
-        public static final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114); //actually red
-        public static final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113); //actually yellow
+        public static final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
+        public static final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
+        public static final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
+        public static final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
     }
 
     public static final class Drive
@@ -136,7 +149,7 @@ public final class Constants
         public static final boolean kRightFollowerOutputInverted = true;
         public static final boolean kLeftOutputInverted = false;
         public static final boolean kLeftFollowerOutputInverted = false;
-        
+
         public static final int kRightDriveMaster = 1;
         public static final int kRightDriveFollower = 2;
         public static final int kLeftDriveMaster = 3;
@@ -223,13 +236,25 @@ public final class Constants
 
     public static final class Estimator
     {
-        public static final Pose2d kCameraOffset = new Pose2d();
+        public static final Pose2d kSlamraToRobot = new Pose2d(-0.390525, 0, new Rotation2d());
+        public static final Pose2d kVisionToRobot = new Pose2d(0.390525, 0, Rotation2d.fromDegrees(0));
         public static final double kMeasurementCovariance = 0.001;
     }
 
     public static final class Vision
     {
-        public static final String kTurretTargetKey = "/Vision/Target/Turret";
-        public static final String kPoseBroadcastKey = "/Vision/Control/RobotPose";
+        /* Camera mount geometry is located in CamToField2020.java */
+        public static final String kTurretTargetTable = "/Vision/Target";
+        public static final String kTargetResultKey = "/Vision/Target/Result"; /* from raspi */
+        public static final String kPoseEstimateKey = "/SmartDashboard/Vision/PoseEstimate";
+        public static final String kPoseErrorKey = "/SmartDashboard/Vision/PoseError";
+        public static final String kPoseLatencyKey = "/SmartDashboard/Vision/Latency";
+        public static final String kStatus = "/SmartDashboard/Vision/Status";
+
+        public static final double kGoalHeight = 8*12 + 2.25; // 98.25in
+        // Red Alliance on right, Red Target on upper left (ie: x:0, y positive)
+        public static final double[] kRedGoalCoords = {0, 67.5, kGoalHeight};
+        // Blue Alliance on left, Blue Target on lower right (ie: x:xmax, y negative)
+        public static final double[] kBlueGoalCoords = {628, -67.5, kGoalHeight};
     }
 }
