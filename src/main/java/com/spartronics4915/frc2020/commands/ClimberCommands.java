@@ -6,6 +6,7 @@ import com.spartronics4915.frc2020.subsystems.Climber;
 
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 public class ClimberCommands
@@ -100,6 +101,14 @@ public class ClimberCommands
         public WinchSecondary(Climber climber)
         {
             super(() -> climber.winch(Constants.Climber.kStalled), climber::stop, climber);
+        }
+    }
+
+    public class Winch extends SequentialCommandGroup
+    {
+        public Winch(Climber climber)
+        {
+            super(new WinchPrimary(climber), new WinchSecondary(climber));
         }
     }
 
