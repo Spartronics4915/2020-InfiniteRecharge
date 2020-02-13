@@ -80,7 +80,7 @@ public class Robot extends TimedRobot
         // method so we don't expect dashboard updates without this running.
         // IterativeRobotBase is the one that controls the LiveWindow state 
         // and it explicitly disables LiveWindow traffic when the robot is 
-        // diabled.  Contrast this with the "test epoch". In this mode, the 
+        // disabled.  Contrast this with the "test epoch". In this mode, the 
         // scheduler does run as do all LiveWindow functions.
         CommandScheduler.getInstance().run();
 
