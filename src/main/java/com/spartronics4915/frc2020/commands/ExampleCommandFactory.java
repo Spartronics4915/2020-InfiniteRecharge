@@ -28,12 +28,16 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
  * Set<SpartronicsSubsystem>. Or explicitly require, say, the DriveTrain 
  * subsystem.
  *
- * We present at least 2 different styles/use-cases.  Choose the one that's
+ * We present at 3 different styles/use-cases.  Choose the one that's
  * best for your application, though option #1 is likely preferred.
  *
- * 1. Contextualized Innerclass 
+ * 1. Contextualized inner class 
  *  - access to outerclass member variables, only not in constructor.
  *  - requires unusual, but legal, java syntax for construction
+ * 2. Independant inner class
+ *  - no access to outerclass member variables
+ *  - yes access to outerclass static variables
+ *  - standard constructor syntax:  new ExampleCommandFactory.Test7(mCameraSys)
  * 3. Enumerated MakeCmd method
  *  - easy to read and use, but the dispatch is switch-based
  *
@@ -158,6 +162,27 @@ public class ExampleCommandFactory
                 // look we can put comments in our code!
                 // this is the end command.
                 subsys.logInfo("End of StartEndCommand");
+            }, subsys);
+        }
+    }
+
+    // A public static (inner) class allows us to reference
+    // this class without contructing an instance of our outer
+    // class.
+    public static class Test7 extends StartEndCommand
+    {
+        public Test7(SpartronicsSubsystem subsys)
+        {
+            super(() ->
+            {
+                // look we can put comments in our code!
+                // this is the Start command
+                subsys.logInfo("Start of Test7/StartEndCommand");
+            }, () ->
+            {
+                // look we can put comments in our code!
+                // this is the end command.
+                subsys.logInfo("End of Test7/StartEndCommand");
             }, subsys);
         }
     }

@@ -11,7 +11,8 @@ import com.spartronics4915.lib.math.twodim.geometry.Twist2d;
  */
 public class Kinematics
 {
-    // TODO: Deduplicate kinematics once we add in path following stuff (i.e. remove this file)
+    // TODO: Deduplicate kinematics once we add in path following stuff (i.e. remove
+    // this file)
 
     /**
      * Meters
@@ -30,20 +31,19 @@ public class Kinematics
      */
     public Twist2d forwardKinematics(double leftWheelDelta, double rightWheelDelta)
     {
-        double delta_rotation = (rightWheelDelta - leftWheelDelta)
-                / (mTrackWidth * mScrubFactor);
+        double delta_rotation = (rightWheelDelta - leftWheelDelta) / (mTrackWidth * mScrubFactor);
         return forwardKinematics(leftWheelDelta, rightWheelDelta, delta_rotation);
     }
 
     public Twist2d forwardKinematics(double leftWheelDelta, double rightWheelDelta,
-            double deltaRotationRads)
+        double deltaRotationRads)
     {
         final double dx = (leftWheelDelta + rightWheelDelta) / 2.0;
         return new Twist2d(dx, 0.0, Rotation2d.fromDegrees(deltaRotationRads));
     }
 
-    public Twist2d forwardKinematics(Rotation2d prevHeading, double leftWheelDelta, double rightWheelDelta,
-            Rotation2d currentHeading)
+    public Twist2d forwardKinematics(Rotation2d prevHeading, double leftWheelDelta,
+        double rightWheelDelta, Rotation2d currentHeading)
     {
         final double dx = (leftWheelDelta + rightWheelDelta) / 2.0;
         final double dy = 0.0;

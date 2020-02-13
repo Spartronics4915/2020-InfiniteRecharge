@@ -15,7 +15,6 @@ import java.text.DecimalFormat;
  */
 public class Twist2d implements Interpolable<Twist2d>
 {
-
     public final double dx;
     public final double dy;
     public final Rotation2d dtheta;
@@ -69,28 +68,33 @@ public class Twist2d implements Interpolable<Twist2d>
     /**
      * Obtain a new Pose2d from a (constant curvature) velocity. See:
      * https://github.com/strasdat/Sophus/blob/master/sophus/se2.hpp
-     * 
+     *
      * See also ch 9 of:
      * http://ingmec.ual.es/~jlblanco/papers/jlblanco2010geometry3D_techrep.pdf
      */
-    public Pose2d exp() {
+    public Pose2d exp()
+    {
         double sin_theta = this.dtheta.getSin();
         double cos_theta = this.dtheta.getCos();
         double s, c;
-        if (Math.abs(mDThetaRads) < Util.kEpsilon) {
+        if (Math.abs(mDThetaRads) < Util.kEpsilon)
+        {
             // small angle approximation
             s = 1.0 - 1.0 / 6.0 * mDThetaRads * mDThetaRads;
             c = .5 * mDThetaRads;
-        } else {
+        }
+        else
+        {
             s = sin_theta / mDThetaRads;
             c = (1.0 - cos_theta) / mDThetaRads;
         }
-        Translation2d xlate = new Translation2d(this.dx * s - this.dy * c, this.dx * c + this.dy * s);
+        Translation2d xlate = new Translation2d(this.dx * s - this.dy * c,
+            this.dx * c + this.dy * s);
         return new Pose2d(xlate, new Rotation2d(cos_theta, sin_theta, false));
     }
 
     /**
-     * For some applications interpolating a Twist2d may be fraught with peril. 
+     * For some applications interpolating a Twist2d may be fraught with peril.
      * If you are trying to move from a Pose2d according to a Twist2d
      * consider using Pose2d.interpolate
      */
@@ -101,10 +105,9 @@ public class Twist2d implements Interpolable<Twist2d>
             return this;
         else if (t >= 1)
             return new Twist2d(endValue);
-        final Twist2d newTwist = new Twist2d(
-            this.dx + t*(endValue.dx - this.dx),
-            this.dy + t*(endValue.dy - this.dy),
-            Rotation2d.fromRadians(mDThetaRads + t*(endValue.mDThetaRads - this.mDThetaRads)));
+        final Twist2d newTwist = new Twist2d(this.dx + t * (endValue.dx - this.dx),
+            this.dy + t * (endValue.dy - this.dy),
+            Rotation2d.fromRadians(mDThetaRads + t * (endValue.mDThetaRads - this.mDThetaRads)));
         // should just return t, no need for scaled
         return newTwist.scaled(t);
     }
@@ -113,6 +116,7 @@ public class Twist2d implements Interpolable<Twist2d>
     public String toString()
     {
         final DecimalFormat fmt = new DecimalFormat("#0.000");
-        return "(" + fmt.format(dx) + "," + fmt.format(dy) + "," + fmt.format(dtheta.getDegrees()) + " deg)";
+        return "(" + fmt.format(dx) + "," + fmt.format(dy) + "," + fmt.format(dtheta.getDegrees())
+            + " deg)";
     }
 }

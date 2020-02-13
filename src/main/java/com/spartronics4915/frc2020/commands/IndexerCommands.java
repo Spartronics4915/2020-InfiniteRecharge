@@ -86,7 +86,6 @@ public class IndexerCommands
      */
     public class ZeroSpinnerCommand extends CommandBase
     {
-
         private Indexer mIndexer;
 
         // You should only use one subsystem per command. If multiple are needed, use a
@@ -192,14 +191,6 @@ public class IndexerCommands
      * @param Subsystem requirement For both the CommandScheduler and the above method references.
      */
 
-    /**
-     * This {@link StartEndCommand} runs the intake motor backwards by calling
-     * {@link LoadFromIntake}.reverse repeatedly.
-     * <p>
-     * Note that this is not an Unjam command. The {@link LoadFromIntake} subsystem only
-     * controls the mechanical vector roller.
-     */
-
     public class LoadFromIntake extends SequentialCommandGroup
     {
         private Indexer mIndexer;
@@ -227,9 +218,8 @@ public class IndexerCommands
         public void end(boolean interrupted)
         {
             mIndexer.toNearestQuarterRotation();
-            while (mIndexer.getSlotBallLoaded()) {
+            while (mIndexer.getSlotBallLoaded()) 
                 mIndexer.rotateN(1);
-            }
         }
     }
 
@@ -240,16 +230,14 @@ public class IndexerCommands
         public LoadToLauncher(Indexer indexer, int ballsToShoot)
         {
             mIndexer = indexer;
-
-            double spinDistance = (mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded())
-                ? 0.5
-                : 0;
+            double spinDistance = (mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded()) ? 0.5 : 0;
 
             addCommands(
                 new Spin(mIndexer, -spinDistance),
                 new StartLaunch(mIndexer),
                 new LoadBallToSlot(mIndexer, ballsToShoot + spinDistance),
-                new EndLaunch(mIndexer));
+                new EndLaunch(mIndexer)
+            );
         }
 
         public LoadToLauncher(Indexer indexer)
