@@ -39,8 +39,8 @@ public class TestIndexer
 
         var loadToLauncher = mCommands.new LoadToLauncher(sIndexer);
         /******Defining Motors******/
-        var simmedLoaderMotor = SpartronicsSimulatedMotor.getFromId(Indexer.Motors.LOADER.valueOf());
-        var simmedIndexerMotor = SpartronicsSimulatedMotor.getFromId(Indexer.Motors.INDEXER.valueOf());
+        var simmedLoaderMotor = SpartronicsSimulatedMotor.getFromId(Constants.Indexer.Loader.kMotorId);
+        var simmedIndexerMotor = SpartronicsSimulatedMotor.getFromId(Constants.Indexer.Spinner.kMotorId);
 
         // var sim = new DriverStationSim();
         // sim.setAutonomous(false);
@@ -79,7 +79,6 @@ public class TestIndexer
     @Test
     public void testIndexerIntake()
     {
-<<<<<<< HEAD
         /****Defing Command****/
         var loadFromIntake = mCommands.new LoadFromIntake(sIndexer);
 
@@ -91,22 +90,5 @@ public class TestIndexer
         // CommandScheduler.getInstance().cancel(loadFromIntake);
 
         // sim.setEnabled(false);
-=======
-        Indexer mIndexer = new Indexer();
-        IndexerCommands mIndexerCommands = new IndexerCommands();
-
-        // Defining Command
-        Command loadFromIntake = mIndexerCommands.new LoadFromIntake(mIndexer);
-
-        DriverStationSim mSim = new DriverStationSim();
-        mSim.setAutonomous(false);
-        mSim.setEnabled(true);
-
-        // Testing LoadFromIntake
-        mIndexer.logInfo("Testing LoadFromIntake...");
-        loadFromIntake.schedule();
-        assertTrue(loadFromIntake.isScheduled());
-        mIndexer.logInfo("Success!!");
->>>>>>> 24ebc2140eacc1cdadb4f0f8fa247496194ec984
     }
 }
