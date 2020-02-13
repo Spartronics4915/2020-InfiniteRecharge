@@ -139,7 +139,6 @@ public class IndexerCommands
     {
         public StartLaunch(Indexer indexer)
         {
-
             super(indexer::launch, indexer);
         }
     }
@@ -213,8 +212,8 @@ public class IndexerCommands
                 new EndLaunch(mIndexer), // for safety
                 new WaitForBallHeld(mIndexer),
                 new LoadBallToSlot(mIndexer, 0),
-                new Spin(mIndexer, 1), new InstantCommand(() -> mIndexer.addBalls(1), mIndexer),
-                new LoadFromIntake(mIndexer) // recursions
+                new Spin(mIndexer, 1), new InstantCommand(() -> mIndexer.addBalls(1), mIndexer)
+                // new LoadFromIntake(mIndexer) TODO: Implement working loop
             );
         }
 
