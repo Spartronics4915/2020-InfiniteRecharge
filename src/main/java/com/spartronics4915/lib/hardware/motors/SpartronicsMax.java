@@ -42,7 +42,7 @@ public class SpartronicsMax implements SpartronicsMotor
     private AnalogMode mAnalogMode;
     private FeedbackSensorType mFeedbackSensor;
 
-    public class SpartronicsMaxPWMEncoder implements SpartronicsEncoder
+    public class InternalEncoder implements SpartronicsEncoder
     {
 
         @Override
@@ -71,7 +71,7 @@ public class SpartronicsMax implements SpartronicsMotor
         }
     }
 
-    public class SpartronicsMaxAnalogEncoder implements SpartronicsEncoder
+    public class AnalogEncoder implements SpartronicsEncoder
     {
 
         @Override
@@ -101,7 +101,7 @@ public class SpartronicsMax implements SpartronicsMotor
 
     public static enum FeedbackSensorType
     {
-        kPWM, kAnalogRelative, kAnalogAbsolute
+        kInternal, kAnalogRelative, kAnalogAbsolute
     }
 
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel,
@@ -117,7 +117,7 @@ public class SpartronicsMax implements SpartronicsMotor
 
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel)
     {
-        return makeMotor(deviceNumber, sensorModel, FeedbackSensorType.kPWM);
+        return makeMotor(deviceNumber, sensorModel, FeedbackSensorType.kInternal);
     }
 
     public static SpartronicsMotor makeMotor(int deviceNumber)
@@ -144,7 +144,7 @@ public class SpartronicsMax implements SpartronicsMotor
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel,
         int followerDeviceNumber)
     {
-        return makeMotor(deviceNumber, sensorModel, FeedbackSensorType.kPWM, followerDeviceNumber);
+        return makeMotor(deviceNumber, sensorModel, FeedbackSensorType.kInternal, followerDeviceNumber);
     }
 
     private SpartronicsMax(CANSparkMax spark, SensorModel sensorModel,
@@ -159,29 +159,29 @@ public class SpartronicsMax implements SpartronicsMotor
         CANError err;
         switch (feedbackSensor)
         {
-            case kPWM:
+            case kInternal:
                 mEncoderSensor = mSparkMax.getEncoder();
                 err = mEncoderSensor.setVelocityConversionFactor(kRPMtoRPS); // Set conversion
                                                                              // factor.
-                mEncoder = new SpartronicsMaxPWMEncoder();
+                mEncoder = new InternalEncoder();
                 mPIDController.setFeedbackDevice(mEncoderSensor);
                 break;
             case kAnalogRelative:
                 mAnalogMode = AnalogMode.kRelative;
                 mAnalogSensor = mSparkMax.getAnalog(mAnalogMode);
                 err = mAnalogSensor.setVelocityConversionFactor(kRPMtoRPS);
-                mEncoder = new SpartronicsMaxAnalogEncoder();
+                mEncoder = new AnalogEncoder();
                 mPIDController.setFeedbackDevice(mAnalogSensor);
                 break;
             case kAnalogAbsolute:
                 mAnalogMode = AnalogMode.kAbsolute;
                 mAnalogSensor = mSparkMax.getAnalog(mAnalogMode);
                 err = mAnalogSensor.setVelocityConversionFactor(kRPMtoRPS);
-                mEncoder = new SpartronicsMaxAnalogEncoder();
+                mEncoder = new AnalogEncoder();
                 mPIDController.setFeedbackDevice(mAnalogSensor);
                 break;
             default:
-                mEncoder = new SpartronicsMaxPWMEncoder();
+                mEncoder = new InternalEncoder();
                 err = CANError.kError; // stops errors. Should never happen
         }
         if (err != CANError.kOk)

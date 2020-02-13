@@ -4,7 +4,7 @@ This is a collection of season-agnostic math utilities which may be useful
 in Vision solutions.  We recommend that you start exploring from the top-down.
 Comments and doctests "say it all"!
 
-* `CamToField2020 is an example transformation chain representing the coordinate system
+* `CamToField2020` is an example transformation chain representing the coordinate system
  transformations for a camera attached to a rotating turret attached to the robot.
  It is located in the frc2020 directory.
 * `CamToField` is the base class for any robot that receives periodic updates of the robot's pose.
@@ -25,5 +25,3 @@ Comments and doctests "say it all"!
   In "Graphics Gems II", pp 320-323. Morgan Kaufmann, 1991.
 * Decomposing a matrix into simple transformations. Spencer Thomas.
    In "Graphics Gems II", pp 320-323. Morgan Kaufmann, 1991.
-
-
