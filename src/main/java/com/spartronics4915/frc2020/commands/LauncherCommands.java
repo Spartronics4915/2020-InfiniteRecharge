@@ -11,6 +11,15 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 
 public class LauncherCommands
 {
+    private final RobotStateMap mStateMap;
+    private final Pose2d mTarget;
+
+    public LauncherCommands(RobotStateMap stateMap, Pose2d targetPose)
+    {
+        mStateMap = stateMap;
+        mTarget = targetPose;
+    }
+
     public class Target extends CommandBase
     {
         private final Launcher mLauncher;
@@ -25,9 +34,8 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            mLauncher.runFlywheel(mLauncher.calcRPS(/*calculated distance*/0));
-            mLauncher.adjustHood(mLauncher.calcPitch(/*calculated distance*/0));
-            // FIXME: mLauncher.rotateTurret(/*calculated distance (doesn't need mlauncher.calc function, no ILT*/);
+            double distance = trackTarget(mLauncher);
+            mLauncher.runFlywheel(mLauncher.calcRPS(distance));
         }
 
         // Returns true when the command should end.
@@ -62,8 +70,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            mLauncher.adjustHood(mLauncher.calcPitch(/*calculated distance*/0));
-            // FIXME: mLauncher.rotateTurret(/*calculated distance (doesn't need mlauncher.calc function, no ILT*/);
+            trackTarget(mLauncher);
         }
 
         // Returns true when the command should end.
@@ -75,6 +82,28 @@ public class LauncherCommands
             else
                 return false;
         }
+    }
+
+    /**
+     * @return Distance to the target in meters
+     */
+    private double trackTarget(Launcher launcher)
+    {
+        Pose2d fieldToTurret = mStateMap.getLatestFieldToVehicle()
+        .transformBy(Constants.Launcher.kTurretOffset);
+        Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(mTarget);
+        Rotation2d fieldAnglePointingToTarget = new Rotation2d(
+            turretToTarget.getTranslation().getX(), turretToTarget.getTranslation().getY(),
+            true).inverse();
+
+        Rotation2d turretAngle = fieldAnglePointingToTarget
+            .rotateBy(fieldToTurret.getRotation());
+        double distance = mTarget.distance(fieldToTurret);
+
+        launcher.adjustHood(launcher.calcPitch(distance));
+        launcher.turnTurret(turretAngle);
+
+        return distance;
     }
 
     /*
@@ -137,7 +166,6 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            mLauncher.dashboardPutNumber("TurretDirection", mLauncher.getTurretDirection());
         }
 
         // Returns true when the command should end.
@@ -171,7 +199,8 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            mLauncher.adjustHood(Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("TurretAimAngle", 0)));
+            mLauncher.adjustHood(
+                Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("TurretAimAngle", 0)));
         }
 
         // Returns true when the command should end.
@@ -186,34 +215,6 @@ public class LauncherCommands
         public void end(boolean interrupted)
         {
             mLauncher.reset();
-        }
-    }
-
-    public class HoodToFieldPosition extends CommandBase
-    {
-        private final Launcher mLauncher;
-        private final RobotStateMap mStateMap;
-        private final Pose2d mTargetPose;
-
-        public HoodToFieldPosition(Launcher launcher, Pose2d targetPose, RobotStateMap stateMap)
-        {
-            mLauncher = launcher;
-            mTargetPose = targetPose;
-            mStateMap = stateMap;
-            addRequirements(mLauncher);
-        }
-
-        @Override
-        public void execute()
-        {
-            Pose2d fieldToTurret = mStateMap.getLatestFieldToVehicle()
-                .transformBy(Constants.Launcher.kTurretOffset);
-            Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(mTargetPose);
-            Rotation2d fieldAnglePointingToTarget = new Rotation2d(
-                turretToTarget.getTranslation().getX(), turretToTarget.getTranslation().getY(),
-                true).inverse();
-            Rotation2d turretAngle = fieldAnglePointingToTarget
-                .rotateBy(fieldToTurret.getRotation());
         }
     }
 }

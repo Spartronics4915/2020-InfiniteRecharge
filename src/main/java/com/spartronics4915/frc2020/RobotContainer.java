@@ -151,7 +151,7 @@ public class RobotContainer
 
         mClimberCommands = new ClimberCommands();
         mIntakeCommands = new IntakeCommands();
-        mLauncherCommands = new LauncherCommands();
+        mLauncherCommands = new LauncherCommands(mStateEstimator.getCameraRobotStateMap(), new Pose2d());
         mPanelRotatorCommands = new PanelRotatorCommands();
 
         // Default Commands run whenever no Command is scheduled to run for a subsystem

@@ -127,7 +127,7 @@ public class Vision extends SpartronicsSubsystem
             double camz = Double.parseDouble(vals[2]);
             double timestamp = Double.parseDouble(vals[3]);
             Vec3 tgtInCam = new Vec3(camx, camy, camz);
-            double turretDegrees = mLauncher.getTurretDirection();
+            Rotation2d turretDegrees = mLauncher.getTurretDirection();
             this.mCamToField.updateTurretAngle(turretDegrees);
             Vec3 tgtInRobot = this.mCamToField.camPointToRobot(tgtInCam);
             if (tgtInRobot.a1 <= 0)
