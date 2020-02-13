@@ -104,8 +104,8 @@ public class RobotContainer
         // Motor Safety
         mClimber.setDefaultCommand(new RunCommand(mClimber::stop, mClimber));
         mIntake.setDefaultCommand(new RunCommand(mIntake::stop, mIntake));
-        mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
-            new InstantCommand(mLauncher::reset), mLauncher::inRange));
+        // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
+        //     new InstantCommand(mLauncher::reset), mLauncher::inRange));
         mPanelRotator.setDefaultCommand(new RunCommand(mPanelRotator::stop, mPanelRotator));
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
@@ -177,9 +177,9 @@ public class RobotContainer
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
 
-        // new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
-        // new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
-        // new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
+        new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
+        new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
+        new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
         // new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
         //    this::throughTrench, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
         // new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,

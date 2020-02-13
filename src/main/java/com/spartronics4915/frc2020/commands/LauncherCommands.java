@@ -134,7 +134,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            mLauncher.adjustHood(Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("TurretAimAngle", 0)));
+            mLauncher.adjustHood(Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("HoodAngle", 0)));
         }
 
         // Returns true when the command should end.

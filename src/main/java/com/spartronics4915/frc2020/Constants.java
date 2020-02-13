@@ -81,7 +81,7 @@ public final class Constants
 
     public static final class Launcher
     {
-        public static final int kFlywheelMasterId = 7;
+        public static final int kFlywheelMasterId = 2; // CHANGE TO 7
         public static final int kFlywheelFollowerId = -1; // Solid brass
         public static final int kAngleAdjusterMasterId = 0; // PWM
         public static final int kAngleAdjusterFollowerId = 1; // PWM
