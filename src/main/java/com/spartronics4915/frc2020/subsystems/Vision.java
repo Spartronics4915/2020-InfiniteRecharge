@@ -1,5 +1,16 @@
 package com.spartronics4915.frc2020.subsystems;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Iterator;
+
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.EntryNotification;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableValue;
+import edu.wpi.first.wpilibj.Timer;
+
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.CamToField2020;
 import com.spartronics4915.frc2020.subsystems.Launcher;
@@ -8,13 +19,6 @@ import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 import com.spartronics4915.lib.math.twodim.geometry.*;
 import com.spartronics4915.lib.math.threedim.*;
-
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.networktables.EntryListenerFlags;
-import edu.wpi.first.networktables.EntryNotification;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.NetworkTableValue;
-import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The Vision subsystem has these responsibilities 
@@ -29,6 +33,22 @@ import edu.wpi.first.wpilibj.Timer;
  */
 public class Vision extends SpartronicsSubsystem
 {
+    /* public interfaces ------------------------------------*/
+    public class VisionEvent implements Runnable
+    {
+        public Pose2d mVisionEstimate;
+
+        VisionEvent(Pose2d estimate)
+        {
+            this.mVisionEstimate = estimate;
+        }
+
+        public void run()
+        {
+        }; // override me
+    }
+
+    /* member variables -------------------------------------*/
     RobotStateMap mOfficialRSM, mVisionRSM;
     NetworkTableInstance mNetTab;
     CamToField2020 mCamToField;
@@ -36,22 +56,7 @@ public class Vision extends SpartronicsSubsystem
     Vec3 mBlueTarget = new Vec3(Constants.Vision.kBlueGoalCoords);
     Vec3 mRedTarget = new Vec3(Constants.Vision.kRedGoalCoords);
     String mStatus;
-
-    /**
-     * ListenForTurretAndVision is this subsystem's default command.
-     */
-    private class ListenForTurretAndVision extends CommandBase
-    {
-        public ListenForTurretAndVision()
-        {
-            this.addRequirements(Vision.this);
-        }
-
-        public boolean isFinished()
-        {
-            return false; // for clarity, we're always in this mode
-        }
-    }
+    List<VisionEvent> mListeners;
 
     /**
      * Vision subsystem needs read-only access to RobotStateEstimator and
@@ -68,8 +73,14 @@ public class Vision extends SpartronicsSubsystem
         this.mNetTab.addEntryListener(Constants.Vision.kTargetResultKey, this::turretTargetUpdate,
             EntryListenerFlags.kUpdate);
         this.mCamToField = new CamToField2020();
+        this.mListeners = new ArrayList<VisionEvent>();
         this.setDefaultCommand(new ListenForTurretAndVision());
         this.dashboardPutString(Constants.Vision.kStatus, "ready+waiting");
+    }
+
+    public void registerTargetListener(VisionEvent l)
+    {
+        this.mListeners.add(l);
     }
 
     /**
@@ -170,10 +181,18 @@ public class Vision extends SpartronicsSubsystem
             Vec3 robotPos = mCamToField.robotPointToField(Vec3.ZeroPt);
             // use robot's heading in our poseEsimtate
             Pose2d poseEstimate = new Pose2d(robotPos.a1, robotPos.a2, r2d);
+            Iterator<VisionEvent> it = this.mListeners.iterator();
+            while (it.hasNext())
+            {
+                VisionEvent e = it.next();
+                e.mVisionEstimate = poseEstimate;
+                e.run();
+            }
+
             this.mVisionRSM.addObservations(timestamp, poseEstimate,
                 officialState.integrationVelocity, officialState.predictedVelocity);
 
-            // now measure the distance between our estimate that the
+            // now measure the distance between our estimate and the
             // official robot estimate.
             double derror = robotPos.subtract(t2d.getX(), t2d.getY(), 0).length();
             this.dashboardPutNumber(Constants.Vision.kPoseErrorKey, derror);
@@ -186,5 +205,22 @@ public class Vision extends SpartronicsSubsystem
         }
         else
             this.logError("Turret Target value must be a string");
+    }
+
+    /* private interfaces ---------------------------------------------*/
+    /**
+     * ListenForTurretAndVision is this subsystem's default command.
+     */
+    private class ListenForTurretAndVision extends CommandBase
+    {
+        public ListenForTurretAndVision()
+        {
+            this.addRequirements(Vision.this);
+        }
+
+        public boolean isFinished()
+        {
+            return false; // for clarity, we're always in this mode
+        }
     }
 }
