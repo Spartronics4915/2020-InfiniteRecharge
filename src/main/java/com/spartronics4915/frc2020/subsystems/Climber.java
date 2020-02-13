@@ -9,7 +9,20 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 
 /**
- * TODO: Write an updated and comprehensive subsystem overview
+ * CLIMBER
+ * 
+ * OBJECTIVE: Be able to grab and hold on to the shield generator
+ * and remain balanced there even after the robot is deactiviated
+ * Use cases:
+ * 1) Climb from the ground to bar that is level, keeping it level in the process
+ * 2) Climb from the ground to bar that is elevated, leveling it in the process
+ * 3) Climb from the ground to bar that is sunken, staying off the ground if possible
+ * 4) Able to reverse the extend function for repositioning purposes
+ * 
+ * INTEGRATIONS:
+ * 1) A NEO motor used to 
+ * 2) A 775 PRO motor used to 
+ * 
  */
 public class Climber extends SpartronicsSubsystem
 {

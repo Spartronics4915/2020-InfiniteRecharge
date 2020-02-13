@@ -9,6 +9,6 @@ public class ProximitySensorCommand extends CommandBase
     public void ProximitySensorCommand() 
     {  
         mProximitySensor = new DigitalInput(2);
-        System.out.print(mProximitySensor.get());
+        
     }
 }
