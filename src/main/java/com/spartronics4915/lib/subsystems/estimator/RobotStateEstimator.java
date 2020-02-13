@@ -17,17 +17,16 @@ import com.spartronics4915.lib.util.Units;
 
 /**
  * This loop keeps track of robot state whenever the robot is enabled.
- * 
+ *
  * TODO: Split out to CameraRobotStateEstimator and DifferentialDriveRobotStateEstimator.
  * Also TODO: Remove all the velocity stuff from robot states.
  */
 public class RobotStateEstimator extends SpartronicsSubsystem
 {
-
     /**
      * The SLAM camera/encoder RobotStateMap objects represent two views of the
      * robot's current state (state is pose, velocity, and distance driven).
-     * 
+     *
      * All length units are meters.
      */
     private RobotStateMap mEncoderStateMap = new RobotStateMap();
@@ -40,7 +39,8 @@ public class RobotStateEstimator extends SpartronicsSubsystem
     /** Meters */
     private double mLeftPrevDist = 0.0, mRightPrevDist = 0.0;
 
-    public RobotStateEstimator(AbstractDrive driveSubsystem, Kinematics kinematics, T265Camera slamra)
+    public RobotStateEstimator(AbstractDrive driveSubsystem, Kinematics kinematics,
+        T265Camera slamra)
     {
         mDrive = driveSubsystem;
         mKinematics = kinematics;
@@ -48,9 +48,12 @@ public class RobotStateEstimator extends SpartronicsSubsystem
 
         resetRobotStateMaps();
 
-        if (mSLAMCamera == null) {
+        if (mSLAMCamera == null)
+        {
             logInitialized(false);
-        } else {
+        }
+        else
+        {
             logInitialized(true);
         }
 
@@ -82,7 +85,8 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         mLeftPrevDist = mDrive.getLeftMotor().getEncoder().getPosition();
         mRightPrevDist = mDrive.getRightMotor().getEncoder().getPosition();
 
-        if (mSLAMCamera != null) {
+        if (mSLAMCamera != null)
+        {
             mSLAMCamera.setPose(pose);
         }
         mDrive.setIMUHeading(pose.getRotation());
@@ -97,9 +101,9 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         Pose2d epose = estate.pose;
         SmartDashboard.putNumber("RobotState/timeStamp", estate.timestamp);
         SmartDashboard.putString("RobotState/encoderPose",
-                Units.metersToInches(epose.getTranslation().getX()) +
-                        " " + Units.metersToInches(epose.getTranslation().getY()) +
-                        " " + epose.getRotation().getDegrees());
+            Units.metersToInches(epose.getTranslation().getX()) + " "
+                + Units.metersToInches(epose.getTranslation().getY()) + " "
+                + epose.getRotation().getDegrees());
         SmartDashboard.putNumber("RobotState/encoderVelocity", estate.predictedVelocity.dx);
 
         final RobotStateMap.State cstate = getCameraRobotStateMap().getLatestState();
@@ -108,15 +112,16 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         // NB: other tools (like Dashboard and Vision) depend on the structure
         // and id of RobotState/pose. Change with caution.
         SmartDashboard.putString("RobotState/pose",
-                Units.metersToInches(cpose.getTranslation().getX()) +
-                        " " + Units.metersToInches(cpose.getTranslation().getY()) +
-                        " " + cpose.getRotation().getDegrees());
+            Units.metersToInches(cpose.getTranslation().getX()) + " "
+                + Units.metersToInches(cpose.getTranslation().getY()) + " "
+                + cpose.getRotation().getDegrees());
         SmartDashboard.putNumber("RobotState/velocity", cstate.predictedVelocity.dx);
     }
 
     public void stop()
     {
-        if (mSLAMCamera != null) {
+        if (mSLAMCamera != null)
+        {
             mSLAMCamera.stop();
         }
     }
@@ -142,7 +147,8 @@ public class RobotStateEstimator extends SpartronicsSubsystem
          * velocity as also a distance traveled since last loop.
          */
         final Twist2d iVal;
-        synchronized (this) {
+        synchronized (this)
+        {
             final double leftDist = mDrive.getLeftMotor().getEncoder().getPosition();
             final double rightDist = mDrive.getRightMotor().getEncoder().getPosition();
             final double leftDelta = leftDist - mLeftPrevDist;
@@ -150,7 +156,8 @@ public class RobotStateEstimator extends SpartronicsSubsystem
             final Rotation2d heading = mDrive.getIMUHeading();
             mLeftPrevDist = leftDist;
             mRightPrevDist = rightDist;
-            iVal = mKinematics.forwardKinematics(last.pose.getRotation(), leftDelta, rightDelta, heading);
+            iVal = mKinematics.forwardKinematics(last.pose.getRotation(), leftDelta, rightDelta,
+                heading);
         }
 
         /*
@@ -166,8 +173,8 @@ public class RobotStateEstimator extends SpartronicsSubsystem
          * include the gyro heading in its calculation.
          */
         final Twist2d pVal = mKinematics.forwardKinematics(
-                mDrive.getLeftMotor().getEncoder().getVelocity(),
-                mDrive.getRightMotor().getEncoder().getVelocity());
+            mDrive.getLeftMotor().getEncoder().getVelocity(),
+            mDrive.getRightMotor().getEncoder().getVelocity());
 
         /*
          * integrateForward: given a last state and a current velocity,
@@ -178,26 +185,30 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         /* record the new state estimate */
         mEncoderStateMap.addObservations(Timer.getFPGATimestamp(), nextP, iVal, pVal);
 
-        // We convert meters/loopinterval and radians/loopinterval to meters/sec and radians/sec
+        // We convert meters/loopinterval and radians/loopinterval to meters/sec and
+        // radians/sec
         final double loopintervalToSeconds = 1 / (Timer.getFPGATimestamp() - last.timestamp);
         final Twist2d normalizedIVal = iVal.scaled(loopintervalToSeconds);
 
-        if (mSLAMCamera != null) {
+        if (mSLAMCamera != null)
+        {
             mSLAMCamera.sendOdometry(normalizedIVal);
         }
     }
 
     public void enable()
     {
-        if (mSLAMCamera == null) {
+        if (mSLAMCamera == null)
+        {
             return;
         }
 
-        // Callback is called from a different thread... We avoid data races because RobotSteteMap is thread-safe
+        // Callback is called from a different thread... We avoid data races because
+        // RobotSteteMap is thread-safe
         mSLAMCamera.stop();
-        mSLAMCamera.start((CameraUpdate update) ->
-        {
-            mCameraStateMap.addObservations(Timer.getFPGATimestamp(), update.pose, update.velocity, new Twist2d());
+        mSLAMCamera.start((CameraUpdate update) -> {
+            mCameraStateMap.addObservations(Timer.getFPGATimestamp(), update.pose, update.velocity,
+                new Twist2d());
             SmartDashboard.putString("RobotState/cameraConfidence", update.confidence.toString());
         });
     }

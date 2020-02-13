@@ -6,13 +6,77 @@ import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 public class LauncherCommands
 {
+    public class Target extends CommandBase
+    {
+        private final Launcher mLauncher;
+
+        public Target(Launcher launcher)
+        {
+            mLauncher = launcher;
+            addRequirements(mLauncher);
+        }
+
+        // Called every time the scheduler runs while the command is scheduled.
+        @Override
+        public void execute()
+        {
+            mLauncher.runFlywheel(mLauncher.calcRPS(/*calculated distance*/0));
+            mLauncher.adjustHood(mLauncher.calcPitch(/*calculated distance*/0));
+            // FIXME: mLauncher.rotateTurret(/*calculated distance (doesn't need mlauncher.calc function, no ILT*/);
+        }
+
+        // Returns true when the command should end.
+        @Override
+        public boolean isFinished()
+        {
+            if (!mLauncher.inRange() || mLauncher.atTarget())
+                return true;
+            else
+                return false;
+        }
+    }
+
+    public class Adjust extends CommandBase
+    {
+        private final Launcher mLauncher;
+
+        public Adjust(Launcher launcher)
+        {
+            mLauncher = launcher;
+            addRequirements(mLauncher);
+        }
+
+        // Called when the command is initially scheduled.
+        @Override
+        public void initialize()
+        {
+            mLauncher.runFlywheel(0);
+        }
+
+        // Called every time the scheduler runs while the command is scheduled.
+        @Override
+        public void execute()
+        {
+            mLauncher.adjustHood(mLauncher.calcPitch(/*calculated distance*/0));
+            // FIXME: mLauncher.rotateTurret(/*calculated distance (doesn't need mlauncher.calc function, no ILT*/);
+        }
+
+        // Returns true when the command should end.
+        @Override
+        public boolean isFinished()
+        {
+            if (mLauncher.atTarget())
+                return true;
+            else
+                return false;
+        }
+    }
+
     /*
      * Command for testing, runs flywheel at a given RPS
      * !DO NOT MAKE THE RPS MORE THAN 90!
@@ -23,25 +87,17 @@ public class LauncherCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public ShootBallTest(Launcher Launcher)
+        public ShootBallTest(Launcher launcher)
         {
-            mLauncher = Launcher;
+            mLauncher = launcher;
             addRequirements(mLauncher);
-        }
-
-        // Called when the command is initially scheduled.
-        @Override
-        public void initialize()
-        {
-            mLauncher.setRPS(SmartDashboard.getNumber("Launcher/FlywheelRPS", 0));
         }
 
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
-            mLauncher.setRPS(SmartDashboard.getNumber("Launcher/FlywheelRPS", 0));
-            mLauncher.runFlywheel();
+            mLauncher.runFlywheel((double) mLauncher.dashboardGetNumber("FlywheelRPS", 0));
         }
 
         // Returns true when the command should end.
@@ -65,9 +121,9 @@ public class LauncherCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public TurretTest(Launcher Launcher)
+        public TurretTest(Launcher launcher)
         {
-            mLauncher = Launcher;
+            mLauncher = launcher;
             addRequirements(mLauncher);
         }
 
@@ -81,7 +137,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            SmartDashboard.putNumber("Launcher/TurretDirection", mLauncher.getTurretDirection());
+            mLauncher.dashboardPutNumber("TurretDirection", mLauncher.getTurretDirection());
         }
 
         // Returns true when the command should end.
@@ -105,25 +161,17 @@ public class LauncherCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public HoodTest(Launcher Launcher)
+        public HoodTest(Launcher launcher)
         {
-            mLauncher = Launcher;
+            mLauncher = launcher;
             addRequirements(mLauncher);
-        }
-
-        // Called when the command is initially scheduled.
-        @Override
-        public void initialize()
-        {
-            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle",0));
         }
 
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
-            mLauncher.setPitch(SmartDashboard.getNumber("Launcher/TurretAimAngle",0));
-            mLauncher.rotateHood();
+            mLauncher.adjustHood(Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("TurretAimAngle", 0)));
         }
 
         // Returns true when the command should end.
@@ -141,68 +189,31 @@ public class LauncherCommands
         }
     }
 
-    public class HoodToFieldPosition extends CommandBase {
+    public class HoodToFieldPosition extends CommandBase
+    {
         private final Launcher mLauncher;
         private final RobotStateMap mStateMap;
         private final Pose2d mTargetPose;
 
-        public HoodToFieldPosition(Launcher launcher, Pose2d targetPose, RobotStateMap stateMap) {
+        public HoodToFieldPosition(Launcher launcher, Pose2d targetPose, RobotStateMap stateMap)
+        {
             mLauncher = launcher;
             mTargetPose = targetPose;
             mStateMap = stateMap;
-        }
-
-        @Override
-        public void execute()
-        {
-            Pose2d fieldToTurret = mStateMap.getLatestFieldToVehicle().transformBy(Constants.Launcher.kTurretOffset);
-            Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(mTargetPose);
-            Rotation2d fieldAnglePointingToTarget = new Rotation2d(turretToTarget.getTranslation().getX(), turretToTarget.getTranslation().getY(), true).inverse();
-            Rotation2d turretAngle = fieldAnglePointingToTarget.rotateBy(fieldToTurret.getRotation());
-        }
-    }
-
-    /*
-     * Default command of the launcher subsystem, makes the flywheel's target rps 0
-     */
-    public class LauncherDefaultCommand extends CommandBase
-    {
-        private final Launcher mLauncher;
-
-        // You should only use one subsystem per command. If multiple are needed, use a
-        // CommandGroup.
-        public LauncherDefaultCommand(Launcher Launcher)
-        {
-            mLauncher = Launcher;
             addRequirements(mLauncher);
         }
 
-        // Called when the command is initially scheduled.
-        @Override
-        public void initialize()
-        {
-            mLauncher.setRPS(0);
-        }
-
-        // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
-            mLauncher.runFlywheel();
-        }
-
-        // Returns true when the command should end.
-        @Override
-        public boolean isFinished()
-        {
-            return false;
-        }
-
-        // Called once the command ends or is interrupted.
-        @Override
-        public void end(boolean interrupted)
-        {
-            mLauncher.reset();
+            Pose2d fieldToTurret = mStateMap.getLatestFieldToVehicle()
+                .transformBy(Constants.Launcher.kTurretOffset);
+            Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(mTargetPose);
+            Rotation2d fieldAnglePointingToTarget = new Rotation2d(
+                turretToTarget.getTranslation().getX(), turretToTarget.getTranslation().getY(),
+                true).inverse();
+            Rotation2d turretAngle = fieldAnglePointingToTarget
+                .rotateBy(fieldToTurret.getRotation());
         }
     }
 }

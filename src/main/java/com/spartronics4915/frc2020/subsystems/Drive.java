@@ -16,17 +16,17 @@ public class Drive extends AbstractDrive {
     public Drive() {
         super(
             SpartronicsSRX.makeMotor(
-                Constants.Drive.kLeftDriveMaster, 
+                Constants.Drive.kLeftDriveMaster,
                 SensorModel.fromWheelDiameter(
-                    Constants.Drive.kWheelDiameter, 
+                    Constants.Drive.kWheelDiameter,
                     Constants.Drive.kNativeUnitsPerRevolution
                 ),
                 Constants.Drive.kLeftDriveFollower
             ),
             SpartronicsSRX.makeMotor(
-                Constants.Drive.kRightDriveMaster, 
+                Constants.Drive.kRightDriveMaster,
                 SensorModel.fromWheelDiameter(
-                    Constants.Drive.kWheelDiameter, 
+                    Constants.Drive.kWheelDiameter,
                     Constants.Drive.kNativeUnitsPerRevolution
                 ),
                 Constants.Drive.kRightDriveFollower

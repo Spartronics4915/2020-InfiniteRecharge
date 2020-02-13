@@ -12,45 +12,43 @@ import com.spartronics4915.lib.math.twodim.physics.DifferentialDrive.WheelState;
  * a SpartronicsSubsystem, but also so that you don't need to deal with all the
  * kinematics/dynamics stuff yourself.
  */
-public interface DifferentialTrackerDriveBase extends TrajectoryTrackerDriveBase {
-    
+public interface DifferentialTrackerDriveBase extends TrajectoryTrackerDriveBase
+{
     public DifferentialDrive getDifferentialDrive();
 
     @Override
-    public default void setOutput(TrajectoryTrackerOutput outputMeters) {
-        setOutputFromDynamics(
-            outputMeters.getDifferentialDriveVelocity(),
-            outputMeters.getDifferentialDriveAcceleration()
-        );
+    public default void setOutput(TrajectoryTrackerOutput outputMeters)
+    {
+        setOutputFromDynamics(outputMeters.getDifferentialDriveVelocity(),
+            outputMeters.getDifferentialDriveAcceleration());
     }
 
-    public default void setOutputFromKinematics(ChassisState chassisVelocityMetersPerSecond) {
-        WheelState wheelVelocities = getDifferentialDrive().solveInverseKinematics(chassisVelocityMetersPerSecond);  
+    public default void setOutputFromKinematics(ChassisState chassisVelocityMetersPerSecond)
+    {
+        WheelState wheelVelocities = getDifferentialDrive()
+            .solveInverseKinematics(chassisVelocityMetersPerSecond);
         WheelState feedForwardVoltages = getDifferentialDrive().getVoltagesFromkV(wheelVelocities);
-        
+
         setOutput(wheelVelocities, feedForwardVoltages);
     }
 
-    public default void setOutputFromDynamics(
-        ChassisState chassisVelocityMetersPerSecond,
-        ChassisState chassisAccelerationMetersPerSecondSq
-    ) {
-        DriveDynamics dynamics = getDifferentialDrive().solveInverseDynamics(chassisVelocityMetersPerSecond, chassisAccelerationMetersPerSecondSq);
-        
+    public default void setOutputFromDynamics(ChassisState chassisVelocityMetersPerSecond,
+        ChassisState chassisAccelerationMetersPerSecondSq)
+    {
+        DriveDynamics dynamics = getDifferentialDrive().solveInverseDynamics(
+            chassisVelocityMetersPerSecond, chassisAccelerationMetersPerSecondSq);
+
         setOutput(dynamics.wheelVelocity, dynamics.voltage);
     }
 
-    public default void setOutput(
-        WheelState wheelVelocitiesRadiansPerSecond,
-        WheelState wheelVoltages
-    ) {
+    public default void setOutput(WheelState wheelVelocitiesRadiansPerSecond,
+        WheelState wheelVoltages)
+    {
         getLeftMotor().setVelocity(
             (wheelVelocitiesRadiansPerSecond.left * getDifferentialDrive().wheelRadius()),
-            wheelVoltages.left
-        );
+            wheelVoltages.left);
         getRightMotor().setVelocity(
             (wheelVelocitiesRadiansPerSecond.right * getDifferentialDrive().wheelRadius()),
-            wheelVoltages.right
-        );
+            wheelVoltages.right);
     }
 }

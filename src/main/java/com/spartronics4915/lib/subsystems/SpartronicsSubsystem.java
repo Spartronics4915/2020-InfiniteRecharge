@@ -1,27 +1,41 @@
 package com.spartronics4915.lib.subsystems;
 
-import com.spartronics4915.lib.util.Logger;
+import java.util.Set;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.spartronics4915.lib.util.Logger;
+
 
 /**
  * We introduce an abstract SpartronicsSubsystem class to provide uniformity
  * in logging, smartdashboard and initialization behavior to all subclasses.
- * 
+ *
  * The Subsystem abstract class, which serves as a basic framework for all robot
- * subsystems. Each subsystem outputs commands to SmartDashboard, has a stop 
+ * subsystems. Each subsystem outputs commands to SmartDashboard, has a stop
  * routine (for after each match), and a routine to zero all sensors, which helps
  * with calibration.
  * <p>
  * All Subsystems only have one instance (after all, one robot does not have two
- * drivetrains), and functions get the instance of the drivetrain and act 
+ * drivetrains), and functions get the instance of the drivetrain and act
  * accordingly.
  */
 public abstract class SpartronicsSubsystem extends SubsystemBase
 {
+    // We install a default command for diagnostic purposes.  Subclasses
+    // should override the default command during construction.
+    private class SpartronicsMissingDefaultCommand extends CommandBase
+    {
+        SpartronicsMissingDefaultCommand()
+        {
+            this.addRequirements(SpartronicsSubsystem.this);
+        }
+    };
 
     // All subsystems should set mInitialized upon successful init.
     private boolean mInitialized = false;
@@ -34,6 +48,8 @@ public abstract class SpartronicsSubsystem extends SubsystemBase
 
     protected SpartronicsSubsystem()
     {
+        // NB: SubsystemBase posts some interesting info to dashboard
+        // using our class name.
         String classname = this.getClass().getName();
         int tail = classname.lastIndexOf('.');
         if (tail == -1)
@@ -44,6 +60,7 @@ public abstract class SpartronicsSubsystem extends SubsystemBase
         {
             this.mName = classname.substring(tail + 1);
         }
+        this.setDefaultCommand(new SpartronicsMissingDefaultCommand());
     }
 
     public String getClassName()
@@ -134,6 +151,6 @@ public abstract class SpartronicsSubsystem extends SubsystemBase
         // this.mName/currentCommand contains the current command for
         // a subsystem.
         dashboardPutString("currentCommand",
-                currentCommand != null ? currentCommand.getName() : "none");
+            currentCommand != null ? currentCommand.getName() : "none");
     }
 }

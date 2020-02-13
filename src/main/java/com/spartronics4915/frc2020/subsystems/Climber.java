@@ -32,10 +32,8 @@ public class Climber extends SpartronicsSubsystem
     public Climber()
     {
         // Hardware Contructor (Add motors and such here when I get them)
-        mLiftMotor = SpartronicsSRX.makeMotor(Constants.Climber.kLiftMotorId,
-            SensorModel.fromMultiplier(1));
-        mWinchMotor = SpartronicsMax.makeMotor(Constants.Climber.kWinchMotorId,
-            SensorModel.fromMultiplier(1));
+        mLiftMotor = SpartronicsSRX.makeMotor(Constants.Climber.kLiftMotorId);
+        mWinchMotor = SpartronicsMax.makeMotor(Constants.Climber.kWinchMotorId);
 
         if (mLiftMotor.hadStartupError() || mWinchMotor.hadStartupError())
         {
