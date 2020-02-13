@@ -20,12 +20,13 @@ import edu.wpi.first.wpilibj.Ultrasonic;
 
 public class PanelRotator extends SpartronicsSubsystem
 {
-    private SpartronicsMotor mSpinMotor;
-    private SpartronicsMotor mRaiseMotor;
+    private final DigitalInput mProximitySensor;
     private final DigitalInput mOpticalFlagUp;
     private final DigitalInput mLimitSwitchDown;
-    private final ColorSensorV3 mColorSensor;
+    private SpartronicsMotor mSpinMotor;
+    private SpartronicsMotor mRaiseMotor;
 
+    private final ColorSensorV3 mColorSensor;
     private String sensedColor;
     private String rotatedColor;
 
@@ -33,6 +34,7 @@ public class PanelRotator extends SpartronicsSubsystem
 
     public PanelRotator()
     {
+        mProximitySensor = new DigitalInput(Constants.PanelRotator.kProximitySensorId);
         mOpticalFlagUp = new DigitalInput(Constants.PanelRotator.kOpticalFlagUpId);
         mLimitSwitchDown = new DigitalInput(Constants.PanelRotator.kLimitSwitchDownId);
         mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId);
@@ -54,6 +56,17 @@ public class PanelRotator extends SpartronicsSubsystem
         {
             logInitialized(true);
         }
+    }
+
+    /**
+     * Checks if the proximity sensor is outputting "true"
+     *
+     * @return proximity sensor's boolean value
+     */
+    public boolean getProximitySensor()
+    {
+        // TODO: tune
+        return mProximitySensor.get();
     }
 
     /**
@@ -151,7 +164,7 @@ public class PanelRotator extends SpartronicsSubsystem
 
     /**
      * Finds the distance between the sensor and what it is looking at
-     * 11-bit (0-2047) value (to dashboard)
+     * @return 11-bit (0-2047) value (to dashboard)
      */
     public void getDistance()
     {
