@@ -12,11 +12,8 @@ import org.junit.jupiter.api.Test;
 
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.hal.sim.DriverStationSim;
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-=======
 import edu.wpi.first.wpilibj2.command.Command;
->>>>>>> 24ebc2140eacc1cdadb4f0f8fa247496194ec984
 
 public class TestIndexer
 {
