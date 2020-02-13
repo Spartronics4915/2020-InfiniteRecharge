@@ -24,8 +24,8 @@ public class TestClimber
         var commandToRun = new ClimberCommands().new WinchPrimary(new Climber());
 
         var sim = new DriverStationSim();
-        // sim.setAutonomous(false);
-        // sim.setEnabled(true);
+        sim.setAutonomous(false);
+        sim.setEnabled(true);
 
         commandToRun.schedule();
 
