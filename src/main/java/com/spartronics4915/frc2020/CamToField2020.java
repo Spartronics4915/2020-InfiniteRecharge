@@ -54,7 +54,7 @@ import com.spartronics4915.lib.math.threedim.*;
  *       
  */
 
-class CamToField2020 extends CameraToField
+public class CamToField2020 extends CameraToField
 {
     // camera to mount -----------------------------------------------------
     // camTilt represents the amount the camera is pointed up, measured in
@@ -113,21 +113,6 @@ class CamToField2020 extends CameraToField
         Affine3 m2rOffset = Affine3.fromTranslation(mMntPos);
         Affine3 mntToRobot = Affine3.concatenate(m2rOffset, m2rRot);
         this.setMountToRobot(mntToRobot);
-    }
-
-    /**
-     * Convert a point described in camera coords to field coordinates.
-     * @param cameraSpacePoint - a *point* in camera coordinates
-     * @return a *point* in field coordinates
-     */
-    public Vec3 getPointOnField(final Vec3 cameraSpacePoint)
-    {
-        return this.transformPoint(cameraSpacePoint);
-    }
-
-    public Vec3 getDirOnField(final Vec3 camDir)
-    {
-        return this.transformVector(camDir);
     }
 
 };

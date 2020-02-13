@@ -40,6 +40,11 @@ class AffineTests
         Vec3 sub = cross.subtract(delta);
         Vec3 add = sub.add(delta);
         assert(add.equals(cross, kEpsilon));
+
+        Vec3 a = new Vec3(1,1,1);
+        Vec3 b = new Vec3(-1,-1,-1);
+        assertEquals(a.angleWith(a), 0, kEpsilon);
+        assertEquals(a.angleWith(b), 180, kEpsilon);
     }
 
     @Test
@@ -128,7 +133,7 @@ class AffineTests
         assert(R0.equals(R0a, kEpsilon));
 
         Affine3 R0b = Affine3.fromRotation(randAngle, randDir, randPt);
-        Affine3 R0c = Affine3.fromRotation(-randAngle, randDir.getOpposite(), randPt);
+        Affine3 R0c = Affine3.fromRotation(-randAngle, randDir.asOpposite(), randPt);
         assert(R0b.equals(R0c, kEpsilon));
 
         Affine3 I = new Affine3();
