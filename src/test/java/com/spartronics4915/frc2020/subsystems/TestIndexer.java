@@ -32,7 +32,6 @@ public class TestIndexer
     }
 
     @Test
-<<<<<<< HEAD
     public void testLaunch() {
         /*****Defining Commands*****/
         var startLaunch = mCommands.new StartLaunch(sIndexer);
@@ -78,53 +77,6 @@ public class TestIndexer
         sIndexer.logInfo("Success!");
 
         sIndexer.logInfo("Loading Test successful!");
-=======
-    public void testLaunch() 
-    {
-        Indexer mIndexer = new Indexer();
-        IndexerCommands mIndexerCommands = new IndexerCommands();
-
-        // Defining Commands
-        Command startLaunch = mIndexerCommands.new StartLaunch(mIndexer);
-        Command endLaunch = mIndexerCommands.new EndLaunch(mIndexer);
-        Command loadBallToSlot = mIndexerCommands.new LoadBallToSlot(mIndexer, 0);
-        Command loadToLauncher = mIndexerCommands.new LoadToLauncher(mIndexer);
-
-        // Defining Motors
-        SpartronicsMotor simmedLoaderMotor = SpartronicsSimulatedMotor.getFromId(Constants.Indexer.Loader.kMotorId);
-        SpartronicsMotor simmedIndexerMotor = SpartronicsSimulatedMotor.getFromId(Constants.Indexer.Spinner.kMotorId);
-
-        DriverStationSim mSim = new DriverStationSim();
-        mSim.setAutonomous(false);
-        mSim.setEnabled(true);
-
-        // Testing startlaunch
-        mIndexer.logInfo("Testing StartLaunch...");
-        startLaunch.schedule();
-        assertTrue(startLaunch.isScheduled()); // make sure it doesn't just crash
-        assertEquals(simmedLoaderMotor, 1.0);
-        mIndexer.logInfo("Success!");
-
-        // Testing endlaunch
-        mIndexer.logInfo("Testing EndLaunch...");
-        endLaunch.schedule();
-        assertTrue(endLaunch.isScheduled());
-        mIndexer.logInfo("Success!");
-
-        // Testing loadBallToSlot
-        mIndexer.logInfo("Testing LoadBallToSlot...");
-        loadBallToSlot.schedule();
-        assertTrue(loadBallToSlot.isScheduled());
-        mIndexer.logInfo("Success!");
-
-        // Testing loadToLauncher
-        mIndexer.logInfo("Testing LoadToLauncher...");
-        loadToLauncher.schedule();
-        assertTrue(loadToLauncher.isScheduled());
-        mIndexer.logInfo("Success!");
-
-        mIndexer.logInfo("Loading Test successful!");
->>>>>>> 24ebc2140eacc1cdadb4f0f8fa247496194ec984
     }
 
     @Test
