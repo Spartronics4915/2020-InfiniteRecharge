@@ -217,9 +217,6 @@ public class IndexerCommands
         @Override
         public void end(boolean interrupted)
         {
-            mIndexer.toNearestQuarterRotation();
-            while (mIndexer.getSlotBallLoaded()) 
-                mIndexer.rotateN(1);
         }
     }
 
