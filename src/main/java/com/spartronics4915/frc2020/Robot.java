@@ -16,8 +16,6 @@ import java.time.Instant;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import com.spartronics4915.frc2020.commands.LaserTurretToFieldPose;
-
 public class Robot extends TimedRobot
 {
     private Command mAutonomousCommand;
@@ -53,12 +51,13 @@ public class Robot extends TimedRobot
             Logger.warning("Build version not found!");
             DriverStation.reportError(e.getMessage(), false);
         }
-        SmartDashboard.putString("CANBusStatus", CANCounter.getStatusMessage());
-        Logger.info("CAN bus status: " + CANCounter.getStatusMessage());
 
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our autonomous chooser on the dashboard.
         mRobotContainer = new RobotContainer();
+
+        SmartDashboard.putString("CANBusStatus", CANCounter.getStatusMessage());
+        Logger.info("CAN bus status: " + CANCounter.getStatusMessage());
     }
 
     @Override
