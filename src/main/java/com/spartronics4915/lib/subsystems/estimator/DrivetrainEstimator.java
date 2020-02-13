@@ -20,7 +20,7 @@ public class DrivetrainEstimator
     private final ExtendedKalmanFilter<N3, N3, N3> mObserver;
     private final ExtendedKalmanFilter<N3, N3, N6> mVisionObserver;
 
-    public final Matrix<N3, N1> f(Matrix<N3, N1> x, Matrix<N3, N1> u)
+    private final Matrix<N3, N1> f(Matrix<N3, N1> x, Matrix<N3, N1> u)
     {
         // Diff drive forward kinematics:
         // v_c = (v_l + v_r) / 2
@@ -32,7 +32,7 @@ public class DrivetrainEstimator
             newPose.getTranslation().getY(), x.get(2, 0) + u.get(2, 0));
     }
 
-    public final Matrix<N6, N1> h(Matrix<N3, N1> x, Matrix<N3, N1> u)
+    private final Matrix<N6, N1> h(Matrix<N3, N1> x, Matrix<N3, N1> u)
     {
         return new MatBuilder<>(Nat.N6(), Nat.N1()).fill(x.get(0, 0), x.get(1, 0), x.get(2, 0),
             x.get(0, 0), x.get(1, 0), x.get(2, 0));
