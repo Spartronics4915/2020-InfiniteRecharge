@@ -237,17 +237,29 @@ public final class Constants
     public static final class Vision
     {
         /* Camera mount geometry is located in CamToField2020.java */
+
+        /* Raspi/Vision server status on /Vision namespace ------------------*/
         public static final String kTurretTargetTable = "/Vision/Target";
         public static final String kTargetResultKey = "/Vision/Target/Result"; /* from raspi */
-        public static final String kPoseEstimateKey = "/SmartDashboard/Vision/PoseEstimate";
-        public static final String kPoseErrorKey = "/SmartDashboard/Vision/PoseError";
-        public static final String kPoseLatencyKey = "/SmartDashboard/Vision/Latency";
-        public static final String kStatus = "/SmartDashboard/Vision/Status";
+
+        /* Vision subsystem status under /SmartDashboard/Vision namespace ----*/
+        public static final String kPoseEstimateKey = "PoseEstimate";
+        public static final String kPoseErrorKey = "PoseError";
+        public static final String kPoseLatencyKey = "Latency";
+        public static final String kOurGoalEstimateKey = "OurGoal";
+        public static final String kTheirGoalEstimateKey = "OpponentGoal";
+        public static final String kStatusKey = "Status";
 
         public static final double kGoalHeight = 8*12 + 2.25; // 98.25in
-        // Red Alliance on right, Red Target on upper left (ie: x:0, y positive)
-        public static final double[] kRedGoalCoords = {0, 67.5, kGoalHeight};
-        // Blue Alliance on left, Blue Target on lower right (ie: x:xmax, y negative)
-        public static final double[] kBlueGoalCoords = {628, -67.5, kGoalHeight};
+
+        // We assume here that the robot odometry is alliance-sensitive.
+        // When we're on the Blue alliance, coords are 
+        //      [0, xsize] x [yhalfsize, -yhalfsize]
+        // When we're on the Red alliance, coords are 
+        //      [xsize, 0] x [-yhalfsize, yhalfsize]
+        // Given this behavior, we characterize Goals in our-alliance-relative 
+        // terms.
+        public static final double[] kOpponentGoalCoords = {0, 67.5, kGoalHeight};
+        public static final double[] kAllianceGoalCoords = {628, -67.5, kGoalHeight};
     }
 }
