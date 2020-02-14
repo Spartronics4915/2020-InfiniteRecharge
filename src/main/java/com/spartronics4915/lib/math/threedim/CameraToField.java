@@ -46,7 +46,6 @@ public class CameraToField
     private Affine3 mCamToRobot;
     private Affine3 mRobotToField;
     private Affine3 mCamToField;
-    private String mRobotPose;
     private boolean mDirty;
 
     public CameraToField()
@@ -56,7 +55,6 @@ public class CameraToField
         mCamToRobot = new Affine3();
         mRobotToField = new Affine3();
         mCamToField = new Affine3();
-        mRobotPose = null;
         mDirty = true;
     }
 
@@ -115,7 +113,6 @@ public class CameraToField
      */
     public void updateRobotPose(String rposeString)
     {
-        this.mRobotPose = rposeString;
         String[] vals = rposeString.split(" ");
         assert vals.length == 3;
         double x = Double.parseDouble(vals[0]);

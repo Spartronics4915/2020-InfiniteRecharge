@@ -53,8 +53,8 @@ public class Vision extends SpartronicsSubsystem
     NetworkTableInstance mNetTab;
     CamToField2020 mCamToField;
     Launcher mLauncher;
-    Vec3 mBlueTarget = new Vec3(Constants.Vision.kBlueGoalCoords);
-    Vec3 mRedTarget = new Vec3(Constants.Vision.kRedGoalCoords);
+    Vec3 mOurTarget = new Vec3(Constants.Vision.kAllianceGoalCoords);
+    Vec3 mOpponentTarget = new Vec3(Constants.Vision.kOpponentGoalCoords);
     String mStatus;
     List<VisionEvent> mListeners;
 
@@ -75,7 +75,7 @@ public class Vision extends SpartronicsSubsystem
         this.mCamToField = new CamToField2020();
         this.mListeners = new ArrayList<VisionEvent>();
         this.setDefaultCommand(new ListenForTurretAndVision());
-        this.dashboardPutString(Constants.Vision.kStatus, "ready+waiting");
+        this.dashboardPutString(Constants.Vision.kStatusKey, "ready+waiting");
     }
 
     public void registerTargetListener(VisionEvent l)
@@ -142,9 +142,9 @@ public class Vision extends SpartronicsSubsystem
             this.mCamToField.updateTurretAngle(turretDegrees);
             Vec3 tgtInRobot = this.mCamToField.camPointToRobot(tgtInCam);
             if (tgtInRobot.a1 <= 0)
-                this.dashboardPutString(Constants.Vision.kStatus, "CONFUSED!!!");
+                this.dashboardPutString(Constants.Vision.kStatusKey, "CONFUSED!!!");
             else
-                this.dashboardPutString(Constants.Vision.kStatus, "active");
+                this.dashboardPutString(Constants.Vision.kStatusKey, "active");
 
             // Now we have the target in robot-relative coordinates.
             // We know that the robot "sees" out its back-end, but the
@@ -163,20 +163,20 @@ public class Vision extends SpartronicsSubsystem
             Rotation2d r2d = robotToField.getRotation();
             double robotHeading = r2d.getDegrees();
             Vec3 fieldTarget;
+            // Our target is at field heading == -180 since the turret is
+            // mounted on back.. 
             if ((robotHeading < 90 && robotHeading > -90) || robotHeading > 270)
             {
-                // red alliance is at heading == 0
-                // robot was pointing toward *red* alliance, turret points
-                // toward *blue* alliance => *red* target.
-                fieldTarget = this.mRedTarget;
+                // We're more likely to see theirs than ours.
+                fieldTarget = this.mOpponentTarget;
             }
             else
             {
-                // blue alliance is at heading of 180
-                // robot was pointing toward *blue* alliance, turret points
-                // toward *red* alliance => *blue* target.
-                fieldTarget = this.mBlueTarget;
+                // We're more likely to see ours than theirs.
+                fieldTarget = this.mOurTarget;
             }
+
+            // here is the inverse estimate -----------------------------
             mCamToField.updateRobotPose(robotHeading, tgtInRobot, fieldTarget);
             Vec3 robotPos = mCamToField.robotPointToField(Vec3.ZeroPt);
             // use robot's heading in our poseEsimtate
@@ -188,7 +188,6 @@ public class Vision extends SpartronicsSubsystem
                 e.mVisionEstimate = poseEstimate;
                 e.run();
             }
-
             this.mVisionRSM.addObservations(timestamp, poseEstimate,
                 officialState.integrationVelocity, officialState.predictedVelocity);
 
@@ -202,6 +201,17 @@ public class Vision extends SpartronicsSubsystem
 
             double delay = Timer.getFPGATimestamp() - timestamp;
             this.dashboardPutNumber(Constants.Vision.kPoseLatencyKey, delay);
+
+            // Let's report the combination of official odometry and target
+            // offset. This is a "forward" estimate of our well-known
+            // landmarks.  Hopefully these will produce nearly constant
+            // and correct (!) results.
+            mCamToField.updateRobotPose(t2d.getX(), t2d.getY(), r2d.getDegrees());
+            Vec3 tgtInField = mCamToField.camPointToField(tgtInCam);
+            String key = (fieldTarget == this.mOurTarget) ? 
+                        Constants.Vision.kOurGoalEstimateKey :
+                        Constants.Vision.kTheirGoalEstimateKey;
+            this.dashboardPutString(key, tgtInField.asPointString());
         }
         else
             this.logError("Turret Target value must be a string");
