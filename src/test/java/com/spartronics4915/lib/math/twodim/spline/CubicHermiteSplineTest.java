@@ -157,12 +157,15 @@ class CubicHermiteSplineTest
     @Test
     void testMalformed()
     {
-        assertThrows(MalformedSplineException.class,
+        Exception thrown;
+        thrown = assertThrows(MalformedSplineException.class,
             () -> run(new Pose2d(0, 0, Rotation2d.fromDegrees(0)), new ArrayList<>(),
                 new Pose2d(1, 0, Rotation2d.fromDegrees(180))));
-        assertThrows(MalformedSplineException.class,
+        assert(thrown.getMessage().contains("Could not parameterize"));
+        thrown = assertThrows(MalformedSplineException.class,
             () -> run(new Pose2d(10, 10, Rotation2d.fromDegrees(90)),
                 Arrays.asList(new Translation2d(10, 10.5)),
                 new Pose2d(10, 11, Rotation2d.fromDegrees(-90))));
+        assert(thrown.getMessage().contains("Could not parameterize"));
     }
 }
