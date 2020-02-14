@@ -228,26 +228,17 @@ public class RobotContainer
 
         ButtonFactory.Create(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
         ButtonFactory.Create(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
-        ButtonFactory.Create(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinOneRotation(mPanelRotator), false);
+        ButtonFactory.Create(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinRotation(mPanelRotator), false);
         ButtonFactory.Create(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
 
-        ButtonFactory.Create(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber)
-            .withTimeout(Constants.Climber.kTimerExtenderMin));
-        ButtonFactory.Create(mButtonBoard, 11).whileHeld(mClimberCommands.new Extend(mClimber)
-            .withTimeout(Constants.Climber.kTimerExtenderMax));
+        ButtonFactory.Create(mButtonBoard, 10).whileHeld(mClimberCommands.new ExtendMin(mClimber));
+        ButtonFactory.Create(mButtonBoard, 11).whileHeld(mClimberCommands.new ExtendMax(mClimber));
 
-        ButtonFactory.Create(mButtonBoard, 12).whenPressed(new SequentialCommandGroup(
-            mPanelRotatorCommands.new Raise(mPanelRotator),
-            mPanelRotatorCommands.new SpinFourRotations(mPanelRotator),
-            mPanelRotatorCommands.new Lower(mPanelRotator))); // TODO: will the act of lowering spin the wheel?
+        ButtonFactory.Create(mButtonBoard, 12).whenPressed(mPanelRotatorCommands.new AutoSpinRotation(mPanelRotator));
 
-        ButtonFactory.Create(mButtonBoard, 13).whenPressed(new SequentialCommandGroup(
-            mPanelRotatorCommands.new Raise(mPanelRotator),
-            mPanelRotatorCommands.new SpinToColor(mPanelRotator),
-            mPanelRotatorCommands.new Lower(mPanelRotator)));
+        ButtonFactory.Create(mButtonBoard, 13).whenPressed(mPanelRotatorCommands.new AutoSpinToColor(mPanelRotator));
 
-        ButtonFactory.Create(mButtonBoard, 14).whenHeld(mClimberCommands.new WinchPrimary(mClimber)
-            .andThen(mClimberCommands.new WinchSecondary(mClimber)));
+        ButtonFactory.Create(mButtonBoard, 14).whenHeld(mClimberCommands.new Winch(mClimber));
 
         /* Four-way Joystick
         ButtonFactory.Create(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
