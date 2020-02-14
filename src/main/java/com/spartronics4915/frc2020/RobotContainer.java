@@ -215,10 +215,8 @@ public class RobotContainer
         new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinRotation(mPanelRotator), false);
         new JoystickButton(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
 
-        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber)
-            .withTimeout(Constants.Climber.kTimerExtenderMin));
-        new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Extend(mClimber)
-            .withTimeout(Constants.Climber.kTimerExtenderMax));
+        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new ExtendMin(mClimber));
+        new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new ExtendMax(mClimber));
 
         new JoystickButton(mButtonBoard, 12).whenPressed(mPanelRotatorCommands.new AutoSpinRotation(mPanelRotator));
 

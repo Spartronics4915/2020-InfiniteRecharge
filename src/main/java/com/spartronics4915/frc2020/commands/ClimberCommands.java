@@ -5,9 +5,11 @@ import com.spartronics4915.frc2020.RobotContainer;
 import com.spartronics4915.frc2020.subsystems.Climber;
 
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class ClimberCommands
 {
@@ -49,6 +51,22 @@ public class ClimberCommands
         public Retract(Climber climber)
         {
             super(climber::retract, climber::stop, climber);
+        }
+    }
+
+    public class ExtendMin extends ParallelRaceGroup
+    {
+        public ExtendMin(Climber climber)
+        {
+            super(new Extend(climber), new WaitCommand(Constants.Climber.kTimerExtenderMin));
+        }
+    }
+
+    public class ExtendMax extends ParallelRaceGroup
+    {
+        public ExtendMax(Climber climber)
+        {
+            super(new Extend(climber), new WaitCommand(Constants.Climber.kTimerExtenderMax));
         }
     }
 
