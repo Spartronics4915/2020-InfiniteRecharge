@@ -215,7 +215,6 @@ public class IndexerCommands
                 new WaitForBallHeld(mIndexer),
                 new LoadBallToSlot(mIndexer, 0),
                 new Spin(mIndexer, 1), new InstantCommand(() -> mIndexer.addBalls(1), mIndexer)
-                // new LoadFromIntake(mIndexer) TODO: Implement working loop
             );
         }
 
