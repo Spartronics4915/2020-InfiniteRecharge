@@ -8,71 +8,51 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class PanelRotator extends SpartronicsSubsystem
 {
     private SpartronicsMotor mSpinMotor;
-    private SpartronicsMotor mExtendMotor;
-
-    private final DigitalInput mBeamSensorUp;
-    private final DigitalInput mBeamSensorDown;
-
+    private SpartronicsMotor mRaiseMotor;
+    private final DigitalInput mOpticalFlagUp;
+    private final DigitalInput mLimitSwitchDown;
     private final ColorSensorV3 mColorSensor;
 
-    // TODO: These are essentially random numbers, with the max value based on the
-    // images at
-    // https://www.andymark.com/products/infinite-recharge-control-panel-stickr
-    private int[] mMinimumRed = {200, 0, 0};
-    private int[] mMaximumRed = {255, 30, 30};
-
-    // TODO: These are bad and will work in a way that will make you lose, which
-    // will be sad
-    private int[] mMinimumGreen = {0, 200, 0};
-    private int[] mMaximumGreen = {30, 255, 30};
-
-    // TODO: These are bad and will work in a way that will make you lose, which
-    // will be sad
-    private int[] mMinimumBlue = {0, 200, 200};
-    private int[] mMaximumBlue = {30, 255, 255};
-
-    // TODO: These are bad and will work in a way that will make you lose, which
-    // will be sad
-    private int[] mMinimumYellow = {200, 200, 0};
-    private int[] mMaximumYellow = {255, 255, 30};
-
     private String sensedColor;
+    private String rotatedColor;
 
-    private int red;
-    private int green;
-    private int blue;
+    private final ColorMatch mColorMatcher = new ColorMatch();
 
     public PanelRotator()
     {
-        mBeamSensorUp = new DigitalInput(Constants.PanelRotator.kBeamSensorUpId);
-        mBeamSensorDown = new DigitalInput(Constants.PanelRotator.kBeamSensorDownId);
-        mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId,
-            SensorModel.fromMultiplier(1));
-        mExtendMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kExtendMotorId,
-            SensorModel.fromMultiplier(1));
-        if (mSpinMotor.hadStartupError() || mExtendMotor.hadStartupError())
+        mOpticalFlagUp = new DigitalInput(Constants.PanelRotator.kOpticalFlagUpId);
+        mLimitSwitchDown = new DigitalInput(Constants.PanelRotator.kLimitSwitchDownId);
+        mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId);
+        mRaiseMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId);
+
+        mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
+        mColorMatcher.addColorMatch(Constants.PanelRotator.kRedTarget);
+        mColorMatcher.addColorMatch(Constants.PanelRotator.kGreenTarget);
+        mColorMatcher.addColorMatch(Constants.PanelRotator.kBlueTarget);
+        mColorMatcher.addColorMatch(Constants.PanelRotator.kYellowTarget);
+
+        if (mSpinMotor.hadStartupError() || mRaiseMotor.hadStartupError())
         {
             mSpinMotor = new SpartronicsSimulatedMotor(Constants.PanelRotator.kSpinMotorId);
-            mExtendMotor = new SpartronicsSimulatedMotor(Constants.PanelRotator.kExtendMotorId);
+            mRaiseMotor = new SpartronicsSimulatedMotor(Constants.PanelRotator.kRaiseMotorId);
             logInitialized(false);
         }
         else
         {
             logInitialized(true);
         }
-        // mSpinMotor = new CANSparkMax(Constants.PanelRotator.kSpinMotorID,
-        // MotorType.kBrushless);
-        // mExtendMotor = new TalonSRX(Constants.PanelRotator.kExtendMotorID);
-        mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
     }
 
     /**
@@ -80,7 +60,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void raise()
     {
-        mExtendMotor.setDutyCycle(Constants.PanelRotator.kRaiseSpeed);
+        mRaiseMotor.setDutyCycle(Constants.PanelRotator.kRaiseSpeed);
     }
 
     /**
@@ -88,7 +68,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void lower()
     {
-        mExtendMotor.setDutyCycle(Constants.PanelRotator.kLowerSpeed);
+        mRaiseMotor.setDutyCycle(Constants.PanelRotator.kLowerSpeed);
     }
 
     /**
@@ -96,7 +76,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void spin()
     {
-        mSpinMotor.setDutyCycle(Constants.PanelRotator.kSpinMotorSpeed);
+        mSpinMotor.setDutyCycle(Constants.PanelRotator.kSpinSpeed);
     }
 
     // TODO: What will this return before Stage Two?
@@ -110,102 +90,130 @@ public class PanelRotator extends SpartronicsSubsystem
         return DriverStation.getInstance().getGameSpecificMessage();
     }
 
-    // TODO: Implement this method!! !
-    // https://github.com/REVrobotics/Color-Sensor-v3-Examples/blob/master/Java/Color%20Match/src/main/java/frc/robot/Robot.java
     /**
-     * Finds what color the color sensor is seeing - currently just a placeholder for output
+     * This gets the 18-bit output (max is 2^18 - 1, I think)
+     *
+     * @return a comma-separated String of raw RGB values
+     */
+    public String get18BitRGB()
+    {
+        int red = mColorSensor.getRed();
+        int green = mColorSensor.getGreen();
+        int blue = mColorSensor.getBlue();
+
+        String RGB = red + ", " + green + ", " + blue;
+
+        return RGB;
+    }
+
+    /**
+     * This gets the 18-bit output but divided by 262143 to make a fraction between 0 & 1
+     *
+     * @return a comma-separated String of RGB values, as a percentage
+     */
+    public String getFloatRGB()
+    {
+        int redFloat = mColorSensor.getRed() / 262143;
+        int greenFloat = mColorSensor.getGreen() / 262143;
+        int blueFloat = mColorSensor.getBlue() / 262143;
+
+        String RGB = redFloat + ", " + greenFloat + ", " + blueFloat;
+
+        return RGB;
+    }
+
+    /**
+     * Finds what actual color the color sensor is seeing.
      *
      * @return A String color - either Red, Blue, Yellow, or Green
      */
     public String getActualColor()
     {
-        /*
-        // TODO: convert to 0-255 for user convenience.
-        red = mColorSensor.getRed();
-        green = mColorSensor.getGreen();
-        blue = mColorSensor.getBlue();
-        sensedColor = "sensor is not working";
-        if (mMinimumRed[0] <= red && red <= mMaximumRed[0])
-        {
-            if (mMinimumRed[1] <= green && green <= mMaximumRed[1])
-            {
-                if (mMinimumRed[2] <= blue && blue <= mMaximumRed[2])
-                {
-                    sensedColor = "Red";
-                }
-            }
-        }
-        if (mMinimumBlue[0] <= red && red <= mMaximumBlue[0])
-        {
-            if (mMinimumBlue[1] <= green && green <= mMaximumBlue[1])
-            {
-                if (mMinimumBlue[2] <= blue && blue <= mMaximumBlue[2])
-                {
-                    sensedColor = "Blue";
-                }
-            }
-        }
-        if (mMinimumYellow[0] <= red && red <= mMaximumYellow[0])
-        {
-            if (mMinimumYellow[1] <= green && green <= mMaximumYellow[1])
-            {
-                if (mMinimumYellow[2] <= blue && blue <= mMaximumYellow[2])
-                {
-                    sensedColor = "Yellow";
-                }
-            }
-        }
-        if (mMinimumGreen[0] <= red && red <= mMaximumGreen[0])
-        {
-            if (mMinimumGreen[1] <= green && green <= mMaximumGreen[1])
-            {
-                if (mMinimumGreen[2] <= blue && blue <= mMaximumGreen[2])
-                {
-                    sensedColor = "Green";
-                }
-            }
-        }
-        System.out.println(sensedColor);
+        Color detectedColor = mColorSensor.getColor();
+        ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
+
+        if (match.color.equals(Constants.PanelRotator.kRedTarget))
+            sensedColor = "Red";
+        else if (match.color.equals(Constants.PanelRotator.kGreenTarget))
+            sensedColor = "Green";
+        else if (match.color.equals(Constants.PanelRotator.kBlueTarget))
+            sensedColor = "Blue";
+        else if (match.color.equals(Constants.PanelRotator.kYellowTarget))
+            sensedColor = "Yellow";
+        else
+            sensedColor = "Error";
+
+        dashboardPutString("Current Color (robot)", sensedColor);
+        dashboardPutNumber("ColorMatch Confidence", match.confidence);
         return sensedColor;
-        */
-        return "method not complete";
     }
 
     /**
-     * Sees if the bottom beam sensor is triggered
+     * The position of our color sensor and the field's has a difference of π/2, so
+     * we need to adjust targets accordingly.
+     * <p>
+     * See https://drive.google.com/uc?id=1BfoFJmpJg31txUqTG-OrJjeWgQdQsCNC
+     * for a diagram of how these line up.
+     * <p>
+     * This code could be less redundant by taking a String parameter and converting it,
+     * but it'll work out to be the same amount of code anyways, and this is clearer.
+     *
+     * @return The current Color of the wheel as detected by the FMS.
      */
-    public boolean getBeamSensorDown()
+    public String getRotatedColor()
     {
-        // TODO: maybe backwards
-        return mBeamSensorDown.get();
+        Color detectedColor = mColorSensor.getColor();
+        ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
+
+        if (match.color.equals(Constants.PanelRotator.kRedTarget))
+            rotatedColor = "Blue";
+        else if (match.color.equals(Constants.PanelRotator.kGreenTarget))
+            rotatedColor = "Yellow";
+        else if (match.color.equals(Constants.PanelRotator.kBlueTarget))
+            rotatedColor = "Red";
+        else if (match.color.equals(Constants.PanelRotator.kYellowTarget))
+            rotatedColor = "Green";
+        else
+            rotatedColor = "Error";
+
+        dashboardPutString("Current Color (field)", rotatedColor);
+        dashboardPutNumber("ColorMatch Confidence", match.confidence);
+        return rotatedColor;
     }
 
     /**
-     * Sees if the top beam sensor is triggered
+     * {@link ColorMatchResult} includes a confidence value.
+     *
+     * @return a percentage value from 0 to 1 with the
      */
-    public boolean getBeamSensorUp()
+    public double getColorConfidence()
     {
-        return mBeamSensorUp.get(); // TODO: maybe backwards
-    }
+        Color detectedColor = mColorSensor.getColor();
+        ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
 
-    // TODO: A discussion needs to be had on the relevance and implementation of getRotations...
-
-    // TODO: Multiple stop() methods are redundant unless we use motor safety
-
-    /**
-     * Stops the extension motor
-     */
-    public void stopExtendMotor()
-    {
-        mExtendMotor.setDutyCycle(0);
+        return match.confidence;
     }
 
     /**
-     * Stops the wheel motor
+     * Checks if the top optical flag is broken
+     *
+     * @return whether the PanelManipulator is raised
      */
-    public void stopSpin()
+    public boolean getOpticalFlagUp()
     {
-        mSpinMotor.setDutyCycle(0);
+        // TODO: Double-check this
+        return mOpticalFlagUp.get();
+    }
+
+    /**
+     * Checks if the bottom limit switch is triggered
+     *
+     * @return whether the PanelManipulator is lowered
+     */
+    public boolean getLimitSwitchDown()
+    {
+        // TODO: Double-check this
+        return mLimitSwitchDown.get();
     }
 
     /**
@@ -214,6 +222,6 @@ public class PanelRotator extends SpartronicsSubsystem
     public void stop()
     {
         mSpinMotor.setDutyCycle(0);
-        mExtendMotor.setDutyCycle(0);
+        mRaiseMotor.setDutyCycle(0);
     }
 }

@@ -45,7 +45,8 @@ public class LED extends SpartronicsSubsystem
     @Override
     public void periodic()
     {
-        SmartDashboard.putString("LED state:", mBlingState.toString());
+        super.periodic();
+        this.dashboardPutString("LED state:", mBlingState.toString());
     }
 
     /**

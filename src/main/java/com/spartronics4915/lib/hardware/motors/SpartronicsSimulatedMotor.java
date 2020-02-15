@@ -72,7 +72,8 @@ public class SpartronicsSimulatedMotor implements SpartronicsMotor
     {
         if (sMotors.get(deviceNumber) != null)
         {
-            throw new RuntimeException("Can't instantiate a duplicate motor with device ID " + deviceNumber);
+            throw new RuntimeException(
+                "Can't instantiate a duplicate motor with device ID " + deviceNumber);
         }
         sMotors.put(deviceNumber, this);
 

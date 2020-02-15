@@ -8,13 +8,14 @@ import com.spartronics4915.lib.math.twodim.trajectory.types.TimedTrajectory.Time
 /**
  * Uses a time-varying non linear reference controller to steer the robot back
  * onto the trajectory.
- * 
+ *
  * From https://www.dis.uniroma1.it/~labrob/pub/papers/Ramsete01.pdf eq 5.12
- * 
+ *
  * https://file.tavsys.net/control/state-space-guide.pdf section 8.5 is also
  * helpful and a little more accessible
  */
-public class RamseteTracker extends TrajectoryTracker {
+public class RamseteTracker extends TrajectoryTracker
+{
     // These terms don't work out dimensionally
     // But whatever, it works
     private final double kBeta, kZeta;
@@ -24,16 +25,16 @@ public class RamseteTracker extends TrajectoryTracker {
      *             beta > 0
      * @param zeta Dampening constant. Increase for more dampening. zeta ∈ (0,1)
      */
-    public RamseteTracker(double beta, double zeta) {
+    public RamseteTracker(double beta, double zeta)
+    {
         kBeta = beta;
         kZeta = zeta;
     }
 
-	@Override
-	protected TrajectoryTrackerVelocityOutput calculateState(
-        TimedIterator<Pose2dWithCurvature> iterator,
-        Pose2d currentRobotPoseMeters
-    ) {
+    @Override
+    protected TrajectoryTrackerVelocityOutput calculateState(
+        TimedIterator<Pose2dWithCurvature> iterator, Pose2d currentRobotPoseMeters)
+    {
         var referenceState = iterator.getCurrentSample().state;
 
         // This can be thought of as the goal pose in robot coordinates
@@ -51,14 +52,17 @@ public class RamseteTracker extends TrajectoryTracker {
 
         return new TrajectoryTrackerVelocityOutput(
             vd * error.getRotation().getCos() + k1 * error.getTranslation().getX(),
-            wd + kBeta * vd * sinc(angleError) * error.getTranslation().getY() + k1 * angleError
-        );
+            wd + kBeta * vd * sinc(angleError) * error.getTranslation().getY() + k1 * angleError);
     }
-    
-    private double sinc(double theta) {
-        if (Util.epsilonEquals(theta, 0)) {
+
+    private double sinc(double theta)
+    {
+        if (Util.epsilonEquals(theta, 0))
+        {
             return 1 - 1 / 6 * theta * theta;
-        } else {
+        }
+        else
+        {
             return Math.sin(theta) / theta;
         }
     }

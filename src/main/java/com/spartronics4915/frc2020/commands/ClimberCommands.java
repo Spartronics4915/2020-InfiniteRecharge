@@ -5,7 +5,11 @@ import com.spartronics4915.frc2020.RobotContainer;
 import com.spartronics4915.frc2020.subsystems.Climber;
 
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class ClimberCommands
 {
@@ -28,9 +32,9 @@ public class ClimberCommands
      */
     public class Extend extends StartEndCommand
     {
-        public Extend(Climber Climber)
+        public Extend(Climber climber)
         {
-            super(Climber::extend, Climber::stop, Climber);
+            super(climber::extend, climber::stop, climber);
         }
     }
 
@@ -44,9 +48,25 @@ public class ClimberCommands
      */
     public class Retract extends StartEndCommand
     {
-        public Retract(Climber Climber)
+        public Retract(Climber climber)
         {
-            super(Climber::retract, Climber::stop, Climber);
+            super(climber::retract, climber::stop, climber);
+        }
+    }
+
+    public class ExtendMin extends ParallelRaceGroup
+    {
+        public ExtendMin(Climber climber)
+        {
+            super(new Extend(climber), new WaitCommand(Constants.Climber.kTimerExtenderMin));
+        }
+    }
+
+    public class ExtendMax extends ParallelRaceGroup
+    {
+        public ExtendMax(Climber climber)
+        {
+            super(new Extend(climber), new WaitCommand(Constants.Climber.kTimerExtenderMax));
         }
     }
 
@@ -78,10 +98,10 @@ public class ClimberCommands
      */
     public class WinchPrimary extends FunctionalCommand
     {
-        public WinchPrimary(Climber Climber)
+        public WinchPrimary(Climber climber)
         {
-            super(() -> {}, () -> Climber.winch(!Constants.Climber.kStalled),
-                (Boolean b) -> Climber.stop(), Climber::isStalled, Climber);
+            super(() -> {}, () -> climber.winch(!Constants.Climber.kStalled),
+                (Boolean b) -> climber.stop(), climber::isStalled, climber);
         }
     }
 
@@ -96,9 +116,31 @@ public class ClimberCommands
      */
     public class WinchSecondary extends StartEndCommand
     {
-        public WinchSecondary(Climber Climber)
+        public WinchSecondary(Climber climber)
         {
-            super(() -> Climber.winch(Constants.Climber.kStalled), Climber::stop, Climber);
+            super(() -> climber.winch(Constants.Climber.kStalled), climber::stop, climber);
+        }
+    }
+
+    public class Winch extends SequentialCommandGroup
+    {
+        public Winch(Climber climber)
+        {
+            super(new WinchPrimary(climber), new WinchSecondary(climber));
+        }
+    }
+
+    /**
+     * This {@link RunCommand} stops all Climber motors by calling
+     * Climber.stop() over and over.
+     * <p>
+     * It also happens to be our default command.
+     */
+    public class Stop extends RunCommand
+    {
+        public Stop(Climber climber)
+        {
+            super(climber::stop, climber);
         }
     }
 }

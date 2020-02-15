@@ -1,6 +1,7 @@
 package com.spartronics4915.lib.hardware.motors;
 
-public interface SpartronicsMotor {
+public interface SpartronicsMotor
+{
 
     /**
      * @return The encoder attached to the motor.
@@ -14,7 +15,7 @@ public interface SpartronicsMotor {
 
     /**
      * This method is useful for detecting unplugged motor controllers.
-     * 
+     *
      * @return If true, the motor controller returned some type of error on startup.
      */
     boolean hadStartupError();
@@ -88,7 +89,7 @@ public interface SpartronicsMotor {
 
     /**
      * Sets the output as a percentage (like setOpenLoop).
-     * 
+     *
      * @param dutyCycle            Output in perecnt.
      * @param arbitraryFeedforward Additional arbitrary feedforward in Volts.
      */
@@ -96,21 +97,21 @@ public interface SpartronicsMotor {
 
     /**
      * Sets the output as a percentage (like setOpenLoop).
-     * 
+     *
      * @param dutyCycle Output in percent.
      */
     void setDutyCycle(double dutyCycle);
 
     /**
      * Sets the target output velocity.
-     * 
+     *
      * @param velocityMetersPerSecond Velocity in meters/s.
      */
     void setVelocity(double velocityMetersPerSecond);
 
     /**
      * Sets the target output velocity.
-     * 
+     *
      * @param velocityMetersPerSecond   Velocity in meters/s.
      * @param arbitraryFeedForwardVolts Additional arbitrary feedforward in Volts.
      */
@@ -127,11 +128,11 @@ public interface SpartronicsMotor {
 
     /**
      * Sets the target position.
-     * 
+     *
      * @param positionMeters Target position in meters.
      */
     void setPosition(double positionMeters);
-    
+
     /**
      * Sets the PID gains for the built in position PID controller.
      */

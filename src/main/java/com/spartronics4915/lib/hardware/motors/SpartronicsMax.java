@@ -9,6 +9,7 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANAnalog.AnalogMode;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.spartronics4915.lib.hardware.CANCounter;
 import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.wpilibj.RobotBase;
@@ -19,7 +20,7 @@ public class SpartronicsMax implements SpartronicsMotor
     private static final int kVelocitySlotIdx = 0;
     private static final int kPositionSlotIdx = 1;
 
-    private final double kRPMtoRPS = 1 / 60;
+    private final double kRPMtoRPS = 1.0 / 60.0;
 
     private final CANSparkMax mSparkMax;
     private final CANSparkMax mFollower;
@@ -42,8 +43,7 @@ public class SpartronicsMax implements SpartronicsMotor
     private AnalogMode mAnalogMode;
     private FeedbackSensorType mFeedbackSensor;
 
-
-    public class SpartronicsMaxPWMEncoder implements SpartronicsEncoder
+    public class InternalEncoder implements SpartronicsEncoder
     {
 
         @Override
@@ -65,13 +65,14 @@ public class SpartronicsMax implements SpartronicsMotor
         }
 
         @Override
-        public boolean setPosition(double position) {
+        public boolean setPosition(double position)
+        {
             mEncoderSensor.setPosition(position);
             return true;
         }
     }
 
-    public class SpartronicsMaxAnalogEncoder implements SpartronicsEncoder
+    public class AnalogEncoder implements SpartronicsEncoder
     {
 
         @Override
@@ -93,37 +94,44 @@ public class SpartronicsMax implements SpartronicsMotor
         }
 
         @Override
-        public boolean setPosition(double position) {
+        public boolean setPosition(double position)
+        {
             return false;
         }
     }
 
-    public static enum FeedbackSensorType {
-        kPWM,
-        kAnalogRelative,
-        kAnalogAbsolute
+    public static enum FeedbackSensorType
+    {
+        kInternal, kAnalogRelative, kAnalogAbsolute
     }
 
-    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel, FeedbackSensorType feedbackSensor)
+    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel,
+        FeedbackSensorType feedbackSensor)
     {
         if (RobotBase.isSimulation())
         {
             return new SpartronicsSimulatedMotor(deviceNumber);
         }
-        return new SpartronicsMax(new CANSparkMax(deviceNumber, MotorType.kBrushless), sensorModel, feedbackSensor, null);
+        return new SpartronicsMax(new CANSparkMax(deviceNumber, MotorType.kBrushless), sensorModel,
+            feedbackSensor, null);
     }
 
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel)
     {
-        return makeMotor(deviceNumber, sensorModel, FeedbackSensorType.kPWM);
+        return makeMotor(deviceNumber, sensorModel, FeedbackSensorType.kInternal);
+    }
+
+    public static SpartronicsMotor makeMotor(int deviceNumber)
+    {
+        return makeMotor(deviceNumber, SensorModel.fromMultiplier(1));
     }
 
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel,
-            FeedbackSensorType feedbackSensor, int followerDeviceNumber)
+        FeedbackSensorType feedbackSensor, int followerDeviceNumber)
     {
         if (RobotBase.isSimulation())
         {
-            return new SpartronicsSimulatedMotor(deviceNumber);
+            return new SpartronicsSimulatedMotor(deviceNumber, followerDeviceNumber);
         }
 
         // We only use SPARK MAXes for brushless motors
@@ -134,12 +142,14 @@ public class SpartronicsMax implements SpartronicsMotor
         return new SpartronicsMax(master, sensorModel, feedbackSensor, follower);
     }
 
-    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel, int followerDeviceNumber)
+    public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel,
+        int followerDeviceNumber)
     {
-        return makeMotor(deviceNumber, sensorModel, FeedbackSensorType.kPWM, followerDeviceNumber);
+        return makeMotor(deviceNumber, sensorModel, FeedbackSensorType.kInternal, followerDeviceNumber);
     }
 
-    private SpartronicsMax(CANSparkMax spark, SensorModel sensorModel, FeedbackSensorType feedbackSensor, CANSparkMax follower)
+    private SpartronicsMax(CANSparkMax spark, SensorModel sensorModel,
+        FeedbackSensorType feedbackSensor, CANSparkMax follower)
     {
         mSparkMax = spark;
         mFollower = follower;
@@ -148,42 +158,44 @@ public class SpartronicsMax implements SpartronicsMotor
         mFeedbackSensor = feedbackSensor;
 
         CANError err;
-        switch (feedbackSensor) {
-            case kPWM:
+        switch (feedbackSensor)
+        {
+            case kInternal:
                 mEncoderSensor = mSparkMax.getEncoder();
-                err = mEncoderSensor.setVelocityConversionFactor(kRPMtoRPS); // Set conversion factor.
-                mEncoder = new SpartronicsMaxPWMEncoder();
+                err = mEncoderSensor.setVelocityConversionFactor(kRPMtoRPS); // Set conversion
+                                                                             // factor.
+                mEncoder = new InternalEncoder();
                 mPIDController.setFeedbackDevice(mEncoderSensor);
                 break;
             case kAnalogRelative:
                 mAnalogMode = AnalogMode.kRelative;
                 mAnalogSensor = mSparkMax.getAnalog(mAnalogMode);
                 err = mAnalogSensor.setVelocityConversionFactor(kRPMtoRPS);
-                mEncoder = new SpartronicsMaxAnalogEncoder();
+                mEncoder = new AnalogEncoder();
                 mPIDController.setFeedbackDevice(mAnalogSensor);
                 break;
             case kAnalogAbsolute:
                 mAnalogMode = AnalogMode.kAbsolute;
                 mAnalogSensor = mSparkMax.getAnalog(mAnalogMode);
                 err = mAnalogSensor.setVelocityConversionFactor(kRPMtoRPS);
-                mEncoder = new SpartronicsMaxAnalogEncoder();
+                mEncoder = new AnalogEncoder();
                 mPIDController.setFeedbackDevice(mAnalogSensor);
                 break;
             default:
-                mEncoder = new SpartronicsMaxPWMEncoder();
+                mEncoder = new InternalEncoder();
                 err = CANError.kError; // stops errors. Should never happen
         }
         if (err != CANError.kOk)
         {
             Logger.error("SparkMax on with ID " + mSparkMax.getDeviceId()
-                    + " returned a non-OK error code on sensor configuration... Is the motor controller plugged in?");
+                + " returned a non-OK error code on sensor configuration... Is the motor controller plugged in?");
             mHadStartupError = true;
         }
         else
         {
             mHadStartupError = false;
         }
-        
+        CANCounter.addDevice(mHadStartupError);
 
         mSparkMax.enableVoltageCompensation(mVoltageCompSaturation);
     }
@@ -192,6 +204,14 @@ public class SpartronicsMax implements SpartronicsMotor
     public SpartronicsEncoder getEncoder()
     {
         return mEncoder;
+    }
+
+    /**
+     * @return An object for interfacing with a connected analog sensor.
+     */
+    public CANAnalog getAnalog()
+    {
+        return mSparkMax.getAnalog(AnalogMode.kAbsolute);
     }
 
     @Override
@@ -255,7 +275,7 @@ public class SpartronicsMax implements SpartronicsMotor
     { // Set to slot
         mMotionProfileCruiseVelocity = mSensorModel.toNativeUnits(velocityMetersPerSecond);
         mPIDController.setSmartMotionMaxVelocity((int) mMotionProfileCruiseVelocity,
-                kVelocitySlotIdx);
+            kVelocitySlotIdx);
     }
 
     @Override
@@ -268,8 +288,7 @@ public class SpartronicsMax implements SpartronicsMotor
     public void setMotionProfileMaxAcceleration(double accelerationMetersPerSecondSq)
     {
         mMotionProfileAcceleration = mSensorModel.toNativeUnits(accelerationMetersPerSecondSq);
-        mPIDController.setSmartMotionMaxAccel((int) mMotionProfileAcceleration,
-                kVelocitySlotIdx);
+        mPIDController.setSmartMotionMaxAccel((int) mMotionProfileAcceleration, kVelocitySlotIdx);
     }
 
     @Override
@@ -282,7 +301,7 @@ public class SpartronicsMax implements SpartronicsMotor
     public void setDutyCycle(double dutyCycle, double arbitraryFeedForwardVolts)
     {
         mPIDController.setReference(dutyCycle, ControlType.kDutyCycle, 0,
-                arbitraryFeedForwardVolts);
+            arbitraryFeedForwardVolts);
     }
 
     @Override
@@ -295,8 +314,8 @@ public class SpartronicsMax implements SpartronicsMotor
     public void setVelocity(double velocityMetersPerSecond, double arbitraryFeedForwardVolts)
     {
         double velocityNative = mSensorModel.toNativeUnits(velocityMetersPerSecond);
-        mPIDController.setReference(velocityNative, ControlType.kVelocity,
-                kVelocitySlotIdx, arbitraryFeedForwardVolts);
+        mPIDController.setReference(velocityNative, ControlType.kVelocity, kVelocitySlotIdx,
+            arbitraryFeedForwardVolts);
     }
 
     @Override
@@ -319,8 +338,8 @@ public class SpartronicsMax implements SpartronicsMotor
     {
         double positionNativeUnits = mSensorModel.toNativeUnits(positionMeters);
         mPIDController.setReference(positionNativeUnits,
-                mUseMotionProfileForPosition ? ControlType.kSmartMotion : ControlType.kPosition,
-                kPositionSlotIdx);
+            mUseMotionProfileForPosition ? ControlType.kSmartMotion : ControlType.kPosition,
+            kPositionSlotIdx);
     }
 
     @Override
