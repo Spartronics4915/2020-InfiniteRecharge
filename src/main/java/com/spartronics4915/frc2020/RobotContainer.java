@@ -35,10 +35,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -210,12 +207,8 @@ public class RobotContainer
         // new JoystickButton(mButtonBoard, 0).whenPressed(LauncherCommands.new Launch(mLauncher));
         // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new ConditionalCommand(mLauncherCommands.new Target));
 
-        var intakeParallelGroup = new ParallelCommandGroup(
-            mIntakeCommands.new Harvest(mIntake),
-            mIndexerCommands.new LoadFromIntake(mIndexer)
-        );
-
-        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(intakeParallelGroup);
+        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(new ParallelCommandGroup(
+            mIntakeCommands.new Harvest(mIntake), mIndexerCommands.new LoadFromIntake(mIndexer)));
         new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
 
         new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));
