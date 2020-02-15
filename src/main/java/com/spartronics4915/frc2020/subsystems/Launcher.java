@@ -37,6 +37,7 @@ public class Launcher extends SpartronicsSubsystem
     private SimpleMotorFeedforward mFeedforwardCalculator;
     private final PIDController mTurretPIDController;
     private boolean zeroed;
+    private Rotation2d targetTurretDirection;
 
     private static class LauncherState implements Interpolable<LauncherState>
     {
@@ -141,7 +142,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public void turnTurret(Rotation2d absoluteAngle)
     {
-        // FIXME: The turret should expose methods similar to getTarget/CurrentPitch
+        targetTurretDirection=absoluteAngle;
         double output = mTurretPIDController.calculate(mTurretEncoder.getPosition(),
             absoluteAngle.getDegrees());
         mTurretMotor.setDutyCycle(output);
@@ -154,6 +155,11 @@ public class Launcher extends SpartronicsSubsystem
     public Rotation2d getTurretDirection()
     {
         return Rotation2d.fromDegrees(mTurretEncoder.getPosition());
+    }
+
+    public Rotation2d getTargetTurretDirection()
+    {
+        return targetTurretDirection;
     }
 
     /**
@@ -178,7 +184,7 @@ public class Launcher extends SpartronicsSubsystem
      * Returns current angle of angle adjuster
      * @return Current angle in degrees above horizontal of the angle adjuster
      */
-    public Rotation2d getCurrentPitch() // TODO: Verify degrees vs. radians
+    public Rotation2d getCurrentPitch()
     {
         // NEED ENC OR POT
         return Rotation2d.fromDegrees(mAngleAdjusterMasterServo.getPosition());
@@ -220,7 +226,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public boolean inRange()
     {
-        // FIXME
+        // TODO figure out actual bounds of the range and make a check for the turret rotation
         boolean inRange = true;
         return inRange;
     }
@@ -231,8 +237,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public boolean atTarget()
     {
-        // FIXME: Include the turret rotation
-        return (getTargetRPS() == getCurrentRPS()) && (getTargetPitch() == getCurrentPitch());
+        return (getTargetRPS() == getCurrentRPS()) && (getTargetPitch() == getCurrentPitch()) && (getTurretDirection() == getTargetTurretDirection());
     }
 
     /**

@@ -1,6 +1,8 @@
 package com.spartronics4915.frc2020.commands;
 
 import com.spartronics4915.frc2020.Constants;
+import com.spartronics4915.frc2020.commands.IndexerCommands.LoadToLauncher;
+import com.spartronics4915.frc2020.subsystems.Indexer;
 import com.spartronics4915.frc2020.subsystems.Launcher;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
@@ -8,7 +10,9 @@ import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class LauncherCommands
 {
@@ -82,12 +86,12 @@ public class LauncherCommands
     {
         private final Launcher mLauncher;
 
-        public Zero(Launcher launcher) 
+        public Zero(Launcher launcher)
         {
             mLauncher = launcher;
             addRequirements(mLauncher);
         }
-        
+
         @Override
         public void execute()
         {
@@ -107,14 +111,13 @@ public class LauncherCommands
     private double trackTarget(Launcher launcher)
     {
         Pose2d fieldToTurret = mStateMap.getLatestFieldToVehicle()
-        .transformBy(Constants.Launcher.kTurretOffset);
+            .transformBy(Constants.Launcher.kTurretOffset);
         Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(mTarget);
         Rotation2d fieldAnglePointingToTarget = new Rotation2d(
-            turretToTarget.getTranslation().getX(), turretToTarget.getTranslation().getY(),
-            true).inverse();
+            turretToTarget.getTranslation().getX(), turretToTarget.getTranslation().getY(), true)
+                .inverse();
 
-        Rotation2d turretAngle = fieldAnglePointingToTarget
-            .rotateBy(fieldToTurret.getRotation());
+        Rotation2d turretAngle = fieldAnglePointingToTarget.rotateBy(fieldToTurret.getRotation());
         double distance = mTarget.distance(fieldToTurret);
 
         launcher.adjustHood(launcher.calcPitch(distance));
@@ -144,6 +147,8 @@ public class LauncherCommands
         public void execute()
         {
             mLauncher.runFlywheel((double) mLauncher.dashboardGetNumber("FlywheelRPS", 0));
+            mLauncher.adjustHood(
+                Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("HoodAngle", 0)));
         }
 
         // Returns true when the command should end.
@@ -159,6 +164,23 @@ public class LauncherCommands
         {
             mLauncher.reset();
         }
+    }
+
+    public class ShootingTest extends ParallelCommandGroup
+    {
+        private Launcher mLauncher;
+        private Indexer mIndexer;
+
+        public ShootingTest(Launcher launcher, Indexer indexer) {
+            mLauncher = launcher;
+            mIndexer = indexer;
+            addCommands(
+                new ShootBallTest(mLauncher),
+                (new IndexerCommands()).new LoadToLauncher(mIndexer,4)
+            );
+        }
+
+        
     }
 
     public class TurretTest extends CommandBase

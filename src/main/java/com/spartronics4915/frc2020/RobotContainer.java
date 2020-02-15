@@ -34,14 +34,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-<<<<<<< HEAD
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-=======
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
->>>>>>> be45f73d9212344b722ce4ab207170c09b4b2959
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class RobotContainer
@@ -201,6 +200,13 @@ public class RobotContainer
         new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
         new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
         new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
+        new JoystickButton(mJoystick, 4).toggleWhenPressed(new SequentialCommandGroup(
+            mLauncherCommands.new ShootBallTest(mLauncher),
+            new SequentialCommandGroup(
+                new WaitUntilCommand(mLauncher::getGoodStuff),
+                mIndexerCommands.new LoadToLauncher(mIndexer)
+            )
+        ));
         // new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
         //    this::throughTrench, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
         // new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
