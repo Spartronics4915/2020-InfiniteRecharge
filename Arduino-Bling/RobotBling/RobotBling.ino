@@ -203,14 +203,20 @@ void loop()
 //NEEDS BELOW
 
     case BLING_COMMAND_OFF:
+    //Done
+    
       solid(rgbColor_OFF);
       break;
 
     case BLING_COMMAND_STARTUP:
+    //Done
+    
       solid(rgbColor_ORANGE);
       break;
 
     case BLING_COMMAND_DISABLED:
+    //Done
+    
       strobe(rgbColor_ORANGE, 1, 100, 0);
       break;
       //Will adjust accordingly to the usual past robots blinking rate etc etc
@@ -219,32 +225,46 @@ void loop()
 //WANTS BELOW
 
     case BLING_COMMAND_AUTOMODE:
+    //Done
+    
       solid(rgbColor_WHITE);
       break;
 
     case BLING_COMMAND_SHOOTING:
-      strobe(rgbColor_WHITE, 1, 150, 2000);
+    //Done but delay may need a retouch
+    
+    strobe(rgbColor_WHITE, 1, 150, 2000);
       break;
 
     case BLING_COMMAND_PICKUP:
+    //Done
+    
       strobe(rgbColor_YELLOW, 1, 100, 0);
       break;
 
     case BLING_COMMAND_LOADING:
+    //Done
+    
       fillPixelByPixel (rgbColor_YELLOW, 50);
       break;
 
     case BLING_COMMAND_CLIMBING:
+    //In-progress, solid white is a placeholder
+    
       solid(rgbColor_WHITE);
       break;
 
     case BLING_COMMAND_VISION:
+    //Done
+    
       strobe(rgbColor_WHITE, 1, 150, 500);
       break;
       
 //NEED 
 
     case BLING_COMMAND_DEFAULT:
+    //Done
+    
       solid(rgbColor_BLUE);
       break;
       
