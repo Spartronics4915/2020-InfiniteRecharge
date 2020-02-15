@@ -119,11 +119,16 @@ public class Indexer extends SpartronicsSubsystem
     }
 
     /**
-     * @return whether or not a ball is loaded in the intake
+     * Checks to see if a ball is held in the intake chamber
+     * with a proximity sensor returning a digital value.
+     * <p>
+     * The style of proximity sensor we use requires MANUAL calibration.
+     *
+     * @return Whether a ball is held
      */
     public boolean getIntakeBallLoaded()
     {
-        return mIntakeProxSensor.get();
+        return !mIntakeProxSensor.get();
     }
 
     /**

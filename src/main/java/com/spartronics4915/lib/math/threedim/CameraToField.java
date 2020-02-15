@@ -212,6 +212,19 @@ public class CameraToField
         return this.mCamToRobot.transformVector(dir);
     }
 
+    /**
+     * Convert a target in camera space into turret space.  This
+     * transformation can be used to compute a shooting distance as
+     * follows:  
+     *    Vec3 dist = camPointToMount(camTargetPt);
+     *    dist.a2 = 0; // we don't care about height
+     *    double distance = dist.length();
+     */
+    public Vec3 camPointToMount(Vec3 pt)
+    {
+        this._rebuildTransforms();
+        return this.mCamToMount.transformVector(pt);
+    }
 
     /**
      * Convert a robot-space point into field coordinates.

@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public class IndexerCommands
 {
@@ -28,11 +29,11 @@ public class IndexerCommands
     /**
      * Waits until a ball is held, then ends.
      */
-    public class WaitForBallHeld extends FunctionalCommand
+    public class WaitForBallHeld extends WaitUntilCommand
     {
         public WaitForBallHeld(Indexer indexer)
         {
-            super(() -> {}, () -> {}, (Boolean b) -> {}, indexer::getIntakeBallLoaded, indexer);
+            super(indexer::getIntakeBallLoaded);
         }
     }
 
@@ -107,18 +108,11 @@ public class IndexerCommands
             addRequirements(mIndexer);
         }
 
-        // Called when the command is initially scheduled.
-        @Override
-        public void initialize()
-        {
-            mIndexer.spinAt(0.1);
-        }
-
         // Called every time the scheduler runs while the command is scheduled.
         @Override
         public void execute()
         {
-            // ex. mClimber.raise();
+            mIndexer.spinAt(0.1);
         }
 
         // Returns true when the command should end.
@@ -180,7 +174,8 @@ public class IndexerCommands
     {
         public Spin(Indexer indexer, double N)
         {
-            super(() -> indexer.rotateN(N), () -> {}, (b) -> indexer.stopSpinner(), () -> indexer.isAtPositon(), indexer);
+            super(() -> indexer.rotateN(N), () -> {}, (Boolean b) -> indexer.stopSpinner(),
+                () -> indexer.isAtPositon(), indexer);
         }
     }
 
@@ -188,7 +183,8 @@ public class IndexerCommands
     {
         public Align(Indexer indexer)
         {
-            super(indexer::toNearestQuarterRotation, () -> {}, (b) -> indexer.stopSpinner(), () -> indexer.isAtPositon(), indexer);
+            super(indexer::toNearestQuarterRotation, () -> {}, (Boolean b) -> indexer.stopSpinner(),
+                () -> indexer.isAtPositon(), indexer);
         }
     }
 
@@ -223,11 +219,6 @@ public class IndexerCommands
         {
             return (mIndexer.getIntakeBallLoaded() && mIndexer.getSlotBallLoaded());
         }
-
-        @Override
-        public void end(boolean interrupted)
-        {
-        }
     }
 
     public class BulkHarvest extends SequentialCommandGroup
@@ -237,11 +228,8 @@ public class IndexerCommands
         public BulkHarvest(Indexer indexer)
         {
             mIndexer = indexer;
-
             for (int i = 0; i < 5; i++)
-            {
                 addCommands(new LoadFromIntake(mIndexer));
-            }
         }
 
         @Override
