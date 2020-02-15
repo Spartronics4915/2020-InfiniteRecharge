@@ -1,19 +1,11 @@
 package com.spartronics4915.frc2020.subsystems;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.commands.IndexerCommands;
-import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
-
 import org.junit.jupiter.api.Test;
-
-import edu.wpi.first.hal.HAL;
 import edu.wpi.first.hal.sim.DriverStationSim;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Command;
 
 public class TestIndexer
 {
@@ -35,7 +27,7 @@ public class TestIndexer
 
         var endLaunch = mCommands.new EndLaunch(sIndexer);
 
-        var loadBallToSlot = mCommands.new LoadBallToSlot(sIndexer, 0);
+        var loadBallToSlot = mCommands.new LoadBallToSlotGroup(sIndexer, 0);
 
         var loadToLauncher = mCommands.new LoadToLauncher(sIndexer);
         /******Defining Motors******/
@@ -82,13 +74,19 @@ public class TestIndexer
         /****Defing Command****/
         var loadFromIntake = mCommands.new LoadFromIntake(sIndexer);
 
+        var bulkHarvest = mCommands.new BulkHarvest(sIndexer);
+
         // testing LoadFromIntake
         sIndexer.logInfo("Testing LoadFromIntake...");
         loadFromIntake.schedule();
         assertTrue(loadFromIntake.isScheduled());
         sIndexer.logInfo("Success!!");
-        // CommandScheduler.getInstance().cancel(loadFromIntake);
 
+
+        sIndexer.logInfo("Testing BulkHarvest...");
+        bulkHarvest.schedule();
+        assertTrue(bulkHarvest.isScheduled());
+        sIndexer.logInfo("Success!!");
         // sim.setEnabled(false);
     }
 }

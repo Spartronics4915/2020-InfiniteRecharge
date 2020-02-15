@@ -231,6 +231,27 @@ public class IndexerCommands
         }
     }
 
+    public class BulkHarvest extends SequentialCommandGroup
+    {
+        private Indexer mIndexer;
+
+        public BulkHarvest(Indexer indexer)
+        {
+            mIndexer = indexer;
+
+            for (int i = 0; i < 5; i++)
+            {
+                addCommands(new LoadFromIntake(mIndexer));
+            }
+        }
+
+        @Override
+        public boolean isFinished()
+        {
+            return (mIndexer.getIntakeBallLoaded() && mIndexer.getSlotBallLoaded());
+        }
+    }
+
     public class LoadToLauncher extends SequentialCommandGroup
     {
         private Indexer mIndexer;
