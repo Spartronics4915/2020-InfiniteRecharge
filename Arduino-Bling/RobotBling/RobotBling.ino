@@ -64,7 +64,7 @@ struct rgbColor
 // Colors used in the animations
 const rgbColor rgbColor_OFF(0, 0, 0);
 const rgbColor rgbColor_RED(255, 0, 0);
-const rgbColor rgbColor_GREEN(0x00ff00);
+const rgboColor rgbColor_GREEN(0x00ff00);
 const rgbColor rgbColor_BLUE(0, 0, 255);
 const rgbColor rgbColor_YELLOW(0xffff00);
 const rgbColor rgbColor_ORANGE(255, 64, 0);
@@ -80,7 +80,7 @@ const rgbColor rgbColor_MAGENTA_DIM(0x330033);
 enum
 {
   //NEEDS
-  BLING_COMMAND_OFF
+  BLING_COMMAND_OFF = 0,
   BLING_COMMAND_STARTUP,
   BLING_COMMAND_DISABLED,
   //WANTS
@@ -110,7 +110,7 @@ enum
  */
 
 // A global variable to hold the current command to be executed
-uint8_t currentCommand = OFF;
+uint8_t currentCommand = BLING_COMMAND_OFF;
 
 // The breadcrumb to get us back to the beginning of the loop
 // See 'man setjmp' for details on usage

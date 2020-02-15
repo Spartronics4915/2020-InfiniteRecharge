@@ -41,9 +41,9 @@ void blinkOffWithDelay(uint8_t wait)
   delay(wait);
 }
 
- void strobe(rgbColor c, uint8_t numFlashes, int flashDelay, int strobePause)
+ void strobe(rgbColor c, uint8_t numFlashes, int8_t flashDelay, int8_t strobePause)
  {
-  for(int j = 0; j < numFlashes; j++) 
+  for (int j = 0; j < numFlashes; j++) 
   {
     setAllPixels(c);
     showPixels();
