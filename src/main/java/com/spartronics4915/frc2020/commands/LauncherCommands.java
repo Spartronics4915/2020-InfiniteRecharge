@@ -7,6 +7,7 @@ import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
 public class LauncherCommands
@@ -34,10 +35,7 @@ public class LauncherCommands
         @Override
         public boolean isFinished()
         {
-            if (!mLauncher.inRange() || mLauncher.atTarget())
-                return true;
-            else
-                return false;
+            return !mLauncher.inRange() || mLauncher.atTarget();
         }
     }
 
@@ -55,7 +53,6 @@ public class LauncherCommands
         @Override
         public void initialize()
         {
-            mLauncher.runFlywheel(0);
         }
 
         // Called every time the scheduler runs while the command is scheduled.
@@ -70,10 +67,30 @@ public class LauncherCommands
         @Override
         public boolean isFinished()
         {
-            if (mLauncher.atTarget())
-                return true;
-            else
-                return false;
+            return mLauncher.atTarget();
+        }
+    }
+
+    public class Zero extends CommandBase
+    {
+        private final Launcher mLauncher;
+
+        public Zero(Launcher launcher) 
+        {
+            mLauncher = launcher;
+            addRequirements(mLauncher);
+        }
+        
+        @Override
+        public void execute()
+        {
+            mLauncher.zeroTurret();
+        }
+
+        @Override
+        public boolean isFinished()
+        {
+            return mLauncher.isZeroed();
         }
     }
 

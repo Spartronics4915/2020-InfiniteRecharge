@@ -1,6 +1,7 @@
 package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.frc2020.Constants;
+import com.spartronics4915.frc2020.commands.LauncherCommands;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsAnalogEncoder;
 import com.spartronics4915.lib.hardware.motors.SpartronicsEncoder;
@@ -26,7 +27,7 @@ public class Launcher extends SpartronicsSubsystem
     private SpartronicsMotor mTurretMotor;
     private final Servo mAngleAdjusterMasterServo;
     private final Servo mAngleAdjusterFollowerServo;
-    private final SpartronicsAnalogEncoder mTurretEncoder;
+    private final SpartronicsEncoder mTurretEncoder;
 
     private InterpolatingTreeMap<InterpolatingDouble, LauncherState> table;
 
@@ -35,6 +36,7 @@ public class Launcher extends SpartronicsSubsystem
 
     private SimpleMotorFeedforward mFeedforwardCalculator;
     private final PIDController mTurretPIDController;
+    private boolean zeroed;
 
     private static class LauncherState implements Interpolable<LauncherState>
     {
@@ -61,22 +63,24 @@ public class Launcher extends SpartronicsSubsystem
         mFlywheelMasterMotor = SpartronicsMax.makeMotor(Constants.Launcher.kFlywheelMasterId);
         if (mFlywheelMasterMotor.hadStartupError())
         {
-            mFlywheelMasterMotor = new SpartronicsSimulatedMotor(Constants.Launcher.kFlywheelMasterId);
+            mFlywheelMasterMotor = new SpartronicsSimulatedMotor(
+                Constants.Launcher.kFlywheelMasterId);
             logInitialized(false);
         }
         else
         {
             logInitialized(true);
         }
-        mFlywheelMasterMotor.setVelocityGains(Constants.Launcher.kP, 0, 0, 0); //ref value is 0.00036
+        mFlywheelMasterMotor.setVelocityGains(Constants.Launcher.kP, 0, 0, 0); // ref value is
+                                                                               // 0.00036
         mFeedforwardCalculator = new SimpleMotorFeedforward(Constants.Launcher.kS,
             Constants.Launcher.kV, Constants.Launcher.kA);
-        mFlywheelMasterMotor.setOutputInverted(true);
+        mFlywheelMasterMotor.setOutputInverted(false);
         mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
 
         // One BAG motor for turret
         mTurretMotor = SpartronicsSRX.makeMotor(Constants.Launcher.kTurretId,
-            SensorModel.toRadians(360));
+            SensorModel.fromMultiplier(1.0 / 1024.0 / 11.75 / 20.0 * 360.0));
 
         if (mTurretMotor.hadStartupError())
         {
@@ -87,12 +91,9 @@ public class Launcher extends SpartronicsSubsystem
         {
             logInitialized(true);
         }
-
-        var analogInput = new AnalogInput(Constants.Launcher.kTurretPotentiometerId);
-        analogInput.setAverageBits(4);
-        mTurretEncoder = new SpartronicsAnalogEncoder(analogInput);
-        mTurretEncoder.setDistancePerRotation(1);
-        mTurretPIDController = new PIDController(Constants.Launcher.kTurretP, 0, Constants.Launcher.kTurretD);
+        mTurretEncoder = mTurretMotor.getEncoder();
+        mTurretPIDController = new PIDController(Constants.Launcher.kTurretP, 0,
+            Constants.Launcher.kTurretD);
 
         // Two Servos for angle adjustement
         mAngleAdjusterMasterServo = new Servo(Constants.Launcher.kAngleAdjusterMasterId);
@@ -102,7 +103,7 @@ public class Launcher extends SpartronicsSubsystem
 
         setUpLookupTable(Constants.Launcher.LookupTableSize, Constants.Launcher.DistanceTable,
             Constants.Launcher.AngleTable, Constants.Launcher.RPSTable);
-
+        zeroed = false;
         reset();
     }
 
@@ -118,7 +119,8 @@ public class Launcher extends SpartronicsSubsystem
     public void runFlywheel(double rps)
     {
         targetRPS = Math.min(rps, Constants.Launcher.kMaxRPS);
-        mFlywheelMasterMotor.setVelocity(targetRPS, mFeedforwardCalculator.calculate(targetRPS / 60.0));
+        mFlywheelMasterMotor.setVelocity(targetRPS,
+            mFeedforwardCalculator.calculate(targetRPS / 60.0));
     }
 
     /**
@@ -127,8 +129,8 @@ public class Launcher extends SpartronicsSubsystem
      */
     public void adjustHood(Rotation2d angle)
     {
-        targetAngle = Rotation2d.fromDegrees(Math.min(angle.getDegrees(),
-            Constants.Launcher.kMaxAngle.getDegrees()));
+        targetAngle = Rotation2d
+            .fromDegrees(Math.min(angle.getDegrees(), Constants.Launcher.kMaxAngle.getDegrees()));
         mAngleAdjusterMasterServo.setAngle(targetAngle.getDegrees());
         mAngleAdjusterFollowerServo.setAngle(180 - targetAngle.getDegrees());
     }
@@ -140,7 +142,8 @@ public class Launcher extends SpartronicsSubsystem
     public void turnTurret(Rotation2d absoluteAngle)
     {
         // FIXME: The turret should expose methods similar to getTarget/CurrentPitch
-        double output = mTurretPIDController.calculate(mTurretEncoder.get(), absoluteAngle.getDegrees());
+        double output = mTurretPIDController.calculate(mTurretEncoder.getPosition(),
+            absoluteAngle.getDegrees());
         mTurretMotor.setDutyCycle(output);
     }
 
@@ -150,7 +153,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public double getTurretDirection()
     {
-        return mTurretEncoder.get();
+        return mTurretEncoder.getPosition();
     }
 
     /**
@@ -208,8 +211,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public double calcRPS(double distance)
     {
-        return table.getInterpolated(
-            new InterpolatingDouble(distance)).flywheelSpeedRPS.value;
+        return table.getInterpolated(new InterpolatingDouble(distance)).flywheelSpeedRPS.value;
     }
 
     /**
@@ -230,8 +232,7 @@ public class Launcher extends SpartronicsSubsystem
     public boolean atTarget()
     {
         // FIXME: Include the turret rotation
-        return (getTargetRPS() == getCurrentRPS())
-            && (getTargetPitch() == getCurrentPitch());
+        return (getTargetRPS() == getCurrentRPS()) && (getTargetPitch() == getCurrentPitch());
     }
 
     /**
@@ -254,6 +255,25 @@ public class Launcher extends SpartronicsSubsystem
             table.put(new InterpolatingDouble(distances[k]), new LauncherState(
                 Rotation2d.fromDegrees(angles[k]), new InterpolatingDouble(rps[k])));
         }
+    }
+
+    public void zeroTurret()
+    {
+        if (mTurretMotor.getOutputCurrent() > Constants.Launcher.kTurretStallAmps)
+        {
+            mTurretEncoder.setPosition(-30.0);
+            mTurretMotor.setDutyCycle(0.0);
+            zeroed = true;
+        }
+        else if (!zeroed)
+        {
+            mTurretMotor.setDutyCycle(0.1);
+        }
+    }
+
+    public boolean isZeroed()
+    {
+        return zeroed;
     }
 
     @Override

@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -70,6 +71,7 @@ public class RobotContainer
     /* subsystems */
     private final Climber mClimber;
     private final Intake mIntake;
+    private final Indexer mIndexer;
     private final Launcher mLauncher;
     private final PanelRotator mPanelRotator;
     private final LED mLED;
@@ -133,6 +135,7 @@ public class RobotContainer
 
         mClimber = new Climber();
         mIntake = new Intake();
+        mIndexer = new Indexer();
         mLauncher = new Launcher();
         mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
@@ -142,17 +145,19 @@ public class RobotContainer
         mIntakeCommands = new IntakeCommands();
         mLauncherCommands = new LauncherCommands();
         mPanelRotatorCommands = new PanelRotatorCommands();
-
+        
+        
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
 
         // Default Commands run whenever no Command is scheduled to run for a subsystem
         mClimber.setDefaultCommand(mClimberCommands.new Stop(mClimber));
         mIntake.setDefaultCommand(mIntakeCommands.new Stop(mIntake));
-        mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
-            mLauncherCommands.new Adjust(mLauncher), mLauncher::inRange));
+        // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
+        //    mLauncherCommands.new Adjust(mLauncher), mLauncher::inRange));
         mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
-
+ 
+        //mLauncherCommands.new Zero(mLauncher).schedule();
         configureJoystickBindings();
         configureButtonBoardBindings();
     }
@@ -184,6 +189,7 @@ public class RobotContainer
         new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
         new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
         new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
+        new JoystickButton(mJoystick, 4).toggleWhenPressed(new FunctionalCommand(() -> mIndexer.vroomVroom(0.1), () -> {}, (b) -> mIndexer.vroomVroom(0), () -> false, mIndexer));
         // new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
         //    this::throughTrench, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
         // new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,

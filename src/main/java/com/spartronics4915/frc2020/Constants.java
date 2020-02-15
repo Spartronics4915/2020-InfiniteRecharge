@@ -81,7 +81,7 @@ public final class Constants
 
     public static final class Launcher
     {
-        public static final int kFlywheelMasterId = 2; // CHANGE TO 7
+        public static final int kFlywheelMasterId = 7; // CHANGE TO 7
         public static final int kFlywheelFollowerId = -1; // Solid brass
         public static final int kAngleAdjusterMasterId = 0; // PWM
         public static final int kAngleAdjusterFollowerId = 1; // PWM
@@ -92,10 +92,10 @@ public final class Constants
         public static final Pose2d kTurretOffset = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180.0));
 
         // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
-        public static final double kP = 0.02;
-        public static final double kS = 0.0634; // 0.0654;
-        public static final double kV = 7.23; // 7.18;
-        public static final double kA = 5.07;
+        public static final double kP = 0.05;
+        public static final double kS = 0.0286; // 0.0654;
+        public static final double kV = 7.86; // 7.18;
+        public static final double kA = 5.16;
 
         public static double kTurretP = 0;
         public static double kTurretI = 0;
@@ -108,9 +108,10 @@ public final class Constants
         public static final double[] RPSTable = null;
 
         public static final double kMaxRPS = 90.0;
-        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(60.0);
+        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(40.0);
 
         public static Pose2d goalLocation = null;
+        public static double kTurretStallAmps = 2.0;
     }
 
     public static final class OI
