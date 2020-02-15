@@ -160,8 +160,8 @@ public class RobotContainer
         // Default Commands run whenever no Command is scheduled to run for a subsystem
         mClimber.setDefaultCommand(mClimberCommands.new Stop(mClimber));
         mIntake.setDefaultCommand(mIntakeCommands.new Stop(mIntake));
-        mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
-            mLauncherCommands.new Adjust(mLauncher), mLauncher::inRange));
+        // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
+        //     mLauncherCommands.new Adjust(mLauncher), mLauncher::inRange));
         mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
 
         configureJoystickBindings();
@@ -208,7 +208,7 @@ public class RobotContainer
         // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new ConditionalCommand(mLauncherCommands.new Target));
 
         new JoystickButton(mButtonBoard, 2).toggleWhenPressed(new ParallelCommandGroup(
-            mIntakeCommands.new Harvest(mIntake), mIndexerCommands.new LoadFromIntake(mIndexer)));
+            mIntakeCommands.new Harvest(mIntake, mIndexer), mIndexerCommands.new LoadFromIntake(mIndexer)));
         new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
 
         new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));
