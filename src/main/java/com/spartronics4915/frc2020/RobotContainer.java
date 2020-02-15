@@ -119,10 +119,6 @@ public class RobotContainer
         configureJoystickBindings();
         configureButtonBoardBindings();
 
-        System.out
-            .println(new TrajectoryContainer.DestinationCouple(Destination.ShieldGeneratorFarRight,
-                Destination.MiddleShootingPosition).hashCode());
-
         mAutoModes = new AutoMode[] {kDefaultAutoMode, new AutoMode("Drive Straight",
             new TrajectoryTrackerCommand(mDrive,
                 TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight),
@@ -276,7 +272,7 @@ public class RobotContainer
             waypoints.add(pose);
         }
         ArrayList<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
-        return TrajectoryContainer.generateTrajectory(waypoints, constraints);
+        return TrajectoryContainer.generateTrajectory(waypoints, constraints, false);
     }
 
     public TimedTrajectory<Pose2dWithCurvature> toControlPanel()
@@ -301,6 +297,6 @@ public class RobotContainer
         constraints.add(new VelocityLimitRegionConstraint(new Rectangle2d(
             new Translation2d(Units.inchesToMeters(290), Units.inchesToMeters(161.6)),
             new Translation2d(Units.inchesToMeters(428), Units.inchesToMeters(90))), .5));
-        return TrajectoryContainer.generateTrajectory(waypoints, constraints);
+        return TrajectoryContainer.generateTrajectory(waypoints, constraints, false);
     }
 }

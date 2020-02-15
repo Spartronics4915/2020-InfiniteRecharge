@@ -23,9 +23,9 @@ public class TrajectoryContainer
 {
     public static enum Destination
     {
-        LeftTrenchFar(385, 134, 0), LeftShootingPosition(508, 5, 328.69), RightTrenchFar(394, -134, 180),
-        RightTrenchNear(242, -134, 180), RightShootingPosition(421, -121, 14.36),
-        ShieldGeneratorFarRight(400, -40, 135), MiddleShootingPosition(456, -67, 0);
+        LeftTrenchFar(394, 134, 120), LeftShootingPosition(508, 5, 148.69), RightTrenchFar(304, -134, 180), RightTrenchVeryFar(404, -134, 180),
+        RightTrenchNear(242, -134, 180), RightShootingPosition(421, -121, 194.36),
+        ShieldGeneratorFarRight(400, -58, 115), MiddleShootingPosition(456, -67, 180);
 
         public final Pose2d pose;
 
@@ -47,11 +47,13 @@ public class TrajectoryContainer
     {
         private Destination mStart;
         private Destination mEnd;
+        private boolean mReversed;
 
-        public DestinationCouple(Destination a, Destination b)
+        public DestinationCouple(Destination a, Destination b, boolean reversed)
         {
             mStart = a;
             mEnd = b;
+            mReversed = reversed;
         }
 
         public TimedTrajectory<Pose2dWithCurvature> createTrajectory(Pose2d startPoint,
@@ -71,7 +73,7 @@ public class TrajectoryContainer
             }
             waypoints.add(end);
             List<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
-            return TrajectoryContainer.generateTrajectory(waypoints, constraints);
+            return TrajectoryContainer.generateTrajectory(waypoints, constraints, mReversed);
         }
 
         @Override
@@ -119,18 +121,18 @@ public class TrajectoryContainer
         public TimedTrajectory<Pose2dWithCurvature> getTrajectory(Destination start,
                 Destination end)
         {
-            return mTrajectories.get(new DestinationCouple(start, end));
+            return mTrajectories.get(new DestinationCouple(start, end, false));
         }
     }
 
     public static TimedTrajectory<Pose2dWithCurvature> generateTrajectory(List<Pose2d> waypoints,
-            List<TimingConstraint<Pose2dWithCurvature>> constraints)
+            List<TimingConstraint<Pose2dWithCurvature>> constraints, boolean reversed)
     {
         var trajectory = TrajectoryGenerator.defaultTrajectoryGenerator.generateTrajectory(
                 waypoints, constraints, Constants.Trajectory.kStartVelocityMetersPerSec,
                 Constants.Trajectory.kEndVelocityMetersPerSec,
                 Constants.Trajectory.kMaxVelocityMetersPerSec,
-                Constants.Trajectory.kMaxAccelerationMeterPerSecSq, false);
+                Constants.Trajectory.kMaxAccelerationMeterPerSecSq, reversed);
         return trajectory;
     }
 
@@ -140,36 +142,47 @@ public class TrajectoryContainer
             Constants.Trajectory.kStartPointMiddle);
     public static final TrajectoryCollection right = new TrajectoryCollection(
             Constants.Trajectory.kStartPointRight);
+        public static final TrajectoryCollection eightBall = new TrajectoryCollection(
+                Constants.Trajectory.kStartPointMiddle);
     static
     {
         // left
         var leftTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        leftTrajectories.put(new DestinationCouple(null, Destination.LeftTrenchFar),
+        leftTrajectories.put(new DestinationCouple(null, Destination.LeftTrenchFar, false),
                 Arrays.asList());
         leftTrajectories.put(
-                new DestinationCouple(Destination.LeftTrenchFar, Destination.LeftShootingPosition),
+                new DestinationCouple(Destination.LeftTrenchFar, Destination.LeftShootingPosition, true),
                 Arrays.asList());
 
         left.generateTrajectories(leftTrajectories);
 
         // middle
         var middleTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        middleTrajectories.put(new DestinationCouple(null, Destination.ShieldGeneratorFarRight),
+        middleTrajectories.put(new DestinationCouple(null, Destination.ShieldGeneratorFarRight, false),
                 Arrays.asList());
         middleTrajectories.put(new DestinationCouple(Destination.ShieldGeneratorFarRight,
-                Destination.MiddleShootingPosition), Arrays.asList());
+                Destination.MiddleShootingPosition, true), Arrays.asList());
 
         middle.generateTrajectories(middleTrajectories);
         // right
         var rightTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        rightTrajectories.put(new DestinationCouple(null, Destination.RightTrenchFar),
+        rightTrajectories.put(new DestinationCouple(null, Destination.RightTrenchFar, false),
                 Arrays.asList());
-        rightTrajectories.put(
-                new DestinationCouple(Destination.RightTrenchFar, Destination.RightTrenchNear),
-                Arrays.asList());
-        rightTrajectories.put(new DestinationCouple(Destination.RightTrenchNear,
-                Destination.RightShootingPosition), Arrays.asList());
+        // rightTrajectories.put(
+        //         new DestinationCouple(Destination.RightTrenchFar, Destination.RightTrenchNear, false),
+        //         Arrays.asList());
+        rightTrajectories.put(new DestinationCouple(Destination.RightTrenchFar,
+                Destination.RightShootingPosition, true), Arrays.asList());
 
         right.generateTrajectories(rightTrajectories);
+
+        //eight ball
+        var eightBallTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
+        eightBallTrajectories.put(new DestinationCouple(null, Destination.ShieldGeneratorFarRight, false), Arrays.asList());
+        eightBallTrajectories.put(new DestinationCouple(Destination.ShieldGeneratorFarRight, Destination.MiddleShootingPosition, true), Arrays.asList());
+        eightBallTrajectories.put(new DestinationCouple(Destination.MiddleShootingPosition, Destination.RightTrenchVeryFar, false), Arrays.asList());
+        eightBallTrajectories.put(new DestinationCouple(Destination.RightTrenchVeryFar, Destination.RightTrenchFar, false), Arrays.asList());
+        eightBallTrajectories.put(new DestinationCouple(Destination.RightTrenchFar, Destination.RightShootingPosition, true), Arrays.asList());
+
     }
 }
