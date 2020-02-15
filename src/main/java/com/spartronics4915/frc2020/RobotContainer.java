@@ -173,6 +173,13 @@ public class RobotContainer
         // Note: changes to bling state can be augmented with:
         // .alongWith(new SetBlingStateCommand(mLED, BlingState.SOME_STATE)));
 
+        new JoystickButton(mJoystick, 2).whenPressed(new StartEndCommand(() -> {
+            mIndexer.spinAt(0.1);
+            mIndexer.launch();
+        }, () -> mIndexer.stop(), mIndexer));
+        new JoystickButton(mJoystick, 1)
+            .whenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
+
         /*
         new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
         new JoystickButton(mJoystick, 2).whenHeld(new LauncherCommands.Raise(mLauncher));
@@ -208,7 +215,7 @@ public class RobotContainer
         // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new ConditionalCommand(mLauncherCommands.new Target));
 
         new JoystickButton(mButtonBoard, 2).toggleWhenPressed(new ParallelCommandGroup(
-            mIntakeCommands.new Harvest(mIntake, mIndexer), mIndexerCommands.new LoadFromIntake(mIndexer)));
+            mIntakeCommands.new Harvest(mIntake, mIndexer), mIndexerCommands.new BulkHarvest(mIndexer)));
         new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
 
         new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));

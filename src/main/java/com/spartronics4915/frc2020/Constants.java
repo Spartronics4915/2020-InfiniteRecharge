@@ -40,11 +40,11 @@ public final class Constants
         public static final class Spinner
         {
             public static final int kMotorId = 9;
-            public static final double kVelocityP = 1; // FIXME: stand-in values
-            public static final double kVelocityD = 1;
-            public static final double kPositionP = 1;
-            public static final double kPositionD = 1;
-            public static final double kConversionRatio = 1;
+            public static final double kVelocityP = 0; // FIXME: stand-in values
+            public static final double kVelocityD = 0;
+            public static final double kPositionP = 0.2;
+            public static final double kPositionD = 0;
+            public static final double kConversionRatio = 1 / (192.0/20.0*9.0);
             public static final double kMaxVelocity = 1.0/3.0;
             public static final double kMaxAcceleration = 0.25;
 

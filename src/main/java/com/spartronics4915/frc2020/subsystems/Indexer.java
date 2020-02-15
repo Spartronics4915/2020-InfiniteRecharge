@@ -81,16 +81,16 @@ public class Indexer extends SpartronicsSubsystem
      */
     public boolean checkFlag()
     {
-        return mLimitSwitch.get();
+        return !mLimitSwitch.get();
     }
 
     /**
      * Sets the spinner to a specific velocity
-     * @param velocity the velocity to spin the spinner at
+     * @param dutyCycle the velocity to spin the spinner at
      */
-    public void spinAt(double velocity)
+    public void spinAt(double dutyCycle)
     {
-        mIndexerMotor.setDutyCycle(velocity);
+        mIndexerMotor.setDutyCycle(dutyCycle);
     }
 
     /**
@@ -217,7 +217,7 @@ public class Indexer extends SpartronicsSubsystem
 
     public boolean isAtPositon()
     {
-        return Math.abs(mTargetPosition - mIndexerMotor.getEncoder().getPosition()) > Constants.Indexer.Spinner.kPositionTolerance;
+        return Math.abs(mTargetPosition - mIndexerMotor.getEncoder().getPosition()) * 360 < Constants.Indexer.Spinner.kPositionTolerance;
     }
 
     public void addBalls(int i)
@@ -237,7 +237,14 @@ public class Indexer extends SpartronicsSubsystem
 
     public boolean areFinsAligned()
     {
-        double positionMod90 = mIndexerMotor.getEncoder().getPosition() % 90;
+        double positionMod90 = (mIndexerMotor.getEncoder().getPosition() * 360) % 90;
         return (positionMod90 >= (90 - Constants.Indexer.Spinner.kPositionTolerance) || positionMod90 <= Constants.Indexer.Spinner.kPositionTolerance); // if in a safe space to load a ball
+    }
+
+    @Override
+    public void periodic()
+    {
+        dashboardPutNumber("targetPosition", mTargetPosition);
+        dashboardPutNumber("position", mIndexerMotor.getEncoder().getPosition());
     }
 }

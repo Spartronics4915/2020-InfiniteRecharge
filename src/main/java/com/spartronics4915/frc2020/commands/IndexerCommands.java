@@ -35,6 +35,14 @@ public class IndexerCommands
         {
             super(indexer::getIntakeBallLoaded);
         }
+
+        @Override
+        public void initialize()
+        {
+            // TODO Auto-generated method stub
+            super.initialize();
+            System.out.println("here3");
+        }
     }
 
     public class LoadBallToSlotGroup extends SequentialCommandGroup
@@ -66,6 +74,7 @@ public class IndexerCommands
         @Override
         public void initialize()
         {
+            System.out.println("here4");
             mIndexer.rotateN(mSpinCount);
         }
 
@@ -152,6 +161,14 @@ public class IndexerCommands
         {
             super(indexer::endLaunch, indexer);
         }
+
+        @Override
+        public void initialize()
+        {
+            // TODO Auto-generated method stub
+            super.initialize();
+            System.out.println("here2");
+        }
     }
 
     public class StartTransfer extends InstantCommand
@@ -177,6 +194,14 @@ public class IndexerCommands
             super(() -> indexer.rotateN(N), () -> {}, (Boolean b) -> indexer.stopSpinner(),
                 () -> indexer.isAtPositon(), indexer);
         }
+
+        @Override
+        public void initialize()
+        {
+            // TODO Auto-generated method stub
+            super.initialize();
+            System.out.println("here5");
+        }
     }
 
     public class Align extends FunctionalCommand
@@ -185,6 +210,14 @@ public class IndexerCommands
         {
             super(indexer::toNearestQuarterRotation, () -> {}, (Boolean b) -> indexer.stopSpinner(),
                 () -> indexer.isAtPositon(), indexer);
+        }
+
+        @Override
+        public void initialize()
+        {
+            // TODO Auto-generated method stub
+            super.initialize();
+            System.out.println("here");
         }
     }
 
@@ -210,7 +243,8 @@ public class IndexerCommands
                 new EndLaunch(mIndexer), // for safety
                 new WaitForBallHeld(mIndexer),
                 new LoadBallToSlot(mIndexer, 0),
-                new Spin(mIndexer, 1), new InstantCommand(() -> mIndexer.addBalls(1), mIndexer)
+                new Spin(mIndexer, 1),
+                new InstantCommand(() -> mIndexer.addBalls(1), mIndexer)
             );
         }
 

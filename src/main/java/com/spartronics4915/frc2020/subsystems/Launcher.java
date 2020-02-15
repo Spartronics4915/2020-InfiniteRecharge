@@ -71,7 +71,7 @@ public class Launcher extends SpartronicsSubsystem
         mFlywheelMasterMotor.setVelocityGains(Constants.Launcher.kP, 0, 0, 0); //ref value is 0.00036
         mFeedforwardCalculator = new SimpleMotorFeedforward(Constants.Launcher.kS,
             Constants.Launcher.kV, Constants.Launcher.kA);
-        mFlywheelMasterMotor.setOutputInverted(true);
+        mFlywheelMasterMotor.setOutputInverted(false);
         mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
 
         // One BAG motor for turret
