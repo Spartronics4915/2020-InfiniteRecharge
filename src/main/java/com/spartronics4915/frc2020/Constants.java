@@ -16,10 +16,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
+import java.nio.file.Path;  
 
 public final class Constants
 {
@@ -48,8 +45,8 @@ public final class Constants
             public static final double kPositionP = 1;
             public static final double kPositionD = 1;
             public static final double kConversionRatio = 1;
-            public static final double kMaxVelocity = 1;
-            public static final double kMaxAcceleration = 1;
+            public static final double kMaxVelocity = 1.0/3.0;
+            public static final double kMaxAcceleration = 0.25;
 
             /** Degrees */
             public static final double kPositionTolerance = 5;

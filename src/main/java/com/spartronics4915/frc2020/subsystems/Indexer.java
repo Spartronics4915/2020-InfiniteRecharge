@@ -238,6 +238,6 @@ public class Indexer extends SpartronicsSubsystem
     public boolean areFinsAligned()
     {
         double positionMod90 = mIndexerMotor.getEncoder().getPosition() % 90;
-        return (positionMod90 >= 85 || positionMod90 <= 5); // if in a safe space to load a ball
+        return (positionMod90 >= (90 - Constants.Indexer.Spinner.kPositionTolerance) || positionMod90 <= Constants.Indexer.Spinner.kPositionTolerance); // if in a safe space to load a ball
     }
 }
