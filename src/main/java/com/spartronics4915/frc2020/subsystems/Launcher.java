@@ -26,7 +26,7 @@ public class Launcher extends SpartronicsSubsystem
     private SpartronicsMotor mTurretMotor;
     private final Servo mAngleAdjusterMasterServo;
     private final Servo mAngleAdjusterFollowerServo;
-    private final SpartronicsAnalogEncoder mTurretEncoder;
+    private SpartronicsAnalogEncoder mTurretEncoder;
 
     private InterpolatingTreeMap<InterpolatingDouble, LauncherState> table;
 
@@ -148,9 +148,9 @@ public class Launcher extends SpartronicsSubsystem
      * Returns the current angle the turret is facing relative to straight ahead/home position
      * @return Current angle in degrees the turret is facing relative to the home position (forwards)
      */
-    public double getTurretDirection()
+    public Rotation2d getTurretDirection()
     {
-        return mTurretEncoder.get();
+        return Rotation2d.fromDegrees(mTurretEncoder.get());
     }
 
     /**
@@ -259,7 +259,7 @@ public class Launcher extends SpartronicsSubsystem
     @Override
     public void periodic()
     {
-        dashboardPutNumber("turretAngle", getTurretDirection());
+        dashboardPutNumber("turretAngle", getTurretDirection().getDegrees());
         dashboardPutNumber("currentFlywheelRPS", getCurrentRPS());
         dashboardPutNumber("currentHoodAngle", getCurrentPitch().getDegrees());
     }

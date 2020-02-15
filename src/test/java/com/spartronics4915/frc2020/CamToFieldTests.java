@@ -1,9 +1,9 @@
 package com.spartronics4915.frc2020;
 
 import com.spartronics4915.lib.math.threedim.*;
+import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -15,7 +15,7 @@ class CamToFieldTests
     public void usageExample()
     {
         CamToField2020 ctof = new CamToField2020();
-        ctof.updateTurretAngle(0);
+        ctof.updateTurretAngle(new Rotation2d());
 
         // robot at center of field, pointing right
         ctof.updateRobotPose(320, 0, 0);

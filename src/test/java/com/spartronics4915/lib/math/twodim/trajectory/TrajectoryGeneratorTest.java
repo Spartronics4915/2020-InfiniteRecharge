@@ -19,11 +19,13 @@ import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.math.twodim.geometry.Translation2d;
 import com.spartronics4915.lib.math.twodim.trajectory.constraints.TimingConstraint;
 import com.spartronics4915.lib.math.twodim.trajectory.types.TimedTrajectory;
+import com.spartronics4915.lib.util.Logger;
 
 import static com.spartronics4915.lib.util.Units.feetToMeters;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TrajectoryGeneratorTest
 {
@@ -73,12 +75,30 @@ class TrajectoryGeneratorTest
     @Test
     void testMalformedTrajectory()
     {
-        var traj = TrajectoryGenerator.defaultTrajectoryGenerator.generateTrajectory(
-            Arrays.asList(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
-                new Pose2d(1, 0, Rotation2d.fromDegrees(180))),
-            Arrays.asList(), 0, 0, 12, 12, false);
+        class MyLogClient extends Logger.ClientWriter
+        {
+            public String lastMsg, lastException;
+            public MyLogClient()
+            {
+                super();
+            }
 
+            @Override
+            public void writeln(String msg, Throwable exception)
+            {
+                lastMsg = msg;
+                if(exception != null)
+                    lastException = exception.getMessage();
+            }
+        }
+        var logClient = new MyLogClient();
+        Logger.installClientWriter(logClient);
+        var traj = TrajectoryGenerator.defaultTrajectoryGenerator.generateTrajectory(
+                Arrays.asList(new Pose2d(0, 0, Rotation2d.fromDegrees(0)),
+                    new Pose2d(1, 0, Rotation2d.fromDegrees(180))),
+                Arrays.asList(), 0, 0, 12, 12, false);
         assertEquals(traj.size(), 1);
         assertEquals(traj.getTotalTime(), 0);
+        assert(logClient.lastMsg.contains("Could not parameterize a malformed spline"));
     }
 }

@@ -133,7 +133,7 @@ public class PanelRotatorCommands
      * Do note that it only spins the Color Wheel once. The operator will have to
      * push the corresponding button at least three times to complete Stage Two.
      */
-    public class SpinOneRotation extends CommandBase
+    public class SpinRotation extends CommandBase
     {
         private final PanelRotator mPanelRotator;
 
@@ -143,7 +143,7 @@ public class PanelRotatorCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public SpinOneRotation(PanelRotator panelRotator)
+        public SpinRotation(PanelRotator panelRotator)
         {
             mPanelRotator = panelRotator;
             addRequirements(mPanelRotator);
@@ -200,18 +200,6 @@ public class PanelRotatorCommands
     }
 
     /**
-     * This {@link SequentialCommandGroup} queues the SpinOneRotation Command four times.
-     */
-    public class SpinFourRotations extends SequentialCommandGroup
-    {
-        public SpinFourRotations(PanelRotator panelRotator)
-        {
-            super(new SpinOneRotation(panelRotator), new SpinOneRotation(panelRotator),
-                new SpinOneRotation(panelRotator), new SpinOneRotation(panelRotator));
-        }
-    }
-
-    /**
      * This {@link RunCommand} stops all PanelRotator motors by calling
      * PanelRotator.stop() repeatedly.
      * <p>
@@ -222,6 +210,32 @@ public class PanelRotatorCommands
         public Stop(PanelRotator panelRotator)
         {
             super(panelRotator::stop, panelRotator);
+        }
+    }
+
+    /**
+     * These names are frustratingly vague. TODO: determine a better prefix than "auto"
+     * <p>
+     * FIXME: Will the act of lowering / raising the wheel spin the control panel?
+     * <p>
+     * TODO: move DefaultCommands to PanelRotatorCommands etc.
+     * <p>
+     * TODO: make commands static etc.
+     */
+    public class AutoSpinRotation extends SequentialCommandGroup
+    {
+        public AutoSpinRotation(PanelRotator panelRotator)
+        {
+            super(new Raise(panelRotator), new SpinRotation(panelRotator), new SpinRotation(panelRotator),
+                new SpinRotation(panelRotator), new SpinRotation(panelRotator), new Lower(panelRotator));
+        }
+    }
+
+    public class AutoSpinToColor extends SequentialCommandGroup
+    {
+        public AutoSpinToColor(PanelRotator panelRotator)
+        {
+            super(new Raise(panelRotator), new SpinToColor(panelRotator), new Lower(panelRotator));
         }
     }
 }

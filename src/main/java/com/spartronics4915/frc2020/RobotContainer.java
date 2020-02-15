@@ -29,13 +29,13 @@ import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -70,6 +70,7 @@ public class RobotContainer
     /* subsystems */
     private final Climber mClimber;
     private final Intake mIntake;
+    private final Indexer mIndexer;
     private final Launcher mLauncher;
     private final PanelRotator mPanelRotator;
     private final LED mLED;
@@ -78,6 +79,7 @@ public class RobotContainer
     /* subsystem commands */
     private final ClimberCommands mClimberCommands;
     private final IntakeCommands mIntakeCommands;
+    private final IndexerCommands mIndexerCommands;
     private final LauncherCommands mLauncherCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
 
@@ -99,7 +101,7 @@ public class RobotContainer
         T265Camera slamra;
         try
         {
-            slamra = new T265Camera(Constants.Estimator.kCameraOffset,
+            slamra = new T265Camera(Constants.Estimator.kSlamraToRobot,
                 Constants.Estimator.kMeasurementCovariance);
         }
         catch (CameraJNIException | UnsatisfiedLinkError e)
@@ -107,11 +109,13 @@ public class RobotContainer
             slamra = null;
             Logger.exception(e);
         }
-
         mDrive = new Drive();
         mStateEstimator = new RobotStateEstimator(mDrive,
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
-                    slamra);
+            slamra);
+        var slamraCommand = new StartEndCommand(() -> mStateEstimator.enable(),
+            () -> mStateEstimator.stop(), mStateEstimator);
+        mStateEstimator.setDefaultCommand(slamraCommand);
 
         System.out.println(
             new TrajectoryContainer.DestinationCouple(Destination.ShieldGeneratorFarRight,
@@ -125,7 +129,13 @@ public class RobotContainer
                 TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight),
                 mRamseteController, mStateEstimator.getEncoderRobotStateMap())),
             new AutoMode("Characterize Drive",
-                new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter))
+                new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter)),
+            new AutoMode("Laser Turret",
+                new LaserTurretToFieldPose(mStateEstimator.getCameraRobotStateMap())),
+            new AutoMode("Right: Through Trench",
+                new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.left.getTrajectory(null, Destination.LeftTrenchFar),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()))
         };
 
         mStateEstimator.resetRobotStateMaps(TrajectoryContainer.middle.mStartPoint);
@@ -135,6 +145,7 @@ public class RobotContainer
 
         mClimber = new Climber();
         mIntake = new Intake();
+        mIndexer = new Indexer();
         mLauncher = new Launcher();
         mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
@@ -142,7 +153,8 @@ public class RobotContainer
 
         mClimberCommands = new ClimberCommands();
         mIntakeCommands = new IntakeCommands();
-        mLauncherCommands = new LauncherCommands();
+        mIndexerCommands = new IndexerCommands();
+        mLauncherCommands = new LauncherCommands(mStateEstimator.getCameraRobotStateMap(), new Pose2d());
         mPanelRotatorCommands = new PanelRotatorCommands();
 
         // Default Commands run whenever no Command is scheduled to run for a subsystem
@@ -195,7 +207,8 @@ public class RobotContainer
         // new JoystickButton(mButtonBoard, 0).whenPressed(LauncherCommands.new Launch(mLauncher));
         // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new ConditionalCommand(mLauncherCommands.new Target));
 
-        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(mIntakeCommands.new Harvest(mIntake));
+        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(new ParallelCommandGroup(
+            mIntakeCommands.new Harvest(mIntake), mIndexerCommands.new LoadFromIntake(mIndexer)));
         new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
 
         new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));
@@ -203,26 +216,17 @@ public class RobotContainer
 
         new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
         new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
-        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinOneRotation(mPanelRotator), false);
+        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinRotation(mPanelRotator), false);
         new JoystickButton(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
 
-        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber)
-            .withTimeout(Constants.Climber.kTimerExtenderMin));
-        new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Extend(mClimber)
-            .withTimeout(Constants.Climber.kTimerExtenderMax));
+        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new ExtendMin(mClimber));
+        new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new ExtendMax(mClimber));
 
-        new JoystickButton(mButtonBoard, 12).whenPressed(new SequentialCommandGroup(
-            mPanelRotatorCommands.new Raise(mPanelRotator),
-            mPanelRotatorCommands.new SpinFourRotations(mPanelRotator),
-            mPanelRotatorCommands.new Lower(mPanelRotator))); // TODO: will the act of lowering spin the wheel?
+        new JoystickButton(mButtonBoard, 12).whenPressed(mPanelRotatorCommands.new AutoSpinRotation(mPanelRotator));
 
-        new JoystickButton(mButtonBoard, 13).whenPressed(new SequentialCommandGroup(
-            mPanelRotatorCommands.new Raise(mPanelRotator),
-            mPanelRotatorCommands.new SpinToColor(mPanelRotator),
-            mPanelRotatorCommands.new Lower(mPanelRotator)));
+        new JoystickButton(mButtonBoard, 13).whenPressed(mPanelRotatorCommands.new AutoSpinToColor(mPanelRotator));
 
-        new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new WinchPrimary(mClimber)
-            .andThen(mClimberCommands.new WinchSecondary(mClimber)));
+        new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new Winch(mClimber));
 
         /* Four-way Joystick
         new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
