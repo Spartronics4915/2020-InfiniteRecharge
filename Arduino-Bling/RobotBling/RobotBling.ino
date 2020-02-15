@@ -197,10 +197,6 @@ void loop()
   switch (currentCommand)
   {
     // Annimations -- commands to match the enums above!
-    case OFF:
-      // All pixels are off
-      solid(rgbColor_OFF);
-      break;
 
     //NEEDS BELOW
 
@@ -273,6 +269,6 @@ void loop()
     default:
       solid(rgbColor_OFF);
       // The currentCommand is not handled in this switch statement, and may be corrupt. Reset it to a good value.
-      currentCommand = OFF;
+      currentCommand = BLING_COMMAND_OFF;
   }
 }
