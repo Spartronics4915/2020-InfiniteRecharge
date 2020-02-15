@@ -168,9 +168,6 @@ public class TrajectoryContainer
         var rightTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
         rightTrajectories.put(new DestinationCouple(null, Destination.RightTrenchFar, false),
                 Arrays.asList());
-        // rightTrajectories.put(
-        //         new DestinationCouple(Destination.RightTrenchFar, Destination.RightTrenchNear, false),
-        //         Arrays.asList());
         rightTrajectories.put(new DestinationCouple(Destination.RightTrenchFar,
                 Destination.RightShootingPosition, true), Arrays.asList());
 

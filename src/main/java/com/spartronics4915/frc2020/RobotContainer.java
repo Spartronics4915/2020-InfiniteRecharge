@@ -119,10 +119,55 @@ public class RobotContainer
         mAutoModes = new AutoMode[]
         {
             kDefaultAutoMode,
-            new AutoMode("Drive Straight",
-                new TrajectoryTrackerCommand(mDrive,
-                TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight),
-                mRamseteController, mStateEstimator.getEncoderRobotStateMap())),
+            new AutoMode("Left",
+                new SequentialCommandGroup(
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.left.getTrajectory(null, Destination.LeftTrenchFar),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.left.getTrajectory(Destination.LeftTrenchFar, Destination.LeftShootingPosition),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
+                )
+            ),
+            new AutoMode("Middle",
+                new SequentialCommandGroup(
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.middle.getTrajectory(Destination.ShieldGeneratorFarRight, Destination.MiddleShootingPosition),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
+                )
+            ),
+            new AutoMode("Right",
+                new SequentialCommandGroup(
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.right.getTrajectory(null, Destination.RightTrenchFar),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.right.getTrajectory(Destination.RightTrenchFar, Destination.RightShootingPosition),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
+                )
+            ),
+            new AutoMode("Eight Ball",
+                new SequentialCommandGroup(
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.eightBall.getTrajectory(null, Destination.ShieldGeneratorFarRight),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.eightBall.getTrajectory(Destination.ShieldGeneratorFarRight, Destination.MiddleShootingPosition),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.eightBall.getTrajectory(Destination.MiddleShootingPosition, Destination.RightTrenchVeryFar),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.eightBall.getTrajectory(Destination.RightTrenchVeryFar, Destination.RightTrenchFar),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.eightBall.getTrajectory(Destination.RightTrenchFar, Destination.RightShootingPosition),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
+                )
+            ),
             new AutoMode("Characterize Drive",
                 new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter)),
             new AutoMode("Laser Turret",
@@ -153,9 +198,10 @@ public class RobotContainer
         // Default Commands run whenever no Command is scheduled to run for a subsystem
         mClimber.setDefaultCommand(mClimberCommands.new Stop(mClimber));
         mIntake.setDefaultCommand(mIntakeCommands.new Stop(mIntake));
-        mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
-            mLauncherCommands.new Adjust(mLauncher), mLauncher::inRange));
+        // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
+        //     mLauncherCommands.new Adjust(mLauncher), mLauncher::inRange));
         mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
+        mDrive.setDefaultCommand(new TeleOpCommand(mDrive, mJoystick));
 
         configureJoystickBindings();
         configureButtonBoardBindings();
