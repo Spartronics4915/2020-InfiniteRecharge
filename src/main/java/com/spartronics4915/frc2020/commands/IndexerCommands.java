@@ -273,10 +273,5 @@ public class IndexerCommands
         {
             this(indexer, 5);
         }
-
-        @Override
-        public void end(boolean interrupted)
-        {
-        }
     }
 }

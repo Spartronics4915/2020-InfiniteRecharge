@@ -99,7 +99,7 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void spinAt(double velocity)
     {
-        mIndexerMotor.setVelocity(velocity);
+        mIndexerMotor.setDutyCycle(velocity);
     }
 
     /**
