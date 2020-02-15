@@ -282,5 +282,7 @@ public final class Constants
         // terms.
         public static final double[] kOpponentGoalCoords = {0, 67.5, kGoalHeight};
         public static final double[] kAllianceGoalCoords = {628, -67.5, kGoalHeight};
+
+        public static final int kLEDRelay = 0; // DigitalOutput pin
     }
 }
