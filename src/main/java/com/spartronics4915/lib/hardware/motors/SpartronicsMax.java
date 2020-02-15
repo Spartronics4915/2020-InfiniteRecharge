@@ -9,6 +9,7 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANAnalog.AnalogMode;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.spartronics4915.lib.hardware.CANCounter;
 import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.wpilibj.RobotBase;
@@ -194,6 +195,7 @@ public class SpartronicsMax implements SpartronicsMotor
         {
             mHadStartupError = false;
         }
+        CANCounter.addDevice(mHadStartupError);
 
         mSparkMax.enableVoltageCompensation(mVoltageCompSaturation);
     }

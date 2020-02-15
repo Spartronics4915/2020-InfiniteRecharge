@@ -151,9 +151,9 @@ public class Launcher extends SpartronicsSubsystem
      * Returns the current angle the turret is facing relative to straight ahead/home position
      * @return Current angle in degrees the turret is facing relative to the home position (forwards)
      */
-    public double getTurretDirection()
+    public Rotation2d getTurretDirection()
     {
-        return mTurretEncoder.getPosition();
+        return Rotation2d.fromDegrees(mTurretEncoder.getPosition());
     }
 
     /**
@@ -279,7 +279,7 @@ public class Launcher extends SpartronicsSubsystem
     @Override
     public void periodic()
     {
-        dashboardPutNumber("turretAngle", getTurretDirection());
+        dashboardPutNumber("turretAngle", getTurretDirection().getDegrees());
         dashboardPutNumber("currentFlywheelRPS", getCurrentRPS());
         dashboardPutNumber("currentHoodAngle", getCurrentPitch().getDegrees());
     }

@@ -1,6 +1,7 @@
 package com.spartronics4915.frc2020;
 
 import com.spartronics4915.lib.math.threedim.*;
+import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 
 /**
  * CamToField2020 extends CameraToField. See coordinate system comments
@@ -99,16 +100,16 @@ public class CamToField2020 extends CameraToField
         Affine3 camOffset = Affine3.fromTranslation(mCamPos);
         Affine3 camToMount = Affine3.concatenate(camOffset, camRot);
         this.setCamToMount(camToMount);
-        this.updateTurretAngle(0);
+        this.updateTurretAngle(new Rotation2d());
     }
 
     /**
      * Called periodically to update the camToField conversion.
-     * @param deg - turret angle measured in degrees. 0 is "straight".
+     * @param rot - turret angle; 0 is "straight"
      */
-    public void updateTurretAngle(double deg)
+    public void updateTurretAngle(Rotation2d rot)
     {
-        Affine3 m2rAim = Affine3.fromRotation(deg, Vec3.ZAxis);
+        Affine3 m2rAim = Affine3.fromRotation(rot.getDegrees(), Vec3.ZAxis);
         Affine3 m2rRot = Affine3.concatenate(mMntFlip, m2rAim);
         Affine3 m2rOffset = Affine3.fromTranslation(mMntPos);
         Affine3 mntToRobot = Affine3.concatenate(m2rOffset, m2rRot);
