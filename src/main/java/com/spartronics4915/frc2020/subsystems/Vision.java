@@ -58,7 +58,7 @@ public class Vision extends SpartronicsSubsystem
     String mStatus;
     List<VisionEvent> mListeners;
     Deque<RobotStateMap.State> mVisionEstimates;
-    Relay mLEDRelay = new Relay(Constants.Vision.kLEDRelay);
+    Relay mLEDRelay; 
 
     /**
      * Vision subsystem needs read-only access to RobotStateEstimator and
@@ -78,6 +78,11 @@ public class Vision extends SpartronicsSubsystem
         this.mVisionEstimates = new ArrayDeque<RobotStateMap.State>();
         this.setDefaultCommand(new ListenForTurretAndVision());
         this.dashboardPutString(Constants.Vision.kStatusKey, "ready+waiting");
+
+        this.mLEDRelay = new Relay(Constants.Vision.kLEDRelay);
+        /// XXX: set the relay into a known/desired state!
+        this.dashboardPutString(Constants.Vision.kLEDRelayKey, 
+                            this.mLEDRelay.get().toString());
     }
 
     public void registerTargetListener(VisionEvent l)
@@ -286,8 +291,8 @@ public class Vision extends SpartronicsSubsystem
                 break;
             }
             mLEDRelay.set(newstate);
-            String msg = String.format("LEDRelay %s -> %s", oldstate, newstate);
-            Vision.this.logInfo(msg);
+            Vision.this.dashboardPutString(Constants.Vision.kLEDRelayKey, 
+                            Vision.this.mLEDRelay.get().toString());
         }
     }
 }

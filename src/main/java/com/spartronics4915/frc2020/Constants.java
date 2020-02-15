@@ -270,6 +270,7 @@ public final class Constants
         public static final String kOurGoalEstimateKey = "OurGoal";
         public static final String kTheirGoalEstimateKey = "OpponentGoal";
         public static final String kStatusKey = "Status";
+        public static final String kLEDRelayKey = "LEDRelay";
 
         public static final double kGoalHeight = 8*12 + 2.25; // 98.25in
 
