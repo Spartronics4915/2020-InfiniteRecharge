@@ -12,7 +12,7 @@ import edu.wpi.first.networktables.EntryNotification;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.Relay;
 
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.CamToField2020;
@@ -58,7 +58,7 @@ public class Vision extends SpartronicsSubsystem
     String mStatus;
     List<VisionEvent> mListeners;
     Deque<RobotStateMap.State> mVisionEstimates;
-    DigitalOutput mLEDRelay = new DigitalOutput(Constants.Vision.kLEDRelay);
+    Relay mLEDRelay = new Relay(Constants.Vision.kLEDRelay);
 
     /**
      * Vision subsystem needs read-only access to RobotStateEstimator and
@@ -269,23 +269,24 @@ public class Vision extends SpartronicsSubsystem
         public void initialize()
         {
             // this is where InstantCommand does its thing
-            boolean oldstate = mLEDRelay.get();
-            boolean newstate;
+            Relay.Value oldstate = mLEDRelay.get();
+            Relay.Value newstate;
             switch(mStateChange)
             {
             case kOff:
-                newstate = false;
+                newstate = Relay.Value.kOff;
                 break;
             case kOn:
-                newstate = true;
+                newstate = Relay.Value.kForward;
                 break;
             case kToggle:
             default:
-                newstate = !oldstate;
+                newstate = (oldstate == Relay.Value.kForward) ? 
+                                Relay.Value.kOff : Relay.Value.kForward;
                 break;
             }
             mLEDRelay.set(newstate);
-            String msg = String.format("LEDRelay %b -> %b", oldstate, newstate);
+            String msg = String.format("LEDRelay %s -> %s", oldstate, newstate);
             Vision.this.logInfo(msg);
         }
     }
