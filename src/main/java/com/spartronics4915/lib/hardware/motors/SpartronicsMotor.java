@@ -157,5 +157,8 @@ public interface SpartronicsMotor
      */
     SpartronicsMotor getFollower();
 
+    /**
+     * @return The device ID
+     */
     int getDeviceNumber();
 }

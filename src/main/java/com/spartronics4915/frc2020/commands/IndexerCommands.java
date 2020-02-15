@@ -5,7 +5,6 @@ import com.spartronics4915.frc2020.subsystems.Indexer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
@@ -29,7 +28,7 @@ public class IndexerCommands
     /**
      * Waits until a ball is held, then ends.
      */
-     public class WaitForBallHeld extends FunctionalCommand
+    public class WaitForBallHeld extends FunctionalCommand
     {
         public WaitForBallHeld(Indexer indexer)
         {
@@ -37,43 +36,56 @@ public class IndexerCommands
         }
     }
 
+    public class LoadBallToSlotGroup extends SequentialCommandGroup
+    {
+        public LoadBallToSlotGroup(Indexer indexer, int spinCount)
+        {
+            addCommands(
+                new Align(indexer),
+                new LoadBallToSlot(indexer, spinCount)
+            );
+        }
+    }
+
     /**
      * Loads the ball into the indexer by moving the spinny bit
      */
-    public class LoadBallToSlot extends CommandBase
+    private class LoadBallToSlot extends CommandBase
     {
         private Indexer mIndexer;
-        private int mSpinCount;
+        private double mSpinCount;
 
-        public LoadBallToSlot(Indexer indexer, int spinCount)
+        public LoadBallToSlot(Indexer indexer, double spinCount)
         {
             mIndexer = indexer;
             mSpinCount = spinCount;
             addRequirements(mIndexer);
         }
 
+        @Override
         public void initialize()
         {
             mIndexer.rotateN(mSpinCount);
         }
 
+        @Override
         public void execute()
         {
             if (mIndexer.getSlotBallLoaded() && !mIndexer.getIntakeBallLoaded()
-                && mIndexer.isInSafeSpace())
-            {
+                && mIndexer.areFinsAligned())
                 mIndexer.transfer();
-            }
             else
                 mIndexer.endTransfer();
         }
 
+        @Override
         public void end(boolean interrupted)
         {
             mIndexer.endTransfer();
         }
 
-        public boolean isFInished()
+        @Override
+        public boolean isFinished()
         {
             return (!mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded());
         }
@@ -85,7 +97,6 @@ public class IndexerCommands
      */
     public class ZeroSpinnerCommand extends CommandBase
     {
-
         private Indexer mIndexer;
 
         // You should only use one subsystem per command. If multiple are needed, use a
@@ -123,7 +134,6 @@ public class IndexerCommands
         {
             mIndexer.setZero();
             mIndexer.stopSpinner();
-            mIndexer.returnToHome();
         }
     }
 
@@ -134,12 +144,6 @@ public class IndexerCommands
      * @param Subsystem requirement For both the CommandScheduler and the above method reference.
      */
 
-    /**
-     * This {@link InstantCommand} stops the intake by calling
-     * {@link LoadFromIntake}.stop once.
-     * <p>
-     * Note that the Intake only controls the front roller.
-     */
     public class StartLaunch extends InstantCommand
     {
         public StartLaunch(Indexer indexer)
@@ -172,11 +176,19 @@ public class IndexerCommands
         }
     }
 
-    public class Spin extends InstantCommand
+    public class Spin extends FunctionalCommand
     {
-        public Spin(Indexer indexer, int N)
+        public Spin(Indexer indexer, double N)
         {
-            super(() -> indexer.rotateN(N), indexer);
+            super(() -> indexer.rotateN(N), () -> {}, (b) -> indexer.stopSpinner(), () -> indexer.isAtPositon(), indexer);
+        }
+    }
+
+    public class Align extends FunctionalCommand
+    {
+        public Align(Indexer indexer)
+        {
+            super(indexer::toNearestQuarterRotation, () -> {}, (b) -> indexer.stopSpinner(), () -> indexer.isAtPositon(), indexer);
         }
     }
 
@@ -189,14 +201,6 @@ public class IndexerCommands
      * @param Subsystem requirement For both the CommandScheduler and the above method references.
      */
 
-    /**
-     * This {@link StartEndCommand} runs the intake motor backwards by calling
-     * {@link LoadFromIntake}.reverse repeatedly.
-     * <p>
-     * Note that this is not an Unjam command. The {@link LoadFromIntake} subsystem only
-     * controls the mechanical vector roller.
-     */
-
     public class LoadFromIntake extends SequentialCommandGroup
     {
         private Indexer mIndexer;
@@ -206,13 +210,38 @@ public class IndexerCommands
             mIndexer = indexer;
 
             addCommands(
+                new Align(mIndexer),
                 new EndLaunch(mIndexer), // for safety
-                new WaitForBallHeld(mIndexer), 
-                new LoadBallToSlot(mIndexer, 0), 
-                new Spin(mIndexer, 1),
-                new InstantCommand(() -> mIndexer.addBalls(1), mIndexer), 
-                new LoadFromIntake(mIndexer) // recursions
+                new WaitForBallHeld(mIndexer),
+                new LoadBallToSlot(mIndexer, 0),
+                new Spin(mIndexer, 1), new InstantCommand(() -> mIndexer.addBalls(1), mIndexer)
             );
+        }
+
+        @Override
+        public boolean isFinished()
+        {
+            return (mIndexer.getIntakeBallLoaded() && mIndexer.getSlotBallLoaded());
+        }
+
+        @Override
+        public void end(boolean interrupted)
+        {
+        }
+    }
+
+    public class BulkHarvest extends SequentialCommandGroup
+    {
+        private Indexer mIndexer;
+
+        public BulkHarvest(Indexer indexer)
+        {
+            mIndexer = indexer;
+
+            for (int i = 0; i < 5; i++)
+            {
+                addCommands(new LoadFromIntake(mIndexer));
+            }
         }
 
         @Override
@@ -229,12 +258,25 @@ public class IndexerCommands
         public LoadToLauncher(Indexer indexer, int ballsToShoot)
         {
             mIndexer = indexer;
+            double spinDistance = (mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded()) ? 0.5 : 0;
 
             addCommands(
+                new Align(mIndexer),
+                new Spin(mIndexer, -spinDistance),
                 new StartLaunch(mIndexer),
-                new LoadBallToSlot(mIndexer, ballsToShoot),
+                new LoadBallToSlot(mIndexer, ballsToShoot + spinDistance),
                 new EndLaunch(mIndexer)
             );
+        }
+
+        public LoadToLauncher(Indexer indexer)
+        {
+            this(indexer, 5);
+        }
+
+        @Override
+        public void end(boolean interrupted)
+        {
         }
     }
 }

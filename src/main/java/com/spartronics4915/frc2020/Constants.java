@@ -42,6 +42,9 @@ public final class Constants
             public static final double kConversionRatio = 1;
             public static final double kMaxVelocity = 1;
             public static final double kMaxAcceleration = 1;
+
+            /** Degrees */
+            public static final double kPositionTolerance = 5;
         }
 
         public static final class Loader
