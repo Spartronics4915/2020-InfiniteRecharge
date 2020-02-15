@@ -25,7 +25,7 @@ public class Indexer extends SpartronicsSubsystem
     private SensorModel mLoaderModel;
     private SensorModel mTransferModel;
 
-    private DigitalInput mOpticalFlag;
+    private DigitalInput mLimitSwitch;
     private DigitalInput mOpticalProxSensor;
     private DigitalInput mIntakeProxSensor;
 
@@ -78,7 +78,7 @@ public class Indexer extends SpartronicsSubsystem
         mTransferMotor.setPositionGains(Constants.Indexer.Transfer.kPositionP, Constants.Indexer.Transfer.kPositionD);
 
         // Setup Optical Flag for zeroing position
-        mOpticalFlag = new DigitalInput(Constants.Indexer.kOpticalFlagId);
+        mLimitSwitch = new DigitalInput(Constants.Indexer.kLimitSwitchId);
 
         // Setup Proximity Sensors for indexing
         mOpticalProxSensor = new DigitalInput(Constants.Indexer.kSlotProxSensorId);
@@ -90,7 +90,7 @@ public class Indexer extends SpartronicsSubsystem
      */
     public boolean checkFlag()
     {
-        return mOpticalFlag.get();
+        return mLimitSwitch.get();
     }
 
     /**

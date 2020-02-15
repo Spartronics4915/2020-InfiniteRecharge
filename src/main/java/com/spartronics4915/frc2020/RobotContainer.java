@@ -223,26 +223,17 @@ public class RobotContainer
 
         new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
         new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
-        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinOneRotation(mPanelRotator), false);
+        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinRotation(mPanelRotator), false);
         new JoystickButton(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
 
-        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber)
-            .withTimeout(Constants.Climber.kTimerExtenderMin));
-        new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new Extend(mClimber)
-            .withTimeout(Constants.Climber.kTimerExtenderMax));
+        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new ExtendMin(mClimber));
+        new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new ExtendMax(mClimber));
 
-        new JoystickButton(mButtonBoard, 12).whenPressed(new SequentialCommandGroup(
-            mPanelRotatorCommands.new Raise(mPanelRotator),
-            mPanelRotatorCommands.new SpinFourRotations(mPanelRotator),
-            mPanelRotatorCommands.new Lower(mPanelRotator))); // TODO: will the act of lowering spin the wheel?
+        new JoystickButton(mButtonBoard, 12).whenPressed(mPanelRotatorCommands.new AutoSpinRotation(mPanelRotator));
 
-        new JoystickButton(mButtonBoard, 13).whenPressed(new SequentialCommandGroup(
-            mPanelRotatorCommands.new Raise(mPanelRotator),
-            mPanelRotatorCommands.new SpinToColor(mPanelRotator),
-            mPanelRotatorCommands.new Lower(mPanelRotator)));
+        new JoystickButton(mButtonBoard, 13).whenPressed(mPanelRotatorCommands.new AutoSpinToColor(mPanelRotator));
 
-        new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new WinchPrimary(mClimber)
-            .andThen(mClimberCommands.new WinchSecondary(mClimber)));
+        new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new Winch(mClimber));
 
         /* Four-way Joystick
         new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
