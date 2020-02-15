@@ -3,7 +3,8 @@ package com.spartronics4915.frc2020.subsystems;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
-
+import java.util.Deque;
+import java.util.ArrayDeque;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.EntryNotification;
@@ -36,12 +37,8 @@ public class Vision extends SpartronicsSubsystem
     /* public interfaces ------------------------------------*/
     public class VisionEvent implements Runnable
     {
-        public Pose2d mVisionEstimate;
-
-        VisionEvent(Pose2d estimate)
-        {
-            this.mVisionEstimate = estimate;
-        }
+        public Pose2d mVisionEstimate=null;
+        public double mTimestamp=0;
 
         public void run()
         {
@@ -49,7 +46,7 @@ public class Vision extends SpartronicsSubsystem
     }
 
     /* member variables -------------------------------------*/
-    RobotStateMap mOfficialRSM, mVisionRSM;
+    RobotStateMap mOfficialRSM;
     NetworkTableInstance mNetTab;
     CamToField2020 mCamToField;
     Launcher mLauncher;
@@ -57,6 +54,7 @@ public class Vision extends SpartronicsSubsystem
     Vec3 mOpponentTarget = new Vec3(Constants.Vision.kOpponentGoalCoords);
     String mStatus;
     List<VisionEvent> mListeners;
+    Deque<RobotStateMap.State> mVisionEstimates;
 
     /**
      * Vision subsystem needs read-only access to RobotStateEstimator and
@@ -67,13 +65,13 @@ public class Vision extends SpartronicsSubsystem
     public Vision(RobotStateEstimator rse, Launcher launcherSubsys)
     {
         this.mOfficialRSM = rse.getCameraRobotStateMap();
-        this.mVisionRSM = new RobotStateMap();
         this.mLauncher = launcherSubsys;
         this.mNetTab = NetworkTableInstance.getDefault();
         this.mNetTab.addEntryListener(Constants.Vision.kTargetResultKey, this::turretTargetUpdate,
             EntryListenerFlags.kUpdate);
         this.mCamToField = new CamToField2020();
         this.mListeners = new ArrayList<VisionEvent>();
+        this.mVisionEstimates = new ArrayDeque<RobotStateMap.State>();
         this.setDefaultCommand(new ListenForTurretAndVision());
         this.dashboardPutString(Constants.Vision.kStatusKey, "ready+waiting");
     }
@@ -88,9 +86,9 @@ public class Vision extends SpartronicsSubsystem
      * Note that only position reflects our computation.  The heading,  velocity
      * an acceleration are interpolated from RobotStateEstimator's tables.
      */
-    public RobotStateMap getRobotStateM0p()
+    public Deque<RobotStateMap.State> getVisionEstimates()
     {
-        return this.mVisionRSM;
+        return this.mVisionEstimates; // nb: is there a threading issue here?
     }
 
     /**
@@ -186,10 +184,11 @@ public class Vision extends SpartronicsSubsystem
             {
                 VisionEvent e = it.next();
                 e.mVisionEstimate = poseEstimate;
+                e.mTimestamp = timestamp;
                 e.run();
             }
-            this.mVisionRSM.addObservations(timestamp, poseEstimate,
-                officialState.integrationVelocity, officialState.predictedVelocity);
+            var state = new RobotStateMap.State(poseEstimate, timestamp);
+            mVisionEstimates.addLast(state);
 
             // now measure the distance between our estimate and the
             // official robot estimate.
