@@ -52,6 +52,7 @@ public class Indexer extends SpartronicsSubsystem
         {
             mIndexerMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Spinner.kMotorId);
             mLoaderMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Loader.kMotorId);
+            mTransferMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Transfer.kMotorId);
             logInitialized(false);
         }
         else
@@ -66,16 +67,6 @@ public class Indexer extends SpartronicsSubsystem
         mIndexerMotor.setMotionProfileCruiseVelocity(Constants.Indexer.Spinner.kMaxVelocity); // Set motion profile
         mIndexerMotor.setMotionProfileMaxAcceleration(Constants.Indexer.Spinner.kMaxAcceleration);
         mIndexerMotor.setUseMotionProfileForPosition(true);
-
-        // Set up gains for loader
-        mLoaderMotor.setVelocityGains(Constants.Indexer.Loader.kVelocityP,
-            Constants.Indexer.Loader.kVelocityD);
-        mLoaderMotor.setPositionGains(Constants.Indexer.Loader.kPositionP,
-            Constants.Indexer.Loader.kPositionD);
-
-        // Set up gains for transfer
-        mTransferMotor.setVelocityGains(Constants.Indexer.Transfer.kVelocityP, Constants.Indexer.Transfer.kVelocityD);
-        mTransferMotor.setPositionGains(Constants.Indexer.Transfer.kPositionP, Constants.Indexer.Transfer.kPositionD);
 
         // Setup Optical Flag for zeroing position
         mLimitSwitch = new DigitalInput(Constants.Indexer.kLimitSwitchId);
@@ -170,7 +161,7 @@ public class Indexer extends SpartronicsSubsystem
     public void launch()
     {
         mIsLaunching = true;
-        mLoaderMotor.setVelocity(Constants.Indexer.Loader.kSpeed);
+        mLoaderMotor.setDutyCycle(Constants.Indexer.Loader.kSpeed);
     }
 
     /**
@@ -179,7 +170,7 @@ public class Indexer extends SpartronicsSubsystem
     public void endLaunch()
     {
         mIsLaunching = false;
-        mLoaderMotor.setVelocity(0);
+        mLoaderMotor.setDutyCycle(0);
     }
 
     /**
@@ -193,13 +184,13 @@ public class Indexer extends SpartronicsSubsystem
     public void transfer()
     {
         mIsTransferring = true;
-        mTransferMotor.setVelocity(Constants.Indexer.Transfer.kSpeed);
+        mTransferMotor.setDutyCycle(Constants.Indexer.Transfer.kSpeed);
     }
 
     public void endTransfer()
     {
         mIsTransferring = false;
-        mTransferMotor.setVelocity(0);
+        mTransferMotor.setDutyCycle(0);
     }
 
     public boolean isTransferring()

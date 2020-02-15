@@ -60,18 +60,12 @@ public final class Constants
             public static final int kMotorId = 10;
             public static final double kVelocityP = 1; // FIXME: stand-in values
             public static final double kVelocityD = 1;
-            public static final double kPositionP = 1;
-            public static final double kPositionD = 1;
             public static final double kConversionRatio = 1;
             public static final double kSpeed = 1;
         }
         public static final class Transfer
         {
             public static final int kMotorId = 11;
-            public static final double kVelocityP = 1; // FIXME: stand-in values
-            public static final double kVelocityD = 1;
-            public static final double kPositionP = 1;
-            public static final double kPositionD = 1;
             public static final double kConversionRatio = 1;
             public static final double kSpeed = 1;
         }
