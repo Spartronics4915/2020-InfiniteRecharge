@@ -24,7 +24,8 @@ public final class Constants
         public static final double kWinchSpeed = 1.0;
         public static final double kRetractSpeed = -1.0;
         public static final double kReverseWinchSpeed = -1.0;
-        public static final double kStallThreshold = 10.0;
+        public static final double kStallThreshold = 3.0;
+        public static final double kSecondaryStallThreshold = 5.0;
         public static final double kTimerExtenderMin = 3.0;
         public static final double kTimerExtenderMax = 5.0;
         public static final boolean kStalled = true;
