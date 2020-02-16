@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import com.revrobotics.CANAnalog.AnalogMode;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.spartronics4915.lib.hardware.CANCounter;
 import com.spartronics4915.lib.util.Logger;
@@ -274,7 +275,7 @@ public class SpartronicsMax implements SpartronicsMotor
     public void setMotionProfileCruiseVelocity(double velocityMetersPerSecond)
     { // Set to slot
         mMotionProfileCruiseVelocity = mSensorModel.toNativeUnits(velocityMetersPerSecond);
-        mPIDController.setSmartMotionMaxVelocity((int) mMotionProfileCruiseVelocity,
+        mPIDController.setSmartMotionMaxVelocity(mMotionProfileCruiseVelocity,
             kVelocitySlotIdx);
     }
 
@@ -288,7 +289,7 @@ public class SpartronicsMax implements SpartronicsMotor
     public void setMotionProfileMaxAcceleration(double accelerationMetersPerSecondSq)
     {
         mMotionProfileAcceleration = mSensorModel.toNativeUnits(accelerationMetersPerSecondSq);
-        mPIDController.setSmartMotionMaxAccel((int) mMotionProfileAcceleration, kVelocitySlotIdx);
+        mPIDController.setSmartMotionMaxAccel(mMotionProfileAcceleration, kVelocitySlotIdx);
     }
 
     @Override
@@ -396,6 +397,16 @@ public class SpartronicsMax implements SpartronicsMotor
     public int getDeviceNumber()
     {
         return mSparkMax.getDeviceId();
+    }
+
+    @Override
+    public void setSoftLimits(double forwardLimitCustomUnits, double reverseLimitCustomUnits)
+    {
+        mSparkMax.enableSoftLimit(SoftLimitDirection.kForward, true);
+        mSparkMax.enableSoftLimit(SoftLimitDirection.kReverse, true);
+
+        mSparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) mSensorModel.toNativeUnits(forwardLimitCustomUnits));
+        mSparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) mSensorModel.toNativeUnits(reverseLimitCustomUnits));
     }
 
 }

@@ -42,9 +42,9 @@ public class SensorModel
         return new SensorModel(360 / nativeUnitsPerRevolution);
     }
 
-    private SensorModel(double nativeUnitsToMetersMultiplier)
+    private SensorModel(double nativeUnitsToCustomUnitsMultiplier)
     {
-        mToCustomUnitsMultiplier = nativeUnitsToMetersMultiplier;
+        mToCustomUnitsMultiplier = nativeUnitsToCustomUnitsMultiplier;
     }
 
     public double toCustomUnits(double nativeUnits)
@@ -52,8 +52,8 @@ public class SensorModel
         return nativeUnits * mToCustomUnitsMultiplier;
     }
 
-    public double toNativeUnits(double meters)
+    public double toNativeUnits(double customUnits)
     {
-        return meters / mToCustomUnitsMultiplier;
+        return customUnits / mToCustomUnitsMultiplier;
     }
 }
