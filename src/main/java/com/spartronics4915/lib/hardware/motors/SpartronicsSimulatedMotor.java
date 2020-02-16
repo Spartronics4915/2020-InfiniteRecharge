@@ -256,4 +256,10 @@ public class SpartronicsSimulatedMotor implements SpartronicsMotor
         return mDeviceNumber;
     }
 
+    @Override
+    public void setSoftLimits(double forwardLimitCustomUnits, double reverseLimitCustomUnits)
+    {
+
+    }
+
 }

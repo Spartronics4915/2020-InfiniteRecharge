@@ -333,4 +333,16 @@ public class SpartronicsSRX implements SpartronicsMotor
         return mTalonSRX.getDeviceID();
     }
 
+    @Override
+    public void setSoftLimits(double forwardLimitCustomUnits, double reverseLimitCustomUnits)
+    {
+        mTalonSRX.configForwardSoftLimitEnable(true);
+        mTalonSRX.configReverseSoftLimitEnable(true);
+
+        mTalonSRX.configForwardSoftLimitThreshold(
+            (int) Math.round(mSensorModel.toNativeUnits(forwardLimitCustomUnits)));
+        mTalonSRX.configReverseSoftLimitThreshold(
+            (int) Math.round(mSensorModel.toNativeUnits(reverseLimitCustomUnits)));
+    }
+
 }

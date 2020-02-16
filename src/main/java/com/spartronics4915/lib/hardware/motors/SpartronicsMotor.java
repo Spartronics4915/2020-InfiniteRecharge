@@ -62,22 +62,22 @@ public interface SpartronicsMotor
     double getMotionProfileCruiseVelocity();
 
     /**
-     * @param velocityMetersPerSecond The max velocity in meters/s that the on board
+     * @param velocityCustomUnitsPerSecond The max velocity in custom units/s that the on board
      *                                motion profile generator will use.
      */
-    void setMotionProfileCruiseVelocity(double velocityMetersPerSecond);
+    void setMotionProfileCruiseVelocity(double velocityCustomUnitsPerSecond);
 
     /**
-     * @return The max acceleration in meters/s^2 that the on board motion profile
+     * @return The max acceleration in custom units/s^2 that the on board motion profile
      *         generator will use.
      */
     double getMotionProfileMaxAcceleration();
 
     /**
-     * @param accelerationMetersSecSq The max acceleration in meters/s^2 that the on
+     * @param accelerationCustomUnitsSecSq The max acceleration in custom units/s^2 that the on
      *                                board motion profile generator will use.
      */
-    void setMotionProfileMaxAcceleration(double accelerationMetersSecSq);
+    void setMotionProfileMaxAcceleration(double accelerationCustomUnitsSecSq);
 
     /**
      * @param useMotionProfile If true, we will use the motion profile to get to
@@ -105,17 +105,17 @@ public interface SpartronicsMotor
     /**
      * Sets the target output velocity.
      *
-     * @param velocityMetersPerSecond Velocity in meters/s.
+     * @param velocityCustomUnitsPerSecond Velocity in custom units/s.
      */
-    void setVelocity(double velocityMetersPerSecond);
+    void setVelocity(double velocityCustomUnitsPerSecond);
 
     /**
      * Sets the target output velocity.
      *
-     * @param velocityMetersPerSecond   Velocity in meters/s.
+     * @param velocityCustomUnitsPerSecond   Velocity in custom units/s.
      * @param arbitraryFeedForwardVolts Additional arbitrary feedforward in Volts.
      */
-    void setVelocity(double velocityMetersPerSecond, double arbitraryFeedForwardVolts);
+    void setVelocity(double velocityCustomUnitsPerSecond, double arbitraryFeedForwardVolts);
 
     /**
      * Sets the PD gains for the built in velocity PID controller.
@@ -129,9 +129,9 @@ public interface SpartronicsMotor
     /**
      * Sets the target position.
      *
-     * @param positionMeters Target position in meters.
+     * @param positionCustomUnits Target position in custom units.
      */
-    void setPosition(double positionMeters);
+    void setPosition(double positionCustomUnits);
 
     /**
      * Sets the PID gains for the built in position PID controller.
@@ -161,4 +161,10 @@ public interface SpartronicsMotor
      * @return The device ID
      */
     int getDeviceNumber();
+
+    /**
+     * @param forwardLimitCustomUnits Forward soft limit position in custom units.
+     * @param reverseLimitCustomUnits Reverse soft limit position in custom units.
+     */
+    void setSoftLimits(double forwardLimitCustomUnits, double reverseLimitCustomUnits);
 }
