@@ -138,7 +138,7 @@ public class IndexerCommands
      * @param Subsystem requirement For both the CommandScheduler and the above method reference.
      */
 
-    public class StartLaunch extends InstantCommand
+    private class StartLaunch extends InstantCommand
     {
         public StartLaunch(Indexer indexer)
         {
@@ -146,7 +146,7 @@ public class IndexerCommands
         }
     }
 
-    public class EndLaunch extends InstantCommand
+    private class EndLaunch extends InstantCommand
     {
         public EndLaunch(Indexer indexer)
         {
@@ -154,7 +154,7 @@ public class IndexerCommands
         }
     }
 
-    public class StartTransfer extends InstantCommand
+    private class StartTransfer extends InstantCommand
     {
         public StartTransfer(Indexer indexer)
         {
@@ -162,7 +162,7 @@ public class IndexerCommands
         }
     }
 
-    public class EndTransfer extends InstantCommand
+    private class EndTransfer extends InstantCommand
     {
         public EndTransfer(Indexer indexer)
         {
@@ -170,7 +170,7 @@ public class IndexerCommands
         }
     }
 
-    public class Spin extends FunctionalCommand
+    private class Spin extends FunctionalCommand
     {
         public Spin(Indexer indexer, double N)
         {
@@ -179,7 +179,7 @@ public class IndexerCommands
         }
     }
 
-    public class Align extends FunctionalCommand
+    private class Align extends FunctionalCommand
     {
         public Align(Indexer indexer)
         {
