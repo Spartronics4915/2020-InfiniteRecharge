@@ -128,7 +128,7 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void rotateN(double N)
     {
-        if (N != 0) 
+        if (N != 0)
         {
             double deltaPosition = 0.25 * N; // Cast N to double and convert to rotations
             mTargetPosition += deltaPosition;
@@ -215,7 +215,7 @@ public class Indexer extends SpartronicsSubsystem
         mIndexerMotor.setNeutral();
     }
 
-    public boolean isAtPositon()
+    public boolean isAtPosition()
     {
         return Math.abs(mTargetPosition - mIndexerMotor.getEncoder().getPosition()) * 360 < Constants.Indexer.Spinner.kPositionTolerance;
     }

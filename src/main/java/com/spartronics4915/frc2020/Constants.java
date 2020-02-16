@@ -261,6 +261,7 @@ public final class Constants
         public static final String kOurGoalEstimateKey = "OurGoal";
         public static final String kTheirGoalEstimateKey = "OpponentGoal";
         public static final String kStatusKey = "Status";
+        public static final String kLEDRelayKey = "LEDRelay";
 
         public static final double kGoalHeight = 8*12 + 2.25; // 98.25in
 
@@ -273,5 +274,7 @@ public final class Constants
         // terms.
         public static final double[] kOpponentGoalCoords = {0, 67.5, kGoalHeight};
         public static final double[] kAllianceGoalCoords = {628, -67.5, kGoalHeight};
+
+        public static final int kLEDRelay = 0; // Relay, not DIO pin!!!
     }
 }
