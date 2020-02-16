@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -154,8 +155,8 @@ public class RobotContainer
                 )
             ),
             new AutoMode("Eight Ball",
-                new StateMapResetCommand(mStateEstimator, TrajectoryContainer.eightBall.mStartPoint),
                 new SequentialCommandGroup(
+                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.eightBall.mStartPoint),
                     new TrajectoryTrackerCommand(mDrive,
                     TrajectoryContainer.eightBall.getTrajectory(null, Destination.ShieldGeneratorFarRight),
                     mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
