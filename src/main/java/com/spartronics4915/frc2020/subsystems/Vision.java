@@ -6,11 +6,13 @@ import java.util.Iterator;
 import java.util.Deque;
 import java.util.ArrayDeque;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.EntryNotification;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Relay;
 
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.CamToField2020;
@@ -29,6 +31,7 @@ import com.spartronics4915.lib.math.threedim.*;
  *   robot pose.
  * - to deliver a new robot state estimate into our RobotStateMap 
  *   (or ultimately deliver it to the RobotStateEstimator).
+ * - to turn on & off the vision LED
  * 
  * issues:
  */
@@ -55,6 +58,7 @@ public class Vision extends SpartronicsSubsystem
     String mStatus;
     List<VisionEvent> mListeners;
     Deque<RobotStateMap.State> mVisionEstimates;
+    Relay mLEDRelay; 
 
     /**
      * Vision subsystem needs read-only access to RobotStateEstimator and
@@ -74,6 +78,11 @@ public class Vision extends SpartronicsSubsystem
         this.mVisionEstimates = new ArrayDeque<RobotStateMap.State>();
         this.setDefaultCommand(new ListenForTurretAndVision());
         this.dashboardPutString(Constants.Vision.kStatusKey, "ready+waiting");
+
+        this.mLEDRelay = new Relay(Constants.Vision.kLEDRelay);
+        /// XXX: set the relay into a known/desired state!
+        this.dashboardPutString(Constants.Vision.kLEDRelayKey, 
+                            this.mLEDRelay.get().toString());
     }
 
     public void registerTargetListener(VisionEvent l)
@@ -216,9 +225,69 @@ public class Vision extends SpartronicsSubsystem
             this.logError("Turret Target value must be a string");
     }
 
+    /* public interfaces ---------------------------------------------*/
+    /* nb: this can't be defined within SetLEDRelay (inner class in general) */
+    public static enum RelayStateChange
+    {
+        kOff,
+        kOn,
+        kToggle
+    };
+
+    /**
+     * an instant command that can turn on, off or toggle the VisionLED relay.
+     * this probably should be invoked automatically when odometry determines
+     * that we're in a place where vision targeting is enabled.
+     * 
+     * XXX: perhaps this should be the central control for acquisition:
+     *   ie: light is off, we could notify raspi to rest 
+     */
+    public class SetLEDRelay extends InstantCommand
+    {
+        RelayStateChange mStateChange;
+        public SetLEDRelay(RelayStateChange c)
+        {
+            super(); 
+            // NB: I think it's legit to say 'no subsystem requirements'.
+            // since we're the only one who cares about this relay.
+            // Now we won't unschedule our default command on each toggle.
+            mStateChange = c;
+        }
+
+        @Override
+        public void initialize()
+        {
+            // this is where InstantCommand does its thing
+            Relay.Value oldstate = mLEDRelay.get();
+            Relay.Value newstate;
+            boolean isOn;
+            switch(mStateChange)
+            {
+            case kOff:
+                newstate = Relay.Value.kOff;
+                isOn = false;
+                break;
+            case kOn:
+                newstate = Relay.Value.kForward;
+                isOn = true;
+                break;
+            case kToggle:
+            default:
+                newstate = (oldstate == Relay.Value.kForward) ? 
+                                Relay.Value.kOff : Relay.Value.kForward;
+                isOn = (newstate == Relay.Value.kOff) ? false : true;
+                break;
+            }
+            mLEDRelay.set(newstate);
+            dashboardPutBoolean(Constants.Vision.kLEDRelayKey, isOn);
+        }
+    }
+
     /* private interfaces ---------------------------------------------*/
     /**
      * ListenForTurretAndVision is this subsystem's default command.
+     * We listen for changes to the relay state nettab value - possibly
+     * changed by dashboard or even raspi vision.
      */
     private class ListenForTurretAndVision extends CommandBase
     {
@@ -227,9 +296,29 @@ public class Vision extends SpartronicsSubsystem
             this.addRequirements(Vision.this);
         }
 
+        @Override
+        public void execute()
+        {
+            // synchronize mLEDRelay with LEDRelay network table value.
+            boolean isOn = dashboardGetBoolean(Constants.Vision.kLEDRelayKey, true);
+            Relay.Value oldstate = mLEDRelay.get();
+            if(isOn)
+            {
+                if(oldstate != Relay.Value.kForward)
+                    mLEDRelay.set(Relay.Value.kForward);
+            }
+            else
+            {
+                if(oldstate != Relay.Value.kOff)
+                    mLEDRelay.set(Relay.Value.kOff);
+            }
+        }
+
+        @Override
         public boolean isFinished()
         {
             return false; // for clarity, we're always in this mode
         }
     }
+
 }
