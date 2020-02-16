@@ -6,26 +6,10 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public class IndexerCommands
 {
-    /**
-     * Commands with simple logic statements should be implemented as a
-     * {@link FunctionalCommand}. This saves the overhead of a full
-     * {@link CommandBase}, but still allows us to deal with isFinished.
-     * <p>
-     * A FunctionalCommand takes five inputs:
-     * @param Runnable onInit
-     * @param Runnable onExecute
-     * @param Consumer<Boolean> onEnd (Boolean interrupted)
-     * @param BooleanSupplier isFinished
-     * @param Subsystem requirement For both the CommandScheduler and the above method references.
-     * <p>
-     * Each of these parameters corresponds with a method in the CommandBase class.
-     */
-
     /**
      * Waits until a ball is held, then ends.
      */
@@ -37,6 +21,10 @@ public class IndexerCommands
         }
     }
 
+    /**
+     * This {@link SequentialCommandGroup} aligns the spindexer, then rotates it.
+     * @param spinCount a number of quarter rotations to spin
+     */
     public class LoadBallToSlotGroup extends SequentialCommandGroup
     {
         public LoadBallToSlotGroup(Indexer indexer, int spinCount)
@@ -93,8 +81,7 @@ public class IndexerCommands
     }
 
     /**
-     * Moves the indexer to a zero position,
-     * which is one of four perfectly aligned positions
+     * Moves the indexer to a zero position, which is one of four perfectly aligned positions
      */
     public class ZeroSpinnerCommand extends CommandBase
     {
@@ -132,12 +119,10 @@ public class IndexerCommands
     }
 
     /**
-     * An {@link InstantCommand} runs an action and immediately exits.
+     * Starts the "popper" motor sending the ball into the launcher.
      * <p>
-     * @param Runnable toRun A reference to a subsystem method
-     * @param Subsystem requirement For both the CommandScheduler and the above method reference.
+     * A workaround for being unable to schedule parallel commands within the same subsystem.
      */
-
     public class StartLaunch extends InstantCommand
     {
         public StartLaunch(Indexer indexer)
@@ -146,6 +131,11 @@ public class IndexerCommands
         }
     }
 
+    /**
+     * Stops the "popper" motor sending the ball into the launcher.
+     * <p>
+     * A workaround for being unable to schedule parallel commands within the same subsystem.
+     */
     public class EndLaunch extends InstantCommand
     {
         public EndLaunch(Indexer indexer)
@@ -154,6 +144,11 @@ public class IndexerCommands
         }
     }
 
+    /**
+     * Starts the "loader" motor transferring the power cell into the indexer.
+     * <p>
+     * A workaround for being unable to schedule parallel commands within the same subsystem.
+     */
     public class StartTransfer extends InstantCommand
     {
         public StartTransfer(Indexer indexer)
@@ -162,6 +157,11 @@ public class IndexerCommands
         }
     }
 
+    /**
+     * Stops the "loader" motor transferring the power cell into the indexer.
+     * <p>
+     * A workaround for being unable to schedule parallel commands within the same subsystem.
+     */
     public class EndTransfer extends InstantCommand
     {
         public EndTransfer(Indexer indexer)
@@ -170,6 +170,10 @@ public class IndexerCommands
         }
     }
 
+    /**
+     * Spins the spindexer an arbitrary number of quarter-rotations.
+     * @param N the number of quarter-rotations to spin (accepts doubles and negatives)
+     */
     public class Spin extends FunctionalCommand
     {
         public Spin(Indexer indexer, double N)
@@ -179,6 +183,11 @@ public class IndexerCommands
         }
     }
 
+    /**
+     * Moves the spindexer to the nearest quarter rotation.
+     * <p>
+     * Through use of Math.ceil, seems to only move clockwise.
+     */
     public class Align extends FunctionalCommand
     {
         public Align(Indexer indexer)
@@ -189,14 +198,11 @@ public class IndexerCommands
     }
 
     /**
-     * A {@link StartEndCommand} allows us to specify an execute() and end()
-     * condition, and runs until interrupted.
-     *
-     * @param Runnable onInit Runs over and over until interrupted
-     * @param Runnable onEnd (boolean interrupted) Method to call once when ended
-     * @param Subsystem requirement For both the CommandScheduler and the above method references.
+     * Loads a ball from the intake slot by aligning {@link Align}, waiting for a ball {@link WaitForBallHeld},
+     * loading that ball {@link LoadBallToSlot}, and rotating {@link Spin} to a new available slot.
+     * <p>
+     * Terminates when there is a ball in both the first slot of the indexer and the intake.
      */
-
     public class LoadFromIntake extends SequentialCommandGroup
     {
         private Indexer mIndexer;
@@ -204,7 +210,6 @@ public class IndexerCommands
         public LoadFromIntake(Indexer indexer)
         {
             mIndexer = indexer;
-
             addCommands(
                 new Align(mIndexer),
                 new EndLaunch(mIndexer), // for safety
@@ -221,6 +226,11 @@ public class IndexerCommands
         }
     }
 
+    /**
+     * Queues the {@link LoadFromIntake} command five times.
+     * <p>
+     * Terminates on the same condition (redundant?)
+     */
     public class BulkHarvest extends SequentialCommandGroup
     {
         private Indexer mIndexer;
@@ -239,6 +249,11 @@ public class IndexerCommands
         }
     }
 
+    /**
+     * Loads a ball from the indexer to the launcher.
+     * <p>
+     * Aligns, spins to make room for the flywheel, starts the kicker, spins the indexer to load all balls, and stops the kicker.
+     */
     public class LoadToLauncher extends SequentialCommandGroup
     {
         private Indexer mIndexer;
