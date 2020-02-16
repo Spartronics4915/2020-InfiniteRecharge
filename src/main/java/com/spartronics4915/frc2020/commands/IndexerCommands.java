@@ -179,7 +179,7 @@ public class IndexerCommands
         public Spin(Indexer indexer, double N)
         {
             super(() -> indexer.rotateN(N), () -> {}, (Boolean b) -> indexer.stopSpinner(),
-                () -> indexer.isAtPositon(), indexer);
+                () -> indexer.isAtPosition(), indexer);
         }
     }
 
@@ -193,7 +193,7 @@ public class IndexerCommands
         public Align(Indexer indexer)
         {
             super(indexer::toNearestQuarterRotation, () -> {}, (Boolean b) -> indexer.stopSpinner(),
-                () -> indexer.isAtPositon(), indexer);
+                () -> indexer.isAtPosition(), indexer);
         }
     }
 
