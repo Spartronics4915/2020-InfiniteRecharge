@@ -65,6 +65,7 @@ public final class Constants
             public static final double kConversionRatio = 1;
             public static final double kSpeed = 1;
         }
+
         public static final class Transfer
         {
             public static final int kMotorId = 11;
@@ -145,6 +146,17 @@ public final class Constants
         public static final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
         public static final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
         public static final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
+    }
+
+    public static final class Popper
+    {
+        public static final int kMotorId = 10;
+        public static final double kVelocityP = 1; // FIXME: stand-in values
+        public static final double kVelocityD = 1;
+        public static final double kPositionP = 1;
+        public static final double kPositionD = 1;
+        public static final double kConversionRatio = 1;
+        public static final double kSpeed = 1;
     }
 
     public static final class Drive
@@ -275,11 +287,11 @@ public final class Constants
         public static final double kGoalHeight = 8*12 + 2.25; // 98.25in
 
         // We assume here that the robot odometry is alliance-sensitive.
-        // When we're on the Blue alliance, coords are 
+        // When we're on the Blue alliance, coords are
         //      [0, xsize] x [yhalfsize, -yhalfsize]
-        // When we're on the Red alliance, coords are 
+        // When we're on the Red alliance, coords are
         //      [xsize, 0] x [-yhalfsize, yhalfsize]
-        // Given this behavior, we characterize Goals in our-alliance-relative 
+        // Given this behavior, we characterize Goals in our-alliance-relative
         // terms.
         public static final double[] kOpponentGoalCoords = {0, 67.5, kGoalHeight};
         public static final double[] kAllianceGoalCoords = {628, -67.5, kGoalHeight};

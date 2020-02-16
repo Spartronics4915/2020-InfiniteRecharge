@@ -73,6 +73,7 @@ public class RobotContainer
     private final Indexer mIndexer;
     private final Launcher mLauncher;
     private final PanelRotator mPanelRotator;
+    private final Popper mPopper;
     private final LED mLED;
     private final Vision mVision;
 
@@ -82,6 +83,7 @@ public class RobotContainer
     private final IndexerCommands mIndexerCommands;
     private final LauncherCommands mLauncherCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
+    private final PopperCommands mPopperCommands;
 
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
@@ -95,9 +97,6 @@ public class RobotContainer
      */
     public RobotContainer()
     {
-        mJoystick = new Joystick(Constants.OI.kJoystickId);
-        mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
-
         T265Camera slamra;
         try
         {
@@ -143,11 +142,15 @@ public class RobotContainer
         String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name).collect(Collectors.joining(","));
         SmartDashboard.putString(kAutoOptionsKey, autoModeList);
 
+        mJoystick = new Joystick(Constants.OI.kJoystickId);
+        mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
+
         mClimber = new Climber();
         mIntake = new Intake();
         mIndexer = new Indexer();
         mLauncher = new Launcher();
         mPanelRotator = new PanelRotator();
+        mPopper = new Popper();
         mLED = LED.getInstance();
         mVision = new Vision(mStateEstimator, mLauncher);
 
@@ -156,6 +159,7 @@ public class RobotContainer
         mIndexerCommands = new IndexerCommands();
         mLauncherCommands = new LauncherCommands(mStateEstimator.getCameraRobotStateMap(), new Pose2d());
         mPanelRotatorCommands = new PanelRotatorCommands();
+        mPopperCommands = new PopperCommands();
 
         // Default Commands run whenever no Command is scheduled to run for a subsystem
         mClimber.setDefaultCommand(mClimberCommands.new Stop(mClimber));
