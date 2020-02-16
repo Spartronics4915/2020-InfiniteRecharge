@@ -1,10 +1,12 @@
 package com.spartronics4915.frc2020.commands;
 
 import com.spartronics4915.frc2020.subsystems.Indexer;
+import com.spartronics4915.frc2020.subsystems.Popper;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
@@ -119,32 +121,6 @@ public class IndexerCommands
     }
 
     /**
-     * Starts the "popper" motor sending the ball into the launcher.
-     * <p>
-     * A workaround for being unable to schedule parallel commands within the same subsystem.
-     */
-    public class StartLaunch extends InstantCommand
-    {
-        public StartLaunch(Indexer indexer)
-        {
-            super(indexer::launch, indexer);
-        }
-    }
-
-    /**
-     * Stops the "popper" motor sending the ball into the launcher.
-     * <p>
-     * A workaround for being unable to schedule parallel commands within the same subsystem.
-     */
-    public class EndLaunch extends InstantCommand
-    {
-        public EndLaunch(Indexer indexer)
-        {
-            super(indexer::endLaunch, indexer);
-        }
-    }
-
-    /**
      * Starts the "loader" motor transferring the power cell into the indexer.
      * <p>
      * A workaround for being unable to schedule parallel commands within the same subsystem.
@@ -212,7 +188,6 @@ public class IndexerCommands
             mIndexer = indexer;
             addCommands(
                 new Align(mIndexer),
-                new EndLaunch(mIndexer), // for safety
                 new WaitForBallHeld(mIndexer),
                 new LoadBallToSlot(mIndexer, 0),
                 new Spin(mIndexer, 1), new InstantCommand(() -> mIndexer.addBalls(1), mIndexer)
@@ -258,7 +233,7 @@ public class IndexerCommands
     {
         private Indexer mIndexer;
 
-        public LoadToLauncher(Indexer indexer, int ballsToShoot)
+        public LoadToLauncher(Indexer indexer, Popper popper, PopperCommands popperCommands, int ballsToShoot)
         {
             mIndexer = indexer;
             double spinDistance = (mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded()) ? 0.5 : 0;
@@ -266,15 +241,16 @@ public class IndexerCommands
             addCommands(
                 new Align(mIndexer),
                 new Spin(mIndexer, -spinDistance),
-                new StartLaunch(mIndexer),
-                new LoadBallToSlot(mIndexer, ballsToShoot + spinDistance),
-                new EndLaunch(mIndexer)
+                new ParallelDeadlineGroup(
+                    new LoadBallToSlot(mIndexer, ballsToShoot + spinDistance),
+                    popperCommands.new Pop(popper)
+                )
             );
         }
 
-        public LoadToLauncher(Indexer indexer)
+        public LoadToLauncher(Indexer indexer, Popper popper, PopperCommands popperCommands)
         {
-            this(indexer, 5);
+            this(indexer, popper, popperCommands, 5);
         }
     }
 }

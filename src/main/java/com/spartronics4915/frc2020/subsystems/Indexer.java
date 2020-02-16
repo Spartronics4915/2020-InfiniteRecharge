@@ -18,11 +18,9 @@ public class Indexer extends SpartronicsSubsystem
     private double mTargetPosition = 0;
 
     private SpartronicsMotor mIndexerMotor;
-    private SpartronicsMotor mLoaderMotor;
     private SpartronicsMotor mTransferMotor;
 
     private SensorModel mIndexerModel;
-    private SensorModel mLoaderModel;
     private SensorModel mTransferModel;
 
     private DigitalInput mLimitSwitch;
@@ -41,17 +39,13 @@ public class Indexer extends SpartronicsSubsystem
         // Set up Spinner
         mIndexerModel = SensorModel.fromMultiplier(Constants.Indexer.Spinner.kConversionRatio);
         mIndexerMotor = SpartronicsMax.makeMotor(Constants.Indexer.Spinner.kMotorId, mIndexerModel);
-        // Set up Loader
-        mLoaderModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);
-        mLoaderMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Loader.kMotorId, mLoaderModel);
         // Set up Transfer
         mTransferModel = SensorModel.fromMultiplier(Constants.Indexer.Transfer.kConversionRatio);
         mTransferMotor = SpartronicsMax.makeMotor(Constants.Indexer.Transfer.kMotorId, mTransferModel);
 
-        if (mIndexerMotor.hadStartupError() || mLoaderMotor.hadStartupError() || mTransferMotor.hadStartupError())
+        if (mIndexerMotor.hadStartupError() || mTransferMotor.hadStartupError())
         {
             mIndexerMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Spinner.kMotorId);
-            mLoaderMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Loader.kMotorId);
             logInitialized(false);
         }
         else
@@ -66,12 +60,6 @@ public class Indexer extends SpartronicsSubsystem
         mIndexerMotor.setMotionProfileCruiseVelocity(Constants.Indexer.Spinner.kMaxVelocity); // Set motion profile
         mIndexerMotor.setMotionProfileMaxAcceleration(Constants.Indexer.Spinner.kMaxAcceleration);
         mIndexerMotor.setUseMotionProfileForPosition(true);
-
-        // Set up gains for loader
-        mLoaderMotor.setVelocityGains(Constants.Indexer.Loader.kVelocityP,
-            Constants.Indexer.Loader.kVelocityD);
-        mLoaderMotor.setPositionGains(Constants.Indexer.Loader.kPositionP,
-            Constants.Indexer.Loader.kPositionD);
 
         // Set up gains for transfer
         mTransferMotor.setVelocityGains(Constants.Indexer.Transfer.kVelocityP, Constants.Indexer.Transfer.kVelocityD);
@@ -165,24 +153,6 @@ public class Indexer extends SpartronicsSubsystem
     }
 
     /**
-     * Start loading balls into the shooter
-     */
-    public void launch()
-    {
-        mIsLaunching = true;
-        mLoaderMotor.setVelocity(Constants.Indexer.Loader.kSpeed);
-    }
-
-    /**
-     * Stop loading balls into the shooter
-     */
-    public void endLaunch()
-    {
-        mIsLaunching = false;
-        mLoaderMotor.setVelocity(0);
-    }
-
-    /**
      * @return whether or not the loader motor is running
      */
     public boolean isLaunching()
@@ -212,7 +182,6 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void stop()
     {
-        mLoaderMotor.setNeutral();
         mIndexerMotor.setNeutral();
     }
 
