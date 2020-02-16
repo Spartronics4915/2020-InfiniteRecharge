@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -204,7 +205,7 @@ public class RobotContainer
         new JoystickButton(mJoystick, 4).toggleWhenPressed(new SequentialCommandGroup(
             mLauncherCommands.new ShootBallTest(mLauncher),
             new SequentialCommandGroup(
-                new WaitUntilCommand(mLauncher::getGoodStuff),
+                new WaitUntilCommand(mLauncher::isFlywheelSpun),
                 mIndexerCommands.new LoadToLauncher(mIndexer)
             )
         ));

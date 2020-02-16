@@ -199,6 +199,11 @@ public class Launcher extends SpartronicsSubsystem
         return mFlywheelEncoder.getVelocity();
     }
 
+    public boolean isFlywheelSpun()
+    {
+        return getTargetRPS()*0.95 <= getCurrentRPS();
+    }
+
     /**
      * Computes and returns angle for angle adjuster based on input distance
      * @param distance Horizontal distance in meters from the shooter to the target
