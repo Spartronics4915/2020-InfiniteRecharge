@@ -46,19 +46,8 @@ public class Intake extends SpartronicsSubsystem
      */
     public void reverse()
     {
-        System.out.println("here");
         mHarvestMotor.setDutyCycle(Constants.Intake.kEjectSpeed);
     }
-
-    /**
-     * Checks to see if a ball is held in the intake chamber
-     * with a proximity sensor returning a digital value.
-     * <p>
-     * The style of proximity sensor we use requires MANUAL calibration.
-     *
-     * @return Whether a ball is held
-     */
-    
 
     /**
      * Universal stop method

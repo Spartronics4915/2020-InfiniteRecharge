@@ -85,7 +85,6 @@ public final class Constants
     public static final class Intake
     {
         public static final int kHarvestMotorId = 12;
-        public static final int kProximitySensorId = 5; // Digital
 
         public static final double kHarvestSpeed = 0.5; // XXX: test
         public static final double kEjectSpeed = -0.5;  // XXX: test
