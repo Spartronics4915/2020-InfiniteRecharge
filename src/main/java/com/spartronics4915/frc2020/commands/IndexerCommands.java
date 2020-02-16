@@ -138,7 +138,7 @@ public class IndexerCommands
      * @param Subsystem requirement For both the CommandScheduler and the above method reference.
      */
 
-    private class StartLaunch extends InstantCommand
+    public class StartLaunch extends InstantCommand
     {
         public StartLaunch(Indexer indexer)
         {
@@ -146,7 +146,7 @@ public class IndexerCommands
         }
     }
 
-    private class EndLaunch extends InstantCommand
+    public class EndLaunch extends InstantCommand
     {
         public EndLaunch(Indexer indexer)
         {
