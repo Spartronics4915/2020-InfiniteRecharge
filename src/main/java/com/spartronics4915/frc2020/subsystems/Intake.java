@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
+import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 
 /**
@@ -17,11 +18,10 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 public class Intake extends SpartronicsSubsystem
 {
     private SpartronicsMotor mHarvestMotor;
-    private DigitalInput mProximitySensor;
 
     public Intake()
     {
-        mHarvestMotor = SpartronicsSRX.makeMotor(Constants.Intake.kHarvestMotorId);
+        mHarvestMotor = SpartronicsMax.makeMotor(Constants.Intake.kHarvestMotorId);
         if (mHarvestMotor.hadStartupError())
         {
             mHarvestMotor = new SpartronicsSimulatedMotor(Constants.Intake.kHarvestMotorId);
@@ -31,8 +31,6 @@ public class Intake extends SpartronicsSubsystem
         {
             logInitialized(true);
         }
-
-        mProximitySensor = new DigitalInput(Constants.Intake.kProximitySensorId);
     }
 
     /**
@@ -48,6 +46,7 @@ public class Intake extends SpartronicsSubsystem
      */
     public void reverse()
     {
+        System.out.println("here");
         mHarvestMotor.setDutyCycle(Constants.Intake.kEjectSpeed);
     }
 
@@ -59,10 +58,7 @@ public class Intake extends SpartronicsSubsystem
      *
      * @return Whether a ball is held
      */
-    public boolean isBallHeld()
-    {
-        return mProximitySensor.get();
-    }
+    
 
     /**
      * Universal stop method

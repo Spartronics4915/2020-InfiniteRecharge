@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
  */
 public class Indexer extends SpartronicsSubsystem
 {
-    private double targetPosition = 0;
+    private double mTargetPosition = 0;
 
     private SpartronicsMotor mIndexerMotor;
     private SpartronicsMotor mLoaderMotor;
@@ -119,23 +119,29 @@ public class Indexer extends SpartronicsSubsystem
     }
 
     /**
-     * @return whether or not a ball is loaded in the intake
+     * Checks to see if a ball is held in the intake chamber
+     * with a proximity sensor returning a digital value.
+     * <p>
+     * The style of proximity sensor we use requires MANUAL calibration.
+     *
+     * @return Whether a ball is held
      */
     public boolean getIntakeBallLoaded()
     {
-        return mIntakeProxSensor.get();
+        return !mIntakeProxSensor.get();
     }
 
     /**
      * Rotate the spinner a certain amount of rotations
      * @param N the number of quarter rotations to perform
      */
-    public void rotateN(int N)
+    public void rotateN(double N)
     {
-        if (N != 0) {
-            double deltaPosition = 0.25 * ((double) N); // Cast N to double and convert to rotations
-            targetPosition += deltaPosition;
-            mIndexerMotor.setPosition(targetPosition); // Rotate Spinner to target.
+        if (N != 0)
+        {
+            double deltaPosition = 0.25 * N; // Cast N to double and convert to rotations
+            mTargetPosition += deltaPosition;
+            mIndexerMotor.setPosition(mTargetPosition); // Rotate Spinner to target.
         }
     }
 
@@ -144,8 +150,8 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void returnToHome()
     {
-        targetPosition = 0;
-        mIndexerMotor.setPosition(targetPosition);
+        mTargetPosition = 0;
+        mIndexerMotor.setPosition(mTargetPosition);
     }
 
     /**
@@ -154,8 +160,8 @@ public class Indexer extends SpartronicsSubsystem
     public void toNearestQuarterRotation()
     {
         // Rotates to nearest quarter rotation
-        targetPosition = Math.ceil(mIndexerMotor.getEncoder().getPosition() * 4) / 4;
-        mIndexerMotor.setPosition(targetPosition);
+        mTargetPosition = Math.ceil(mIndexerMotor.getEncoder().getPosition() * 4) / 4;
+        mIndexerMotor.setPosition(mTargetPosition);
     }
 
     /**
@@ -218,6 +224,11 @@ public class Indexer extends SpartronicsSubsystem
         mIndexerMotor.setNeutral();
     }
 
+    public boolean isAtPosition()
+    {
+        return Math.abs(mTargetPosition - mIndexerMotor.getEncoder().getPosition()) > Constants.Indexer.Spinner.kPositionTolerance;
+    }
+
     public void addBalls(int i)
     {
         mBallsHeld = Math.min(5, Math.max(0, mBallsHeld+i));
@@ -233,8 +244,7 @@ public class Indexer extends SpartronicsSubsystem
         return mBallsHeld;
     }
 
-
-    public boolean isInSafeSpace()
+    public boolean areFinsAligned()
     {
         double positionMod90 = mIndexerMotor.getEncoder().getPosition() % 90;
         return (positionMod90 >= 85 || positionMod90 <= 5); // if in a safe space to load a ball

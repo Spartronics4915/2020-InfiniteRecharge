@@ -1,9 +1,13 @@
 package com.spartronics4915.frc2020;
 
+import com.spartronics4915.lib.hardware.motors.SensorModel;
+import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
+import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.util.Logger;
-
+import com.spartronics4915.lib.util.TriFunction;
 import com.revrobotics.ColorMatch;
 
 import edu.wpi.first.wpilibj.util.Color;
@@ -13,6 +17,9 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 public final class Constants
 {
@@ -24,7 +31,8 @@ public final class Constants
         public static final double kWinchSpeed = 1.0; // XXX: test
         public static final double kRetractSpeed = -1.0; // XXX: test
         public static final double kReverseWinchSpeed = -1.0; // XXX: test
-        public static final double kStallThreshold = 10.0; // FIXME: stand-in value
+        public static final double kStallThreshold = 3.0; // FIXME: stand-in value
+        public static final double kSecondaryStallThreshold = 5.0;
         public static final double kTimerExtenderMin = 3.0; // FIXME: stand-in values
         public static final double kTimerExtenderMax = 5.0;
         public static final boolean kStalled = true; // XXX: test
@@ -42,6 +50,9 @@ public final class Constants
             public static final double kConversionRatio = 1;
             public static final double kMaxVelocity = 1;
             public static final double kMaxAcceleration = 1;
+
+            /** Degrees */
+            public static final double kPositionTolerance = 5;
         }
 
         public static final class Loader
@@ -138,6 +149,8 @@ public final class Constants
 
     public static final class Drive
     {
+        public static final TriFunction<Integer, SensorModel, Integer, SpartronicsMotor> kDriveMotorConstructor;
+
         public static final boolean kRightOutputInverted = true;
         public static final boolean kRightFollowerOutputInverted = true;
         public static final boolean kLeftOutputInverted = false;
@@ -164,6 +177,8 @@ public final class Constants
         public static final double kLeftS;
         public static final double kLeftV;
         public static final double kLeftA;
+
+        public static final int kPigeonId;
 
         // Initialize blank fields that are robot-specific here
         static
@@ -193,6 +208,9 @@ public final class Constants
                     kRightA = 0.0340;
                     kWheelDiameter = Units.inchesToMeters(6);
                     kNativeUnitsPerRevolution = 1440.0;
+
+                    kPigeonId = -1;
+                    kDriveMotorConstructor = SpartronicsSRX::makeMotor;
                     break;
                 default:
                     kTrackWidthMeters = 1; // TODO: find track width
@@ -206,6 +224,9 @@ public final class Constants
                     kRightV = 1;
                     kRightA = 1;
                     kNativeUnitsPerRevolution = 10.71;
+
+                    kPigeonId = 1;
+                    kDriveMotorConstructor = SpartronicsMax::makeMotor;
                     break;
             }
         }
@@ -249,6 +270,7 @@ public final class Constants
         public static final String kOurGoalEstimateKey = "OurGoal";
         public static final String kTheirGoalEstimateKey = "OpponentGoal";
         public static final String kStatusKey = "Status";
+        public static final String kLEDRelayKey = "LEDRelay";
 
         public static final double kGoalHeight = 8*12 + 2.25; // 98.25in
 
@@ -261,5 +283,7 @@ public final class Constants
         // terms.
         public static final double[] kOpponentGoalCoords = {0, 67.5, kGoalHeight};
         public static final double[] kAllianceGoalCoords = {628, -67.5, kGoalHeight};
+
+        public static final int kLEDRelay = 0; // Relay, not DIO pin!!!
     }
 }
