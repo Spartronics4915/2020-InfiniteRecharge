@@ -112,4 +112,9 @@ public class Climber extends SpartronicsSubsystem
     {
         return mWinchMotor.getOutputCurrent() >= Constants.Climber.kStallThreshold;
     }
+
+    public boolean secondaryIsStalled()
+    {
+        return mWinchMotor.getOutputCurrent() >= Constants.Climber.kSecondaryStallThreshold;
+    }
 }

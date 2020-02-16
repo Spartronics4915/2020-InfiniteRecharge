@@ -1,5 +1,6 @@
 package com.spartronics4915.frc2020.commands;
 
+import com.spartronics4915.frc2020.subsystems.Indexer;
 import com.spartronics4915.frc2020.subsystems.Intake;
 
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
@@ -30,9 +31,9 @@ public class IntakeCommands
      */
     public class Harvest extends FunctionalCommand
     {
-        public Harvest(Intake intake)
+        public Harvest(Intake intake, Indexer indexer)
         {
-            super(() -> {}, intake::harvest, (Boolean b) -> intake.stop(), intake::isBallHeld, intake);
+            super(() -> {}, intake::harvest, (Boolean b) -> intake.stop(), indexer::getIntakeBallLoaded, intake);
         }
     }
 

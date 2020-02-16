@@ -119,11 +119,16 @@ public class Indexer extends SpartronicsSubsystem
     }
 
     /**
-     * @return whether or not a ball is loaded in the intake
+     * Checks to see if a ball is held in the intake chamber
+     * with a proximity sensor returning a digital value.
+     * <p>
+     * The style of proximity sensor we use requires MANUAL calibration.
+     *
+     * @return Whether a ball is held
      */
     public boolean getIntakeBallLoaded()
     {
-        return mIntakeProxSensor.get();
+        return !mIntakeProxSensor.get();
     }
 
     /**
@@ -132,7 +137,7 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void rotateN(double N)
     {
-        if (N != 0) 
+        if (N != 0)
         {
             double deltaPosition = 0.25 * N; // Cast N to double and convert to rotations
             mTargetPosition += deltaPosition;
@@ -219,7 +224,7 @@ public class Indexer extends SpartronicsSubsystem
         mIndexerMotor.setNeutral();
     }
 
-    public boolean isAtPositon()
+    public boolean isAtPosition()
     {
         return Math.abs(mTargetPosition - mIndexerMotor.getEncoder().getPosition()) > Constants.Indexer.Spinner.kPositionTolerance;
     }

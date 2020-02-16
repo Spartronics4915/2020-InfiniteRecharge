@@ -5,6 +5,7 @@ import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 /**
@@ -12,37 +13,78 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
  * This example represents a way to have a per-subsystem "command factory"
  * that will allow us to factor/separate/encapsulate commands for
  * a subsystem into a single file, rather than mooshed into robotContainer
- * or spread across multiple files. We rely on Java "nested classes" to
+ * or spread across multiple files. Because java allows only a *single* class
+ * to be represented in a sourcecode file, we utilize java "nested classes" to
  * define multiple classes in a single file. More detail can be found
  * here: https://docs.oracle.com/javase/tutorial/java/javaOO/nested.html.
- * An inner class is associated with an instance of its enclosing class and 
- * has direct access to that object's methods and fields.  This is generally
- * true, only after it's fully been constructed. Sadly, due to the 
- * representation of various wpilib2 commands, this means that we must
- * pass in parameters that might more naturally be represented as outer
- * class member variables.
+ * 
+ * There are two kinds of inner classes supported by java:
+ * 
+ *    1. static public class Foo
+ *      A static inner class instance can be constructed without access to an 
+ *      instance of the outer class.  Commands generally require access to one 
+ *      or more subystems so minimimally:
+ *          CommandBase b = new Outerclass.InnerStaticClass(mMySubsystem);
+ * 
+ *    2. public class Bar
+ *      A regular inner class must be constructed via the 'new' method
+ *      associated with the outer class *instance*.  Now we can implicity
+ *      grant the inner class access to instance variables of the outer.
+ *      Sharing data amongst many Commands might be accomplished via this
+ *      pattern.  Minimally:
+ *         CommandBase b = mMySubsystem.new InnerClass();
+ * 
+ *      This approach suffers when your InnerClass wants to inherit behavior
+ *      from certain wpilibj commands that are tailored for inline
+ *      construction.  One example of this is InstantCommand as extended
+ *      in Test5 below.  In order to construct an instance of InstantCommand
+ *      we must pass a Runnable as well as one or more subsystems via super(). 
+ *      The only problem is that we can't access OuterClass instance variables 
+ *      until after InnerClass is constructed.  To work around this, we must 
+ *      pass in references to the required subsystem as well as any other 
+ *      parameters to express the construction, like so:
+ *          CommandBase b = mMySubsystem.new InnerClass(mMySubsystem);
+ *      This feels a little weird. In the case of InstantCommand there
+ *      is a remedy: InstantCommand has an empty constructor and we can
+ *      simply override the minimal behavior.  See Test5a, below.
+ *      This is not possible with FunctionalCommand and you should consider
+ *      these comments from FunctionalCommand:
+ *        A command that allows the user to pass in functions for each of 
+ *        the basic command methods through the constructor.  Useful for 
+ *        inline definitions of complex commands - note, however, that if a
+ *        command is beyond a certain complexity it is usually better practice 
+ *        to write a proper class for it than to inline it.
  *
- * This examples operates on a single subsystem.  Note that some commands may
- * require or operate on more than one subsystem.  This example could be 
- * extended to accept an ArrayList<SpartronicsSubsystem> or 
- * Set<SpartronicsSubsystem>. Or explicitly require, say, the DriveTrain 
- * subsystem.
- *
- * We present at 3 different styles/use-cases.  Choose the one that's
- * best for your application, though option #1 is likely preferred.
+ * Above we discuss two innerclass solutions. There is also a third
+ * approach available to us as exemplified in our MakeCmd method, below.
+ * Pick the best for your application, though option #1 is likely preferred.
+ * 
+ * Executive summary:
  *
  * 1. Contextualized inner class 
- *  - access to outerclass member variables, only not in constructor.
+ *  - access to outerclass member variables, only not as args to super.
  *  - requires unusual, but legal, java syntax for construction
+ *  - if you wish to subclass simple base classes (ie: InstantCommand, 
+ *    StartStopCommand, FunctionalCommand) either follow example Test5a
+ *    or simply bail on the use of FunctionalCommand in favor of CommandBase.
+ *  - odd-looking constructor syntax:  mCommandFactory.new Test5a();
+ * 
  * 2. Independant inner class
  *  - no access to outerclass member variables
  *  - yes access to outerclass static variables
  *  - standard constructor syntax:  new ExampleCommandFactory.Test7(mCameraSys)
+ * 
  * 3. Enumerated MakeCmd method
  *  - easy to read and use, but the dispatch is switch-based
  *
- * usage:
- *  in RobotContainer():
+ * Usage:
+ *   This examples operates on a single subsystem.  Note that some commands may
+ *   require or operate on more than one subsystem.  This example could be 
+ *   extended to accept an ArrayList<SpartronicsSubsystem> or 
+ *   Set<SpartronicsSubsystem>. Or explicitly require, say, the DriveTrain 
+ *   subsystem.
+ *
+ *   in RobotContainer():
  *     this.mCamera = new CameraSubsystem();
  *      
  *     // ExampleCommandFactory constructor accepts subsystem and
@@ -52,7 +94,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
  *     // construction. 
  *     this.mCamCmds = new ExampleCommandFactory(mCamera, ...parameters...); 
  * 
- *  See RobotContainer::configureTestCommands(), for instantiatioon examples.
+ *   See RobotContainer::configureTestCommands(), for instantiatioon examples.
  *
  */
 public class ExampleCommandFactory
@@ -145,6 +187,28 @@ public class ExampleCommandFactory
         }
     }
 
+    // A variant of Test5 that relies on InstanceCommand default constructor.
+    // And in doing so no longer requires that the subsys be passed to
+    // the constructor. Only downside is that we must call addRequirements
+    // and override the initialize method.
+    public class Test5a extends InstantCommand
+    {
+        public Test5a()
+        {
+            super();
+            this.addRequirements(mSubsys); // <--- access to OuterClass instance
+            // we can't set InstantCommand::m_toRun since it's private
+            // this.m_toRun = this::myInstantMethod();
+        }
+
+        @Override
+        public void initialize()
+        {
+            // this is where InstantCommand does its thing
+            mSubsys.logInfo("Run Test5a");
+        }
+    }
+
     // Another subclassing example. Here we subclass StartEndCommand
     // and take care to pass our start and end Runnables as parameters
     // to the superclass constructor.
@@ -166,9 +230,35 @@ public class ExampleCommandFactory
         }
     }
 
+    /**
+     * Example variant of Test6 that implements StartEnd without
+     * subclassing. Note that we haven't expressed an isFinished()
+     * but perhaps we should?
+     */
+    public class Test6a extends CommandBase
+    {
+        public Test6a()
+        {
+            this.addRequirements(mSubsys);
+        }
+
+        @Override
+        public void initialize()
+        {
+            mSubsys.logInfo("Start of StartEndCommand");
+        }
+
+        @Override
+        public void end(boolean interrupted)
+        {
+            mSubsys.logInfo("End of StartEndCommand");
+        }
+    }
+
     // A public static (inner) class allows us to reference
     // this class without contructing an instance of our outer
-    // class.
+    // class.  ie: we can be instantiated via: 
+    //      new ExampleCommandFactory.Test7(mySubsys)
     public static class Test7 extends StartEndCommand
     {
         public Test7(SpartronicsSubsystem subsys)

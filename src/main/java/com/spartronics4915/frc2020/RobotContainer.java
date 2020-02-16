@@ -222,7 +222,7 @@ public class RobotContainer
         // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new ConditionalCommand(mLauncherCommands.new Target));
 
         new JoystickButton(mButtonBoard, 2).toggleWhenPressed(new ParallelCommandGroup(
-            mIntakeCommands.new Harvest(mIntake), mIndexerCommands.new LoadFromIntake(mIndexer)));
+            mIntakeCommands.new Harvest(mIntake, mIndexer), mIndexerCommands.new LoadFromIntake(mIndexer)));
         new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
 
         new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));
