@@ -225,23 +225,7 @@ public class Vision extends SpartronicsSubsystem
             this.logError("Turret Target value must be a string");
     }
 
-    /* private interfaces ---------------------------------------------*/
-    /**
-     * ListenForTurretAndVision is this subsystem's default command.
-     */
-    private class ListenForTurretAndVision extends CommandBase
-    {
-        public ListenForTurretAndVision()
-        {
-            this.addRequirements(Vision.this);
-        }
-
-        public boolean isFinished()
-        {
-            return false; // for clarity, we're always in this mode
-        }
-    }
-
+    /* public interfaces ---------------------------------------------*/
     /* nb: this can't be defined within SetLEDRelay (inner class in general) */
     public static enum RelayStateChange
     {
@@ -276,23 +260,65 @@ public class Vision extends SpartronicsSubsystem
             // this is where InstantCommand does its thing
             Relay.Value oldstate = mLEDRelay.get();
             Relay.Value newstate;
+            boolean isOn;
             switch(mStateChange)
             {
             case kOff:
                 newstate = Relay.Value.kOff;
+                isOn = false;
                 break;
             case kOn:
                 newstate = Relay.Value.kForward;
+                isOn = true;
                 break;
             case kToggle:
             default:
                 newstate = (oldstate == Relay.Value.kForward) ? 
                                 Relay.Value.kOff : Relay.Value.kForward;
+                isOn = (newstate == Relay.Value.kOff) ? false : true;
                 break;
             }
             mLEDRelay.set(newstate);
-            Vision.this.dashboardPutString(Constants.Vision.kLEDRelayKey, 
-                            Vision.this.mLEDRelay.get().toString());
+            dashboardPutBoolean(Constants.Vision.kLEDRelayKey, isOn);
         }
     }
+
+    /* private interfaces ---------------------------------------------*/
+    /**
+     * ListenForTurretAndVision is this subsystem's default command.
+     * We listen for changes to the relay state nettab value - possibly
+     * changed by dashboard or even raspi vision.
+     */
+    private class ListenForTurretAndVision extends CommandBase
+    {
+        public ListenForTurretAndVision()
+        {
+            this.addRequirements(Vision.this);
+        }
+
+        @Override
+        public void execute()
+        {
+            // synchronize mLEDRelay with LEDRelay network table value.
+            boolean isOn = dashboardGetBoolean(Constants.Vision.kLEDRelayKey, true);
+            Relay.Value oldstate = mLEDRelay.get();
+            if(isOn)
+            {
+                if(oldstate != Relay.Value.kForward)
+                    mLEDRelay.set(Relay.Value.kForward);
+            }
+            else
+            {
+                if(oldstate != Relay.Value.kOff)
+                    mLEDRelay.set(Relay.Value.kOff);
+            }
+        }
+
+        @Override
+        public boolean isFinished()
+        {
+            return false; // for clarity, we're always in this mode
+        }
+    }
+
 }
