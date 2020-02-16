@@ -121,6 +121,7 @@ public class RobotContainer
             kDefaultAutoMode,
             new AutoMode("Left",
                 new SequentialCommandGroup(
+                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.left.mStartPoint),
                     new TrajectoryTrackerCommand(mDrive,
                     TrajectoryContainer.left.getTrajectory(null, Destination.LeftTrenchFar),
                     mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
@@ -131,6 +132,7 @@ public class RobotContainer
             ),
             new AutoMode("Middle",
                 new SequentialCommandGroup(
+                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.middle.mStartPoint),
                     new TrajectoryTrackerCommand(mDrive,
                     TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight),
                     mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
@@ -141,6 +143,7 @@ public class RobotContainer
             ),
             new AutoMode("Right",
                 new SequentialCommandGroup(
+                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.right.mStartPoint),
                     new TrajectoryTrackerCommand(mDrive,
                     TrajectoryContainer.right.getTrajectory(null, Destination.RightTrenchFar),
                     mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
@@ -150,6 +153,7 @@ public class RobotContainer
                 )
             ),
             new AutoMode("Eight Ball",
+                new StateMapResetCommand(mStateEstimator, TrajectoryContainer.eightBall.mStartPoint),
                 new SequentialCommandGroup(
                     new TrajectoryTrackerCommand(mDrive,
                     TrajectoryContainer.eightBall.getTrajectory(null, Destination.ShieldGeneratorFarRight),
