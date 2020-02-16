@@ -180,6 +180,8 @@ public class RobotContainer
         new JoystickButton(mJoystick, 1)
             .whenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
 
+        new JoystickButton(mJoystick, 3).whenPressed(mIndexerCommands.new SpinIndexer(mIndexer, 1));
+        new JoystickButton(mJoystick, 4).whileHeld(mIndexerCommands.new StartLaunch(mIndexer));
         /*
         new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
         new JoystickButton(mJoystick, 2).whenHeld(new LauncherCommands.Raise(mLauncher));

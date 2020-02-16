@@ -23,7 +23,6 @@ public class IndexerCommands
         @Override
         public void initialize()
         {
-            // TODO Auto-generated method stub
             super.initialize();
             System.out.println("here3");
         }
@@ -38,7 +37,7 @@ public class IndexerCommands
         public LoadBallToSlotGroup(Indexer indexer, int spinCount)
         {
             addCommands(
-                new Align(indexer),
+                new AlignIndexer(indexer),
                 new LoadBallToSlot(indexer, spinCount)
             );
         }
@@ -155,7 +154,6 @@ public class IndexerCommands
         @Override
         public void initialize()
         {
-            // TODO Auto-generated method stub
             super.initialize();
             System.out.println("here2");
         }
@@ -191,9 +189,9 @@ public class IndexerCommands
      * Spins the spindexer an arbitrary number of quarter-rotations.
      * @param N the number of quarter-rotations to spin (accepts doubles and negatives)
      */
-    public class Spin extends FunctionalCommand
+    public class SpinIndexer extends FunctionalCommand
     {
-        public Spin(Indexer indexer, double N)
+        public SpinIndexer(Indexer indexer, double N)
         {
             super(() -> indexer.rotateN(N), () -> {}, (Boolean b) -> indexer.stopSpinner(),
                 () -> indexer.isAtPosition(), indexer);
@@ -202,7 +200,6 @@ public class IndexerCommands
         @Override
         public void initialize()
         {
-            // TODO Auto-generated method stub
             super.initialize();
             System.out.println("here5");
         }
@@ -213,9 +210,9 @@ public class IndexerCommands
      * <p>
      * Through use of Math.ceil, seems to only move clockwise.
      */
-    public class Align extends FunctionalCommand
+    public class AlignIndexer extends FunctionalCommand
     {
-        public Align(Indexer indexer)
+        public AlignIndexer(Indexer indexer)
         {
             super(indexer::toNearestQuarterRotation, () -> {}, (Boolean b) -> indexer.stopSpinner(),
                 () -> indexer.isAtPosition(), indexer);
@@ -224,15 +221,14 @@ public class IndexerCommands
         @Override
         public void initialize()
         {
-            // TODO Auto-generated method stub
             super.initialize();
             System.out.println("here");
         }
     }
 
     /**
-     * Loads a ball from the intake slot by aligning {@link Align}, waiting for a ball {@link WaitForBallHeld},
-     * loading that ball {@link LoadBallToSlot}, and rotating {@link Spin} to a new available slot.
+     * Loads a ball from the intake slot by aligning {@link AlignIndexer}, waiting for a ball {@link WaitForBallHeld},
+     * loading that ball {@link LoadBallToSlot}, and rotating {@link SpinIndexer} to a new available slot.
      * <p>
      * Terminates when there is a ball in both the first slot of the indexer and the intake.
      */
@@ -244,11 +240,11 @@ public class IndexerCommands
         {
             mIndexer = indexer;
             addCommands(
-                new Align(mIndexer),
+                new AlignIndexer(mIndexer),
                 new EndLaunch(mIndexer), // for safety
                 new WaitForBallHeld(mIndexer),
                 new LoadBallToSlot(mIndexer, 0),
-                new Spin(mIndexer, 1),
+                new SpinIndexer(mIndexer, 1),
                 new InstantCommand(() -> mIndexer.addBalls(1), mIndexer)
             );
         }
@@ -298,8 +294,8 @@ public class IndexerCommands
             double spinDistance = (mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded()) ? 0.5 : 0;
 
             addCommands(
-                new Align(mIndexer),
-                new Spin(mIndexer, -spinDistance),
+                new AlignIndexer(mIndexer),
+                new SpinIndexer(mIndexer, -spinDistance),
                 new StartLaunch(mIndexer),
                 new LoadBallToSlot(mIndexer, ballsToShoot + spinDistance),
                 new EndLaunch(mIndexer)

@@ -18,11 +18,11 @@ public class Indexer extends SpartronicsSubsystem
     private double mTargetPosition = 0;
 
     private SpartronicsMotor mIndexerMotor;
-    private SpartronicsMotor mLoaderMotor;
+    private SpartronicsMotor mKickerMotor;
     private SpartronicsMotor mTransferMotor;
 
     private SensorModel mIndexerModel;
-    private SensorModel mLoaderModel;
+    private SensorModel mKickerModel;
     private SensorModel mTransferModel;
 
     private DigitalInput mLimitSwitch;
@@ -42,16 +42,16 @@ public class Indexer extends SpartronicsSubsystem
         mIndexerModel = SensorModel.fromMultiplier(Constants.Indexer.Spinner.kConversionRatio);
         mIndexerMotor = SpartronicsMax.makeMotor(Constants.Indexer.Spinner.kMotorId, mIndexerModel);
         // Set up Loader
-        mLoaderModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);
-        mLoaderMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Loader.kMotorId, mLoaderModel);
+        mKickerModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);
+        mKickerMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Loader.kMotorId, mKickerModel); // BAG motor
         // Set up Transfer
         mTransferModel = SensorModel.fromMultiplier(Constants.Indexer.Transfer.kConversionRatio);
         mTransferMotor = SpartronicsMax.makeMotor(Constants.Indexer.Transfer.kMotorId, mTransferModel);
 
-        if (mIndexerMotor.hadStartupError() || mLoaderMotor.hadStartupError() || mTransferMotor.hadStartupError())
+        if (mIndexerMotor.hadStartupError() || mKickerMotor.hadStartupError() || mTransferMotor.hadStartupError())
         {
             mIndexerMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Spinner.kMotorId);
-            mLoaderMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Loader.kMotorId);
+            mKickerMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Loader.kMotorId);
             mTransferMotor = new SpartronicsSimulatedMotor(Constants.Indexer.Transfer.kMotorId);
             logInitialized(false);
         }
@@ -161,7 +161,7 @@ public class Indexer extends SpartronicsSubsystem
     public void launch()
     {
         mIsLaunching = true;
-        mLoaderMotor.setDutyCycle(Constants.Indexer.Loader.kSpeed);
+        mKickerMotor.setDutyCycle(Constants.Indexer.Loader.kSpeed);
     }
 
     /**
@@ -170,7 +170,7 @@ public class Indexer extends SpartronicsSubsystem
     public void endLaunch()
     {
         mIsLaunching = false;
-        mLoaderMotor.setDutyCycle(0);
+        mKickerMotor.setDutyCycle(0);
     }
 
     /**
@@ -203,7 +203,7 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void stop()
     {
-        mLoaderMotor.setNeutral();
+        mKickerMotor.setNeutral();
         mIndexerMotor.setNeutral();
     }
 
