@@ -40,7 +40,7 @@ public class PanelRotatorCommands
     public class Raise extends CommandBase
     {
         private final PanelRotator mPanelRotator;
-        
+
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
         public Raise(PanelRotator panelRotator)
@@ -210,7 +210,8 @@ public class PanelRotatorCommands
         @Override
         public boolean isFinished()
         {
-            // If the confidence in Color is too low, we're likely looking up at the ceiling and
+            // If the confidence in Color is too low, we're likely looking up at the ceiling
+            // and
             // not aligned with the Control Panel.
             if (mPanelRotator.getColorConfidence() < Constants.PanelRotator.kConfidenceMinimum)
             {
@@ -222,7 +223,7 @@ public class PanelRotatorCommands
                 mPanelRotator.logError("Arm is down, so the wheel is stopped");
                 return true;
             }
-            
+
             // If the detected color has changed, iterate the eighths counter.
             currentColor = mPanelRotator.getRotatedColor();
             if (currentColor != lastColor)
@@ -272,8 +273,9 @@ public class PanelRotatorCommands
     {
         public AutoSpinRotation(PanelRotator panelRotator)
         {
-            super(new Raise(panelRotator), new SpinRotation(panelRotator), new SpinRotation(panelRotator),
-                new SpinRotation(panelRotator), new SpinRotation(panelRotator), new Lower(panelRotator));
+            super(new Raise(panelRotator), new SpinRotation(panelRotator),
+                new SpinRotation(panelRotator), new SpinRotation(panelRotator),
+                new SpinRotation(panelRotator), new Lower(panelRotator));
         }
     }
 
