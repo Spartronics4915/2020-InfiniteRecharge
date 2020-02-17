@@ -253,7 +253,6 @@ public final class Constants
             Units.inchesToMeters(138), Rotation2d.fromDegrees(180));
         public static final Pose2d kStartPointMiddle = new Pose2d(Units.inchesToMeters(508),
             Units.inchesToMeters(-65), Rotation2d.fromDegrees(180));
-            //(x:508, y:-54, r:180) (x:400, y:-40, r:135)
         public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(508),
             Units.inchesToMeters(-138), Rotation2d.fromDegrees(180));
     }

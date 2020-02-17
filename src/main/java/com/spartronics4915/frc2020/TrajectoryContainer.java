@@ -24,14 +24,15 @@ public class TrajectoryContainer
 {
     public static enum Destination
     {
-        kLeftTrenchFar(394, 134, 120), 
+        kLeftTrenchFar(380, 134, 120), 
         kLeftShootingPosition(508, 5, 148.69),
-        kRightTrenchFar(304, -134, 180), 
+        kRightTrenchFar(324, -134, 180), 
         kRightTrenchVeryFar(404, -134, 180),
-        kRightTrenchNear(242, -134, 180), 
+        kRightTrenchNear(242, -134, 180),
+        kEightBallIntermediate(456, -134, 180),
         kRightShootingPosition(421, -121, 194.36),
-        kShieldGeneratorFarRight(390, -38, 115),
-        kShieldGeneratorNearRight(340, -60, 60),
+        kShieldGeneratorFarRight(386, -46, 140),
+        kHalfWayToShielGenerator(450, -80, 170),
         kMiddleShootingPosition(456, -65, 180),
         kJustAhead(120, 0, 0),
         kJustBehind(-120, 0, 0);
@@ -159,47 +160,42 @@ public class TrajectoryContainer
     {
         // left
         var leftTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        leftTrajectories.put(new DestinationCouple(null, Destination.kLeftTrenchFar, false),
-                Arrays.asList());
-        leftTrajectories.put(
-                new DestinationCouple(Destination.kLeftTrenchFar, Destination.kLeftShootingPosition, true),
-                Arrays.asList());
+        leftTrajectories.put(new DestinationCouple(null, Destination.kLeftTrenchFar, false), Arrays.asList());
+        leftTrajectories.put(new DestinationCouple(Destination.kLeftTrenchFar, Destination.kLeftShootingPosition, true), Arrays.asList());
 
         left.generateTrajectories(leftTrajectories);
 
         // middle
         var middleTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        middleTrajectories.put(new DestinationCouple(null, Destination.kShieldGeneratorNearRight, false),
-                Arrays.asList());
-        middleTrajectories.put(new DestinationCouple(Destination.kShieldGeneratorNearRight, Destination.kShieldGeneratorFarRight, true), Arrays.asList());        
+        middleTrajectories.put(new DestinationCouple(null, Destination.kShieldGeneratorFarRight, false), Arrays.asList());     
         middleTrajectories.put(new DestinationCouple(Destination.kShieldGeneratorFarRight, Destination.kMiddleShootingPosition, true), Arrays.asList());
 
         middle.generateTrajectories(middleTrajectories);
+
         // right
         var rightTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        rightTrajectories.put(new DestinationCouple(null, Destination.kRightTrenchFar, false),
-                Arrays.asList());
-        rightTrajectories.put(new DestinationCouple(Destination.kRightTrenchFar,
-                Destination.kRightShootingPosition, true), Arrays.asList());
-
+        rightTrajectories.put(new DestinationCouple(null, Destination.kRightTrenchFar, false), Arrays.asList());
+        rightTrajectories.put(new DestinationCouple(Destination.kRightTrenchFar, Destination.kRightShootingPosition, true), Arrays.asList());
+        
         right.generateTrajectories(rightTrajectories);
 
         //eight ball
         var eightBallTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        eightBallTrajectories.put(new DestinationCouple(null, Destination.kShieldGeneratorNearRight, false), Arrays.asList());
-        eightBallTrajectories.put(new DestinationCouple(Destination.kShieldGeneratorNearRight, Destination.kShieldGeneratorFarRight, false), Arrays.asList());
-        eightBallTrajectories.put(new DestinationCouple(Destination.kShieldGeneratorFarRight, Destination.kMiddleShootingPosition, true), Arrays.asList());
-        eightBallTrajectories.put(new DestinationCouple(Destination.kMiddleShootingPosition, Destination.kRightTrenchVeryFar, false), Arrays.asList());
-        eightBallTrajectories.put(new DestinationCouple(Destination.kRightTrenchVeryFar, Destination.kRightTrenchFar, false), Arrays.asList());
+        eightBallTrajectories.put(new DestinationCouple(null, Destination.kShieldGeneratorFarRight, false), Arrays.asList());
+        eightBallTrajectories.put(new DestinationCouple(Destination.kShieldGeneratorFarRight, Destination.kEightBallIntermediate, true), Arrays.asList());
+        eightBallTrajectories.put(new DestinationCouple(Destination.kEightBallIntermediate, Destination.kRightTrenchFar, false), Arrays.asList());
         eightBallTrajectories.put(new DestinationCouple(Destination.kRightTrenchFar, Destination.kRightShootingPosition, true), Arrays.asList());
+        
         eightBall.generateTrajectories(eightBallTrajectories);
 
         var driveStraightTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
         driveStraightTrajectories.put(new DestinationCouple(null, Destination.kJustAhead, false), Arrays.asList());
+        
         driveStraight.generateTrajectories(driveStraightTrajectories);
 
         var driveStraightReversedTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
         driveStraightReversedTrajectories.put(new DestinationCouple(null, Destination.kJustBehind, true), Arrays.asList());
+        
         driveStraightReversed.generateTrajectories(driveStraightReversedTrajectories);
     }
 }

@@ -149,10 +149,6 @@ public class RobotContainer
                 new StateMapResetCommand(mStateEstimator, TrajectoryContainer.middle.mStartPoint),
                 new TrajectoryTrackerCommand(mDrive,
                     TrajectoryContainer.middle.getTrajectory(null,
-                        Destination.kShieldGeneratorNearRight),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.middle.getTrajectory(Destination.kShieldGeneratorNearRight,
                         Destination.kShieldGeneratorFarRight),
                     mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
                 new TrajectoryTrackerCommand(mDrive,
@@ -173,22 +169,14 @@ public class RobotContainer
                     TrajectoryContainer.eightBall.mStartPoint),
                 new TrajectoryTrackerCommand(mDrive,
                     TrajectoryContainer.eightBall.getTrajectory(null,
-                        Destination.kShieldGeneratorNearRight),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(Destination.kShieldGeneratorNearRight,
                         Destination.kShieldGeneratorFarRight),
                     mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
                 new TrajectoryTrackerCommand(mDrive,
                     TrajectoryContainer.eightBall.getTrajectory(Destination.kShieldGeneratorFarRight,
-                        Destination.kMiddleShootingPosition),
+                        Destination.kEightBallIntermediate),
                     mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
                 new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(Destination.kMiddleShootingPosition,
-                        Destination.kRightTrenchVeryFar),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(Destination.kRightTrenchVeryFar,
+                    TrajectoryContainer.eightBall.getTrajectory(Destination.kEightBallIntermediate,
                         Destination.kRightTrenchFar),
                     mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
                 new TrajectoryTrackerCommand(mDrive,
@@ -266,12 +254,35 @@ public class RobotContainer
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
 
-        // new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new
-        // ShootBallTest(mLauncher));
-        // new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new
-        // TurretTest(mLauncher));
-        // new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new
-        // HoodTest(mLauncher));
+        new JoystickButton(mJoystick, 1)
+            .toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
+        new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new Zero(mLauncher));
+        new JoystickButton(mJoystick, 3)
+            .toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
+        new JoystickButton(mJoystick, 4)
+            .toggleWhenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
+        new JoystickButton(mJoystick, 5)
+            .toggleWhenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
+        new JoystickButton(mJoystick, 6)
+            .toggleWhenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
+
+        // Test Command that fires all the balls after setting the Flywheel and Hood
+        // values from the smart dashboard
+        /*new JoystickButton(mJoystick, 4).toggleWhenPressed(new SequentialCommandGroup(
+            new ParallelRaceGroup(
+                new ParallelCommandGroup(mIndexerCommands.new SpinUpKicker(mIndexer),
+                    mLauncherCommands.new ShootBallTest(mLauncher)),
+                mLauncherCommands.new WaitForFlywheel(mLauncher)),
+            new ParallelCommandGroup(mIndexerCommands.new LoadToLauncher(mIndexer, 5),
+                mLauncherCommands.new ShootBallTest(mLauncher))));
+        new JoystickButton(mJoystick, 5).toggleWhenPressed(new SequentialCommandGroup(
+            new ParallelRaceGroup(
+                new ParallelCommandGroup(mIndexerCommands.new SpinUpKicker(mIndexer),
+                    mLauncherCommands.new ShootBallTestWithDistance(mLauncher)),
+                mLauncherCommands.new WaitForFlywheel(mLauncher)),
+            new ParallelCommandGroup(mIndexerCommands.new LoadToLauncher(mIndexer, 5),
+                mLauncherCommands.new ShootBallTestWithDistance(mLauncher))));
+                */
         // new JoystickButton(mJoystick, 7).whileHeld(new
         // TrajectoryTrackerCommand(mDrive, mDrive,
         // this::throughTrench, mRamseteController,
@@ -291,39 +302,33 @@ public class RobotContainer
         // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new
         // ConditionalCommand(mLauncherCommands.new Target));
 
-        // new JoystickButton(mButtonBoard, 2).toggleWhenPressed(
-        // new ParallelCommandGroup(mIntakeCommands.new Harvest(mIntake, mIndexer),
-        // mIndexerCommands.new LoadFromIntake(mIndexer)));
-        // new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new
-        // Eject(mIntake));
+        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(
+            new ParallelCommandGroup(mIntakeCommands.new Harvest(mIntake, mIndexer),
+                mIndexerCommands.new LoadFromIntake(mIndexer)));
+        new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
 
-        // new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new
-        // Retract(mClimber));
-        // new JoystickButton(mButtonBoard, 5).whileHeld(mClimberCommands.new
-        // Extend(mClimber));
+        new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));
+        new JoystickButton(mButtonBoard, 5).whileHeld(mClimberCommands.new Extend(mClimber));
 
-        // new JoystickButton(mButtonBoard, 6)
-        // .whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
-        // new JoystickButton(mButtonBoard, 7)
-        // .whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
-        // new JoystickButton(mButtonBoard, 8)
-        // .whenPressed(mPanelRotatorCommands.new SpinRotation(mPanelRotator), false);
-        // new JoystickButton(mButtonBoard, 9)
-        // .whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
+        new JoystickButton(mButtonBoard, 6)
+            .whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
+        new JoystickButton(mButtonBoard, 7)
+            .whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
+        new JoystickButton(mButtonBoard, 8)
+            .whenPressed(mPanelRotatorCommands.new SpinRotation(mPanelRotator), false);
+        new JoystickButton(mButtonBoard, 9)
+            .whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
 
-        // new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new
-        // ExtendMin(mClimber));
-        // new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new
-        // ExtendMax(mClimber));
+        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new ExtendMin(mClimber));
+        // new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new ExtendMax(mClimber));
 
         // new JoystickButton(mButtonBoard, 12)
-        // .whenPressed(mPanelRotatorCommands.new AutoSpinRotation(mPanelRotator));
+        //     .whenPressed(mPanelRotatorCommands.new AutoSpinRotation(mPanelRotator));
 
         // new JoystickButton(mButtonBoard, 13)
-        // .whenPressed(mPanelRotatorCommands.new AutoSpinToColor(mPanelRotator));
+        //     .whenPressed(mPanelRotatorCommands.new AutoSpinToColor(mPanelRotator));
 
-        // new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new
-        // Winch(mClimber));
+        // new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new Winch(mClimber));
         /* Four-way Joystick
         new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
         new JoystickButton(mButtonBoard, 16).whenHeld(new TurretLowerCommand(mLauncher));
