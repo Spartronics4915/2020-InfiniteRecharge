@@ -224,8 +224,8 @@ public class RobotContainer
                     mLauncherCommands.new ShootBallTestWithDistance(mLauncher)),
                 mLauncherCommands.new WaitForFlywheel(mLauncher)),
             new ParallelCommandGroup(mIndexerCommands.new LoadToLauncher(mIndexer, 5),
-                mLauncherCommands.new ShootBallTestWithDistance(mLauncher))));
-                */
+                mLauncherCommands.new ShootBallTestWithDistance(mLauncher))));*/
+        
         // new JoystickButton(mJoystick, 7).whileHeld(new
         // TrajectoryTrackerCommand(mDrive, mDrive,
         // this::throughTrench, mRamseteController,

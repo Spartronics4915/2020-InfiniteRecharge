@@ -45,6 +45,14 @@ public class LauncherCommands
             double distance = trackTarget(mLauncher);
             mLauncher.runFlywheel(mLauncher.calcRPS(distance));
         }
+
+        @Override
+        public void end(boolean interrupted) {
+            if(interrupted)
+            {
+                mLauncher.stopTurret();    
+            }
+        }
     }
 
     public class TrackPassively extends CommandBase
@@ -68,6 +76,14 @@ public class LauncherCommands
         public void execute()
         {
             trackTarget(mLauncher);
+        }
+
+        @Override
+        public void end(boolean interrupted) {
+            if(interrupted)
+            {
+                mLauncher.stopTurret();    
+            }
         }
     }
 
@@ -151,6 +167,10 @@ public class LauncherCommands
         @Override
         public void end(boolean interrupted)
         {
+            if(interrupted) 
+            {
+                mLauncher.stopTurret();
+            }
             mLauncher.reset();
         }
     }
@@ -187,6 +207,7 @@ public class LauncherCommands
                 mLauncher.calcRPS((double) mLauncher.dashboardGetNumber("DistanceToTarget", 0)));
             mLauncher.adjustHood(
                 mLauncher.calcPitch((double) mLauncher.dashboardGetNumber("DistanceToTarget", 0)));
+            mLauncher.turnTurret(Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("TurretAimAngle", 0)));
         }
 
         // Returns true when the command should end.
@@ -200,7 +221,11 @@ public class LauncherCommands
         @Override
         public void end(boolean interrupted)
         {
-            //mLauncher.reset();
+            if(interrupted) 
+            {
+                mLauncher.stopTurret();
+            }
+            mLauncher.reset();
         }
     }
 
@@ -270,7 +295,7 @@ public class LauncherCommands
         @Override
         public void end(boolean interrupted)
         {
-            //mLauncher.reset();
+                mLauncher.stopTurret();
         }
     }
 
