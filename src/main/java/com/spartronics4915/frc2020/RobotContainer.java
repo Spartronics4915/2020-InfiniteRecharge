@@ -36,8 +36,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class RobotContainer
@@ -96,8 +100,6 @@ public class RobotContainer
      */
     public RobotContainer()
     {
-        mJoystick = new Joystick(Constants.OI.kJoystickId);
-        mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
 
         T265Camera slamra;
         try
@@ -194,6 +196,8 @@ public class RobotContainer
                     TrajectoryContainer.left.getTrajectory(null, Destination.LeftTrenchFar),
                     mRamseteController, mStateEstimator.getEncoderRobotStateMap()))};
 
+        mStateEstimator.resetRobotStateMaps(new Pose2d());
+
         String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
             .collect(Collectors.joining(","));
         SmartDashboard.putString(kAutoOptionsKey, autoModeList);
@@ -208,19 +212,23 @@ public class RobotContainer
         mClimberCommands = new ClimberCommands();
         mIntakeCommands = new IntakeCommands();
         mIndexerCommands = new IndexerCommands();
-        mLauncherCommands = new LauncherCommands(mStateEstimator.getCameraRobotStateMap(),
-            new Pose2d());
+        mLauncherCommands = new LauncherCommands(mStateEstimator.getEncoderRobotStateMap(),
+            new Pose2d(-1, 0, Rotation2d.fromDegrees(180)));
         mPanelRotatorCommands = new PanelRotatorCommands();
+
+        mJoystick = new Joystick(Constants.OI.kJoystickId);
+        mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
 
         // Default Commands run whenever no Command is scheduled to run for a subsystem
         mClimber.setDefaultCommand(mClimberCommands.new Stop(mClimber));
         mIntake.setDefaultCommand(mIntakeCommands.new Stop(mIntake));
-        // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new
-        // Target(mLauncher),
-        // mLauncherCommands.new Adjust(mLauncher), mLauncher::inRange));
+        // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new TargetAndShoot(mLauncher),
+        //     mLauncherCommands.new TrackPassively(mLauncher), mLauncher::inRange));
+        mLauncher.setDefaultCommand(mLauncherCommands.new TrackPassively(mLauncher));
         mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
         mDrive.setDefaultCommand(new TeleOpCommand(mDrive, mJoystick));
 
+        // mLauncherCommands.new Zero(mLauncher).schedule();
         configureJoystickBindings();
         configureButtonBoardBindings();
     }
@@ -292,16 +300,15 @@ public class RobotContainer
             .whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
 
         new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new ExtendMin(mClimber));
-        new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new ExtendMax(mClimber));
+        // new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new ExtendMax(mClimber));
 
-        /*new JoystickButton(mButtonBoard, 12)
-            .whenPressed(mPanelRotatorCommands.new AutoSpinRotation(mPanelRotator));
-        
-        new JoystickButton(mButtonBoard, 13)
-            .whenPressed(mPanelRotatorCommands.new AutoSpinToColor(mPanelRotator));
-        
-        new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new Winch(mClimber));*/
+        // new JoystickButton(mButtonBoard, 12)
+        //     .whenPressed(mPanelRotatorCommands.new AutoSpinRotation(mPanelRotator));
 
+        // new JoystickButton(mButtonBoard, 13)
+        //     .whenPressed(mPanelRotatorCommands.new AutoSpinToColor(mPanelRotator));
+
+        // new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new Winch(mClimber));
         /* Four-way Joystick
         new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
         new JoystickButton(mButtonBoard, 16).whenHeld(new TurretLowerCommand(mLauncher));

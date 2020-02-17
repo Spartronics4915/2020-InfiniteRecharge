@@ -28,10 +28,10 @@ public final class Constants
         public static final int kLiftMotorId = 5;
         public static final int kWinchMotorId = 6;
         public static final double kExtendSpeed = 1.0; // XXX: test
-        public static final double kWinchSpeed = 1.0; // XXX: test
+        public static final double kWinchSpeed = -0.85; // XXX: test
         public static final double kRetractSpeed = -1.0; // XXX: test
-        public static final double kReverseWinchSpeed = -1.0; // XXX: test
-        public static final double kStallThreshold = 3.0; // FIXME: stand-in value
+        public static final double kReverseWinchSpeed = 1.0; // XXX: test
+        public static final double kStallThreshold = 90.0; // FIXME: stand-in value
         public static final double kSecondaryStallThreshold = 5.0;
         public static final double kTimerExtenderMin = 3.0; // FIXME: stand-in values
         public static final double kTimerExtenderMax = 5.0;
@@ -92,35 +92,38 @@ public final class Constants
 
     public static final class Launcher
     {
-        public static final int kFlywheelMasterId = 7;
+        public static final int kFlywheelMasterId = 7; // CHANGE TO 7
         public static final int kFlywheelFollowerId = -1; // Solid brass
         public static final int kAngleAdjusterMasterId = 0; // PWM
         public static final int kAngleAdjusterFollowerId = 1; // PWM
         public static final int kTurretId = 8;
         public static final int kTurretPotentiometerId = 0; // Analog
 
-        // TODO: Find translation of turret from the center of the robot
-        public static final Pose2d kTurretOffset = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180.0));
+        public static final Pose2d kRobotToTurret = new Pose2d(Units.inchesToMeters(-3.72), Units.inchesToMeters(5.264), Rotation2d.fromDegrees(180.0));
+        
+        // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
+        public static final double kP = 0.05;
+        public static final double kS = 0.0286; // 0.0654;
+        public static final double kV = 7.86; // 7.18;
+        public static final double kA = 5.16;
 
-        public static final double kP = 0.02; // FIXME: currently values for non-final launcher
-        public static final double kS = 0.0634; // 0.0654;
-        public static final double kV = 7.23; // 7.18;
-        public static final double kA = 5.07;
-
-        public static final double kTurretP = 0; // FIXME: stand-in values
+        public static final double kTurretP = 0.1;
         public static final double kTurretI = 0;
-        public static final double kTurretD = 0;
+        public static final double kTurretD = 0.002;
 
         // Vals for interpolating lookup table
-        public static final int LookupTableSize = 0; // ???
-        public static final double[] DistanceTable = null;
-        public static final double[] AngleTable = null;
-        public static final double[] RPSTable = null;
+        public static final double[] kDistanceTable = new double[]{0.0, 1.0};
+        public static final double[] kAngleTable = new double[]{0.0, 30.0};
+        public static final double[] kRPSTable = new double[]{0.0, 30.0};
+        public static final int kLookupTableSize = kDistanceTable.length;
 
+        /** RPS */
+        public static final double kFlywheelVelocityTolerance = 1.0;
         public static final double kMaxRPS = 90.0; // Reasonable guess
         public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(30.0);
 
         public static Pose2d goalLocation = null;
+        public static double kTurretStallAmps = 2.0;
     }
 
     public static final class OI
@@ -136,8 +139,8 @@ public final class Constants
         public static final int kSpinMotorId = 13;
         public static final int kRaiseMotorId = 14;
 
-        public static final double kRaiseSpeed = 0.5; // XXX: test
-        public static final double kLowerSpeed = -0.5;
+        public static final double kRaiseSpeed = -0.25;
+        public static final double kLowerSpeed = 0.25;
         public static final double kSpinSpeed = 0.5; // XXX: test
         public static final double kConfidenceMinimum = 0.3; // FIXME: almost certainly incorrect
 
@@ -151,10 +154,10 @@ public final class Constants
     {
         public static final TriFunction<Integer, SensorModel, Integer, SpartronicsMotor> kDriveMotorConstructor;
 
-        public static final boolean kRightOutputInverted = true;
-        public static final boolean kRightFollowerOutputInverted = true;
-        public static final boolean kLeftOutputInverted = false;
-        public static final boolean kLeftFollowerOutputInverted = false;
+        public static final boolean kRightOutputInverted;
+        public static final boolean kRightFollowerOutputInverted;
+        public static final boolean kLeftOutputInverted;
+        public static final boolean kLeftFollowerOutputInverted;
 
         public static final int kRightDriveMaster = 1;
         public static final int kRightDriveFollower = 2;
@@ -208,14 +211,17 @@ public final class Constants
                     kRightA = 0.0340;
                     kWheelDiameter = Units.inchesToMeters(6);
                     kNativeUnitsPerRevolution = 1440.0;
+                    kLeftOutputInverted = false;
+                    kLeftFollowerOutputInverted = false;
+                    kRightOutputInverted = true;
+                    kRightFollowerOutputInverted = true;
 
                     kPigeonId = -1;
                     kDriveMotorConstructor = SpartronicsSRX::makeMotor;
                     break;
                 default:
-                    kTrackWidthMeters = 1; // TODO: find track width
+                    kTrackWidthMeters = 26.75;
                     kWheelDiameter = Units.inchesToMeters(8);
-                    //TODO characterize
                     kScrubFactor = 1;
                     kLeftS = 1;
                     kLeftV = 1;
@@ -224,6 +230,10 @@ public final class Constants
                     kRightV = 1;
                     kRightA = 1;
                     kNativeUnitsPerRevolution = 10.71;
+                    kLeftOutputInverted = true;
+                    kLeftFollowerOutputInverted = true;
+                    kRightOutputInverted = false;
+                    kRightFollowerOutputInverted = false;
 
                     kPigeonId = 1;
                     kDriveMotorConstructor = SpartronicsMax::makeMotor;
@@ -250,7 +260,7 @@ public final class Constants
 
     public static final class Estimator
     {
-        public static final Pose2d kSlamraToRobot = new Pose2d(-0.390525, 0, new Rotation2d());
+        public static final Pose2d kSlamraToRobot = new Pose2d(Units.inchesToMeters(-6.4375), Units.inchesToMeters(10.625), Rotation2d.fromDegrees(90));//new Pose2d(-0.390525, 0, new Rotation2d());
         public static final Pose2d kVisionToRobot = new Pose2d(0.390525, 0, Rotation2d.fromDegrees(0));
         public static final double kMeasurementCovariance = 0.001;
     }
