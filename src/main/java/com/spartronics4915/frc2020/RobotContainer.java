@@ -36,10 +36,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-<<<<<<< HEAD
-=======
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
->>>>>>> d7e3942f79ccd6985a4b94c694fc10c01aca7312
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
