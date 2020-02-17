@@ -117,4 +117,18 @@ public class Climber extends SpartronicsSubsystem
     {
         return mWinchMotor.getOutputCurrent() >= Constants.Climber.kSecondaryStallThreshold;
     }
+
+    private double mMaxAmps = Double.NEGATIVE_INFINITY;
+
+    @Override
+    public void periodic()
+    {
+        double amps = mWinchMotor.getOutputCurrent();
+        if (amps > mMaxAmps)
+        {
+            mMaxAmps = amps;
+        }
+
+        dashboardPutNumber("amps", mMaxAmps);
+    }
 }
