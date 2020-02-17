@@ -25,19 +25,67 @@ public class PanelRotatorCommands
      * Each of these parameters corresponds with a method in the CommandBase class.
      */
 
-    /**
-     * This Raise {@link FunctionalCommand} calls {@link PanelRotator}.raise
-     * repeatedly, until the upper optical flag is broken, at which point the
-     * motor will stop.
-     * <p>
-     * The motor will also stop raising if interrupted by another Command.
-     */
+    /*
     public class Raise extends FunctionalCommand
     {
         public Raise(PanelRotator panelRotator)
         {
             super(() -> {}, panelRotator::raise, (Boolean b) -> panelRotator.stop(),
                 panelRotator::getOpticalFlagUp, panelRotator);
+        }
+    }
+    */
+
+    public class Raise extends CommandBase
+    {
+        private final PanelRotator mPanelRotator;
+        
+        private boolean endMethod = false;
+        private boolean stoppedByProximity = false;
+
+
+        // You should only use one subsystem per command. If multiple are needed, use a
+        // CommandGroup.
+        public Raise(PanelRotator panelRotator)
+        {
+            mPanelRotator = panelRotator;
+            addRequirements(mPanelRotator);
+        }
+
+        // Called when the command is initially scheduled.
+        @Override
+        public void initialize()
+        {
+        }
+
+        // Called every time the scheduler runs while the command is scheduled.
+        @Override
+        public void execute()
+        {
+            mPanelRotator.raise();
+            if(!mPanelRotator.getProximitySensor() && !mPanelRotator.getOpticalFlagUp())
+                endMethod = false;
+            else if(mPanelRotator.getOpticalFlagUp())
+                endMethod = true;
+            else if(mPanelRotator.getProximitySensor())
+                endMethod = true;
+        }
+
+        // Returns true when the command should end.
+        @Override
+        public boolean isFinished()
+        {
+            return endMethod;
+            if(endMethod)
+                if(stoppedByProximity)
+                    //run next command
+        }
+
+        // Called once the command ends or is interrupted.
+        @Override
+        public void end(boolean interrupted)
+        {
+            mPanelRotator.stop();
         }
     }
 
