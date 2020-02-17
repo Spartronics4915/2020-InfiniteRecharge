@@ -118,62 +118,73 @@ public class RobotContainer
             () -> mStateEstimator.stop(), mStateEstimator);
         mStateEstimator.setDefaultCommand(slamraCommand);
 
-        mAutoModes = new AutoMode[]
-        {
-            kDefaultAutoMode,
+        mAutoModes = new AutoMode[] {kDefaultAutoMode,
+            new AutoMode("Drive Straight", new SequentialCommandGroup(
+                new StateMapResetCommand(mStateEstimator,
+                    TrajectoryContainer.driveStraight.mStartPoint),
+                new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.driveStraight.getTrajectory(null, Destination.justAhead),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()))),
+            new AutoMode("Drive Straight Reversed",
+                new SequentialCommandGroup(
+                    new StateMapResetCommand(mStateEstimator,
+                        TrajectoryContainer.driveStraightReversed.mStartPoint),
+                    new TrajectoryTrackerCommand(mDrive,
+                        TrajectoryContainer.driveStraightReversed.getTrajectory(null,
+                            Destination.justBehind),
+                        mRamseteController, mStateEstimator.getEncoderRobotStateMap()))),
             new AutoMode("Left",
                 new SequentialCommandGroup(
                     new StateMapResetCommand(mStateEstimator, TrajectoryContainer.left.mStartPoint),
                     new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.left.getTrajectory(null, Destination.LeftTrenchFar),
+                        TrajectoryContainer.left.getTrajectory(null, Destination.LeftTrenchFar),
+                        mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
+                    new TrajectoryTrackerCommand(mDrive,
+                        TrajectoryContainer.left.getTrajectory(Destination.LeftTrenchFar,
+                            Destination.LeftShootingPosition),
+                        mRamseteController, mStateEstimator.getEncoderRobotStateMap()))),
+            new AutoMode("Middle", new SequentialCommandGroup(
+                new StateMapResetCommand(mStateEstimator, TrajectoryContainer.middle.mStartPoint),
+                new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.middle.getTrajectory(null,
+                        Destination.ShieldGeneratorFarRight),
                     mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.left.getTrajectory(Destination.LeftTrenchFar, Destination.LeftShootingPosition),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
-                )
-            ),
-            new AutoMode("Middle",
-                new SequentialCommandGroup(
-                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.middle.mStartPoint),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.middle.getTrajectory(Destination.ShieldGeneratorFarRight, Destination.MiddleShootingPosition),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
-                )
-            ),
-            new AutoMode("Right",
-                new SequentialCommandGroup(
-                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.right.mStartPoint),
-                    new TrajectoryTrackerCommand(mDrive,
+                new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.middle.getTrajectory(Destination.ShieldGeneratorFarRight,
+                        Destination.MiddleShootingPosition),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()))),
+            new AutoMode("Right", new SequentialCommandGroup(
+                new StateMapResetCommand(mStateEstimator, TrajectoryContainer.right.mStartPoint),
+                new TrajectoryTrackerCommand(mDrive,
                     TrajectoryContainer.right.getTrajectory(null, Destination.RightTrenchFar),
                     mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.right.getTrajectory(Destination.RightTrenchFar, Destination.RightShootingPosition),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
-                )
-            ),
-            new AutoMode("Eight Ball",
-                new SequentialCommandGroup(
-                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.eightBall.mStartPoint),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(null, Destination.ShieldGeneratorFarRight),
+                new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.right.getTrajectory(Destination.RightTrenchFar,
+                        Destination.RightShootingPosition),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()))),
+            new AutoMode("Eight Ball", new SequentialCommandGroup(
+                new StateMapResetCommand(mStateEstimator,
+                    TrajectoryContainer.eightBall.mStartPoint),
+                new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.eightBall.getTrajectory(null,
+                        Destination.ShieldGeneratorFarRight),
                     mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(Destination.ShieldGeneratorFarRight, Destination.MiddleShootingPosition),
+                new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.eightBall.getTrajectory(Destination.ShieldGeneratorFarRight,
+                        Destination.MiddleShootingPosition),
                     mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(Destination.MiddleShootingPosition, Destination.RightTrenchVeryFar),
+                new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.eightBall.getTrajectory(Destination.MiddleShootingPosition,
+                        Destination.RightTrenchVeryFar),
                     mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(Destination.RightTrenchVeryFar, Destination.RightTrenchFar),
+                new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.eightBall.getTrajectory(Destination.RightTrenchVeryFar,
+                        Destination.RightTrenchFar),
                     mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(Destination.RightTrenchFar, Destination.RightShootingPosition),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
-                )
-            ),
+                new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.eightBall.getTrajectory(Destination.RightTrenchFar,
+                        Destination.RightShootingPosition),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()))),
             new AutoMode("Characterize Drive",
                 new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter)),
             new AutoMode("Laser Turret",
@@ -181,14 +192,11 @@ public class RobotContainer
             new AutoMode("Right: Through Trench",
                 new TrajectoryTrackerCommand(mDrive,
                     TrajectoryContainer.left.getTrajectory(null, Destination.LeftTrenchFar),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()))
-        };
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()))};
 
-        mStateEstimator.resetRobotStateMaps(TrajectoryContainer.middle.mStartPoint);
-
-        String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name).collect(Collectors.joining(","));
+        String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
+            .collect(Collectors.joining(","));
         SmartDashboard.putString(kAutoOptionsKey, autoModeList);
-
         mClimber = new Climber();
         mIntake = new Intake();
         mIndexer = new Indexer();
@@ -200,14 +208,16 @@ public class RobotContainer
         mClimberCommands = new ClimberCommands();
         mIntakeCommands = new IntakeCommands();
         mIndexerCommands = new IndexerCommands();
-        mLauncherCommands = new LauncherCommands(mStateEstimator.getCameraRobotStateMap(), new Pose2d());
+        mLauncherCommands = new LauncherCommands(mStateEstimator.getCameraRobotStateMap(),
+            new Pose2d());
         mPanelRotatorCommands = new PanelRotatorCommands();
 
         // Default Commands run whenever no Command is scheduled to run for a subsystem
         mClimber.setDefaultCommand(mClimberCommands.new Stop(mClimber));
         mIntake.setDefaultCommand(mIntakeCommands.new Stop(mIntake));
-        // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
-        //     mLauncherCommands.new Adjust(mLauncher), mLauncher::inRange));
+        // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new
+        // Target(mLauncher),
+        // mLauncherCommands.new Adjust(mLauncher), mLauncher::inRange));
         mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
         mDrive.setDefaultCommand(new TeleOpCommand(mDrive, mJoystick));
 
@@ -239,41 +249,58 @@ public class RobotContainer
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
 
-        // new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
-        // new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
-        // new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
-        // new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
-        //    this::throughTrench, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
-        // new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
-        //    this::toControlPanel, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
-        // new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new AutoAimTurret(mLauncher,Constants.Launcher.goalLocation,mStateEstimator.getEncoderRobotStateMap()));
+        // new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new
+        // ShootBallTest(mLauncher));
+        // new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new
+        // TurretTest(mLauncher));
+        // new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new
+        // HoodTest(mLauncher));
+        // new JoystickButton(mJoystick, 7).whileHeld(new
+        // TrajectoryTrackerCommand(mDrive, mDrive,
+        // this::throughTrench, mRamseteController,
+        // mStateEstimator.getEncoderRobotStateMap()));
+        // new JoystickButton(mJoystick, 7).whileHeld(new
+        // TrajectoryTrackerCommand(mDrive, mDrive,
+        // this::toControlPanel, mRamseteController,
+        // mStateEstimator.getEncoderRobotStateMap()));
+        // new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new
+        // AutoAimTurret(mLauncher,Constants.Launcher.goalLocation,mStateEstimator.getEncoderRobotStateMap()));
     }
 
     private void configureButtonBoardBindings()
     {
-        // new JoystickButton(mButtonBoard, 0).whenPressed(LauncherCommands.new Launch(mLauncher));
-        // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new ConditionalCommand(mLauncherCommands.new Target));
+        // new JoystickButton(mButtonBoard, 0).whenPressed(LauncherCommands.new
+        // Launch(mLauncher));
+        // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new
+        // ConditionalCommand(mLauncherCommands.new Target));
 
-        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(new ParallelCommandGroup(
-            mIntakeCommands.new Harvest(mIntake, mIndexer), mIndexerCommands.new LoadFromIntake(mIndexer)));
+        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(
+            new ParallelCommandGroup(mIntakeCommands.new Harvest(mIntake, mIndexer),
+                mIndexerCommands.new LoadFromIntake(mIndexer)));
         new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
 
         new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));
         new JoystickButton(mButtonBoard, 5).whileHeld(mClimberCommands.new Extend(mClimber));
 
-        new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
-        new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
-        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinRotation(mPanelRotator), false);
-        new JoystickButton(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
+        new JoystickButton(mButtonBoard, 6)
+            .whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
+        new JoystickButton(mButtonBoard, 7)
+            .whenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
+        new JoystickButton(mButtonBoard, 8)
+            .whenPressed(mPanelRotatorCommands.new SpinRotation(mPanelRotator), false);
+        new JoystickButton(mButtonBoard, 9)
+            .whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
 
         new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new ExtendMin(mClimber));
         new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new ExtendMax(mClimber));
 
-        new JoystickButton(mButtonBoard, 12).whenPressed(mPanelRotatorCommands.new AutoSpinRotation(mPanelRotator));
-
-        new JoystickButton(mButtonBoard, 13).whenPressed(mPanelRotatorCommands.new AutoSpinToColor(mPanelRotator));
-
-        new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new Winch(mClimber));
+        /*new JoystickButton(mButtonBoard, 12)
+            .whenPressed(mPanelRotatorCommands.new AutoSpinRotation(mPanelRotator));
+        
+        new JoystickButton(mButtonBoard, 13)
+            .whenPressed(mPanelRotatorCommands.new AutoSpinToColor(mPanelRotator));
+        
+        new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new Winch(mClimber));*/
 
         /* Four-way Joystick
         new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand(mLauncher));
@@ -324,13 +351,11 @@ public class RobotContainer
     public TimedTrajectory<Pose2dWithCurvature> throughTrench()
     {
         ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
-        Pose2d[] intermediate = new Pose2d[]
-        {
+        Pose2d[] intermediate = new Pose2d[] {
             new Pose2d(Units.inchesToMeters(424), Units.inchesToMeters(135),
                 Rotation2d.fromDegrees(180)),
             new Pose2d(Units.inchesToMeters(207), Units.inchesToMeters(135),
-                Rotation2d.fromDegrees(180))
-        };
+                Rotation2d.fromDegrees(180))};
         for (int i = 0; i < intermediate.length; i++)
         {
             Pose2d pose = intermediate[i];

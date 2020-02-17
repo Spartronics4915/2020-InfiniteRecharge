@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.SortedMap;
 
+import com.spartronics4915.frc2020.Constants.Trajectory;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2dWithCurvature;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
@@ -25,7 +26,7 @@ public class TrajectoryContainer
     {
         LeftTrenchFar(394, 134, 120), LeftShootingPosition(508, 5, 148.69), RightTrenchFar(304, -134, 180), RightTrenchVeryFar(404, -134, 180),
         RightTrenchNear(242, -134, 180), RightShootingPosition(421, -121, 194.36),
-        ShieldGeneratorFarRight(400, -58, 115), MiddleShootingPosition(456, -67, 180);
+        ShieldGeneratorFarRight(400, -58, 115), MiddleShootingPosition(456, -67, 180), justAhead(120, 0, 0), justBehind(-120, 0, 0);
 
         public final Pose2d pose;
 
@@ -144,6 +145,8 @@ public class TrajectoryContainer
             Constants.Trajectory.kStartPointRight);
         public static final TrajectoryCollection eightBall = new TrajectoryCollection(
                 Constants.Trajectory.kStartPointMiddle);
+    public static final TrajectoryCollection driveStraight = new TrajectoryCollection(new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
+    public static final TrajectoryCollection driveStraightReversed = new TrajectoryCollection(new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
     static
     {
         // left
@@ -180,6 +183,14 @@ public class TrajectoryContainer
         eightBallTrajectories.put(new DestinationCouple(Destination.MiddleShootingPosition, Destination.RightTrenchVeryFar, false), Arrays.asList());
         eightBallTrajectories.put(new DestinationCouple(Destination.RightTrenchVeryFar, Destination.RightTrenchFar, false), Arrays.asList());
         eightBallTrajectories.put(new DestinationCouple(Destination.RightTrenchFar, Destination.RightShootingPosition, true), Arrays.asList());
+        eightBall.generateTrajectories(eightBallTrajectories);
 
+        var driveStraightTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
+        driveStraightTrajectories.put(new DestinationCouple(null, Destination.justAhead, false), Arrays.asList());
+        driveStraight.generateTrajectories(driveStraightTrajectories);
+
+        var driveStraightReversedTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
+        driveStraightReversedTrajectories.put(new DestinationCouple(null, Destination.justBehind, true), Arrays.asList());
+        driveStraightReversed.generateTrajectories(driveStraightReversedTrajectories);
     }
 }

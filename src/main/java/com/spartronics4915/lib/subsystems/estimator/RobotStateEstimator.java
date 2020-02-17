@@ -13,6 +13,7 @@ import com.spartronics4915.lib.hardware.sensors.T265Camera.CameraUpdate;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import com.spartronics4915.lib.subsystems.drive.AbstractDrive;
 import com.spartronics4915.lib.util.Kinematics;
+import com.spartronics4915.lib.util.Logger;
 import com.spartronics4915.lib.util.Units;
 
 /**
@@ -90,6 +91,7 @@ public class RobotStateEstimator extends SpartronicsSubsystem
             mSLAMCamera.setPose(pose);
         }
         mDrive.setIMUHeading(pose.getRotation());
+        Logger.notice("RSE: " + pose.toString());
     }
 
     @Override
@@ -107,7 +109,7 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         SmartDashboard.putNumber("RobotState/encoderVelocity", estate.predictedVelocity.dx);
 
         final RobotStateMap.State cstate = getCameraRobotStateMap().getLatestState();
-        Pose2d cpose = cstate.pose;
+        Pose2d cpose = epose;//cstate.pose;
 
         // NB: other tools (like Dashboard and Vision) depend on the structure
         // and id of RobotState/pose. Change with caution.
