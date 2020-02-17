@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -117,17 +118,62 @@ public class RobotContainer
             () -> mStateEstimator.stop(), mStateEstimator);
         mStateEstimator.setDefaultCommand(slamraCommand);
 
-        System.out.println(
-            new TrajectoryContainer.DestinationCouple(Destination.ShieldGeneratorFarRight,
-                Destination.MiddleShootingPosition).hashCode());
-
         mAutoModes = new AutoMode[]
         {
             kDefaultAutoMode,
-            new AutoMode("Drive Straight",
-                new TrajectoryTrackerCommand(mDrive,
-                TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight),
-                mRamseteController, mStateEstimator.getEncoderRobotStateMap())),
+            new AutoMode("Left",
+                new SequentialCommandGroup(
+                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.left.mStartPoint),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.left.getTrajectory(null, Destination.LeftTrenchFar),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.left.getTrajectory(Destination.LeftTrenchFar, Destination.LeftShootingPosition),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
+                )
+            ),
+            new AutoMode("Middle",
+                new SequentialCommandGroup(
+                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.middle.mStartPoint),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.middle.getTrajectory(Destination.ShieldGeneratorFarRight, Destination.MiddleShootingPosition),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
+                )
+            ),
+            new AutoMode("Right",
+                new SequentialCommandGroup(
+                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.right.mStartPoint),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.right.getTrajectory(null, Destination.RightTrenchFar),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.right.getTrajectory(Destination.RightTrenchFar, Destination.RightShootingPosition),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
+                )
+            ),
+            new AutoMode("Eight Ball",
+                new SequentialCommandGroup(
+                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.eightBall.mStartPoint),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.eightBall.getTrajectory(null, Destination.ShieldGeneratorFarRight),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.eightBall.getTrajectory(Destination.ShieldGeneratorFarRight, Destination.MiddleShootingPosition),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.eightBall.getTrajectory(Destination.MiddleShootingPosition, Destination.RightTrenchVeryFar),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.eightBall.getTrajectory(Destination.RightTrenchVeryFar, Destination.RightTrenchFar),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
+                    new TrajectoryTrackerCommand(mDrive,
+                    TrajectoryContainer.eightBall.getTrajectory(Destination.RightTrenchFar, Destination.RightShootingPosition),
+                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
+                )
+            ),
             new AutoMode("Characterize Drive",
                 new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter)),
             new AutoMode("Laser Turret",
@@ -163,6 +209,7 @@ public class RobotContainer
         // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
         //     mLauncherCommands.new Adjust(mLauncher), mLauncher::inRange));
         mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
+        mDrive.setDefaultCommand(new TeleOpCommand(mDrive, mJoystick));
 
         configureJoystickBindings();
         configureButtonBoardBindings();
@@ -314,7 +361,7 @@ public class RobotContainer
             waypoints.add(pose);
         }
         ArrayList<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
-        return TrajectoryContainer.generateTrajectory(waypoints, constraints);
+        return TrajectoryContainer.generateTrajectory(waypoints, constraints, false);
     }
 
     public TimedTrajectory<Pose2dWithCurvature> toControlPanel()
@@ -339,6 +386,6 @@ public class RobotContainer
         constraints.add(new VelocityLimitRegionConstraint(new Rectangle2d(
             new Translation2d(Units.inchesToMeters(290), Units.inchesToMeters(161.6)),
             new Translation2d(Units.inchesToMeters(428), Units.inchesToMeters(90))), .5));
-        return TrajectoryContainer.generateTrajectory(waypoints, constraints);
+        return TrajectoryContainer.generateTrajectory(waypoints, constraints, false);
     }
 }
