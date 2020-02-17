@@ -1,10 +1,10 @@
 package com.spartronics4915.frc2020.subsystems;
 
-import com.spartronics4915.lib.util.Logger;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
-import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.util.Arrays;
+import com.fazecast.jSerialComm.SerialPort;
+
 
 /**
  * The subsystem that controls the LED.
@@ -12,7 +12,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class LED extends SpartronicsSubsystem
 {
-    private SerialPort mBling;
+    /**
+     * jSerialComm is used for SerialPort communication to identify
+     * Arduino device.
+     *  - Use `$ lsusb -v` to get info on USB device
+     *  - kPortDescription is used for port enumeration
+     *  - Since LED subsystem only 'write' to the port, writeBytes()
+     *    method is used
+     * TODO -- verify Arduino returns port description and matches kPortDescription
+     */
+    private static final String kPortDescription = "Arduino SA Uno R3 (CDC ACM)";
+    private SerialPort mBlingPort = null;
 
     private static LED sInstance = null;
     private static BlingState mBlingState;
@@ -31,7 +41,16 @@ public class LED extends SpartronicsSubsystem
     {
         try
         {
-            mBling = new SerialPort(9600, SerialPort.Port.kUSB);
+            mBlingPort = Arrays.stream(SerialPort.getCommPorts())
+                .filter(
+                    // TODO -- verify Arduino returns port description
+                    (SerialPort p) -> p.getPortDescription().equals(kPortDescription) && !p.isOpen())
+                .findFirst().orElseThrow(() -> new RuntimeException("Device not found: " + kPortDescription));
+
+            mBlingPort.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+            mBlingPort.setFlowControl(SerialPort.FLOW_CONTROL_DISABLED);
+            mBlingPort.openPort();
+
             logInitialized(true);
         }
         catch (Exception e)
@@ -41,7 +60,7 @@ public class LED extends SpartronicsSubsystem
         }
     }
 
-    // TODO: validate desired periodic() function for LED subsystem
+    // Update LED blingState to dashboard
     @Override
     public void periodic()
     {
@@ -90,6 +109,7 @@ public class LED extends SpartronicsSubsystem
         // initialized we should not be calling any LED methods
         if (!isInitialized())
         {
+            logError("LED: setBlingState called but LED subsystem is NOT initialized!");
             return;
         }
 
@@ -98,10 +118,10 @@ public class LED extends SpartronicsSubsystem
 
         // Convert state to byte message and sent to serial port
         byte[] message = blingState.getBlingMessage();
-
-        // TODO: check return value of write and log
-        // Logger.notice("LED: (UNINITIALIZED) setBlingState is set to: " + blingState.name());
-        mBling.write(message, message.length);
-        Logger.notice("LED: setBlingState is set to: " + blingState.name());
+        if (mBlingPort.writeBytes(message, message.length) == -1)
+        {
+            logError("LED: Error writing to SerialPort - uninitializing LED subsystem");
+            logInitialized(false);
+        }
     }
 }
