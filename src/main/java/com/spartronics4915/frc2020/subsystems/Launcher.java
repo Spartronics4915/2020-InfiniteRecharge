@@ -1,5 +1,7 @@
 package com.spartronics4915.frc2020.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.commands.LauncherCommands;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
@@ -81,7 +83,7 @@ public class Launcher extends SpartronicsSubsystem
 
         // One BAG motor for turret
         mTurretMotor = SpartronicsSRX.makeMotor(Constants.Launcher.kTurretId,
-            SensorModel.fromMultiplier(1.0 / 1024.0 / 11.75 / 20.0 * 360.0));
+            SensorModel.fromMultiplier(Math.toDegrees(1.0 / 1024.0 / 11.75 / 20.0) * 2.0));// UNITS ARE GOOD
 
         if (mTurretMotor.hadStartupError())
         {
@@ -92,6 +94,7 @@ public class Launcher extends SpartronicsSubsystem
         {
             logInitialized(true);
         }
+        mTurretMotor.setSoftLimits(45, -45);
         mTurretEncoder = mTurretMotor.getEncoder();
         mTurretPIDController = new PIDController(Constants.Launcher.kTurretP, 0,
             Constants.Launcher.kTurretD);
@@ -142,7 +145,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public void turnTurret(Rotation2d absoluteAngle)
     {
-        targetTurretDirection=absoluteAngle;
+        targetTurretDirection = absoluteAngle;
         double output = mTurretPIDController.calculate(mTurretEncoder.getPosition(),
             absoluteAngle.getDegrees());
         mTurretMotor.setDutyCycle(output);
@@ -199,9 +202,9 @@ public class Launcher extends SpartronicsSubsystem
         return mFlywheelEncoder.getVelocity();
     }
 
-    public boolean isFlywheelSpun()
+    public Boolean isFlywheelSpun()
     {
-        return getTargetRPS()*0.95 <= getCurrentRPS();
+        return getTargetRPS() * 0.95 <= getCurrentRPS();
     }
 
     /**
@@ -231,7 +234,8 @@ public class Launcher extends SpartronicsSubsystem
      */
     public boolean inRange()
     {
-        // TODO figure out actual bounds of the range and make a check for the turret rotation
+        // TODO figure out actual bounds of the range and make a check for the turret
+        // rotation
         boolean inRange = true;
         return inRange;
     }
@@ -242,7 +246,8 @@ public class Launcher extends SpartronicsSubsystem
      */
     public boolean atTarget()
     {
-        return (getTargetRPS() == getCurrentRPS()) && (getTargetPitch() == getCurrentPitch()) && (getTurretDirection() == getTargetTurretDirection());
+        return (getTargetRPS() == getCurrentRPS()) && (getTargetPitch() == getCurrentPitch())
+            && (getTurretDirection() == getTargetTurretDirection());
     }
 
     /**
@@ -271,7 +276,7 @@ public class Launcher extends SpartronicsSubsystem
     {
         if (mTurretMotor.getOutputCurrent() > Constants.Launcher.kTurretStallAmps)
         {
-            mTurretEncoder.setPosition(-30.0);
+            mTurretEncoder.setPosition(-45.0);
             mTurretMotor.setDutyCycle(0.0);
             zeroed = true;
         }
