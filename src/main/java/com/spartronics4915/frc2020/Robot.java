@@ -96,7 +96,8 @@ public class Robot extends TimedRobot
         // suffered from CAN bus issues in the past.  Should this persist
         // Dashboard can rely on LiveWindow but then we don't receive
         // updates when robot is disabled.
-        SmartDashboard.putNumber("Robot/TotalCurrent", this.mPDP.getTotalCurrent());
+		// *** DEBUG *** for testbed
+        // SmartDashboard.putNumber("Robot/TotalCurrent", this.mPDP.getTotalCurrent());
     }    
 
     /**
