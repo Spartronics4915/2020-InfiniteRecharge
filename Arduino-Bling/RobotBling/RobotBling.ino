@@ -1,31 +1,31 @@
 /*
- * Spartronics Arduino Robot Bling Integration
- *
- * Arduino code for animation support:
- * - Uses rgbColor struct to break color into its components for easy reference
- * - Listens on serial port for new animation commands
- * - ALL animations require call to `delay()` tp listen for interruptions
- *
- * Important:
- * - Expected commands: ascii printable characters 0 and above
- * - For development, start Arduino's serial port to test commands and animations
- */
+   Spartronics Arduino Robot Bling Integration
+
+   Arduino code for animation support:
+   - Uses rgbColor struct to break color into its components for easy reference
+   - Listens on serial port for new animation commands
+   - ALL animations require call to `delay()` tp listen for interruptions
+
+   Important:
+   - Expected commands: ascii printable characters 0 and above
+   - For development, start Arduino's serial port to test commands and animations
+*/
 
 /*
- * Used by the magic _delay() function for running animations
- */
+   Used by the magic _delay() function for running animations
+*/
 #include <setjmp.h>
 
 /*
- * Setup Adafruit NeoMatrix
- * - Important: validate PIN connection and number of LEDs
- * - Note: this NeoMatrix does not have 'w' component
- */
+   Setup Adafruit NeoMatrix
+   - Important: validate PIN connection and number of LEDs
+   - Note: this NeoMatrix does not have 'w' component
+*/
 #include <Adafruit_NeoPixel.h>
 
 // Configuration for our LED strip and Arduino
 // TODO: Update PIN and NUM_LEDS for development and later robot deployment
-#define NUM_LEDS 60
+#define NUM_LEDS 30
 #define PIN 4
 
 // Allocate our pixel memory, set interface to match our hardware
@@ -35,18 +35,20 @@ Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800
 uint8_t defaultSystemBrightness = 32;
 
 /*
- * Animations require access to color information: both full color, or
- * its rgb parts This rgbColor struct provides an easy access via the
- * magic of 'union'
- *  - `union` allows storing different data types in the same memory location
- *  - Different rgbColor constructors enables easy parsing of data
- * Reminder: we don't have 'w' component in our current NeoPixels. This code
- * is not intended to be compatible with 4-component NeoPixels.
- */
+   Animations require access to color information: both full color, or
+   its rgb parts This rgbColor struct provides an easy access via the
+   magic of 'union'
+    - `union` allows storing different data types in the same memory location
+    - Different rgbColor constructors enables easy parsing of data
+   Reminder: we don't have 'w' component in our current NeoPixels. This code
+   is not intended to be compatible with 4-component NeoPixels.
+*/
 struct rgbColor
 {
   // initializers
-  rgbColor() { color = 0x000000; } // if 'w' component was present: 0x00000000
+  rgbColor() {
+    color = 0x000000;  // if 'w' component was present: 0x00000000
+  }
   rgbColor(uint32_t c) : color(c) {}
   rgbColor(uint8_t red, uint8_t green, uint8_t blue) : b(blue), g(green), r(red) {}
 
@@ -73,16 +75,25 @@ const rgbColor rgbColor_MAGENTA(0xff00ff);
 const rgbColor rgbColor_MAGENTA_DIM(0x330033);
 
 /*
- * Animation index
- *  - List of animation used by Spartronics -- MUST match LED subsystem BlingStates
- *  - loop() matches the animation to the command entered on the serial port
- */
+   Animation index
+    - List of animation used by Spartronics -- MUST match LED subsystem BlingStates
+    - loop() matches the animation to the command entered on the serial port
+*/
 enum
 {
-  OFF = 0,
-  DISABLED,
-  SOME_BLING_STATE_2,
-  SOME_BLING_STATE_3,
+  //NEEDS
+  BLING_COMMAND_OFF = 0,
+  BLING_COMMAND_STARTUP,
+  BLING_COMMAND_DISABLED,
+  //WANTS
+  BLING_COMMAND_AUTOMODE,
+  BLING_COMMAND_SHOOTING,
+  BLING_COMMAND_PICKUP,
+  BLING_COMMAND_LOADING,
+  BLING_COMMAND_CLIMBING,
+  BLING_COMMAND_VISION,
+  //NEED
+  BLING_COMMAND_DEFAULT,
 
   // Add new bling states immediately above this line
 
@@ -90,18 +101,18 @@ enum
 };
 
 /*
- * Magic delay function for driving animation library
- * - Note that the delay() function is overridden by the #define macro below
- * - Anytime there is a delay() included in an animation, it allows to check for new commands
- * - Commands drive the animation demo -- if a new command detected, we jump to the beginning
- * of the loop -- see loop()
- *
- * Important: _delay() is listening for printable characters '0' and above.
- * This matches the message sent by robot's LED subsystem
- */
+   Magic delay function for driving animation library
+   - Note that the delay() function is overridden by the #define macro below
+   - Anytime there is a delay() included in an animation, it allows to check for new commands
+   - Commands drive the animation demo -- if a new command detected, we jump to the beginning
+   of the loop -- see loop()
+
+   Important: _delay() is listening for printable characters '0' and above.
+   This matches the message sent by robot's LED subsystem
+*/
 
 // A global variable to hold the current command to be executed
-uint8_t currentCommand = OFF;
+uint8_t currentCommand = BLING_COMMAND_OFF;
 
 // The breadcrumb to get us back to the beginning of the loop
 // See 'man setjmp' for details on usage
@@ -145,8 +156,8 @@ void _delay(uint16_t timeout)
 #define delay _delay
 
 /*
- * Initialize system state, set up serial communications, and clear the LED strip
- */
+   Initialize system state, set up serial communications, and clear the LED strip
+*/
 void setup()
 {
   Serial.begin(9600); // Required for listening to new commands
@@ -160,10 +171,10 @@ void setup()
 }
 
 /*
- * In our loop:
- * - Setup breadcrumb for magic _delay()
- * - Add animations to switch statement --> ensure matches the animation library above
- */
+   In our loop:
+   - Setup breadcrumb for magic _delay()
+   - Add animations to switch statement --> ensure matches the animation library above
+*/
 void loop()
 {
   // Save a breadcrumb of where to jump back to
@@ -185,29 +196,79 @@ void loop()
   // Take the current command and set the parameters, i.e. animations
   switch (currentCommand)
   {
-  // Annimations -- commands to match the enums above!
-  case OFF:
-    // All pixels are off
-    solid(rgbColor_OFF);
-    break;
+    // Annimations -- commands to match the enums above!
 
-  case DISABLED:
-    // All pixels set to orange
-    solid(rgbColor_ORANGE);
-    break;
+    //NEEDS BELOW
 
-    // TODO: setup state and animation functions
-  case SOME_BLING_STATE_2:
-    // my_fancy_animation_function();
-    break;
+    case BLING_COMMAND_OFF:
+      //Done
 
-  case SOME_BLING_STATE_3:
-    // my_fancy_animation_function();
-    break;
+      solid(rgbColor_OFF);
+      break;
 
-  default:
-    solid(rgbColor_OFF);
-    // The currentCommand is not handled in this switch statement, and may be corrupt. Reset it to a good value.
-    currentCommand = OFF;
+    case BLING_COMMAND_STARTUP:
+      //Done
+
+      solid(rgbColor_ORANGE);
+      break;
+
+    case BLING_COMMAND_DISABLED:
+      //Done
+
+      strobe(rgbColor_ORANGE, 1, 100, 0);
+      break;
+    //Will adjust accordingly to the usual past robots blinking rate etc etc
+
+
+    //WANTS BELOW
+
+    case BLING_COMMAND_AUTOMODE:
+      //Done
+
+      solid(rgbColor_WHITE);
+      break;
+
+    case BLING_COMMAND_SHOOTING:
+      //Done but delay may need a retouch
+
+      strobe(rgbColor_WHITE, 1, 150, 2000);
+      break;
+
+    case BLING_COMMAND_PICKUP:
+      //Done
+
+      strobe(rgbColor_YELLOW, 1, 100, 0);
+      break;
+
+    case BLING_COMMAND_LOADING:
+      //Done
+
+      fillPixelByPixel (rgbColor_YELLOW, 50);
+      break;
+
+    case BLING_COMMAND_CLIMBING:
+      //In-progress, solid white is a placeholder
+
+      solid(rgbColor_WHITE);
+      break;
+
+    case BLING_COMMAND_VISION:
+      //Done
+
+      strobe(rgbColor_WHITE, 1, 150, 500);
+      break;
+
+    //NEED
+
+    case BLING_COMMAND_DEFAULT:
+      //Done
+
+      solid(rgbColor_BLUE);
+      break;
+
+    default:
+      solid(rgbColor_OFF);
+      // The currentCommand is not handled in this switch statement, and may be corrupt. Reset it to a good value.
+      currentCommand = BLING_COMMAND_OFF;
   }
 }

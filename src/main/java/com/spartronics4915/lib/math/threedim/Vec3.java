@@ -146,6 +146,16 @@ public class Vec3 extends DMatrix3
         return new Vec3(-this.a1, -this.a2, -this.a3);
     }
 
+    public String asPointString()
+    {
+        return String.format("pt3 %g %g %g", this.a1, this.a2, this.a3);
+    }
+
+    public String asDirectionString()
+    {
+        return String.format("vec3 %g %g %g", this.a1, this.a2, this.a3);
+    }
+
     public DMatrix3x3 outerProduct(Vec3 rhs)
     {
         DMatrix3x3 result = new DMatrix3x3();

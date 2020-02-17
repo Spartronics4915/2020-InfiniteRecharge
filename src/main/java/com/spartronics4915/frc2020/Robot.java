@@ -2,9 +2,12 @@ package com.spartronics4915.frc2020;
 
 import com.spartronics4915.lib.hardware.CANCounter;
 import com.spartronics4915.lib.util.Logger;
+import com.spartronics4915.frc2020.subsystems.LED;
 import com.spartronics4915.frc2020.subsystems.LED.BlingState;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,6 +23,11 @@ public class Robot extends TimedRobot
 {
     private Command mAutonomousCommand;
     private RobotContainer mRobotContainer;
+
+    // PDP is used to detect total-current-draw, in 2019 we had spurious
+    // CAN errors.  If this happens in 2020, we can live without it.
+    // See more notes in robotPeriodic below.
+    private PowerDistributionPanel mPDP; 
 
     private static final String kRobotLogVerbosity = "Robot/Verbosity";
 
@@ -52,6 +60,14 @@ public class Robot extends TimedRobot
             DriverStation.reportError(e.getMessage(), false);
         }
 
+        var shed = CommandScheduler.getInstance();
+        shed.onCommandInitialize((c) -> Logger.info(c.getName() + " initialized"));
+        shed.onCommandFinish((c) -> Logger.info(c.getName() + " finished"));
+        shed.onCommandInterrupt((c) -> Logger.info(c.getName() + " interrupted"));
+
+        // if CAN bus spews, delete (see notes at top)
+        this.mPDP = new PowerDistributionPanel(); 
+
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our autonomous chooser on the dashboard.
         mRobotContainer = new RobotContainer();
@@ -63,8 +79,25 @@ public class Robot extends TimedRobot
     @Override
     public void robotPeriodic()
     {
+        // robotPeriodic runs in all "match epochs".  
+        // Oddly, the scheduler is *not* operational during "disabled epoch" 
+        // because it follows the LiveWindow disabled state.  
+        // The scheduler is responsible for invoking all Subsystem's periodic
+        // method so we don't expect dashboard updates without this running.
+        // IterativeRobotBase is the one that controls the LiveWindow state 
+        // and it explicitly disables LiveWindow traffic when the robot is 
+        // disabled.  Contrast this with the "test epoch". In this mode, the 
+        // scheduler does run as do all LiveWindow functions.
         CommandScheduler.getInstance().run();
-    }
+
+        SmartDashboard.putNumber("Robot/BatteryVoltage", RobotController.getBatteryVoltage());
+
+        // TotalCurrent is delivered by PowerDistributionPanel which has
+        // suffered from CAN bus issues in the past.  Should this persist
+        // Dashboard can rely on LiveWindow but then we don't receive
+        // updates when robot is disabled.
+        SmartDashboard.putNumber("Robot/TotalCurrent", this.mPDP.getTotalCurrent());
+    }    
 
     /**
      * This function is called once each time the robot enters Disabled mode.
@@ -73,8 +106,8 @@ public class Robot extends TimedRobot
     public void disabledInit()
     {
         // TODO: verify call to DISABLED bling state
-        Logger.notice("@disabledInit: Requested BlingState.DISABLED");
-        // mRobotContainer.setBlingState(BlingState.DISABLED);
+        Logger.notice("@disabledInit: Requested BlingState.BLING_COMMAND_DISABLED");
+        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_DISABLED);
     }
 
     @Override

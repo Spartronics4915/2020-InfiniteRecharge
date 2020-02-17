@@ -16,10 +16,24 @@ import java.util.UUID;
  */
 public class Logger
 {
+    /**
+     * a ClientWrite subclass can intercept logging messages usually sent
+     * to stdout. This may be of use for unit testing.
+     */
+    public static abstract class ClientWriter
+    {
+        public void writeln(String str, Throwable Exception) {}
+    }
 
     private static final UUID sRunInstanceUUID = UUID.randomUUID();
     public static int sVerbosity = 2; // 0: notices and above, 1: info and above, 2: all
     private static final DateFormat sDateFormat = new SimpleDateFormat("hh:mm:ss");
+    private static ClientWriter sClientWriter = null;
+
+    public static void installClientWriter(ClientWriter w)
+    {
+        sClientWriter = w;
+    }
 
     public static void setVerbosity(String nm)
     {
@@ -130,14 +144,26 @@ public class Logger
 
     private static void printMarker(String mark)
     {
-        System.out.println(mark);
+        if(sClientWriter != null)
+        {
+            sClientWriter.writeln(mark, null);
+        }
+        else
+            System.out.println(mark);
     }
 
     private static void logMarker(String mark, Throwable nullableException)
     {
-        printMarker(mark);
-        if (nullableException != null)
-            nullableException.printStackTrace();
+        if(sClientWriter != null)
+        {
+            sClientWriter.writeln(mark, nullableException);
+        }
+        else
+        {
+            printMarker(mark);
+            if (nullableException != null)
+                nullableException.printStackTrace();
+        }
         try (PrintWriter writer = new PrintWriter(new FileWriter(
             Paths.get(System.getProperty("user.home"), "crash_tracking.txt").toString(), true)))
         {
