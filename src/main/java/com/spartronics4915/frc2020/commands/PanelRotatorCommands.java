@@ -211,8 +211,7 @@ public class PanelRotatorCommands
         public boolean isFinished()
         {
             // If the confidence in Color is too low, we're likely looking up at the ceiling
-            // and
-            // not aligned with the Control Panel.
+            // and not aligned with the Control Panel.
             if (mPanelRotator.getColorConfidence() < Constants.PanelRotator.kConfidenceMinimum)
             {
                 mPanelRotator.logError("Confidence too low!");
