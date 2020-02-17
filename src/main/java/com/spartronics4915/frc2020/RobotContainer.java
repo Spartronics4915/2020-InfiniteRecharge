@@ -46,31 +46,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class RobotContainer
 {
-    private static class AutoMode
-    {
-        public final String name;
-        public final Command command;
-
-        public AutoMode(String name, Command command)
-        {
-            this.name = name;
-            this.command = command;
-        }
-    }
-
     private static final String kAutoOptionsKey = "AutoStrategyOptions";
-    public static final AutoMode kDefaultAutoMode = new AutoMode("All: Do Nothing", new Command()
-    {
-        @Override
-        public Set<Subsystem> getRequirements()
-        {
-            return Set.of();
-        }
-    });
 
     public final NetworkTableEntry mAutoModeEntry = NetworkTableInstance.getDefault()
         .getTable("SmartDashboard").getEntry("AutoStrategy");
-    public final AutoMode[] mAutoModes;
 
     /* subsystems */
     private final Climber mClimber;
@@ -94,6 +73,7 @@ public class RobotContainer
     private final Drive mDrive;
     private final RamseteTracker mRamseteController = new RamseteTracker(2, 0.7);
     private final RobotStateEstimator mStateEstimator;
+    private final TrajectoryContainer.AutoMode[] mAutoModes;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -120,80 +100,10 @@ public class RobotContainer
             () -> mStateEstimator.stop(), mStateEstimator);
         mStateEstimator.setDefaultCommand(slamraCommand);
 
-        mAutoModes = new AutoMode[] {kDefaultAutoMode,
-            new AutoMode("Drive Straight", new SequentialCommandGroup(
-                new StateMapResetCommand(mStateEstimator,
-                    TrajectoryContainer.driveStraight.mStartPoint),
-                new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.driveStraight.getTrajectory(null, Destination.kJustAhead),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()))),
-            new AutoMode("Drive Straight Reversed",
-                new SequentialCommandGroup(
-                    new StateMapResetCommand(mStateEstimator,
-                        TrajectoryContainer.driveStraightReversed.mStartPoint),
-                    new TrajectoryTrackerCommand(mDrive,
-                        TrajectoryContainer.driveStraightReversed.getTrajectory(null,
-                            Destination.kJustBehind),
-                        mRamseteController, mStateEstimator.getEncoderRobotStateMap()))),
-            new AutoMode("Left",
-                new SequentialCommandGroup(
-                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.left.mStartPoint),
-                    new TrajectoryTrackerCommand(mDrive,
-                        TrajectoryContainer.left.getTrajectory(null, Destination.kLeftTrenchFar),
-                        mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                    new TrajectoryTrackerCommand(mDrive,
-                        TrajectoryContainer.left.getTrajectory(Destination.kLeftTrenchFar,
-                            Destination.kLeftShootingPosition),
-                        mRamseteController, mStateEstimator.getEncoderRobotStateMap()))),
-            new AutoMode("Middle", new SequentialCommandGroup(
-                new StateMapResetCommand(mStateEstimator, TrajectoryContainer.middle.mStartPoint),
-                new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.middle.getTrajectory(null,
-                        Destination.kShieldGeneratorFarRight),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.middle.getTrajectory(Destination.kShieldGeneratorFarRight,
-                        Destination.kMiddleShootingPosition),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()))),
-            new AutoMode("Right", new SequentialCommandGroup(
-                new StateMapResetCommand(mStateEstimator, TrajectoryContainer.right.mStartPoint),
-                new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.right.getTrajectory(null, Destination.kRightTrenchFar),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.right.getTrajectory(Destination.kRightTrenchFar,
-                        Destination.kRightShootingPosition),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()))),
-            new AutoMode("Eight Ball", new SequentialCommandGroup(
-                new StateMapResetCommand(mStateEstimator,
-                    TrajectoryContainer.eightBall.mStartPoint),
-                new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(null,
-                        Destination.kShieldGeneratorFarRight),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(Destination.kShieldGeneratorFarRight,
-                        Destination.kEightBallIntermediate),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(Destination.kEightBallIntermediate,
-                        Destination.kRightTrenchFar),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(Destination.kRightTrenchFar,
-                        Destination.kRightShootingPosition),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()))),
-            new AutoMode("Characterize Drive",
-                new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter)),
-            new AutoMode("Laser Turret",
-                new LaserTurretToFieldPose(mStateEstimator.getCameraRobotStateMap())),
-            new AutoMode("Right: Through Trench",
-                new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.left.getTrajectory(null, Destination.kLeftTrenchFar),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()))};
 
         mStateEstimator.resetRobotStateMaps(new Pose2d());
 
+        mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController);
         String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
             .collect(Collectors.joining(","));
         SmartDashboard.putString(kAutoOptionsKey, autoModeList);
@@ -372,72 +282,6 @@ public class RobotContainer
         }
 
         Logger.error("AutoModeSelector failed to select auto mode: " + selectedModeName);
-        return kDefaultAutoMode.command;
-    }
-
-    public TimedTrajectory<Pose2dWithCurvature> throughTrench()
-    {
-        ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
-        Pose2d[] intermediate = new Pose2d[] {
-            new Pose2d(Units.inchesToMeters(424), Units.inchesToMeters(135),
-                Rotation2d.fromDegrees(180)),
-            new Pose2d(Units.inchesToMeters(207), Units.inchesToMeters(135),
-                Rotation2d.fromDegrees(180))};
-        for (int i = 0; i < intermediate.length; i++)
-        {
-            Pose2d pose = intermediate[i];
-            intermediate[i] = new Pose2d(pose.getTranslation().getX() - Units.inchesToMeters(312.5),
-                pose.getTranslation().getY(), pose.getRotation());
-        }
-        RobotStateMap stateMap = mStateEstimator.getEncoderRobotStateMap();
-        Pose2d robotPose = stateMap.getLatestState().pose;
-        double robotX = robotPose.getTranslation().getX();
-        if (robotX < Units.inchesToMeters(312.5))
-        {
-            for (int i = 0; i < intermediate.length; i++)
-            {
-                Pose2d pose = intermediate[i];
-                intermediate[i] = new Pose2d(-pose.getTranslation().getX(),
-                    pose.getTranslation().getY(), Rotation2d.fromDegrees(0));
-            }
-        }
-        for (int i = 0; i < intermediate.length; i++)
-        {
-            Pose2d pose = intermediate[i];
-            intermediate[i] = new Pose2d(pose.getTranslation().getX() + Units.inchesToMeters(312.5),
-                pose.getTranslation().getY(), pose.getRotation());
-        }
-        waypoints.add(robotPose);
-        for (Pose2d pose : intermediate)
-        {
-            waypoints.add(pose);
-        }
-        ArrayList<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
-        return TrajectoryContainer.generateTrajectory(waypoints, constraints, false);
-    }
-
-    public TimedTrajectory<Pose2dWithCurvature> toControlPanel()
-    {
-        ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
-        Pose2d pose = mStateEstimator.getEncoderRobotStateMap().getLatestState().pose;
-        waypoints.add(pose);
-        Translation2d p = pose.getTranslation();
-        Pose2d nextToControlPanel;
-        if (p.getX() < Units.inchesToMeters(359))
-        {
-            nextToControlPanel = new Pose2d(Units.inchesToMeters(328), Units.inchesToMeters(135),
-                Rotation2d.fromDegrees(0));
-        }
-        else
-        {
-            nextToControlPanel = new Pose2d(Units.inchesToMeters(390), Units.inchesToMeters(135),
-                Rotation2d.fromDegrees(180));
-        }
-        waypoints.add(nextToControlPanel);
-        ArrayList<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
-        constraints.add(new VelocityLimitRegionConstraint(new Rectangle2d(
-            new Translation2d(Units.inchesToMeters(290), Units.inchesToMeters(161.6)),
-            new Translation2d(Units.inchesToMeters(428), Units.inchesToMeters(90))), .5));
-        return TrajectoryContainer.generateTrajectory(waypoints, constraints, false);
+        return TrajectoryContainer.kDefaultAutoMode.command;
     }
 }
