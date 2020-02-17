@@ -11,7 +11,6 @@ public class SpartronicsXRS450 implements SpartronicsIMU
     @Override
     public Rotation2d getYaw()
     {
-        System.out.println(mGyro.getAngle());
         return Rotation2d.fromDegrees(-mGyro.getAngle());
     }
 }

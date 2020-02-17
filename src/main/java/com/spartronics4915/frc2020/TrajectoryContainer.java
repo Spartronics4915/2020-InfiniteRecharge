@@ -24,9 +24,17 @@ public class TrajectoryContainer
 {
     public static enum Destination
     {
-        LeftTrenchFar(394, 134, 120), LeftShootingPosition(508, 5, 148.69), RightTrenchFar(304, -134, 180), RightTrenchVeryFar(404, -134, 180),
-        RightTrenchNear(242, -134, 180), RightShootingPosition(421, -121, 194.36),
-        ShieldGeneratorFarRight(400, -38, 115), ShieldGeneratorNearRight(380, -58, 50), MiddleShootingPosition(456, -67, 180), justAhead(120, 0, 0), justBehind(-120, 0, 0);
+        kLeftTrenchFar(394, 134, 120), 
+        kLeftShootingPosition(508, 5, 148.69),
+        kRightTrenchFar(304, -134, 180), 
+        kRightTrenchVeryFar(404, -134, 180),
+        kRightTrenchNear(242, -134, 180), 
+        kRightShootingPosition(421, -121, 194.36),
+        kShieldGeneratorFarRight(390, -38, 115),
+        kShieldGeneratorNearRight(340, -60, 60),
+        kMiddleShootingPosition(456, -65, 180),
+        kJustAhead(120, 0, 0),
+        kJustBehind(-120, 0, 0);
 
         public final Pose2d pose;
 
@@ -151,47 +159,47 @@ public class TrajectoryContainer
     {
         // left
         var leftTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        leftTrajectories.put(new DestinationCouple(null, Destination.LeftTrenchFar, false),
+        leftTrajectories.put(new DestinationCouple(null, Destination.kLeftTrenchFar, false),
                 Arrays.asList());
         leftTrajectories.put(
-                new DestinationCouple(Destination.LeftTrenchFar, Destination.LeftShootingPosition, true),
+                new DestinationCouple(Destination.kLeftTrenchFar, Destination.kLeftShootingPosition, true),
                 Arrays.asList());
 
         left.generateTrajectories(leftTrajectories);
 
         // middle
         var middleTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        middleTrajectories.put(new DestinationCouple(null, Destination.ShieldGeneratorNearRight, false),
+        middleTrajectories.put(new DestinationCouple(null, Destination.kShieldGeneratorNearRight, false),
                 Arrays.asList());
-        middleTrajectories.put(new DestinationCouple(Destination.ShieldGeneratorNearRight, Destination.ShieldGeneratorFarRight, true), Arrays.asList());        
-        middleTrajectories.put(new DestinationCouple(Destination.ShieldGeneratorFarRight, Destination.MiddleShootingPosition, true), Arrays.asList());
+        middleTrajectories.put(new DestinationCouple(Destination.kShieldGeneratorNearRight, Destination.kShieldGeneratorFarRight, true), Arrays.asList());        
+        middleTrajectories.put(new DestinationCouple(Destination.kShieldGeneratorFarRight, Destination.kMiddleShootingPosition, true), Arrays.asList());
 
         middle.generateTrajectories(middleTrajectories);
         // right
         var rightTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        rightTrajectories.put(new DestinationCouple(null, Destination.RightTrenchFar, false),
+        rightTrajectories.put(new DestinationCouple(null, Destination.kRightTrenchFar, false),
                 Arrays.asList());
-        rightTrajectories.put(new DestinationCouple(Destination.RightTrenchFar,
-                Destination.RightShootingPosition, true), Arrays.asList());
+        rightTrajectories.put(new DestinationCouple(Destination.kRightTrenchFar,
+                Destination.kRightShootingPosition, true), Arrays.asList());
 
         right.generateTrajectories(rightTrajectories);
 
         //eight ball
         var eightBallTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        eightBallTrajectories.put(new DestinationCouple(null, Destination.ShieldGeneratorNearRight, false), Arrays.asList());
-        eightBallTrajectories.put(new DestinationCouple(Destination.ShieldGeneratorNearRight, Destination.ShieldGeneratorFarRight, false), Arrays.asList());
-        eightBallTrajectories.put(new DestinationCouple(Destination.ShieldGeneratorFarRight, Destination.MiddleShootingPosition, true), Arrays.asList());
-        eightBallTrajectories.put(new DestinationCouple(Destination.MiddleShootingPosition, Destination.RightTrenchVeryFar, false), Arrays.asList());
-        eightBallTrajectories.put(new DestinationCouple(Destination.RightTrenchVeryFar, Destination.RightTrenchFar, false), Arrays.asList());
-        eightBallTrajectories.put(new DestinationCouple(Destination.RightTrenchFar, Destination.RightShootingPosition, true), Arrays.asList());
+        eightBallTrajectories.put(new DestinationCouple(null, Destination.kShieldGeneratorNearRight, false), Arrays.asList());
+        eightBallTrajectories.put(new DestinationCouple(Destination.kShieldGeneratorNearRight, Destination.kShieldGeneratorFarRight, false), Arrays.asList());
+        eightBallTrajectories.put(new DestinationCouple(Destination.kShieldGeneratorFarRight, Destination.kMiddleShootingPosition, true), Arrays.asList());
+        eightBallTrajectories.put(new DestinationCouple(Destination.kMiddleShootingPosition, Destination.kRightTrenchVeryFar, false), Arrays.asList());
+        eightBallTrajectories.put(new DestinationCouple(Destination.kRightTrenchVeryFar, Destination.kRightTrenchFar, false), Arrays.asList());
+        eightBallTrajectories.put(new DestinationCouple(Destination.kRightTrenchFar, Destination.kRightShootingPosition, true), Arrays.asList());
         eightBall.generateTrajectories(eightBallTrajectories);
 
         var driveStraightTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        driveStraightTrajectories.put(new DestinationCouple(null, Destination.justAhead, false), Arrays.asList());
+        driveStraightTrajectories.put(new DestinationCouple(null, Destination.kJustAhead, false), Arrays.asList());
         driveStraight.generateTrajectories(driveStraightTrajectories);
 
         var driveStraightReversedTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        driveStraightReversedTrajectories.put(new DestinationCouple(null, Destination.justBehind, true), Arrays.asList());
+        driveStraightReversedTrajectories.put(new DestinationCouple(null, Destination.kJustBehind, true), Arrays.asList());
         driveStraightReversed.generateTrajectories(driveStraightReversedTrajectories);
     }
 }
