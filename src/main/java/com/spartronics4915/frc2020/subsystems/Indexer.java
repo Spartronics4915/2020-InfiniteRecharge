@@ -140,7 +140,7 @@ public class Indexer extends SpartronicsSubsystem
         if (N != 0)
         {
             double deltaPosition = 0.25 * N; // Cast N to double and convert to rotations
-            mTargetPosition += deltaPosition;
+            mTargetPosition = deltaPosition + mIndexerMotor.getEncoder().getPosition();
             mIndexerMotor.setPosition(mTargetPosition); // Rotate Spinner to target.
         }
     }
@@ -226,7 +226,7 @@ public class Indexer extends SpartronicsSubsystem
 
     public boolean isAtPosition()
     {
-        return Math.abs(mTargetPosition - mIndexerMotor.getEncoder().getPosition()) > Constants.Indexer.Spinner.kPositionTolerance;
+        return Math.abs(mTargetPosition - mIndexerMotor.getEncoder().getPosition()) < Constants.Indexer.Spinner.kPositionTolerance;
     }
 
     public void addBalls(int i)
@@ -247,6 +247,7 @@ public class Indexer extends SpartronicsSubsystem
     public boolean areFinsAligned()
     {
         double positionMod90 = mIndexerMotor.getEncoder().getPosition() % 90;
-        return (positionMod90 >= 85 || positionMod90 <= 5); // if in a safe space to load a ball
+        return (positionMod90 >= (90 - Constants.Indexer.Spinner.kPositionTolerance)
+            || positionMod90 <= Constants.Indexer.Spinner.kPositionTolerance); // if in a safe space to load a ball
     }
 }
