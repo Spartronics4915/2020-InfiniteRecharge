@@ -1,6 +1,7 @@
 package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
+import com.spartronics4915.lib.util.Logger;
 
 import java.util.Arrays;
 import com.fazecast.jSerialComm.SerialPort;
@@ -52,6 +53,7 @@ public class LED extends SpartronicsSubsystem
             mBlingPort.openPort();
 
             logInitialized(true);
+			Logger.notice("LED: Initialized serial port");
         }
         catch (Exception e)
         {
