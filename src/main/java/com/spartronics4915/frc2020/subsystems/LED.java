@@ -22,7 +22,8 @@ public class LED extends SpartronicsSubsystem
      *    method is used
      * TODO -- verify Arduino returns port description and matches kPortDescription
      */
-    private static final String kPortDescription = "Arduino SA Uno R3 (CDC ACM)";
+    // private static final String kPortDescription = "Arduino SA Uno R3 (CDC ACM)";
+    private static final String kPortDescription = "ID 2341:0043";
     private SerialPort mBlingPort = null;
 
     private static LED sInstance = null;
