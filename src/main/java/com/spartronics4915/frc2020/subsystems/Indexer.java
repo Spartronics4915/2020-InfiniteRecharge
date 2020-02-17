@@ -115,7 +115,7 @@ public class Indexer extends SpartronicsSubsystem
      */
     public boolean getSlotBallLoaded()
     {
-        return mOpticalProxSensor.get();
+        return !mOpticalProxSensor.get();
     }
 
     /**
