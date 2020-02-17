@@ -66,13 +66,13 @@ public class IndexerCommands
                 && mIndexer.areFinsAligned())
                 mIndexer.transfer();
             else
-                mIndexer.endTransfer();
+                mIndexer.stopTransfer();
         }
 
         @Override
         public void end(boolean interrupted)
         {
-            mIndexer.endTransfer();
+            mIndexer.stopTransfer();
         }
 
         @Override
@@ -142,7 +142,7 @@ public class IndexerCommands
     {
         public EndTransfer(Indexer indexer)
         {
-            super(indexer::endTransfer, indexer);
+            super(indexer::stopTransfer, indexer);
         }
     }
 
@@ -163,6 +163,7 @@ public class IndexerCommands
      * Moves the spindexer to the nearest quarter rotation.
      * <p>
      * Through use of Math.ceil, seems to only move clockwise.
+     * FIXME: this function relies on toNearestQuarterRotation, which is broken
      */
     public class Align extends FunctionalCommand
     {

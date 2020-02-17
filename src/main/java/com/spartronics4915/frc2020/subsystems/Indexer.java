@@ -27,9 +27,6 @@ public class Indexer extends SpartronicsSubsystem
     private DigitalInput mOpticalProxSensor;
     private DigitalInput mIntakeProxSensor;
 
-    private boolean mIsLaunching = false;
-    private boolean mIsTransferring = false;
-
     private int mBallsHeld = 0;
 
     public boolean mIsFull = false;
@@ -111,7 +108,6 @@ public class Indexer extends SpartronicsSubsystem
      * with a proximity sensor returning a digital value.
      * <p>
      * The style of proximity sensor we use requires MANUAL calibration.
-     *
      * @return Whether a ball is held
      */
     public boolean getIntakeBallLoaded()
@@ -144,6 +140,7 @@ public class Indexer extends SpartronicsSubsystem
 
     /**
      * Move spinner to nearest position
+     * FIXME: broken
      */
     public void toNearestQuarterRotation()
     {
@@ -152,29 +149,14 @@ public class Indexer extends SpartronicsSubsystem
         mIndexerMotor.setPosition(mTargetPosition);
     }
 
-    /**
-     * @return whether or not the loader motor is running
-     */
-    public boolean isLaunching()
-    {
-        return mIsLaunching;
-    }
-
     public void transfer()
     {
-        mIsTransferring = true;
         mTransferMotor.setVelocity(Constants.Indexer.Transfer.kSpeed);
     }
 
-    public void endTransfer()
+    public void stopTransfer()
     {
-        mIsTransferring = false;
         mTransferMotor.setVelocity(0);
-    }
-
-    public boolean isTransferring()
-    {
-        return mIsTransferring;
     }
 
     /**
@@ -182,7 +164,8 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void stop()
     {
-        mIndexerMotor.setNeutral();
+        stopSpinner();
+        stopTransfer();
     }
 
     /**
