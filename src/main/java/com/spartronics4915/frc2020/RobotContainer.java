@@ -33,8 +33,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.PerpetualCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -163,6 +163,7 @@ public class RobotContainer
 
         // Default Commands run whenever no Command is scheduled to run for a subsystem
         mClimber.setDefaultCommand(mClimberCommands.new Stop(mClimber));
+        // mIndexer.setDefaultCommand(mIndexerCommands.new KindOfTerrible(mIndexer));
         mIntake.setDefaultCommand(mIntakeCommands.new Stop(mIntake));
         // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new Target(mLauncher),
         //     mLauncherCommands.new Adjust(mLauncher), mLauncher::inRange));
@@ -177,14 +178,6 @@ public class RobotContainer
         // Note: changes to bling state can be augmented with:
         // .alongWith(new SetBlingStateCommand(mLED, BlingState.SOME_STATE)));
 
-        /*
-        new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
-        new JoystickButton(mJoystick, 2).whenHeld(new LauncherCommands.Raise(mLauncher));
-        new JoystickButton(mJoystick, 3).whenHeld(new LauncherCommands.Lower(mLauncher));
-        new JoystickButton(mJoystick, 4).whenHeld(new LauncherCommands.Left(mLauncher));
-        new JoystickButton(mJoystick, 5).whenHeld(new LauncherCommands.Right(mLauncher));
-        */
-
         /* Switch Camera views
         new JoystickButton(mJoystick, 6).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kFrontId)));
@@ -195,23 +188,17 @@ public class RobotContainer
         new JoystickButton(mJoystick, 11).whenPressed(
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
-
-        // new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
-        // new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new TurretTest(mLauncher));
-        // new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
-        // new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
-        //    this::throughTrench, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
-        // new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
-        //    this::toControlPanel, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
-        // new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new AutoAimTurret(mLauncher,Constants.Launcher.goalLocation,mStateEstimator.getEncoderRobotStateMap()));
     }
 
     private void configureButtonBoardBindings()
     {
-        // new JoystickButton(mButtonBoard, 0).whenPressed(LauncherCommands.new Launch(mLauncher));
+        // new JoystickButton(mButtonBoard, 0).whenPressed(new SequentialCommandGroup(mIndexerCommands.new Align(mIndexer),
+        //     new ParallelDeadlineGroup(mIndexerCommands.new WaitAndFire(mIndexer), mPopperCommands.new Pop(mPopper))), false);
         // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new ConditionalCommand(mLauncherCommands.new Target));
 
-        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(mIntakeCommands.new Harvest(mIntake, mIndexer));
+        // TODO: does wrapping this in a PerpetualCommand actually work???
+        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(new PerpetualCommand(new ConditionalCommand(
+            mIntakeCommands.new Harvest(mIntake), mIntakeCommands.new Stop(mIntake), mIndexer::getIntakeBallLoaded)));
         new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
 
         new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));

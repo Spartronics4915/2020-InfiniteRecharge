@@ -1,39 +1,22 @@
 package com.spartronics4915.frc2020.commands;
 
-import com.spartronics4915.frc2020.subsystems.Indexer;
 import com.spartronics4915.frc2020.subsystems.Intake;
 
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 public class IntakeCommands
 {
     /**
-     * Commands with simple logic statements should be implemented as a
-     * {@link FunctionalCommand}. This saves the overhead of a full
-     * {@link CommandBase}, but still allows us to deal with isFinished.
-     * <p>
-     * A FunctionalCommand takes five inputs:
-     * @param Runnable onInit
-     * @param Runnable onExecute
-     * @param Consumer<Boolean> onEnd (boolean interrupted)
-     * @param BooleanSupplier isFinished
-     * @param Subsystem requirement For both the CommandScheduler and the above method references.
-     * <p>
-     * Each of these parameters corresponds with a method in the CommandBase class.
+     * This {@link InstantCommand} harvests balls by running {@link Intake}.harvest continuously.
+     * It is part of a Perpetual ConditionalCommand, which handles switching between Harvesting and Stopping.
      */
-
-    /**
-     * This {@link FunctionalCommand} harvests balls by running {@link Intake}.intake continuously,
-     * unless terminated by a second press of the Harvest button or
-     * a positive reading from {@link Intake}.isBallHeld.
-     */
-    public class Harvest extends FunctionalCommand
+    public class Harvest extends InstantCommand
     {
-        public Harvest(Intake intake, Indexer indexer)
+        public Harvest(Intake intake)
         {
-            super(() -> {}, intake::harvest, (Boolean b) -> intake.stop(), indexer::getIntakeBallLoaded, intake);
+            super(intake::harvest);
         }
     }
 
