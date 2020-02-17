@@ -59,6 +59,11 @@ public class Robot extends TimedRobot
             DriverStation.reportError(e.getMessage(), false);
         }
 
+        var shed = CommandScheduler.getInstance();
+        shed.onCommandInitialize((c) -> Logger.info(c.getName() + " initialized"));
+        shed.onCommandFinish((c) -> Logger.info(c.getName() + " finished"));
+        shed.onCommandInterrupt((c) -> Logger.info(c.getName() + " interrupted"));
+
         // if CAN bus spews, delete (see notes at top)
         this.mPDP = new PowerDistributionPanel(); 
 
