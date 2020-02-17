@@ -163,6 +163,8 @@ public class Robot extends TimedRobot
     public void testInit()
     {
         CommandScheduler.getInstance().cancelAll();
+		Logger.notice("@testInit: Requested BlingState.BLING_COMMAND_DEFAULT");
+		LED.getInstance().setBlingState(BlingState.BLING_COMMAND_DEFAULT);
     }
 
     /**
