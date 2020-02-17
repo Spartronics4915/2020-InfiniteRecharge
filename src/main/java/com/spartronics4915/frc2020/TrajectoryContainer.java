@@ -26,7 +26,7 @@ public class TrajectoryContainer
     {
         LeftTrenchFar(394, 134, 120), LeftShootingPosition(508, 5, 148.69), RightTrenchFar(304, -134, 180), RightTrenchVeryFar(404, -134, 180),
         RightTrenchNear(242, -134, 180), RightShootingPosition(421, -121, 194.36),
-        ShieldGeneratorFarRight(400, -58, 115), MiddleShootingPosition(456, -67, 180), justAhead(120, 0, 0), justBehind(-120, 0, 0);
+        ShieldGeneratorFarRight(400, -38, 115), ShieldGeneratorNearRight(380, -58, 50), MiddleShootingPosition(456, -67, 180), justAhead(120, 0, 0), justBehind(-120, 0, 0);
 
         public final Pose2d pose;
 
@@ -161,10 +161,10 @@ public class TrajectoryContainer
 
         // middle
         var middleTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        middleTrajectories.put(new DestinationCouple(null, Destination.ShieldGeneratorFarRight, false),
+        middleTrajectories.put(new DestinationCouple(null, Destination.ShieldGeneratorNearRight, false),
                 Arrays.asList());
-        middleTrajectories.put(new DestinationCouple(Destination.ShieldGeneratorFarRight,
-                Destination.MiddleShootingPosition, true), Arrays.asList());
+        middleTrajectories.put(new DestinationCouple(Destination.ShieldGeneratorNearRight, Destination.ShieldGeneratorFarRight, true), Arrays.asList());        
+        middleTrajectories.put(new DestinationCouple(Destination.ShieldGeneratorFarRight, Destination.MiddleShootingPosition, true), Arrays.asList());
 
         middle.generateTrajectories(middleTrajectories);
         // right
@@ -178,7 +178,8 @@ public class TrajectoryContainer
 
         //eight ball
         var eightBallTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        eightBallTrajectories.put(new DestinationCouple(null, Destination.ShieldGeneratorFarRight, false), Arrays.asList());
+        eightBallTrajectories.put(new DestinationCouple(null, Destination.ShieldGeneratorNearRight, false), Arrays.asList());
+        eightBallTrajectories.put(new DestinationCouple(Destination.ShieldGeneratorNearRight, Destination.ShieldGeneratorFarRight, false), Arrays.asList());
         eightBallTrajectories.put(new DestinationCouple(Destination.ShieldGeneratorFarRight, Destination.MiddleShootingPosition, true), Arrays.asList());
         eightBallTrajectories.put(new DestinationCouple(Destination.MiddleShootingPosition, Destination.RightTrenchVeryFar, false), Arrays.asList());
         eightBallTrajectories.put(new DestinationCouple(Destination.RightTrenchVeryFar, Destination.RightTrenchFar, false), Arrays.asList());
