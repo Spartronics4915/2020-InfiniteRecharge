@@ -30,7 +30,7 @@ public class PanelRotatorCommands
     {
         public Raise(PanelRotator panelRotator)
         {
-            super(() -> {}, panelRotator::raise, (Boolean b) -> panelRotator.stop(),
+            super(() -> {}, panelRotator::raise, (b) -> panelRotator.stop(),
                 panelRotator::getOpticalFlagUp, panelRotator);
         }
     }
