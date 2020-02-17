@@ -1,5 +1,6 @@
 package com.spartronics4915.frc2020.commands;
 
+import com.fasterxml.jackson.databind.deser.std.MapEntryDeserializer;
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.subsystems.PanelRotator;
 
@@ -40,10 +41,6 @@ public class PanelRotatorCommands
     {
         private final PanelRotator mPanelRotator;
         
-        private boolean endMethod = false;
-        private boolean stoppedByProximity = false;
-
-
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
         public Raise(PanelRotator panelRotator)
@@ -63,22 +60,13 @@ public class PanelRotatorCommands
         public void execute()
         {
             mPanelRotator.raise();
-            if(!mPanelRotator.getProximitySensor() && !mPanelRotator.getOpticalFlagUp())
-                endMethod = false;
-            else if(mPanelRotator.getOpticalFlagUp())
-                endMethod = true;
-            else if(mPanelRotator.getProximitySensor())
-                endMethod = true;
         }
 
         // Returns true when the command should end.
         @Override
         public boolean isFinished()
         {
-            return endMethod;
-            if(endMethod)
-                if(stoppedByProximity)
-                    //run next command
+            return mPanelRotator.getOpticalFlagUp();
         }
 
         // Called once the command ends or is interrupted.
@@ -160,6 +148,11 @@ public class PanelRotatorCommands
                 mPanelRotator.logError("Color Sensor: No data provided");
                 return true;
             }
+            else if (mPanelRotator.getLimitSwitchDown())
+            {
+                mPanelRotator.logError("Arm is down, so the wheel is stopped");
+                return true;
+            }
             else
                 return false;
 
@@ -224,7 +217,12 @@ public class PanelRotatorCommands
                 mPanelRotator.logError("Confidence too low!");
                 return true;
             }
-
+            else if (mPanelRotator.getLimitSwitchDown())
+            {
+                mPanelRotator.logError("Arm is down, so the wheel is stopped");
+                return true;
+            }
+            
             // If the detected color has changed, iterate the eighths counter.
             currentColor = mPanelRotator.getRotatedColor();
             if (currentColor != lastColor)
