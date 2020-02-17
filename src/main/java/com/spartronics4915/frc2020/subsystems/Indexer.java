@@ -116,7 +116,7 @@ public class Indexer extends SpartronicsSubsystem
      */
     public boolean getIntakeBallLoaded()
     {
-        return !mIntakeProxSensor.get();
+        return mIntakeProxSensor.get();
     }
 
     /**
@@ -127,8 +127,8 @@ public class Indexer extends SpartronicsSubsystem
     {
         if (N != 0)
         {
-            double deltaPosition = 0.25 * N; // Cast N to double and convert to rotations
-            mTargetPosition += deltaPosition;
+            double deltaPosition = 0.25 * N; // Convert N to rotations
+            mTargetPosition = deltaPosition + mIndexerMotor.getEncoder().getPosition();
             mIndexerMotor.setPosition(mTargetPosition); // Rotate Spinner to target.
         }
     }
