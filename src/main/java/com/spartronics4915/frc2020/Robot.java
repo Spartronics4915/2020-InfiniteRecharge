@@ -126,6 +126,8 @@ public class Robot extends TimedRobot
         if (mAutonomousCommand != null)
         {
             mAutonomousCommand.schedule();
+			Logger.notice("@autonomousInit: Requested BlingState.BLING_COMMAND_AUTOMODE");
+			LED.getInstance().setBlingState(BlingState.BLING_COMMAND_AUTOMODE);
         }
     }
 
@@ -143,6 +145,8 @@ public class Robot extends TimedRobot
         if (mAutonomousCommand != null)
         {
             mAutonomousCommand.cancel();
+			Logger.notice("@teleopInit: Requested BlingState.BLING_COMMAND_STARTUP");
+			LED.getInstance().setBlingState(BlingState.BLING_COMMAND_STARTUP);
         }
     }
 
