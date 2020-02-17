@@ -64,7 +64,7 @@ public final class Constants
         {
             public static final int kMotorId = 11;
             public static final double kConversionRatio = 1;
-            public static final double kSpeed = 1;
+            public static final double kSpeed = -1;
         }
 
         public static final int kLimitSwitchId = 8; // Digital

@@ -131,9 +131,9 @@ public class IndexerCommands
      * <p>
      * A workaround for being unable to schedule parallel commands within the same subsystem.
      */
-    public class StartLaunch extends InstantCommand
+    public class StartKicker extends InstantCommand
     {
-        public StartLaunch(Indexer indexer)
+        public StartKicker(Indexer indexer)
         {
             super(indexer::launch, indexer);
         }
@@ -144,9 +144,9 @@ public class IndexerCommands
      * <p>
      * A workaround for being unable to schedule parallel commands within the same subsystem.
      */
-    public class EndLaunch extends InstantCommand
+    public class EndKicker extends InstantCommand
     {
-        public EndLaunch(Indexer indexer)
+        public EndKicker(Indexer indexer)
         {
             super(indexer::endLaunch, indexer);
         }
@@ -193,8 +193,13 @@ public class IndexerCommands
     {
         public SpinIndexer(Indexer indexer, double N)
         {
-            super(() -> indexer.rotateN(N), () -> {}, (Boolean b) -> indexer.stopSpinner(),
-                () -> indexer.isAtPosition(), indexer);
+            super(
+                () -> indexer.rotateN(N),
+                () -> {},
+                (b) -> indexer.stopSpinner(),
+                () -> indexer.isAtPosition(),
+                indexer
+            );
         }
 
         @Override
@@ -241,7 +246,7 @@ public class IndexerCommands
             mIndexer = indexer;
             addCommands(
                 new AlignIndexer(mIndexer),
-                new EndLaunch(mIndexer), // for safety
+                new EndKicker(mIndexer), // for safety
                 new WaitForBallHeld(mIndexer),
                 new LoadBallToSlot(mIndexer, 0),
                 new SpinIndexer(mIndexer, 1),
@@ -279,6 +284,21 @@ public class IndexerCommands
         }
     }
 
+
+
+
+    private static double spinDistance;
+    public class SpinUpKicker extends SequentialCommandGroup
+    {
+        private Indexer mIndexer;
+        public SpinUpKicker(Indexer indexer) {
+            
+
+            addCommands(
+                
+            );
+        }
+    }
     /**
      * Loads a ball from the indexer to the launcher.
      * <p>
@@ -287,7 +307,6 @@ public class IndexerCommands
     public class LoadToLauncher extends SequentialCommandGroup
     {
         private Indexer mIndexer;
-
         public LoadToLauncher(Indexer indexer, int ballsToShoot)
         {
             mIndexer = indexer;
@@ -296,9 +315,9 @@ public class IndexerCommands
             addCommands(
                 new AlignIndexer(mIndexer),
                 new SpinIndexer(mIndexer, -spinDistance),
-                new StartLaunch(mIndexer),
+                new StartKicker(mIndexer),
                 new LoadBallToSlot(mIndexer, ballsToShoot + spinDistance),
-                new EndLaunch(mIndexer)
+                new EndKicker(mIndexer)
             );
         }
 
