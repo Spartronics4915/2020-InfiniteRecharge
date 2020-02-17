@@ -228,7 +228,7 @@ public class RobotContainer
 
         new JoystickButton(mJoystick, 1).whenPressed(mIndexerCommands.new ZeroSpinnerCommand(mIndexer));
 
-        new JoystickButton(mJoystick, 3).whenPressed(mIndexerCommands.new SpinIndexer(mIndexer, 1));
+        new JoystickButton(mJoystick, 2).whenPressed(mIndexerCommands.new SpinIndexer(mIndexer, 1));
         new JoystickButton(mJoystick, 4).whenPressed(mIndexerCommands.new StartTransfer(mIndexer))
             .whenReleased(mIndexerCommands.new EndTransfer(mIndexer));
         new JoystickButton(mJoystick, 5).whenPressed(mIndexerCommands.new StartKicker(mIndexer))
@@ -252,17 +252,17 @@ public class RobotContainer
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
 
-        new JoystickButton(mJoystick, 1)
-            .toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
-        new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new Zero(mLauncher));
-        new JoystickButton(mJoystick, 3)
-            .toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
-        new JoystickButton(mJoystick, 4)
-            .toggleWhenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
-        new JoystickButton(mJoystick, 5)
-            .toggleWhenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
-        new JoystickButton(mJoystick, 6)
-            .toggleWhenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
+        // new JoystickButton(mJoystick, 1)
+        //     .toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
+        // new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new Zero(mLauncher));
+        // new JoystickButton(mJoystick, 3)
+        //     .toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
+        // new JoystickButton(mJoystick, 4)
+        //     .toggleWhenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
+        // new JoystickButton(mJoystick, 5)
+        //     .toggleWhenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
+        // new JoystickButton(mJoystick, 6)
+        //     .toggleWhenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
 
         // Test Command that fires all the balls after setting the Flywheel and Hood
         // values from the smart dashboard
