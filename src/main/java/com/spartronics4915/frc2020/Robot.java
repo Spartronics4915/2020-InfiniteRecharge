@@ -2,6 +2,7 @@ package com.spartronics4915.frc2020;
 
 import com.spartronics4915.lib.hardware.CANCounter;
 import com.spartronics4915.lib.util.Logger;
+import com.spartronics4915.frc2020.subsystems.LED;
 import com.spartronics4915.frc2020.subsystems.LED.BlingState;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -101,7 +102,7 @@ public class Robot extends TimedRobot
     {
         // TODO: verify call to DISABLED bling state
         Logger.notice("@disabledInit: Requested BlingState.BLING_COMMAND_DISABLED");
-        // mRobotContainer.setBlingState(BlingState.BLING_COMMAND_DISABLED);
+        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_DISABLED);
     }
 
     @Override
