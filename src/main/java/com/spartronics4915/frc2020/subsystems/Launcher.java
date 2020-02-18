@@ -292,7 +292,11 @@ public class Launcher extends SpartronicsSubsystem
     public void periodic()
     {
         dashboardPutNumber("turretAngle", getTurretDirection().getDegrees());
-        dashboardPutNumber("currentFlywheelRPS", getCurrentRPS());
-        dashboardPutNumber("currentHoodAngle", getCurrentPitch().getDegrees());
+        dashboardPutNumber("turretAngleTarget", getTargetTurretDirection().getDegrees());
+
+        dashboardPutNumber("hoodAngle", getCurrentPitch().getDegrees());
+
+        dashboardPutNumber("flywheelRPS", getCurrentRPS());
+        dashboardPutNumber("flywheelRPSTarget", mTargetRPS);
     }
 }
