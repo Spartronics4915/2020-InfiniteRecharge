@@ -134,7 +134,6 @@ public final class Constants
 
     public static final class PanelRotator
     {
-        public static final int kProximitySensorId = 9;
         public static final int kOpticalFlagUpId = 7;
         public static final int kLimitSwitchDownId = 6;
         public static final int kSpinMotorId = 13;

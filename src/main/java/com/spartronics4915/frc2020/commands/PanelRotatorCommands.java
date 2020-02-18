@@ -1,6 +1,5 @@
 package com.spartronics4915.frc2020.commands;
 
-import com.fasterxml.jackson.databind.deser.std.MapEntryDeserializer;
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.subsystems.PanelRotator;
 
@@ -26,6 +25,13 @@ public class PanelRotatorCommands
      * Each of these parameters corresponds with a method in the CommandBase class.
      */
 
+     /**
+     * This Raise {@link FunctionalCommand} calls {@link PanelRotator}.raise
+     * repeatedly, until the upper optical flag is broken, at which point the
+     * motor will stop.
+     * <p>
+     * The motor will also stop raising if interrupted by another Command.
+     */
     /*
     public class Raise extends FunctionalCommand
     {

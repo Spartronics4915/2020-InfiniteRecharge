@@ -20,13 +20,12 @@ import edu.wpi.first.wpilibj.Ultrasonic;
 
 public class PanelRotator extends SpartronicsSubsystem
 {
-    private final DigitalInput mProximitySensor;
     private final DigitalInput mOpticalFlagUp;
     private final DigitalInput mLimitSwitchDown;
     private SpartronicsMotor mSpinMotor;
     private SpartronicsMotor mRaiseMotor;
-
     private final ColorSensorV3 mColorSensor;
+
     private String sensedColor;
     private String rotatedColor;
 
@@ -34,7 +33,6 @@ public class PanelRotator extends SpartronicsSubsystem
 
     public PanelRotator()
     {
-        mProximitySensor = new DigitalInput(Constants.PanelRotator.kProximitySensorId);
         mOpticalFlagUp = new DigitalInput(Constants.PanelRotator.kOpticalFlagUpId);
         mLimitSwitchDown = new DigitalInput(Constants.PanelRotator.kLimitSwitchDownId);
         mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId);
@@ -56,17 +54,6 @@ public class PanelRotator extends SpartronicsSubsystem
         {
             logInitialized(true);
         }
-    }
-
-    /**
-     * Checks if the proximity sensor is outputting "true"
-     *
-     * @return proximity sensor's boolean value
-     */
-    public boolean getProximitySensor()
-    {
-        // TODO: tune
-        return mProximitySensor.get();
     }
 
     /**
