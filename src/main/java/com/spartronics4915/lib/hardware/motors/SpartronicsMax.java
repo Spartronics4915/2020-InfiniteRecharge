@@ -276,7 +276,7 @@ public class SpartronicsMax implements SpartronicsMotor
     { // Set to slot
         mMotionProfileCruiseVelocity = mSensorModel.toNativeUnits(velocityMetersPerSecond);
         mPIDController.setSmartMotionMaxVelocity(mMotionProfileCruiseVelocity,
-            kVelocitySlotIdx);
+            kPositionSlotIdx);
     }
 
     @Override
@@ -289,13 +289,14 @@ public class SpartronicsMax implements SpartronicsMotor
     public void setMotionProfileMaxAcceleration(double accelerationMetersPerSecondSq)
     {
         mMotionProfileAcceleration = mSensorModel.toNativeUnits(accelerationMetersPerSecondSq);
-        mPIDController.setSmartMotionMaxAccel(mMotionProfileAcceleration, kVelocitySlotIdx);
+        mPIDController.setSmartMotionMaxAccel(mMotionProfileAcceleration, kPositionSlotIdx);
     }
 
     @Override
     public void setUseMotionProfileForPosition(boolean useMotionProfile)
     {
         mUseMotionProfileForPosition = useMotionProfile;
+        mPIDController.setSmartMotionAllowedClosedLoopError(2.0/360.0, kPositionSlotIdx);
     }
 
     @Override

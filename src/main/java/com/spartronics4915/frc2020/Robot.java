@@ -77,6 +77,9 @@ public class Robot extends TimedRobot
 
         SmartDashboard.putString("CANBusStatus", CANCounter.getStatusMessage());
         Logger.info("CAN bus status: " + CANCounter.getStatusMessage());
+
+        // print out available serial ports for information
+        LED.getInstance().enumerateAvailablePorts();
     }
 
     @Override
@@ -109,7 +112,6 @@ public class Robot extends TimedRobot
     @Override
     public void disabledInit()
     {
-        // TODO: verify call to DISABLED bling state
         Logger.notice("@disabledInit: Requested BlingState.BLING_COMMAND_DISABLED");
         LED.getInstance().setBlingState(BlingState.BLING_COMMAND_DISABLED);
     }
@@ -133,6 +135,8 @@ public class Robot extends TimedRobot
 			Logger.notice("@autonomousInit: Requested BlingState.BLING_COMMAND_AUTOMODE");
 			LED.getInstance().setBlingState(BlingState.BLING_COMMAND_AUTOMODE);
         }
+
+        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_AUTOMODE);
     }
 
     /**
@@ -152,6 +156,8 @@ public class Robot extends TimedRobot
 			Logger.notice("@teleopInit: Requested BlingState.BLING_COMMAND_STARTUP");
 			LED.getInstance().setBlingState(BlingState.BLING_COMMAND_STARTUP);
         }
+
+        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_STARTUP);
     }
 
     /**
@@ -160,7 +166,6 @@ public class Robot extends TimedRobot
     @Override
     public void teleopPeriodic()
     {
-
     }
 
     @Override
