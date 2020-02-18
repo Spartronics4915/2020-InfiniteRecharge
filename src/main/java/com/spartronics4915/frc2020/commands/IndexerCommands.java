@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -76,6 +75,7 @@ public class IndexerCommands
                 mIndexer.transfer();
             else
                 mIndexer.endTransfer();
+            mIndexer.goToPosition();
         }
 
         @Override
@@ -199,7 +199,7 @@ public class IndexerCommands
         {
             super(
                 () -> indexer.rotateN(N),
-                () -> {},
+                indexer::goToPosition,
                 (b) -> indexer.stopSpinner(),
                 () -> indexer.isAtPosition(),
                 indexer
@@ -223,8 +223,13 @@ public class IndexerCommands
     {
         public AlignIndexer(Indexer indexer)
         {
-            super(indexer::toNearestQuarterRotation, () -> {}, (Boolean b) -> indexer.stopSpinner(),
-                () -> indexer.isAtPosition(), indexer);
+            super( 
+                indexer::toNearestQuarterRotation, 
+                indexer::goToPosition,
+                (Boolean b) -> indexer.stopSpinner(),
+                () -> indexer.isAtPosition(),
+                indexer
+            );
         }
 
         @Override
