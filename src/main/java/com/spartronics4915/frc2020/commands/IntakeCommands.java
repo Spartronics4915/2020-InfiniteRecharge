@@ -33,7 +33,7 @@ public class IntakeCommands
     {
         public Harvest(Intake intake)
         {
-            super(() -> {}, intake::harvest, (Boolean b) -> intake.stop(), intake);
+            super(() -> {}, intake::harvest, (Boolean b) -> intake.stop(), () -> false, intake);
         }
     }
 
