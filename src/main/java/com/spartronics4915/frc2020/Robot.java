@@ -66,11 +66,14 @@ public class Robot extends TimedRobot
         shed.onCommandInterrupt((c) -> Logger.info(c.getName() + " interrupted"));
 
         // if CAN bus spews, delete (see notes at top)
-        this.mPDP = new PowerDistributionPanel(); 
+        // this.mPDP = new PowerDistributionPanel(); 
 
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our autonomous chooser on the dashboard.
         mRobotContainer = new RobotContainer();
+        Logger.notice("@robotInit: Requested BlingState.BLING_COMMAND_OFF");
+        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_OFF);
+
 
         SmartDashboard.putString("CANBusStatus", CANCounter.getStatusMessage());
         Logger.info("CAN bus status: " + CANCounter.getStatusMessage());
@@ -99,7 +102,8 @@ public class Robot extends TimedRobot
         // suffered from CAN bus issues in the past.  Should this persist
         // Dashboard can rely on LiveWindow but then we don't receive
         // updates when robot is disabled.
-        SmartDashboard.putNumber("Robot/TotalCurrent", this.mPDP.getTotalCurrent());
+		// *** DEBUG *** for testbed
+        // SmartDashboard.putNumber("Robot/TotalCurrent", this.mPDP.getTotalCurrent());
     }    
 
     /**
@@ -128,6 +132,8 @@ public class Robot extends TimedRobot
         if (mAutonomousCommand != null)
         {
             mAutonomousCommand.schedule();
+			Logger.notice("@autonomousInit: Requested BlingState.BLING_COMMAND_AUTOMODE");
+			LED.getInstance().setBlingState(BlingState.BLING_COMMAND_AUTOMODE);
         }
 
         LED.getInstance().setBlingState(BlingState.BLING_COMMAND_AUTOMODE);
@@ -147,6 +153,8 @@ public class Robot extends TimedRobot
         if (mAutonomousCommand != null)
         {
             mAutonomousCommand.cancel();
+			Logger.notice("@teleopInit: Requested BlingState.BLING_COMMAND_STARTUP");
+			LED.getInstance().setBlingState(BlingState.BLING_COMMAND_STARTUP);
         }
 
         LED.getInstance().setBlingState(BlingState.BLING_COMMAND_STARTUP);
@@ -164,8 +172,8 @@ public class Robot extends TimedRobot
     public void testInit()
     {
         CommandScheduler.getInstance().cancelAll();
-
-        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_STARTUP);
+		Logger.notice("@testInit: Requested BlingState.BLING_COMMAND_DEFAULT");
+		LED.getInstance().setBlingState(BlingState.BLING_COMMAND_DEFAULT);
     }
 
     /**
