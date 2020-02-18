@@ -63,6 +63,7 @@ public class RobotContainer
     private final IndexerCommands mIndexerCommands;
     private final LauncherCommands mLauncherCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
+    private final SuperstructureCommands mSuperstructureCommands;
 
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
@@ -118,6 +119,8 @@ public class RobotContainer
         mLauncherCommands = new LauncherCommands(mStateEstimator.getEncoderRobotStateMap(),
             new Pose2d(-1, 0, Rotation2d.fromDegrees(180)));
         mPanelRotatorCommands = new PanelRotatorCommands();
+        mSuperstructureCommands = new SuperstructureCommands(mStateEstimator.getEncoderRobotStateMap(), 
+            new Pose2d(-1, 0, Rotation2d.fromDegrees(180)));
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
@@ -148,10 +151,7 @@ public class RobotContainer
             .whenReleased(mIndexerCommands.new EndTransfer(mIndexer));
         new JoystickButton(mJoystick, 5).whenPressed(mIndexerCommands.new StartKicker(mIndexer))
             .whenReleased(mIndexerCommands.new EndKicker(mIndexer));
-        new JoystickButton(mJoystick, 6).whenPressed(new SequentialCommandGroup(
-            mLauncherCommands.new WaitForFlywheel(mLauncher),
-            mIndexerCommands.new LoadToLauncher(mIndexer)
-        ));
+        new JoystickButton(mJoystick, 6).whenPressed(mSuperstructureCommands.new LaunchSequence(mIndexer, mLauncher));
         /*
         new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
         new JoystickButton(mJoystick, 2).whenHeld(new LauncherCommands.Raise(mLauncher));
@@ -219,9 +219,7 @@ public class RobotContainer
         // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new
         // ConditionalCommand(mLauncherCommands.new Target));
 
-        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(
-            new ParallelCommandGroup(mIntakeCommands.new Harvest(mIntake, mIndexer),
-                mIndexerCommands.new LoadFromIntake(mIndexer)));
+        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(mSuperstructureCommands.new IntakeRace(mIndexer, mIntake));
         new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
 
         new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));

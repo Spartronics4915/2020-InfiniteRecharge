@@ -31,9 +31,9 @@ public class IntakeCommands
      */
     public class Harvest extends FunctionalCommand
     {
-        public Harvest(Intake intake, Indexer indexer)
+        public Harvest(Intake intake)
         {
-            super(() -> {}, intake::harvest, (Boolean b) -> intake.stop(), indexer::getIntakeBallLoaded, intake);
+            super(() -> {}, intake::harvest, (Boolean b) -> intake.stop(), intake);
         }
     }
 
