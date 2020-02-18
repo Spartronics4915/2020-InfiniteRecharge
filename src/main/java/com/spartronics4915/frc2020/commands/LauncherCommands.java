@@ -45,6 +45,11 @@ public class LauncherCommands
             double distance = trackTarget(mLauncher);
             mLauncher.runFlywheel(mLauncher.calcRPS(distance));
         }
+
+        @Override
+        public void end(boolean interrupted) {
+            mLauncher.stopTurret();
+        }
     }
 
     public class TrackPassively extends CommandBase
@@ -138,13 +143,6 @@ public class LauncherCommands
             mLauncher.adjustHood(
                 Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("HoodAngle", 0)));
             mLauncher.turnTurret(Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("TurretAimAngle", 0)));
-        }
-
-        // Returns true when the command should end.
-        @Override
-        public boolean isFinished()
-        {
-            return mLauncher.isFlywheelSpun();
         }
 
         // Called once the command ends or is interrupted.

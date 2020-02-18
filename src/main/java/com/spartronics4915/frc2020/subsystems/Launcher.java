@@ -283,6 +283,11 @@ public class Launcher extends SpartronicsSubsystem
         return mTurretZeroed;
     }
 
+    public void stopTurret()
+    {
+        mTurretMotor.setDutyCycle(0);
+    }
+
     @Override
     public void periodic()
     {
