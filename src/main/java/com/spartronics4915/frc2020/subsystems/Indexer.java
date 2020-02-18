@@ -248,7 +248,7 @@ public class Indexer extends SpartronicsSubsystem
         dashboardPutNumber("targetPosition", mTargetPosition);
         dashboardPutNumber("position", mIndexerMotor.getEncoder().getPosition());
         dashboardPutNumber("ballsHeld", mBallsHeld);
-        dashboardPutNumber("isLaunching", mIsLaunching);
-        dashboardPutNumber("isTransferring", mIsTransferring);
+        dashboardPutBoolean("isLaunching", mIsLaunching);
+        dashboardPutBoolean("isTransferring", mIsTransferring);
     }
 }
