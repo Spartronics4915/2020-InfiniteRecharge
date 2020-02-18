@@ -66,7 +66,7 @@ public class Robot extends TimedRobot
         shed.onCommandInterrupt((c) -> Logger.info(c.getName() + " interrupted"));
 
         // if CAN bus spews, delete (see notes at top)
-        // this.mPDP = new PowerDistributionPanel(); 
+        this.mPDP = new PowerDistributionPanel(); 
 
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our autonomous chooser on the dashboard.
@@ -102,8 +102,7 @@ public class Robot extends TimedRobot
         // suffered from CAN bus issues in the past.  Should this persist
         // Dashboard can rely on LiveWindow but then we don't receive
         // updates when robot is disabled.
-		// *** DEBUG *** for testbed
-        // SmartDashboard.putNumber("Robot/TotalCurrent", this.mPDP.getTotalCurrent());
+        SmartDashboard.putNumber("Robot/TotalCurrent", this.mPDP.getTotalCurrent());
     }    
 
     /**
