@@ -5,7 +5,10 @@ import com.spartronics4915.frc2020.subsystems.Indexer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public class IndexerCommands
@@ -68,7 +71,7 @@ public class IndexerCommands
         @Override
         public void execute()
         {
-            if (mIndexer.getSlotBallLoaded() && !mIndexer.getIntakeBallLoaded()
+            if (!mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded()
                 && mIndexer.areFinsAligned())
                 mIndexer.transfer();
             else
@@ -84,7 +87,7 @@ public class IndexerCommands
         @Override
         public boolean isFinished()
         {
-            return (!mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded());
+            return mIndexer.getSlotBallLoaded() && !mIndexer.getIntakeBallLoaded();
         }
     }
 
@@ -123,6 +126,7 @@ public class IndexerCommands
         {
             mIndexer.setZero();
             mIndexer.stopSpinner();
+            mIndexer.returnToHome();
         }
     }
 
@@ -245,11 +249,16 @@ public class IndexerCommands
         {
             mIndexer = indexer;
             addCommands(
-                new AlignIndexer(mIndexer),
                 new EndKicker(mIndexer), // for safety
+                // new AlignIndexer(mIndexer),
                 new WaitForBallHeld(mIndexer),
                 new LoadBallToSlot(mIndexer, 0),
+                new ParallelCommandGroup(
+                    new WaitCommand(0.4),
+                    new StartTransfer(mIndexer)
+                ),
                 new SpinIndexer(mIndexer, 1),
+                new EndTransfer(mIndexer),
                 new InstantCommand(() -> mIndexer.addBalls(1), mIndexer)
             );
         }
@@ -257,7 +266,7 @@ public class IndexerCommands
         @Override
         public boolean isFinished()
         {
-            return (mIndexer.getIntakeBallLoaded() && mIndexer.getSlotBallLoaded());
+            return (mIndexer.getIntakeBallLoaded() && mIndexer.getSlotBallLoaded()) || super.isFinished();
         }
     }
 
@@ -283,22 +292,6 @@ public class IndexerCommands
             return (mIndexer.getIntakeBallLoaded() && mIndexer.getSlotBallLoaded());
         }
     }
-
-
-
-
-    private static double spinDistance;
-    public class SpinUpKicker extends SequentialCommandGroup
-    {
-        private Indexer mIndexer;
-        public SpinUpKicker(Indexer indexer) {
-            
-
-            addCommands(
-                
-            );
-        }
-    }
     /**
      * Loads a ball from the indexer to the launcher.
      * <p>
@@ -313,11 +306,18 @@ public class IndexerCommands
             double spinDistance = (mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded()) ? 0.5 : 0;
 
             addCommands(
-                new AlignIndexer(mIndexer),
+                // new AlignIndexer(mIndexer),
                 new SpinIndexer(mIndexer, -spinDistance),
                 new StartKicker(mIndexer),
-                new LoadBallToSlot(mIndexer, ballsToShoot + spinDistance),
-                new EndKicker(mIndexer)
+                new LoadBallToSlot(mIndexer, 1 + spinDistance),
+                new ParallelCommandGroup(
+                    new WaitCommand(0.4),
+                    new StartTransfer(mIndexer)
+                ),
+                new SpinIndexer(mIndexer, ballsToShoot - 1),
+                new EndKicker(mIndexer),
+                new EndTransfer(mIndexer),
+                new InstantCommand(() -> mIndexer.addBalls(-ballsToShoot), mIndexer)
             );
         }
 

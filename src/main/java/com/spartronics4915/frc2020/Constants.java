@@ -42,14 +42,14 @@ public final class Constants
             public static final int kMotorId = 9;
             public static final double kVelocityP = 0; // FIXME: stand-in values
             public static final double kVelocityD = 0;
-            public static final double kPositionP = 0.2;
+            public static final double kPositionP = 0.005;
             public static final double kPositionD = 0;
-            public static final double kConversionRatio = 1 / (192.0/20.0*9.0);
-            public static final double kMaxVelocity = 1.0/3.0;
-            public static final double kMaxAcceleration = 0.25;
+            public static final double kConversionRatio = 1.0 / (187.0/20.0*9.0);
+            public static final double kMaxVelocity = 2.0/3.0;
+            public static final double kMaxAcceleration = 0.5;
 
             /** Degrees */
-            public static final double kPositionTolerance = 5;
+            public static final double kPositionTolerance = 2.0;
         }
 
         public static final class Loader
@@ -64,7 +64,7 @@ public final class Constants
         {
             public static final int kMotorId = 11;
             public static final double kConversionRatio = 1;
-            public static final double kSpeed = -1;
+            public static final double kSpeed = -1.0;
         }
 
         public static final int kLimitSwitchId = 8; // Digital
@@ -105,7 +105,7 @@ public final class Constants
         // Vals for interpolating lookup table
         public static final double[] kDistanceTable = new double[]{0.0, 1.0};
         public static final double[] kAngleTable = new double[]{0.0, 30.0};
-        public static final double[] kRPSTable = new double[]{0.0, 30.0};
+        public static final double[] kRPSTable = new double[]{40.0, 40.0};
         public static final int kLookupTableSize = kDistanceTable.length;
 
         /** RPS */

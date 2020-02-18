@@ -212,7 +212,7 @@ public class RobotContainer
         mIntake.setDefaultCommand(mIntakeCommands.new Stop(mIntake));
         // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new TargetAndShoot(mLauncher),
         //     mLauncherCommands.new TrackPassively(mLauncher), mLauncher::inRange));
-        mLauncher.setDefaultCommand(mLauncherCommands.new TrackPassively(mLauncher));
+        mLauncher.setDefaultCommand(mLauncherCommands.new ShootBallTest(mLauncher));//mLauncherCommands.new TargetAndShoot(mLauncher));
         mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
         mDrive.setDefaultCommand(new TeleOpCommand(mDrive, mJoystick));
 
@@ -228,11 +228,15 @@ public class RobotContainer
 
         new JoystickButton(mJoystick, 1).whenPressed(mIndexerCommands.new ZeroSpinnerCommand(mIndexer));
 
-        new JoystickButton(mJoystick, 2).whenPressed(mIndexerCommands.new SpinIndexer(mIndexer, 1));
+        new JoystickButton(mJoystick, 2).whenPressed(mIndexerCommands.new SpinIndexer(mIndexer, 5));
         new JoystickButton(mJoystick, 4).whenPressed(mIndexerCommands.new StartTransfer(mIndexer))
             .whenReleased(mIndexerCommands.new EndTransfer(mIndexer));
         new JoystickButton(mJoystick, 5).whenPressed(mIndexerCommands.new StartKicker(mIndexer))
             .whenReleased(mIndexerCommands.new EndKicker(mIndexer));
+        new JoystickButton(mJoystick, 6).whenPressed(new SequentialCommandGroup(
+            mLauncherCommands.new WaitForFlywheel(mLauncher),
+            mIndexerCommands.new LoadToLauncher(mIndexer)
+        ));
         /*
         new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
         new JoystickButton(mJoystick, 2).whenHeld(new LauncherCommands.Raise(mLauncher));
@@ -318,7 +322,6 @@ public class RobotContainer
             .whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
 
         new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new ExtendMin(mClimber));
-        // new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new ExtendMax(mClimber));
 
         // new JoystickButton(mButtonBoard, 12)
         //     .whenPressed(mPanelRotatorCommands.new AutoSpinRotation(mPanelRotator));
