@@ -302,11 +302,20 @@ public class Launcher extends SpartronicsSubsystem
         return mTurretZeroed;
     }
 
+    public void stopTurret()
+    {
+        mTurretMotor.setDutyCycle(0);
+    }
+
     @Override
     public void periodic()
     {
         dashboardPutNumber("turretAngle", getTurretDirection().getDegrees());
-        dashboardPutNumber("currentFlywheelRPS", getCurrentRPS());
-        dashboardPutNumber("currentHoodAngle", getCurrentPitch().getDegrees());
+        dashboardPutNumber("turretAngleTarget", getTargetTurretDirection().getDegrees());
+
+        dashboardPutNumber("hoodAngle", getCurrentPitch().getDegrees());
+
+        dashboardPutNumber("flywheelRPS", getCurrentRPS());
+        dashboardPutNumber("flywheelRPSTarget", mTargetRPS);
     }
 }

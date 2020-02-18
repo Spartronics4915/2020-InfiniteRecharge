@@ -48,10 +48,7 @@ public class LauncherCommands
 
         @Override
         public void end(boolean interrupted) {
-            if(interrupted)
-            {
-                mLauncher.stopTurret();    
-            }
+            mLauncher.stopTurret();
         }
     }
 
@@ -150,17 +147,10 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            mLauncher.runFlywheel((double) mLauncher.dashboardGetNumber("FlywheelRPS", 0));
+            mLauncher.runFlywheel((double) mLauncher.dashboardGetNumber("flywheelRPSSlider", 0));
             mLauncher.adjustHood(
-                Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("HoodAngle", 0)));
-            mLauncher.turnTurret(Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("TurretAimAngle", 0)));
-        }
-
-        // Returns true when the command should end.
-        @Override
-        public boolean isFinished()
-        {
-            return mLauncher.isFlywheelSpun();
+                Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("hoodAngleSlider", 0)));
+            mLauncher.turnTurret(Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("turretAngleSlider", 0)));
         }
 
         // Called once the command ends or is interrupted.
@@ -203,11 +193,9 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            mLauncher.runFlywheel(
-                mLauncher.calcRPS((double) mLauncher.dashboardGetNumber("DistanceToTarget", 0)));
-            mLauncher.adjustHood(
-                mLauncher.calcPitch((double) mLauncher.dashboardGetNumber("DistanceToTarget", 0)));
-            mLauncher.turnTurret(Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("TurretAimAngle", 0)));
+            double dist = (double) mLauncher.dashboardGetNumber("targetDistanceSlider", 120);
+            mLauncher.runFlywheel(mLauncher.calcRPS(dist));
+            mLauncher.adjustHood(mLauncher.calcPitch(dist));
         }
 
         // Returns true when the command should end.

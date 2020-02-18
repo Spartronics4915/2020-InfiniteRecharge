@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import com.spartronics4915.frc2020.TrajectoryContainer.Destination;
 import com.spartronics4915.frc2020.commands.*;
 import com.spartronics4915.frc2020.subsystems.*;
-import com.spartronics4915.frc2020.subsystems.LED.BlingState;
 import com.spartronics4915.lib.hardware.sensors.T265Camera;
 import com.spartronics4915.lib.hardware.sensors.T265Camera.CameraJNIException;
 import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
@@ -36,9 +35,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -46,31 +43,10 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class RobotContainer
 {
-    private static class AutoMode
-    {
-        public final String name;
-        public final Command command;
-
-        public AutoMode(String name, Command command)
-        {
-            this.name = name;
-            this.command = command;
-        }
-    }
-
     private static final String kAutoOptionsKey = "AutoStrategyOptions";
-    public static final AutoMode kDefaultAutoMode = new AutoMode("All: Do Nothing", new Command()
-    {
-        @Override
-        public Set<Subsystem> getRequirements()
-        {
-            return Set.of();
-        }
-    });
 
     public final NetworkTableEntry mAutoModeEntry = NetworkTableInstance.getDefault()
         .getTable("SmartDashboard").getEntry("AutoStrategy");
-    public final AutoMode[] mAutoModes;
 
     /* subsystems */
     private final Climber mClimber;
@@ -87,6 +63,7 @@ public class RobotContainer
     private final IndexerCommands mIndexerCommands;
     private final LauncherCommands mLauncherCommands;
     private final PanelRotatorCommands mPanelRotatorCommands;
+    private final SuperstructureCommands mSuperstructureCommands;
 
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
@@ -94,6 +71,7 @@ public class RobotContainer
     private final Drive mDrive;
     private final RamseteTracker mRamseteController = new RamseteTracker(2, 0.7);
     private final RobotStateEstimator mStateEstimator;
+    private final TrajectoryContainer.AutoMode[] mAutoModes;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -120,77 +98,13 @@ public class RobotContainer
             () -> mStateEstimator.stop(), mStateEstimator);
         mStateEstimator.setDefaultCommand(slamraCommand);
 
-        mAutoModes = new AutoMode[]
-        {
-            kDefaultAutoMode,
-            new AutoMode("Left",
-                new SequentialCommandGroup(
-                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.left.mStartPoint),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.left.getTrajectory(null, Destination.LeftTrenchFar),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.left.getTrajectory(Destination.LeftTrenchFar, Destination.LeftShootingPosition),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
-                )
-            ),
-            new AutoMode("Middle",
-                new SequentialCommandGroup(
-                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.middle.mStartPoint),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.middle.getTrajectory(null, Destination.ShieldGeneratorFarRight),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.middle.getTrajectory(Destination.ShieldGeneratorFarRight, Destination.MiddleShootingPosition),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
-                )
-            ),
-            new AutoMode("Right",
-                new SequentialCommandGroup(
-                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.right.mStartPoint),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.right.getTrajectory(null, Destination.RightTrenchFar),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.right.getTrajectory(Destination.RightTrenchFar, Destination.RightShootingPosition),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
-                )
-            ),
-            new AutoMode("Eight Ball",
-                new SequentialCommandGroup(
-                    new StateMapResetCommand(mStateEstimator, TrajectoryContainer.eightBall.mStartPoint),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(null, Destination.ShieldGeneratorFarRight),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(Destination.ShieldGeneratorFarRight, Destination.MiddleShootingPosition),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(Destination.MiddleShootingPosition, Destination.RightTrenchVeryFar),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(Destination.RightTrenchVeryFar, Destination.RightTrenchFar),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()),
-                    new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.eightBall.getTrajectory(Destination.RightTrenchFar, Destination.RightShootingPosition),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap())
-                )
-            ),
-            new AutoMode("Characterize Drive",
-                new CharacterizeDriveBaseCommand(mDrive, Constants.Drive.kWheelDiameter)),
-            new AutoMode("Laser Turret",
-                new LaserTurretToFieldPose(mStateEstimator.getCameraRobotStateMap())),
-            new AutoMode("Right: Through Trench",
-                new TrajectoryTrackerCommand(mDrive,
-                    TrajectoryContainer.left.getTrajectory(null, Destination.LeftTrenchFar),
-                    mRamseteController, mStateEstimator.getEncoderRobotStateMap()))};
 
         mStateEstimator.resetRobotStateMaps(new Pose2d());
 
+        mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController);
         String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
             .collect(Collectors.joining(","));
         SmartDashboard.putString(kAutoOptionsKey, autoModeList);
-
         mClimber = new Climber();
         mIntake = new Intake();
         mIndexer = new Indexer();
@@ -205,6 +119,8 @@ public class RobotContainer
         mLauncherCommands = new LauncherCommands(mStateEstimator.getEncoderRobotStateMap(),
             new Pose2d(-1, 0, Rotation2d.fromDegrees(180)));
         mPanelRotatorCommands = new PanelRotatorCommands();
+        mSuperstructureCommands = new SuperstructureCommands(mStateEstimator.getEncoderRobotStateMap(), 
+            new Pose2d(-1, 0, Rotation2d.fromDegrees(180)));
 
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
@@ -214,7 +130,7 @@ public class RobotContainer
         mIntake.setDefaultCommand(mIntakeCommands.new Stop(mIntake));
         // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new TargetAndShoot(mLauncher),
         //     mLauncherCommands.new TrackPassively(mLauncher), mLauncher::inRange));
-        mLauncher.setDefaultCommand(mLauncherCommands.new TrackPassively(mLauncher));
+        mLauncher.setDefaultCommand(mLauncherCommands.new ShootBallTest(mLauncher));//mLauncherCommands.new TargetAndShoot(mLauncher));
         mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
         mDrive.setDefaultCommand(new TeleOpCommand(mDrive, mJoystick));
 
@@ -228,6 +144,14 @@ public class RobotContainer
         // Note: changes to bling state can be augmented with:
         // .alongWith(new SetBlingStateCommand(mLED, BlingState.SOME_STATE)));
 
+        new JoystickButton(mJoystick, 1).whenPressed(mIndexerCommands.new ZeroSpinnerCommand(mIndexer));
+
+        new JoystickButton(mJoystick, 2).whenPressed(mIndexerCommands.new SpinIndexer(mIndexer, 5));
+        new JoystickButton(mJoystick, 4).whenPressed(mIndexerCommands.new StartTransfer(mIndexer))
+            .whenReleased(mIndexerCommands.new EndTransfer(mIndexer));
+        new JoystickButton(mJoystick, 5).whenPressed(mIndexerCommands.new StartKicker(mIndexer))
+            .whenReleased(mIndexerCommands.new EndKicker(mIndexer));
+        new JoystickButton(mJoystick, 6).whenPressed(mSuperstructureCommands.new LaunchSequence(mIndexer, mLauncher));
         /*
         new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
         new JoystickButton(mJoystick, 2).whenHeld(new LauncherCommands.Raise(mLauncher));
@@ -247,17 +171,17 @@ public class RobotContainer
             new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
 
-        new JoystickButton(mJoystick, 1)
-            .toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
-        new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new Zero(mLauncher));
-        new JoystickButton(mJoystick, 3)
-            .toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
-        new JoystickButton(mJoystick, 4)
-            .toggleWhenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
-        new JoystickButton(mJoystick, 5)
-            .toggleWhenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
-        new JoystickButton(mJoystick, 6)
-            .toggleWhenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
+        // new JoystickButton(mJoystick, 1)
+        //     .toggleWhenPressed(mLauncherCommands.new ShootBallTest(mLauncher));
+        // new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new Zero(mLauncher));
+        // new JoystickButton(mJoystick, 3)
+        //     .toggleWhenPressed(mLauncherCommands.new HoodTest(mLauncher));
+        // new JoystickButton(mJoystick, 4)
+        //     .toggleWhenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));
+        // new JoystickButton(mJoystick, 5)
+        //     .toggleWhenPressed(mPanelRotatorCommands.new Lower(mPanelRotator));
+        // new JoystickButton(mJoystick, 6)
+        //     .toggleWhenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
 
         // Test Command that fires all the balls after setting the Flywheel and Hood
         // values from the smart dashboard
@@ -295,9 +219,7 @@ public class RobotContainer
         // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new
         // ConditionalCommand(mLauncherCommands.new Target));
 
-        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(
-            new ParallelCommandGroup(mIntakeCommands.new Harvest(mIntake, mIndexer),
-                mIndexerCommands.new LoadFromIntake(mIndexer)));
+        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(mSuperstructureCommands.new IntakeRace(mIndexer, mIntake));
         new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
 
         new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));
@@ -313,7 +235,6 @@ public class RobotContainer
             .whenPressed(mPanelRotatorCommands.new SpinToColor(mPanelRotator));
 
         new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new ExtendMin(mClimber));
-        // new JoystickButton(mButtonBoard, 11).whileHeld(mClimberCommands.new ExtendMax(mClimber));
 
         // new JoystickButton(mButtonBoard, 12)
         //     .whenPressed(mPanelRotatorCommands.new AutoSpinRotation(mPanelRotator));
@@ -365,72 +286,6 @@ public class RobotContainer
         }
 
         Logger.error("AutoModeSelector failed to select auto mode: " + selectedModeName);
-        return kDefaultAutoMode.command;
-    }
-
-    public TimedTrajectory<Pose2dWithCurvature> throughTrench()
-    {
-        ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
-        Pose2d[] intermediate = new Pose2d[] {
-            new Pose2d(Units.inchesToMeters(424), Units.inchesToMeters(135),
-                Rotation2d.fromDegrees(180)),
-            new Pose2d(Units.inchesToMeters(207), Units.inchesToMeters(135),
-                Rotation2d.fromDegrees(180))};
-        for (int i = 0; i < intermediate.length; i++)
-        {
-            Pose2d pose = intermediate[i];
-            intermediate[i] = new Pose2d(pose.getTranslation().getX() - Units.inchesToMeters(312.5),
-                pose.getTranslation().getY(), pose.getRotation());
-        }
-        RobotStateMap stateMap = mStateEstimator.getEncoderRobotStateMap();
-        Pose2d robotPose = stateMap.getLatestState().pose;
-        double robotX = robotPose.getTranslation().getX();
-        if (robotX < Units.inchesToMeters(312.5))
-        {
-            for (int i = 0; i < intermediate.length; i++)
-            {
-                Pose2d pose = intermediate[i];
-                intermediate[i] = new Pose2d(-pose.getTranslation().getX(),
-                    pose.getTranslation().getY(), Rotation2d.fromDegrees(0));
-            }
-        }
-        for (int i = 0; i < intermediate.length; i++)
-        {
-            Pose2d pose = intermediate[i];
-            intermediate[i] = new Pose2d(pose.getTranslation().getX() + Units.inchesToMeters(312.5),
-                pose.getTranslation().getY(), pose.getRotation());
-        }
-        waypoints.add(robotPose);
-        for (Pose2d pose : intermediate)
-        {
-            waypoints.add(pose);
-        }
-        ArrayList<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
-        return TrajectoryContainer.generateTrajectory(waypoints, constraints, false);
-    }
-
-    public TimedTrajectory<Pose2dWithCurvature> toControlPanel()
-    {
-        ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
-        Pose2d pose = mStateEstimator.getEncoderRobotStateMap().getLatestState().pose;
-        waypoints.add(pose);
-        Translation2d p = pose.getTranslation();
-        Pose2d nextToControlPanel;
-        if (p.getX() < Units.inchesToMeters(359))
-        {
-            nextToControlPanel = new Pose2d(Units.inchesToMeters(328), Units.inchesToMeters(135),
-                Rotation2d.fromDegrees(0));
-        }
-        else
-        {
-            nextToControlPanel = new Pose2d(Units.inchesToMeters(390), Units.inchesToMeters(135),
-                Rotation2d.fromDegrees(180));
-        }
-        waypoints.add(nextToControlPanel);
-        ArrayList<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
-        constraints.add(new VelocityLimitRegionConstraint(new Rectangle2d(
-            new Translation2d(Units.inchesToMeters(290), Units.inchesToMeters(161.6)),
-            new Translation2d(Units.inchesToMeters(428), Units.inchesToMeters(90))), .5));
-        return TrajectoryContainer.generateTrajectory(waypoints, constraints, false);
+        return TrajectoryContainer.kDefaultAutoMode.command;
     }
 }

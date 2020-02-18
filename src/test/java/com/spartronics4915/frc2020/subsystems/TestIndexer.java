@@ -23,9 +23,9 @@ public class TestIndexer
     @Test
     public void testLaunch() {
         /*****Defining Commands*****/
-        var startLaunch = mCommands.new StartLaunch(sIndexer);
+        var startLaunch = mCommands.new StartKicker(sIndexer);
 
-        var endLaunch = mCommands.new EndLaunch(sIndexer);
+        var endLaunch = mCommands.new EndKicker(sIndexer);
 
         var loadBallToSlot = mCommands.new LoadBallToSlotGroup(sIndexer, 0);
 
