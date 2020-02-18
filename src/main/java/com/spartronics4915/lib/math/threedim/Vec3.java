@@ -82,15 +82,21 @@ public class Vec3 extends DMatrix3
     }
 
     /**
-     * compute the angle between two vectors
+     * compute the angle between two 3d vectors
      * @param Vec3
-     * @return angle in degrees
+     * @return angle in degrees. Sign of angle is always positive.
      */
     public double angleWith(final Vec3 rhs)
     {
         double d = this.asUnit().dot(rhs.asUnit());
         double rads = Math.acos(d > 1.0 ? 1 : d < -1. ? -1. : d);
         return Math.toDegrees(rads);
+    }
+
+    public double angleOnXYPlane()
+    {
+        Vec3 nv = new Vec3(this.a1, this.a2, 0).asUnit();
+        return Math.toDegrees(Math.atan2(nv.a2, nv.a1));
     }
 
     public double dot(final Vec3 rhs)

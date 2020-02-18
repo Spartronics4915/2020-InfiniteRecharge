@@ -51,6 +51,11 @@ void setAllPixels(rgbColor c)
  * - Color specified as r,g,b values
  * paramenter 'i' refers to the pixel number
  */
+void setPixel(uint8_t i, rgbColor c)
+{
+  pixels.setPixelColor(i, c.color);
+}
+
 void setPixel(uint8_t i, uint32_t color)
 {
   pixels.setPixelColor(i, color);
