@@ -47,7 +47,7 @@ public final class Constants
             public static final double kConversionRatio = 1.0 / (187.0/20.0*9.0);
             public static final double kMaxVelocity = 2.0/3.0;
             public static final double kMaxAcceleration = 0.5;
-            public static final double kStallThreshold = 90.0;
+            public static final double kStallThreshold = 90.0; // FIXME: stand-in values
 
             /** Degrees */
             public static final double kPositionTolerance = 2.0;

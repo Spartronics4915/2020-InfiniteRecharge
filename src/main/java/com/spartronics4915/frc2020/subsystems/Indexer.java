@@ -153,6 +153,9 @@ public class Indexer extends SpartronicsSubsystem
         mTargetPosition = Math.ceil(mIndexerMotor.getEncoder().getPosition() * 4) / 4;
     }
 
+    /** 
+     * Runner spinner motor
+     */
     public void goToPosition()
     {
         if (isJamming())
