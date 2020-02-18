@@ -133,7 +133,6 @@ public class Indexer extends SpartronicsSubsystem
         {
             double deltaPosition = 0.25 * N; // Cast N to double and convert to rotations
             mTargetPosition += deltaPosition;
-            mIndexerMotor.setPosition(mTargetPosition); // Rotate Spinner to target.
         }
     }
 
@@ -143,7 +142,6 @@ public class Indexer extends SpartronicsSubsystem
     public void returnToHome()
     {
         mTargetPosition = 0;
-        mIndexerMotor.setPosition(mTargetPosition);
     }
 
     /**
@@ -153,7 +151,17 @@ public class Indexer extends SpartronicsSubsystem
     {
         // Rotates to nearest quarter rotation
         mTargetPosition = Math.ceil(mIndexerMotor.getEncoder().getPosition() * 4) / 4;
-        mIndexerMotor.setPosition(mTargetPosition);
+    }
+
+    /** 
+     * Runner spinner motor
+     */
+    public void goToPosition()
+    {
+        if (isJamming())
+            mIndexerMotor.setDutyCycle(-0.3);
+        else
+            mIndexerMotor.setPosition(mTargetPosition);
     }
 
     /**
@@ -240,6 +248,11 @@ public class Indexer extends SpartronicsSubsystem
     {
         double positionMod90 = (mIndexerMotor.getEncoder().getPosition() * 360) % 90;
         return (positionMod90 >= (90 - Constants.Indexer.Spinner.kPositionTolerance) || positionMod90 <= Constants.Indexer.Spinner.kPositionTolerance); // if in a safe space to load a ball
+    }
+
+    public boolean isJamming()
+    {
+        return mIndexerMotor.getOutputCurrent() >= Constants.Indexer.Spinner.kStallThreshold;
     }
 
     @Override
