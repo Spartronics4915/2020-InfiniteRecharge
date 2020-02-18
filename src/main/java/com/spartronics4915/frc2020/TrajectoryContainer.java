@@ -50,17 +50,17 @@ public class TrajectoryContainer
 
     public static enum Destination
     {
-        kLeftTrenchFar(380, 134, 120), 
+        kLeftTrenchFar(380, 134, 120),
         kLeftShootingPosition(508, 5, 148.69),
-        kRightTrenchFar(324, -134, 180), 
+        kRightTrenchFar(324, -134, 180),
         kRightTrenchVeryFar(404, -134, 180),
-        kRightTrenchNear(242, -134, 180), 
+        kRightTrenchNear(242, -134, 180),
         kEightBallIntermediate(456, -134, 180),
-        kRightShootingPosition(421, -121, 194.36), 
+        kRightShootingPosition(421, -121, 194.36),
         kShieldGeneratorFarRight(386, -46, 140),
-        kHalfWayToShielGenerator(450, -80, 170), 
+        kHalfWayToShielGenerator(450, -80, 170),
         kMiddleShootingPosition(456, -65, 180),
-        kJustAhead(120, 0, 0), 
+        kJustAhead(120, 0, 0),
         kJustBehind(-120, 0, 0);
 
         public final Pose2d pose;
