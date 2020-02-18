@@ -14,12 +14,13 @@ public class StateMapResetCommand extends InstantCommand {
             stateEstimator.resetRobotStateMaps(start);
         });
     }
+
     @Override
     public Set<Subsystem> getRequirements()
     {
-        // TODO Auto-generated method stub
         return Set.of();
     }
+
     @Override
     public void execute() {
 

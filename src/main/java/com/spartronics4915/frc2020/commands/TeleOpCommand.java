@@ -19,6 +19,7 @@ public class TeleOpCommand extends CommandBase
         mDrive = drive;
         mJoystick = joy;
     }
+
     @Override
     public Set<Subsystem> getRequirements()
     {
@@ -28,6 +29,7 @@ public class TeleOpCommand extends CommandBase
     @Override
     public void execute()
     {
-        mDrive.arcadeDrive(mJoystick.getY(), mJoystick.getX());
+        mDrive.arcadeDrive(mJoystick.getY(), mJoystick.getX()); // To invert joystick controller,
+                                                                 // so forward... is forward
     }
 }

@@ -237,14 +237,13 @@ public final class Constants
     {
         public static final double kStartVelocityMetersPerSec = 0;
         public static final double kEndVelocityMetersPerSec = 0;
-        public static final double kMaxVelocityMetersPerSec = .2;
+        public static final double kMaxVelocityMetersPerSec = 1;
         public static final double kMaxAccelerationMeterPerSecSq = .1;
 
         public static final Pose2d kStartPointLeft = new Pose2d(Units.inchesToMeters(508),
             Units.inchesToMeters(138), Rotation2d.fromDegrees(180));
         public static final Pose2d kStartPointMiddle = new Pose2d(Units.inchesToMeters(508),
-            Units.inchesToMeters(-54), Rotation2d.fromDegrees(180));
-            //(x:508, y:-54, r:180) (x:400, y:-40, r:135)
+            Units.inchesToMeters(-65), Rotation2d.fromDegrees(180));
         public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(508),
             Units.inchesToMeters(-138), Rotation2d.fromDegrees(180));
     }
