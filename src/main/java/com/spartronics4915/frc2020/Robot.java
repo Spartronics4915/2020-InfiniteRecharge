@@ -66,11 +66,14 @@ public class Robot extends TimedRobot
         shed.onCommandInterrupt((c) -> Logger.info(c.getName() + " interrupted"));
 
         // if CAN bus spews, delete (see notes at top)
-        this.mPDP = new PowerDistributionPanel(); 
+        // this.mPDP = new PowerDistributionPanel(); 
 
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our autonomous chooser on the dashboard.
         mRobotContainer = new RobotContainer();
+        Logger.notice("@robotInit: Requested BlingState.BLING_COMMAND_OFF");
+        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_OFF);
+
 
         SmartDashboard.putString("CANBusStatus", CANCounter.getStatusMessage());
         Logger.info("CAN bus status: " + CANCounter.getStatusMessage());
