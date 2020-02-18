@@ -16,7 +16,8 @@ import edu.wpi.first.wpilibj.util.Units;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;  
+import java.nio.file.Path;
+import java.util.function.BiFunction;
 
 public final class Constants
 {
@@ -45,7 +46,7 @@ public final class Constants
             public static final double kPositionP = 0.005;
             public static final double kPositionD = 0;
             public static final double kConversionRatio = 1.0 / (187.0/20.0*9.0);
-            public static final double kMaxVelocity = 2.0/3.0;
+            public static final double kMaxVelocity = 1;
             public static final double kMaxAcceleration = 0.5;
 
             /** Degrees */
@@ -202,10 +203,10 @@ public final class Constants
                     kRightA = 0.0340;
                     kWheelDiameter = Units.inchesToMeters(6);
                     kNativeUnitsPerRevolution = 1440.0;
-                    kLeftOutputInverted = false;
+                    kLeftOutputInverted = true;
                     kLeftFollowerOutputInverted = false;
                     kRightOutputInverted = true;
-                    kRightFollowerOutputInverted = true;
+                    kRightFollowerOutputInverted = false;
 
                     kPigeonId = -1;
                     kDriveMotorConstructor = SpartronicsSRX::makeMotor;

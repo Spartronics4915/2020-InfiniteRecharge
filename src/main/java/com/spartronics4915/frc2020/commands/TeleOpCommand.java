@@ -30,6 +30,6 @@ public class TeleOpCommand extends CommandBase
     public void execute()
     {
         mDrive.arcadeDrive(mJoystick.getY(), mJoystick.getX()); // To invert joystick controller,
-                                                                 // so forward... is forward
+                                                                // so forward... is forward
     }
 }
