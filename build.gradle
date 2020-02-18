@@ -61,7 +61,7 @@ dependencies {
 
     implementation("gov.nist.math:jama:1.0.3")
     implementation("org.ejml:ejml-simple:0.38")
-    implementation 'org.ejml:ejml-ddense:0.38')
+    implementation("org.ejml:ejml-ddense:0.38")
     implementation("org.apache.commons:commons-math3:3.6.1")
     implementation("com.fazecast:jSerialComm:2.4.1")
 
