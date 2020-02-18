@@ -50,12 +50,18 @@ public class TrajectoryContainer
 
     public static enum Destination
     {
-        kLeftTrenchFar(380, 134, 120), kLeftShootingPosition(508, 5, 148.69),
-        kRightTrenchFar(324, -134, 180), kRightTrenchVeryFar(404, -134, 180),
-        kRightTrenchNear(242, -134, 180), kEightBallIntermediate(456, -134, 180),
-        kRightShootingPosition(421, -121, 194.36), kShieldGeneratorFarRight(386, -46, 140),
-        kHalfWayToShielGenerator(450, -80, 170), kMiddleShootingPosition(456, -65, 180),
-        kJustAhead(120, 0, 0), kJustBehind(-120, 0, 0);
+        kLeftTrenchFar(380, 134, 120), 
+        kLeftShootingPosition(508, 5, 148.69),
+        kRightTrenchFar(324, -134, 180), 
+        kRightTrenchVeryFar(404, -134, 180),
+        kRightTrenchNear(242, -134, 180), 
+        kEightBallIntermediate(456, -134, 180),
+        kRightShootingPosition(421, -121, 194.36), 
+        kShieldGeneratorFarRight(386, -46, 140),
+        kHalfWayToShielGenerator(450, -80, 170), 
+        kMiddleShootingPosition(456, -65, 180),
+        kJustAhead(120, 0, 0), 
+        kJustBehind(-120, 0, 0);
 
         public final Pose2d pose;
 
@@ -178,7 +184,14 @@ public class TrajectoryContainer
         new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
     public static final TrajectoryCollection driveStraightReversed = new TrajectoryCollection(
         new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
-    public static final AutoMode kDefaultAutoMode=new AutoMode("All: Do Nothing",new Command(){@Override public Set<Subsystem>getRequirements(){return Set.of();}});
+    public static final AutoMode kDefaultAutoMode = new AutoMode("All: Do Nothing", new Command()
+    {
+        @Override
+        public Set<Subsystem> getRequirements()
+        {
+            return Set.of();
+        }
+    });
 
     public static AutoMode[] getAutoModes(RobotStateEstimator stateEstimator, Drive drive,
         TrajectoryTracker ramseteController)
@@ -258,6 +271,7 @@ public class TrajectoryContainer
         };
         return autoModes;
     }
+
     static
     {
         // left
@@ -314,7 +328,9 @@ public class TrajectoryContainer
 
         driveStraightReversed.generateTrajectories(driveStraightReversedTrajectories);
     }
-    public static TimedTrajectory<Pose2dWithCurvature> throughTrench(RobotStateEstimator stateEstimator)
+
+    public static TimedTrajectory<Pose2dWithCurvature> throughTrench(
+        RobotStateEstimator stateEstimator)
     {
         ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
         Pose2d[] intermediate = new Pose2d[] {
@@ -355,7 +371,8 @@ public class TrajectoryContainer
         return TrajectoryContainer.generateTrajectory(waypoints, constraints, false);
     }
 
-    public static TimedTrajectory<Pose2dWithCurvature> toControlPanel(RobotStateEstimator stateEstimator)
+    public static TimedTrajectory<Pose2dWithCurvature> toControlPanel(
+        RobotStateEstimator stateEstimator)
     {
         ArrayList<Pose2d> waypoints = new ArrayList<Pose2d>();
         Pose2d pose = stateEstimator.getEncoderRobotStateMap().getLatestState().pose;
