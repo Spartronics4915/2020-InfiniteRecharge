@@ -109,7 +109,7 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         SmartDashboard.putNumber("RobotState/encoderVelocity", estate.predictedVelocity.dx);
 
         final RobotStateMap.State cstate = getCameraRobotStateMap().getLatestState();
-        Pose2d cpose = epose;//cstate.pose;
+        Pose2d cpose = cstate.pose;
 
         // NB: other tools (like Dashboard and Vision) depend on the structure
         // and id of RobotState/pose. Change with caution.
