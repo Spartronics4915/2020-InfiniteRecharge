@@ -141,7 +141,7 @@ public class LauncherCommands
         {
             mLauncher.runFlywheel((double) mLauncher.dashboardGetNumber("flywheelRPSSlider", 0));
             mLauncher.adjustHood(
-                Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("hoodAngleSlider", 0)));
+                Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("hoodAngleSlidder", 0)));
             mLauncher.turnTurret(Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("turretAngleSlider", 0)));
         }
 
@@ -181,7 +181,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            double dist = (double) mLauncher.dashboardGetNumber("targetDistanceSlider", 120);
+            double dist = (double) mLauncher.dashboardGetNumber("targetDistance", 120);
             mLauncher.runFlywheel(mLauncher.calcRPS(dist));
             mLauncher.adjustHood(mLauncher.calcPitch(dist));
         }
