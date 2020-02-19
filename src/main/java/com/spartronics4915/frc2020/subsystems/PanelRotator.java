@@ -1,22 +1,18 @@
 package com.spartronics4915.frc2020.subsystems;
 
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
+import com.revrobotics.ColorSensorV3;
 import com.spartronics4915.frc2020.Constants;
-import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
-import com.revrobotics.ColorMatch;
-import com.revrobotics.ColorMatchResult;
-import com.revrobotics.ColorSensorV3;
-
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Ultrasonic;
 
 public class PanelRotator extends SpartronicsSubsystem
 {
@@ -88,7 +84,8 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public String getTargetColor()
     {
-        return DriverStation.getInstance().getGameSpecificMessage();
+        this.dashboardPutString("Color sensor target (what the field wants to see)", RGB);
+        return "Red";
     }
 
     /**
@@ -144,19 +141,18 @@ public class PanelRotator extends SpartronicsSubsystem
         else
             sensedColor = "Error";
 
-        dashboardPutString("Current Color (robot)", sensedColor);
-        dashboardPutNumber("ColorMatch Confidence", match.confidence);
         return sensedColor;
     }
 
     /**
      * Finds the distance between the sensor and what it is looking at
-     * @return 11-bit (0-2047) value (to dashboard)
+     * @return 11-bit (0-2047) value
      */
-    public void getDistance()
+    public int getDistance()
     {
         int distance = mColorSensor.getProximity();
-        this.dashboardPutNumber("Color sensor IR distance", distance);
+        
+        return distance;
     }
 
     /**
@@ -181,8 +177,6 @@ public class PanelRotator extends SpartronicsSubsystem
         else
             rotatedColor = "Error";
 
-        dashboardPutString("currentColor", rotatedColor);
-        dashboardPutNumber("currentColorConfidence", match.confidence);
         return rotatedColor;
     }
 
@@ -228,5 +222,17 @@ public class PanelRotator extends SpartronicsSubsystem
     {
         mSpinMotor.setDutyCycle(0);
         mRaiseMotor.setDutyCycle(0);
+    }
+
+    /**
+     * According to Dana this runs all the time.
+     */
+    public void periodic()
+    {
+        // these methods are put here to output stuff to the driver station
+        dashboardPutNumber("Color sensor IR distance", getDistance());
+        dashboardPutString("Color seen by robot", getActualColor());
+        dashboardPutString("Color seen by FMS", getRotatedColor());
+        dashboardPutNumber("Color match confidence", getColorConfidence());
     }
 }

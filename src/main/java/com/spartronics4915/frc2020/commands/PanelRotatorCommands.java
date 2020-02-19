@@ -137,6 +137,7 @@ public class PanelRotatorCommands
         @Override
         public void execute()
         {
+            mPanelRotator.getActualColor();
             mPanelRotator.spin();
         }
 
@@ -210,6 +211,7 @@ public class PanelRotatorCommands
         public void execute()
         {
             mPanelRotator.spin();
+            mPanelRotator.get18BitRGB();
         }
 
         // Returns true when the command should end.
