@@ -138,7 +138,7 @@ public class SpartronicsMax implements SpartronicsMotor
         // We only use SPARK MAXes for brushless motors
         // If that changes we can make motor type configurable
         var master = new CANSparkMax(deviceNumber, MotorType.kBrushless);
-        CANSparkMax follower = new CANSparkMax(deviceNumber, MotorType.kBrushless);
+        CANSparkMax follower = new CANSparkMax(followerDeviceNumber, MotorType.kBrushless);
         follower.follow(master);
         return new SpartronicsMax(master, sensorModel, feedbackSensor, follower);
     }
