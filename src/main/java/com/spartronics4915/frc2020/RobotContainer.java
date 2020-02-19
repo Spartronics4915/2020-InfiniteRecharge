@@ -101,10 +101,6 @@ public class RobotContainer
 
         mStateEstimator.resetRobotStateMaps(new Pose2d());
 
-        mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController);
-        String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
-            .collect(Collectors.joining(","));
-        SmartDashboard.putString(kAutoOptionsKey, autoModeList);
         mClimber = new Climber();
         mIntake = new Intake();
         mIndexer = new Indexer();
@@ -137,6 +133,12 @@ public class RobotContainer
         // mLauncherCommands.new Zero(mLauncher).schedule();
         configureJoystickBindings();
         configureButtonBoardBindings();
+
+        
+        mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController, mSuperstructureCommands);
+        String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
+            .collect(Collectors.joining(","));
+        SmartDashboard.putString(kAutoOptionsKey, autoModeList);
     }
 
     private void configureJoystickBindings()

@@ -13,6 +13,7 @@ import java.util.SortedMap;
 import com.spartronics4915.frc2020.Constants.Trajectory;
 import com.spartronics4915.frc2020.commands.LaserTurretToFieldPose;
 import com.spartronics4915.frc2020.commands.StateMapResetCommand;
+import com.spartronics4915.frc2020.commands.SuperstructureCommands;
 import com.spartronics4915.frc2020.subsystems.Drive;
 import com.spartronics4915.lib.math.twodim.control.TrajectoryTracker;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
@@ -31,6 +32,7 @@ import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
@@ -194,7 +196,7 @@ public class TrajectoryContainer
     });
 
     public static AutoMode[] getAutoModes(RobotStateEstimator stateEstimator, Drive drive,
-        TrajectoryTracker ramseteController)
+        TrajectoryTracker ramseteController, SuperstructureCommands superstructureCommands)
     {
         AutoMode[] autoModes = new AutoMode[] {kDefaultAutoMode,
             new AutoMode("Drive Straight", new SequentialCommandGroup(
@@ -214,9 +216,15 @@ public class TrajectoryContainer
             new AutoMode("Left",
                 new SequentialCommandGroup(
                     new StateMapResetCommand(stateEstimator, TrajectoryContainer.left.mStartPoint),
-                    new TrajectoryTrackerCommand(drive,
-                        TrajectoryContainer.left.getTrajectory(null, Destination.kLeftTrenchFar),
-                        ramseteController, stateEstimator.getEncoderRobotStateMap()),
+                    new ParallelCommandGroup(
+                        new TrajectoryTrackerCommand(drive,
+                            TrajectoryContainer.left.getTrajectory(null, Destination.kLeftTrenchFar),
+                            ramseteController, stateEstimator.getEncoderRobotStateMap()
+                        ),
+                        new SequentialCommandGroup(
+                            superstructureCommands.new IntakeRace()
+                        )
+                    ),
                     new TrajectoryTrackerCommand(drive,
                         TrajectoryContainer.left.getTrajectory(Destination.kLeftTrenchFar,
                             Destination.kLeftShootingPosition),
