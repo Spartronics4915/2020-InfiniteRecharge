@@ -87,7 +87,7 @@ public class ObjectFinder
         Imgproc.HoughLinesP(binnedPointcloud, results, 1, Math.PI / 360, minVotes,
             sideLengthMeters / mBinWidth, maxLineGapMeters / mBinWidth);
 
-        System.out.println(results.dump());
+        // System.out.println(results.dump());
 
         List<Translation2d> centers = new ArrayList<>();
         for (int i = 0; i < results.cols(); i++)
@@ -102,12 +102,12 @@ public class ObjectFinder
                 continue;
             }
 
-            System.out.println(pointOne + ", " + pointTwo);
+            // System.out.println(pointOne + ", " + pointTwo);
 
             centers.add(getSquareCenter(pointOne, pointTwo));
         }
 
-        System.out.println();
+        // System.out.println();
 
         return centers;
     }

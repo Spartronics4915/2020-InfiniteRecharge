@@ -53,6 +53,31 @@ class CamToFieldTests
         tMinusR = knownFieldLocationTarget.subtract(robotLocation);
         assertEquals(robotRelativeTarget.length(), tMinusR.length(), kEpsilon);
         assertEquals(tMinusR.a2, 0, kEpsilon);
+
+
+        // robot heading west (field x+) at midfield
+        Vec3 robotPoint = new Vec3(320, 0, 0); 
+        // target point is blue alliance target in lower right
+        Vec3 targetPoint = new Vec3(628, -67.5, 0); 
+        Vec3 targetDir = targetPoint.subtract(robotPoint).asUnit();
+        ctof.updateRobotPose(320, 0, 0);
+        // mount direction should be negative (ie > 90 && < 270)
+        // note that this angle will always be positive and doesn't
+        // imply the sign of the rotation angle for the turret
+        Vec3 mountDir = ctof.fieldDirToMount(targetDir);
+        double mountAngle = mountDir.angleOnXYPlane();
+        // for turret pointing x forward, angle near 160 is
+        // behind and left
+        //         x
+        //         |
+        //     y---o
+        assertEquals(mountAngle, 167.6, .05);
+
+        // now let's reverse our robot
+        ctof.updateRobotPose(320, 0, 180);
+        mountDir = ctof.fieldDirToMount(targetDir);
+        mountAngle = mountDir.angleOnXYPlane();
+        assertEquals(mountAngle, -12.4, .05);
     }
 
     private Affine3 getRToField(Vec3 pos, double heading)

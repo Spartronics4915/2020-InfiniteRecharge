@@ -24,8 +24,8 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
     {
         if (leftMotor.hadStartupError() || rightMotor.hadStartupError())
         {
-            mLeftMotor = new SpartronicsSimulatedMotor(leftMotor.getDeviceNumber());
-            mRightMotor = new SpartronicsSimulatedMotor(rightMotor.getDeviceNumber());
+            mLeftMotor = new SpartronicsSimulatedMotor(leftMotor.getDeviceNumber(), leftMotor.getFollower().getDeviceNumber());
+            mRightMotor = new SpartronicsSimulatedMotor(rightMotor.getDeviceNumber(), rightMotor.getFollower().getDeviceNumber());
             mIMU = new SpartronicsIMU()
             {
                 @Override
@@ -58,7 +58,7 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
      */
     public void setIMUHeading(Rotation2d heading)
     {
-        mIMUOffset = getIMUHeading().rotateBy(heading.inverse());
+        mIMUOffset = mIMU.getYaw().inverse().rotateBy(heading);
     }
 
     /**
@@ -134,5 +134,12 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
     public DifferentialDrive getDifferentialDrive()
     {
         return mDifferentialDrive;
+    }
+    
+    @Override
+    public void periodic()
+    {
+        dashboardPutNumber("imuHeading", mIMU.getYaw().getDegrees());
+        dashboardPutNumber("imuHeadingAdjusted", getIMUHeading().getDegrees());
     }
 }

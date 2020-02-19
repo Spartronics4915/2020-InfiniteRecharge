@@ -154,10 +154,10 @@ public class PathFinder
             .map((rect) -> new Rectangle2d(rect.getTopLeft().translateBy(mRobotTopLeftOffset),
                 rect.getBottomRight().translateBy(mRobotBottomRightOffset)))
             .collect(Collectors.toSet());
-        System.out.println(effectiveRestrictedAreasWithOffsets.size());
+        // System.out.println(effectiveRestrictedAreasWithOffsets.size());
         var result = Pair.combinationPairs(createLines(effectiveRestrictedAreasWithOffsets))
             .stream().map((it) -> it.first.intersection(it.second)).filter((it) -> it != null);
-        System.out.println(result.collect(Collectors.toList()).size());
+        // System.out.println(result.collect(Collectors.toList()).size());
         var restrictedCorners = effectiveRestrictedAreas.stream()
             .flatMap((rect) -> Set.of(toVector(rect.getTopLeft()).add(mRobotCornerTopLeft),
                 toVector(rect.getTopRight()).add(mRobotCornerTopRight),
@@ -222,8 +222,8 @@ public class PathFinder
                 new LineTriple(rect.getBottomRight(), rect.getBottomLeft()),
                 new LineTriple(rect.getBottomRight(), rect.getTopRight())).stream())
             .collect(Collectors.toSet());
-        System.out.println(restrictedWallLines.size());
-        System.out.println(Pair.combinationPairs(restrictedWallLines));
+        // System.out.println(restrictedWallLines.size());
+        // System.out.println(Pair.combinationPairs(restrictedWallLines));
 
         Set<Line> lines = new HashSet<>();
         for (var comboPair : Pair.combinationPairs(restrictedWallLines))
@@ -238,7 +238,7 @@ public class PathFinder
                     comboPair.first.vecTwo.add(comboPair.second.vecTwo).scalarMultiply(0.5),
                     Util.kEpsilon));
         }
-        System.out.println("lines " + lines.size());
+        // System.out.println("lines " + lines.size());
         return lines;
     }
 
