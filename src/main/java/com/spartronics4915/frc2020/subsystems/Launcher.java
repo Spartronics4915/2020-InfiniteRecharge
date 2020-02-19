@@ -220,7 +220,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public Rotation2d calcPitch(double distance)
     {
-        return table.getInterpolated(new InterpolatingDouble(distance)).hoodAngle;
+        return table.getInterpolated(new InterpolatingDouble(distance/100.0)).hoodAngle;
     }
 
     /**
@@ -230,7 +230,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public double calcRPS(double distance)
     {
-        return table.getInterpolated(new InterpolatingDouble(distance)).flywheelSpeedRPS.value;
+        return table.getInterpolated(new InterpolatingDouble(distance/100.0)).flywheelSpeedRPS.value;
     }
 
     /**

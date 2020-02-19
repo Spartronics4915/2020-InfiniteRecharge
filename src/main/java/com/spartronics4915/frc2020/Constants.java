@@ -105,9 +105,9 @@ public final class Constants
         public static final double kTurretD = 0.002;
 
         // Vals for interpolating lookup table, Distance units is in feet
-        public static final double[] kDistanceTable = new double[]{0.0, 1.0};
-        public static final double[] kAngleTable = new double[]{0.0, 30.0};
-        public static final double[] kRPSTable = new double[]{40.0, 40.0};
+        public static final double[] kDistanceTable = new double[]{3.0, 4.0, 4.5, 5.0};
+        public static final double[] kAngleTable = new double[]{16.0, 20.0, 19.0, 24.0};
+        public static final double[] kRPSTable = new double[]{38.0, 41.5, 41.0, 45.0};
         public static final int kLookupTableSize = kDistanceTable.length;
 
         /** RPS */
