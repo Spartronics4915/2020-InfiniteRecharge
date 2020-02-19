@@ -81,6 +81,7 @@ public class Launcher extends SpartronicsSubsystem
         mFlywheelEncoder = mFlywheelMasterMotor.getEncoder();
 
         mTargetAngle = new Rotation2d();
+        mTargetTurretDirection = new Rotation2d();
 
         // One BAG motor for turret
         mTurretMotor = SpartronicsSRX.makeMotor(Constants.Launcher.kTurretId,
