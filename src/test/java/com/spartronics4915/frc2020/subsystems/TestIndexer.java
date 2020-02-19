@@ -23,13 +23,13 @@ public class TestIndexer
     @Test
     public void testLaunch() {
         /*****Defining Commands*****/
-        var startLaunch = mCommands.new StartKicker(sIndexer);
+        var startLaunch = mCommands.new StartKicker();
 
-        var endLaunch = mCommands.new EndKicker(sIndexer);
+        var endLaunch = mCommands.new EndKicker();
 
-        var loadBallToSlot = mCommands.new LoadBallToSlotGroup(sIndexer, 0);
+        var loadBallToSlot = mCommands.new LoadBallToSlotGroup(0);
 
-        var loadToLauncher = mCommands.new LoadToLauncher(sIndexer);
+        var loadToLauncher = mCommands.new LoadToLauncher();
         /******Defining Motors******/
         var simmedLoaderMotor = SpartronicsSimulatedMotor.getFromId(Constants.Indexer.Loader.kMotorId);
         var simmedIndexerMotor = SpartronicsSimulatedMotor.getFromId(Constants.Indexer.Spinner.kMotorId);
@@ -38,7 +38,7 @@ public class TestIndexer
         // sim.setAutonomous(false);
         // sim.setEnabled(true);
 
-        
+
         // testing startlaunch
         sIndexer.logInfo("Testing StartLaunch...");
         startLaunch.schedule();
@@ -46,7 +46,7 @@ public class TestIndexer
         // assertEquals(simmedLoaderMotor, 1.0);
         // CommandScheduler.getInstance().cancel(startLaunch);
         sIndexer.logInfo("Success!");
-        
+
         // testing endlaunch
         sIndexer.logInfo("Testing EndLaunch...");
         endLaunch.schedule();
@@ -72,9 +72,9 @@ public class TestIndexer
     public void testIndexerIntake()
     {
         /****Defing Command****/
-        var loadFromIntake = mCommands.new LoadFromIntake(sIndexer);
+        var loadFromIntake = mCommands.new LoadFromIntake();
 
-        var bulkHarvest = mCommands.new BulkHarvest(sIndexer);
+        var bulkHarvest = mCommands.new BulkHarvest();
 
         // testing LoadFromIntake
         sIndexer.logInfo("Testing LoadFromIntake...");

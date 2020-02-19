@@ -1,7 +1,5 @@
 // package com.spartronics4915.frc2020.subsystems;
 
-// package com.spartronics4915.frc2020.subsystems;
-
 // import static org.junit.jupiter.api.Assertions.assertFalse;
 // import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -21,7 +19,7 @@
 //     @Test
 //     public void testExtend()
 //     {
-//         var commandToRun = new ClimberCommands().new WinchPrimary(new Climber());
+//         var commandToRun = new ClimberCommands(sClimber).new WinchPrimary();
 
 //         var sim = new DriverStationSim();
 //         sim.setAutonomous(false);
