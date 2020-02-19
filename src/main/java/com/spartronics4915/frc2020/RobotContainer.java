@@ -120,7 +120,7 @@ public class RobotContainer
         mClimberCommands = new ClimberCommands(mClimber);
         mIntakeCommands = new IntakeCommands(mIntake);
         mIndexerCommands = new IndexerCommands(mIndexer);
-        mLauncherCommands = new LauncherCommands(mLauncher, mIndexer, mIndexerCommands, mStateEstimator.getEncoderRobotStateMap());
+        mLauncherCommands = new LauncherCommands(mLauncher, mIndexerCommands, mStateEstimator.getEncoderRobotStateMap());
         mPanelRotatorCommands = new PanelRotatorCommands(mPanelRotator);
         mSuperstructureCommands = new SuperstructureCommands(mIndexerCommands, mIntakeCommands, mLauncherCommands);
 
@@ -131,7 +131,7 @@ public class RobotContainer
         //     mLauncherCommands.new TrackPassively(mLauncher), mLauncher::inRange));
         mLauncher.setDefaultCommand(mLauncherCommands.new ShootBallTest());//mLauncherCommands.new TargetAndShoot(mLauncher));
         mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop());
-        mDrive.setDefaultCommand(mDriveCommands.new TeleOpCommand());
+        mDrive.setDefaultCommand(mDriveCommands.new TeleOpCommand(mJoystick));
 
         // mLauncherCommands.new Zero(mLauncher).schedule();
         configureJoystickBindings();
