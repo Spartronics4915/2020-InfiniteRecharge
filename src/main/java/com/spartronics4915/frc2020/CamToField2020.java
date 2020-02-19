@@ -79,7 +79,7 @@ public class CamToField2020 extends CameraToField
     // mount to robot ------------------------------------------------------
     // turret is mounted at robot back/center, up from ground
     // turret's x axis is opposite robot's 
-    private final Vec3 mMntPos = new Vec3(-15, 0, 8); 
+    private final Vec3 mMntPos = new Vec3(-3.72, 5.264, 8);  // XXX: is 8 correct?
     private final Vec3 mMntAxis = Vec3.ZAxis;
     private final Affine3 mMntFlip = Affine3.fromRotation(180, this.mMntAxis);
 

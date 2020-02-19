@@ -92,6 +92,8 @@ public final class Constants
         public static final int kTurretId = 8;
         public static final int kTurretPotentiometerId = 0; // Analog
 
+        // XXX: consider whether to adopt CamToField2020, we currently have 
+        // competing implementations.
         public static final Pose2d kRobotToTurret = new Pose2d(Units.inchesToMeters(-3.72), Units.inchesToMeters(5.264), Rotation2d.fromDegrees(180.0));
         
         // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
@@ -254,6 +256,8 @@ public final class Constants
 
     public static final class Estimator
     {
+        // XXX: consider whether to adopt CamToField2020, we currently
+        //  have competing implementations.
         public static final Pose2d kSlamraToRobot = new Pose2d(Units.inchesToMeters(-6.4375), Units.inchesToMeters(10.625), Rotation2d.fromDegrees(90));//new Pose2d(-0.390525, 0, new Rotation2d());
         public static final Pose2d kVisionToRobot = new Pose2d(0.390525, 0, Rotation2d.fromDegrees(0));
         public static final double kMeasurementCovariance = 0.001;

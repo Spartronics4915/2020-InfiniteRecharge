@@ -73,7 +73,6 @@ public class RobotContainer
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
 
-
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -116,8 +115,7 @@ public class RobotContainer
         mClimberCommands = new ClimberCommands();
         mIntakeCommands = new IntakeCommands(mIntake);
         mIndexerCommands = new IndexerCommands(mIndexer);
-        mLauncherCommands = new LauncherCommands(mLauncher, mIndexer, 
-                                mIndexerCommands,
+        mLauncherCommands = new LauncherCommands(mLauncher, mIndexerCommands,
                                 mStateEstimator.getEncoderRobotStateMap());
         mPanelRotatorCommands = new PanelRotatorCommands();
         mSuperstructureCommands = new SuperstructureCommands(mLauncherCommands,

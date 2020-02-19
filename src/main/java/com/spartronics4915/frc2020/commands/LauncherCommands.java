@@ -23,16 +23,21 @@ public class LauncherCommands
     private final Indexer mIndexer;
     private final IndexerCommands mIndexerCommands;
     private final RobotStateMap mStateMap;
-    private final Pose2d mTarget;
+    private final Pose2d mMatchTarget;
 
-    public LauncherCommands(Launcher launcher, Indexer indexer, 
-                    IndexerCommands indexerCommands, RobotStateMap stateMap)
+    public LauncherCommands(Launcher launcher, IndexerCommands indexerCommands, 
+                            RobotStateMap stateMap)
     {
         mLauncher = launcher;
-        mIndexer = indexer;
         mIndexerCommands = indexerCommands;
+        mIndexer = mIndexerCommands.getIndexer();
         mStateMap = stateMap;
-        mTarget = null;
+        // our target is always on the opposite side of the field.  This
+        // works for both Alliances since the field is symmetric and we
+        // use the same coordinate system (rotated by 180) on the Dashboard.
+        mMatchTarget = new Pose2d(Constants.Vision.kAllianceGoalCoords[0],
+                                  Constants.Vision.kAllianceGoalCoords[0],
+                                  Rotation2d.fromDegrees(180));
     }
 
     public Launcher getLauncher()
@@ -50,6 +55,8 @@ public class LauncherCommands
         }
 
         // Called every time the scheduler runs while the command is scheduled.
+        // Default isFinished (true) is okay since we assume we'll be 
+        // interrupted by button-release.
         @Override
         public void execute()
         {
@@ -58,7 +65,8 @@ public class LauncherCommands
         }
 
         @Override
-        public void end(boolean interrupted) {
+        public void end(boolean interrupted)
+        {
             mLauncher.stopTurret();
         }
     }
