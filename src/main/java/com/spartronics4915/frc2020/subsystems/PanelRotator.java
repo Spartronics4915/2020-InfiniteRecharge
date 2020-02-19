@@ -78,22 +78,46 @@ public class PanelRotator extends SpartronicsSubsystem
 
     // TODO: What will this return before Stage Two?
     /**
-     * Gets the color the robot needs to spin to through game specific messages
+     * Gets the color the field needs to see to through game-specific messages
      *
      * @return A String color - either Red, Blue, Yellow, or Green
      */
     public String getTargetColor()
     {
-        this.dashboardPutString("Color sensor target (what the field wants to see)", RGB);
+        // return DriverStation.getInstance().getGameSpecificMessage();
         return "Red";
+    }
+
+    // TODO: What will this return before Stage Two?
+    /**
+     * Gets the color the robot needs to spin to through game specific messages
+     *
+     * @return A String color - either Red, Blue, Yellow, or Green
+     */
+    public String getRobotTargetColor()
+    {
+        String robotTargetColor;
+
+        if (getTargetColor() == "Red")
+            robotTargetColor = "Blue";
+        else if (getTargetColor() == "Green")
+            robotTargetColor = "Yellow";
+        else if (getTargetColor() == "Blue")
+            robotTargetColor = "Red";
+        else if (getTargetColor() == "Yellow")
+            robotTargetColor = "Green";
+        else
+            robotTargetColor = "Error";
+
+        return robotTargetColor;
     }
 
     /**
      * This gets the 18-bit output (max is 2^18 - 1, I think)
      *
-     * @return a comma-separated String of raw RGB values (to dashboard)
+     * @return a comma-separated String of raw RGB values
      */
-    public void get18BitRGB()
+    public String get18BitRGB()
     {
         int red = mColorSensor.getRed();
         int green = mColorSensor.getGreen();
@@ -101,15 +125,15 @@ public class PanelRotator extends SpartronicsSubsystem
 
         String RGB = red + ", " + green + ", " + blue;
 
-        this.dashboardPutString("Color sensor 18 Bit", RGB);
+        return RGB;
     }
 
     /**
      * This gets the 18-bit output but divided by 262143 to make a fraction between 0 & 1
      *
-     * @return a comma-separated String of RGB values, as a percentage (to dashboard)
+     * @return a comma-separated String of RGB values, as a percentage
      */
-    public void getFloatRGB()
+    public String getFloatRGB()
     {
         int redFloat = mColorSensor.getRed() / 262143;
         int greenFloat = mColorSensor.getGreen() / 262143;
@@ -117,7 +141,7 @@ public class PanelRotator extends SpartronicsSubsystem
 
         String RGB = redFloat + ", " + greenFloat + ", " + blueFloat;
 
-        this.dashboardPutString("Color sensor float", RGB);
+        return RGB;
     }
 
     /**
@@ -234,5 +258,7 @@ public class PanelRotator extends SpartronicsSubsystem
         dashboardPutString("Color seen by robot", getActualColor());
         dashboardPutString("Color seen by FMS", getRotatedColor());
         dashboardPutNumber("Color match confidence", getColorConfidence());
+        dashboardPutString("Color sensor target (what the FIELD wants to see)", getTargetColor());
+        dashboardPutString("Color sensor target (what the ROBOT wants to see)", getRobotTargetColor());
     }
 }
