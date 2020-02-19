@@ -27,7 +27,10 @@ public class LauncherCommands
         mIndexerCommands = indexerCommands;
         mStateMap = stateMap;
         mTarget = null;
-        // TODO: setDefaultCommand
+        // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new TargetAndShoot(mLauncher),
+        //     mLauncherCommands.new TrackPassively(mLauncher), mLauncher::inRange));
+        // mLauncherCommands.new TargetAndShoot(mLauncher));
+        mLauncher.setDefaultCommand(new ShootBallTest());
     }
 
     public class TargetAndShoot extends CommandBase

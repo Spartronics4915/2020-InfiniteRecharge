@@ -79,7 +79,6 @@ public class RobotContainer
      */
     public RobotContainer()
     {
-
         T265Camera slamra;
         try
         {
@@ -91,8 +90,8 @@ public class RobotContainer
             slamra = null;
             Logger.exception(e);
         }
+
         mDrive = new Drive();
-        mDriveCommands = new DriveCommands(mDrive);
         mStateEstimator = new RobotStateEstimator(mDrive,
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
             slamra);
@@ -118,20 +117,12 @@ public class RobotContainer
         mVision = new Vision(mStateEstimator, mLauncher);
 
         mClimberCommands = new ClimberCommands(mClimber);
+        mDriveCommands = new DriveCommands(mDrive, mJoystick);
         mIntakeCommands = new IntakeCommands(mIntake);
         mIndexerCommands = new IndexerCommands(mIndexer);
         mLauncherCommands = new LauncherCommands(mLauncher, mIndexerCommands, mStateEstimator.getEncoderRobotStateMap());
         mPanelRotatorCommands = new PanelRotatorCommands(mPanelRotator);
         mSuperstructureCommands = new SuperstructureCommands(mIndexerCommands, mIntakeCommands, mLauncherCommands);
-
-        // Default Commands run whenever no Command is scheduled to run for a subsystem
-        mClimber.setDefaultCommand(mClimberCommands.new Stop());
-        mIntake.setDefaultCommand(mIntakeCommands.new Stop());
-        // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new TargetAndShoot(mLauncher),
-        //     mLauncherCommands.new TrackPassively(mLauncher), mLauncher::inRange));
-        mLauncher.setDefaultCommand(mLauncherCommands.new ShootBallTest());//mLauncherCommands.new TargetAndShoot(mLauncher));
-        mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop());
-        mDrive.setDefaultCommand(mDriveCommands.new TeleOpCommand(mJoystick));
 
         // mLauncherCommands.new Zero(mLauncher).schedule();
         configureJoystickBindings();

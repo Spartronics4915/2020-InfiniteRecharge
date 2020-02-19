@@ -8,19 +8,20 @@ import com.spartronics4915.frc2020.subsystems.Drive;
 
 public class DriveCommands
 {
-    private Drive mDrive;
+    private final Drive mDrive;
+    private final Joystick mJoystick;
 
-    public DriveCommands(Drive drive)
+    public DriveCommands(Drive drive, Joystick joystick)
     {
         mDrive = drive;
+        mJoystick = joystick;
+        mDrive.setDefaultCommand(new TeleOpCommand());
     }
 
     public class TeleOpCommand extends CommandBase
     {
-        private final Joystick mJoystick;
-        public TeleOpCommand(Joystick joy)
+        public TeleOpCommand()
         {
-            mJoystick = joy;
             addRequirements(mDrive);
         }
 
