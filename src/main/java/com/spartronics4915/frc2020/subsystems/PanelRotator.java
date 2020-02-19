@@ -31,8 +31,12 @@ public class PanelRotator extends SpartronicsSubsystem
     {
         mOpticalFlagUp = new DigitalInput(Constants.PanelRotator.kOpticalFlagUpId);
         mLimitSwitchDown = new DigitalInput(Constants.PanelRotator.kLimitSwitchDownId);
+
         mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId);
+        mSpinMotor.setBrakeMode(true);
+
         mRaiseMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId);
+        mRaiseMotor.setBrakeMode(true);
 
         mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         mColorMatcher.addColorMatch(Constants.PanelRotator.kRedTarget);
@@ -85,6 +89,7 @@ public class PanelRotator extends SpartronicsSubsystem
     public String getTargetColor()
     {
         // return DriverStation.getInstance().getGameSpecificMessage();
+        //TODO: this is a placeholder because we don't have the field output in tests; change it before we are actually in the game
         return "Red";
     }
 
