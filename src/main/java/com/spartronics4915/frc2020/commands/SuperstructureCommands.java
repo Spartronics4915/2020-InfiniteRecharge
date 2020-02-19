@@ -12,35 +12,45 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class SuperstructureCommands
 {
-    public IndexerCommands mIndexerCommands;
-    public IntakeCommands mIntakeCommands;
-    public LauncherCommands mLauncherCommands;
+    private IndexerCommands mIndexerCommands;
+    private IntakeCommands mIntakeCommands;
+    private LauncherCommands mLauncherCommands;
 
-    public SuperstructureCommands(RobotStateMap stateMap, Pose2d targetPose)
+    private Indexer mIndexer;
+    private Intake mIntake;
+    private Launcher mLauncher;
+
+    public SuperstructureCommands(LauncherCommands launcherCommands,
+                                  IntakeCommands intakeCommands,
+                                  IndexerCommands indexCommands)
     {
-        mIndexerCommands = new IndexerCommands();
-        mIntakeCommands = new IntakeCommands();
-        mLauncherCommands = new LauncherCommands(stateMap, targetPose);
+        mLauncherCommands = launcherCommands;
+        mIntakeCommands = intakeCommands;
+        mIndexerCommands = indexCommands;
+
+        mLauncher = mLauncherCommands.getLauncher();
+        mIntake = mIntakeCommands.getIntake();
+        mIndexer = mIndexerCommands.getIndexer();
     }
 
     public class LaunchSequence extends SequentialCommandGroup
     {
-        public LaunchSequence(Indexer indexer, Launcher launcher)
+        public LaunchSequence()
         {
             addCommands(
-                mLauncherCommands.new WaitForFlywheel(launcher),
-                mIndexerCommands.new LoadToLauncher(indexer)
+                mLauncherCommands.new WaitForFlywheel(mLauncher),
+                mIndexerCommands.new LoadToLauncher(mIndexer)
             );
         }
     }
 
     public class IntakeRace extends ParallelRaceGroup
     {
-        public IntakeRace(Indexer indexer, Intake intake)
+        public IntakeRace()
         {
             addCommands(
-                mIntakeCommands.new Harvest(intake),
-                mIndexerCommands.new LoadFromIntake(indexer)
+                mIntakeCommands.new Harvest(mIntake),
+                mIndexerCommands.new LoadFromIntake(mIndexer)
             );
         }
     }
