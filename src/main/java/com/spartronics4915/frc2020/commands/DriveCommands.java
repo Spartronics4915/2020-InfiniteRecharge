@@ -15,11 +15,6 @@ public class DriveCommands
         mDrive = drive;
     }
 
-    Drive getDrive()
-    {
-        return mDrive;
-    }
-
     public class TeleOpCommand extends CommandBase
     {
         private final Joystick mJoystick;
@@ -32,8 +27,8 @@ public class DriveCommands
         @Override
         public void execute()
         {
-            mDrive.arcadeDrive(mJoystick.getY(), mJoystick.getX()); // To invert joystick controller,
-                                                                // so forward... is forward
+            // To invert joystick controller, so forward... is forward
+            mDrive.arcadeDrive(mJoystick.getY(), mJoystick.getX());
         }
     }
 }
