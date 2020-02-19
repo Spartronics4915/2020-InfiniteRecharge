@@ -165,11 +165,6 @@ public class Launcher extends SpartronicsSubsystem
         mTurretMotor.setDutyCycle(output);
     }
 
-    public void stopTurret()
-    {
-        mTurretMotor.setDutyCycle(0);
-    }
-
     /**
      * Returns the current angle the turret is facing relative to straight ahead/home position
      * @return Current angle in degrees the turret is facing relative to the home position (forwards)
