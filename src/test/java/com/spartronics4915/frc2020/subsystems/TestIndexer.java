@@ -14,7 +14,7 @@ public class TestIndexer
     private static DriverStationSim sSim;
 
     public TestIndexer() {
-        mCommands = new IndexerCommands();
+        mCommands = new IndexerCommands(sIndexer);
         sSim = new DriverStationSim();
         sSim.setAutonomous(false);
         sSim.setEnabled(true);

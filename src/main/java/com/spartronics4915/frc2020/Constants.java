@@ -169,6 +169,8 @@ public final class Constants
         public static final double kRobotMassKg = 1;
         public static final double kMoi = 1;
 
+        public static final double kP = 0.01;
+
         // TODO: characterize
         public static final double kRightS;
         public static final double kRightV;

@@ -56,9 +56,14 @@ public class RobotContainer
     private final PanelRotator mPanelRotator;
     private final LED mLED;
     private final Vision mVision;
+    private final Drive mDrive;
+    private final RamseteTracker mRamseteController = new RamseteTracker(2, 0.7);
+    private final RobotStateEstimator mStateEstimator;
+    private final TrajectoryContainer.AutoMode[] mAutoModes;
 
     /* subsystem commands */
     private final ClimberCommands mClimberCommands;
+    private final DriveCommands mDriveCommands;
     private final IntakeCommands mIntakeCommands;
     private final IndexerCommands mIndexerCommands;
     private final LauncherCommands mLauncherCommands;
@@ -68,10 +73,6 @@ public class RobotContainer
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
 
-    private final Drive mDrive;
-    private final RamseteTracker mRamseteController = new RamseteTracker(2, 0.7);
-    private final RobotStateEstimator mStateEstimator;
-    private final TrajectoryContainer.AutoMode[] mAutoModes;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -91,14 +92,13 @@ public class RobotContainer
             Logger.exception(e);
         }
         mDrive = new Drive();
+        mDriveCommands = new DriveCommands(mDrive);
         mStateEstimator = new RobotStateEstimator(mDrive,
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
             slamra);
         var slamraCommand = new StartEndCommand(() -> mStateEstimator.enable(),
             () -> mStateEstimator.stop(), mStateEstimator);
         mStateEstimator.setDefaultCommand(slamraCommand);
-
-
         mStateEstimator.resetRobotStateMaps(new Pose2d());
 
         mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController);
@@ -114,14 +114,15 @@ public class RobotContainer
         mVision = new Vision(mStateEstimator, mLauncher);
 
         mClimberCommands = new ClimberCommands();
-        mIntakeCommands = new IntakeCommands();
-        mIndexerCommands = new IndexerCommands();
-        mLauncherCommands = new LauncherCommands(mStateEstimator.getEncoderRobotStateMap(),
-            new Pose2d(-1, 0, Rotation2d.fromDegrees(180)));
+        mIntakeCommands = new IntakeCommands(mIntake);
+        mIndexerCommands = new IndexerCommands(mIndexer);
+        mLauncherCommands = new LauncherCommands(mLauncher, mIndexer, 
+                                mIndexerCommands,
+                                mStateEstimator.getEncoderRobotStateMap());
         mPanelRotatorCommands = new PanelRotatorCommands();
-        mSuperstructureCommands = new SuperstructureCommands(mStateEstimator.getEncoderRobotStateMap(), 
-            new Pose2d(-1, 0, Rotation2d.fromDegrees(180)));
-
+        mSuperstructureCommands = new SuperstructureCommands(mLauncherCommands,
+                                                          mIntakeCommands,
+                                                          mIndexerCommands);
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
 
@@ -130,9 +131,9 @@ public class RobotContainer
         mIntake.setDefaultCommand(mIntakeCommands.new Stop(mIntake));
         // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new TargetAndShoot(mLauncher),
         //     mLauncherCommands.new TrackPassively(mLauncher), mLauncher::inRange));
-        mLauncher.setDefaultCommand(mLauncherCommands.new ShootBallTest(mLauncher));//mLauncherCommands.new TargetAndShoot(mLauncher));
+        mLauncher.setDefaultCommand(mLauncherCommands.new ShootBallTest());//mLauncherCommands.new TargetAndShoot(mLauncher));
         mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
-        mDrive.setDefaultCommand(new TeleOpCommand(mDrive, mJoystick));
+        mDrive.setDefaultCommand(mDriveCommands.new TeleOpCommand(mJoystick));
 
         // mLauncherCommands.new Zero(mLauncher).schedule();
         configureJoystickBindings();
@@ -151,7 +152,7 @@ public class RobotContainer
             .whenReleased(mIndexerCommands.new EndTransfer(mIndexer));
         new JoystickButton(mJoystick, 5).whenPressed(mIndexerCommands.new StartKicker(mIndexer))
             .whenReleased(mIndexerCommands.new EndKicker(mIndexer));
-        new JoystickButton(mJoystick, 1).whenPressed(mSuperstructureCommands.new LaunchSequence(mIndexer, mLauncher));
+        new JoystickButton(mJoystick, 6).whenPressed(mSuperstructureCommands.new LaunchSequence());
         /*
         new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
         new JoystickButton(mJoystick, 2).whenHeld(new LauncherCommands.Raise(mLauncher));
@@ -219,7 +220,7 @@ public class RobotContainer
         // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new
         // ConditionalCommand(mLauncherCommands.new Target));
 
-        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(mSuperstructureCommands.new IntakeRace(mIndexer, mIntake));
+        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(mSuperstructureCommands.new IntakeRace());
         new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
 
         new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));

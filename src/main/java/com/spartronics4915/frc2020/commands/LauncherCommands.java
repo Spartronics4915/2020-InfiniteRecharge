@@ -19,22 +19,33 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public class LauncherCommands
 {
+    private final Launcher mLauncher;
+    private final Indexer mIndexer;
+    private final IndexerCommands mIndexerCommands;
     private final RobotStateMap mStateMap;
     private final Pose2d mTarget;
 
-    public LauncherCommands(RobotStateMap stateMap, Pose2d targetPose)
+    public LauncherCommands(Launcher launcher, Indexer indexer, 
+                    IndexerCommands indexerCommands, RobotStateMap stateMap)
     {
+        mLauncher = launcher;
+        mIndexer = indexer;
+        mIndexerCommands = indexerCommands;
         mStateMap = stateMap;
-        mTarget = targetPose;
+        mTarget = null;
+    }
+
+    public Launcher getLauncher()
+    {
+        return mLauncher;
     }
 
     public class TargetAndShoot extends CommandBase
     {
-        private final Launcher mLauncher;
-
-        public TargetAndShoot(Launcher launcher)
+        public Pose2d mTarget;
+        public TargetAndShoot(Pose2d target)
         {
-            mLauncher = launcher;
+            mTarget = target;
             addRequirements(mLauncher);
         }
 
@@ -42,7 +53,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            double distance = trackTarget(mLauncher);
+            double distance = trackTarget(mTarget);
             mLauncher.runFlywheel(mLauncher.calcRPS(distance));
         }
 
@@ -54,11 +65,10 @@ public class LauncherCommands
 
     public class TrackPassively extends CommandBase
     {
-        private final Launcher mLauncher;
+        Pose2d mTarget;
 
-        public TrackPassively(Launcher launcher)
+        public TrackPassively(Pose2d target)
         {
-            mLauncher = launcher;
             addRequirements(mLauncher);
         }
 
@@ -72,7 +82,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            trackTarget(mLauncher);
+            trackTarget(mTarget);
         }
 
         @Override
@@ -86,11 +96,8 @@ public class LauncherCommands
 
     public class Zero extends CommandBase
     {
-        private final Launcher mLauncher;
-
-        public Zero(Launcher launcher)
+        public Zero()
         {
-            mLauncher = launcher;
             addRequirements(mLauncher);
         }
 
@@ -110,20 +117,19 @@ public class LauncherCommands
     /**
      * @return Distance to the target in meters
      */
-    private double trackTarget(Launcher launcher)
+    private double trackTarget(Pose2d target)
     {
         Pose2d fieldToTurret = mStateMap.getLatestFieldToVehicle()
             .transformBy(Constants.Launcher.kRobotToTurret);
-        Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(mTarget);
+        Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(target);
         Rotation2d fieldAnglePointingToTarget = new Rotation2d(
-            turretToTarget.getTranslation().getX(), turretToTarget.getTranslation().getY(), true);
-
+                                turretToTarget.getTranslation().getX(), 
+                                turretToTarget.getTranslation().getY(), 
+                                true);
         Rotation2d turretAngle = fieldAnglePointingToTarget.rotateBy(fieldToTurret.getRotation().inverse());
         double distance = mTarget.distance(fieldToTurret);
-
-        launcher.adjustHood(launcher.calcPitch(distance));
-        launcher.turnTurret(turretAngle);
-
+        mLauncher.adjustHood(mLauncher.calcPitch(distance));
+        mLauncher.turnTurret(turretAngle);
         return distance;
     }
 
@@ -133,13 +139,10 @@ public class LauncherCommands
      */
     public class ShootBallTest extends CommandBase
     {
-        private final Launcher mLauncher;
-
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public ShootBallTest(Launcher launcher)
+        public ShootBallTest()
         {
-            mLauncher = launcher;
             addRequirements(mLauncher);
         }
 
@@ -165,6 +168,7 @@ public class LauncherCommands
         }
     }
 
+    // XXX: subclass CommandBase so we don't need the launcher
     public class WaitForFlywheel extends WaitUntilCommand
     {
         public WaitForFlywheel(Launcher launcher)
@@ -179,13 +183,10 @@ public class LauncherCommands
      */
     public class ShootBallTestWithDistance extends CommandBase
     {
-        private final Launcher mLauncher;
-
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public ShootBallTestWithDistance(Launcher launcher)
+        public ShootBallTestWithDistance()
         {
-            mLauncher = launcher;
             addRequirements(mLauncher);
         }
 
@@ -220,43 +221,28 @@ public class LauncherCommands
 
     public class ShootingTest extends ParallelCommandGroup
     {
-        private Launcher mLauncher;
-        private Indexer mIndexer;
-
-        public ShootingTest(Launcher launcher, Indexer indexer)
+        public ShootingTest()
         {
-            mLauncher = launcher;
-            mIndexer = indexer;
-            addCommands(new ShootBallTest(mLauncher),
-                (new IndexerCommands()).new LoadToLauncher(mIndexer, 4));
+            addCommands(new ShootBallTest(),
+                mIndexerCommands.new LoadToLauncher(mIndexer, 4));
         }
-
     }
 
     public class ShootingCalculatedTest extends ParallelCommandGroup
     {
-        private Launcher mLauncher;
-        private Indexer mIndexer;
-
-        public ShootingCalculatedTest(Launcher launcher, Indexer indexer)
+        public ShootingCalculatedTest()
         {
-            mLauncher = launcher;
-            mIndexer = indexer;
-            addCommands(new ShootBallTestWithDistance(mLauncher),
-                (new IndexerCommands()).new LoadToLauncher(mIndexer, 4));
+            addCommands(new ShootBallTestWithDistance(),
+                mIndexerCommands.new LoadToLauncher(mIndexer, 4));
         }
-
     }
 
     public class TurretTest extends CommandBase
     {
-        private final Launcher mLauncher;
-
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public TurretTest(Launcher launcher)
+        public TurretTest()
         {
-            mLauncher = launcher;
             addRequirements(mLauncher);
         }
 
@@ -270,7 +256,8 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            mLauncher.turnTurret(Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("TurretAimAngle", 0)));
+            double degrees = (double) mLauncher.dashboardGetNumber("turretAngleSlider", 0);
+            mLauncher.turnTurret(Rotation2d.fromDegrees(degrees));
         }
 
         // Returns true when the command should end.
@@ -290,13 +277,10 @@ public class LauncherCommands
 
     public class HoodTest extends CommandBase
     {
-        private final Launcher mLauncher;
-
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public HoodTest(Launcher launcher)
+        public HoodTest()
         {
-            mLauncher = launcher;
             addRequirements(mLauncher);
         }
 
@@ -305,7 +289,7 @@ public class LauncherCommands
         public void execute()
         {
             mLauncher.adjustHood(
-                Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("HoodAngle", 0)));
+            Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("hoodAngleSlider", 0)));
         }
 
         // Returns true when the command should end.
