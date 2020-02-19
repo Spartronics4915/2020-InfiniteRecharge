@@ -17,9 +17,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Supplier;
 
 public final class Constants
 {
@@ -43,16 +41,17 @@ public final class Constants
         public static final class Spinner
         {
             public static final int kMotorId = 9;
-            public static final double kVelocityP = 1; // FIXME: stand-in values
-            public static final double kVelocityD = 1;
-            public static final double kPositionP = 1;
-            public static final double kPositionD = 1;
-            public static final double kConversionRatio = 1;
+            public static final double kVelocityP = 0; // FIXME: stand-in values
+            public static final double kVelocityD = 0;
+            public static final double kPositionP = 0.005;
+            public static final double kPositionD = 0;
+            public static final double kConversionRatio = 1.0 / (187.0/20.0*9.0);
             public static final double kMaxVelocity = 1;
-            public static final double kMaxAcceleration = 1;
+            public static final double kMaxAcceleration = 0.5;
+            public static final double kStallThreshold = 90.0; // FIXME: stand-in values
 
             /** Degrees */
-            public static final double kPositionTolerance = 5;
+            public static final double kPositionTolerance = 2.0;
         }
 
         public static final class Loader
@@ -60,20 +59,14 @@ public final class Constants
             public static final int kMotorId = 10;
             public static final double kVelocityP = 1; // FIXME: stand-in values
             public static final double kVelocityD = 1;
-            public static final double kPositionP = 1;
-            public static final double kPositionD = 1;
             public static final double kConversionRatio = 1;
             public static final double kSpeed = 1;
         }
         public static final class Transfer
         {
             public static final int kMotorId = 11;
-            public static final double kVelocityP = 1; // FIXME: stand-in values
-            public static final double kVelocityD = 1;
-            public static final double kPositionP = 1;
-            public static final double kPositionD = 1;
             public static final double kConversionRatio = 1;
-            public static final double kSpeed = 1;
+            public static final double kSpeed = -1.0;
         }
 
         public static final int kLimitSwitchId = 8; // Digital
@@ -114,7 +107,7 @@ public final class Constants
         // Vals for interpolating lookup table
         public static final double[] kDistanceTable = new double[]{0.0, 1.0};
         public static final double[] kAngleTable = new double[]{0.0, 30.0};
-        public static final double[] kRPSTable = new double[]{0.0, 30.0};
+        public static final double[] kRPSTable = new double[]{40.0, 40.0};
         public static final int kLookupTableSize = kDistanceTable.length;
 
         /** RPS */
@@ -211,10 +204,10 @@ public final class Constants
                     kRightA = 0.0340;
                     kWheelDiameter = Units.inchesToMeters(6);
                     kNativeUnitsPerRevolution = 1440.0;
-                    kLeftOutputInverted = false;
+                    kLeftOutputInverted = true;
                     kLeftFollowerOutputInverted = false;
                     kRightOutputInverted = true;
-                    kRightFollowerOutputInverted = true;
+                    kRightFollowerOutputInverted = false;
 
                     kPigeonId = -1;
                     kDriveMotorConstructor = SpartronicsSRX::makeMotor;
@@ -246,14 +239,13 @@ public final class Constants
     {
         public static final double kStartVelocityMetersPerSec = 0;
         public static final double kEndVelocityMetersPerSec = 0;
-        public static final double kMaxVelocityMetersPerSec = .2;
+        public static final double kMaxVelocityMetersPerSec = 1;
         public static final double kMaxAccelerationMeterPerSecSq = .1;
 
         public static final Pose2d kStartPointLeft = new Pose2d(Units.inchesToMeters(508),
             Units.inchesToMeters(138), Rotation2d.fromDegrees(180));
         public static final Pose2d kStartPointMiddle = new Pose2d(Units.inchesToMeters(508),
-            Units.inchesToMeters(-54), Rotation2d.fromDegrees(180));
-            //(x:508, y:-54, r:180) (x:400, y:-40, r:135)
+            Units.inchesToMeters(-65), Rotation2d.fromDegrees(180));
         public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(508),
             Units.inchesToMeters(-138), Rotation2d.fromDegrees(180));
     }

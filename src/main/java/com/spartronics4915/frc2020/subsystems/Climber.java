@@ -127,8 +127,8 @@ public class Climber extends SpartronicsSubsystem
         if (amps > mMaxAmps)
         {
             mMaxAmps = amps;
+            dashboardPutNumber("winchCurrentMax", mMaxAmps);
         }
-
-        dashboardPutNumber("amps", mMaxAmps);
+        dashboardPutNumber("winchCurrent", mMaxAmps);
     }
 }

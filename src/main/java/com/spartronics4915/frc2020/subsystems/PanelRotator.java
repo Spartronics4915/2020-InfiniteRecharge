@@ -181,8 +181,8 @@ public class PanelRotator extends SpartronicsSubsystem
         else
             rotatedColor = "Error";
 
-        dashboardPutString("Current Color (field)", rotatedColor);
-        dashboardPutNumber("ColorMatch Confidence", match.confidence);
+        dashboardPutString("currentColor", rotatedColor);
+        dashboardPutNumber("currentColorConfidence", match.confidence);
         return rotatedColor;
     }
 

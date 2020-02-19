@@ -25,8 +25,8 @@
 
 // Configuration for our LED strip and Arduino
 // TODO: Update PIN and NUM_LEDS for development and later robot deployment
-#define NUM_LEDS 30
-#define PIN 4
+#define NUM_LEDS 150   // was 30
+#define PIN 11         // was 4
 
 // Allocate our pixel memory, set interface to match our hardware
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
@@ -73,6 +73,9 @@ const rgbColor rgbColor_ORANGE(255, 64, 0);
 const rgbColor rgbColor_WHITE(0xffffff);
 const rgbColor rgbColor_MAGENTA(0xff00ff);
 const rgbColor rgbColor_MAGENTA_DIM(0x330033);
+
+// Time in milliseconds for the flash of light
+#define FLASH_TIME_INTERVAL     250
 
 /*
    Animation index
@@ -200,70 +203,60 @@ void loop()
 
     //NEEDS BELOW
 
-    case BLING_COMMAND_OFF:
+    case BLING_COMMAND_OFF: /* 0 */
       //Done
-
       solid(rgbColor_OFF);
       break;
 
-    case BLING_COMMAND_STARTUP:
-      //Done
-
-      solid(rgbColor_ORANGE);
+    case BLING_COMMAND_STARTUP: /* 1 */
+      //Done: was: strobe(rgbColor_ORANGE, 1, 100, 0);
+      cogs(rgbColor_BLUE, rgbColor_YELLOW);
       break;
 
-    case BLING_COMMAND_DISABLED:
+    case BLING_COMMAND_DISABLED: /* 2 */
       //Done
-
-      strobe(rgbColor_ORANGE, 1, 100, 0);
+      solid(rgbColor_ORANGE);     // IMPORTANT: matching the RSL state @ disabled
       break;
     //Will adjust accordingly to the usual past robots blinking rate etc etc
 
 
     //WANTS BELOW
-
-    case BLING_COMMAND_AUTOMODE:
+    case BLING_COMMAND_AUTOMODE: /* 3 */
       //Done
-
       solid(rgbColor_WHITE);
       break;
 
-    case BLING_COMMAND_SHOOTING:
+    case BLING_COMMAND_SHOOTING:  /* 4 */
       //Done but delay may need a retouch
+      // was: strobe(rgbColor_WHITE, 1 /* # of flashes */, 150 /* flash delay */, 1000 /* strobe pause */);
+      flash(FLASH_TIME_INTERVAL, rgbColor_WHITE.color, 255);
+      currentCommand = BLING_COMMAND_OFF;       // since we may want to flash more than once, we are resetting command to OFF, so launch can rerun
+     break;
 
-      strobe(rgbColor_WHITE, 1, 150, 2000);
+    case BLING_COMMAND_PICKUP:  /* 5 */
+      //Done --> was:  strobe(rgbColor_YELLOW, 1, 100, 0);
+      spartronicsCrawler(10, rgbColor_BLUE.color, rgbColor_YELLOW.color, 30);
       break;
 
-    case BLING_COMMAND_PICKUP:
+    case BLING_COMMAND_LOADING: /* 6 */
+      //Done --> was: fillPixelByPixel (rgbColor_YELLOW, 50);
+      fillSpartronicsColorsPixelByPixel(rgbColor_BLUE, rgbColor_YELLOW, 25);
+      break;
+
+    case BLING_COMMAND_CLIMBING:  /* 7 */
+      //In-progress == suggestion: spartronics_fade()
+      //was: solid(rgbColor_WHITE);
+      spartronics_fade(10 /* wait */, rgbColor_BLUE.color /* color1 */, rgbColor_YELLOW.color /* color2 */, 255 /* brightness*/);
+      break;
+
+    case BLING_COMMAND_VISION: /* 8 */
       //Done
-
-      strobe(rgbColor_YELLOW, 1, 100, 0);
-      break;
-
-    case BLING_COMMAND_LOADING:
-      //Done
-
-      fillPixelByPixel (rgbColor_YELLOW, 50);
-      break;
-
-    case BLING_COMMAND_CLIMBING:
-      //In-progress, solid white is a placeholder
-
-      solid(rgbColor_WHITE);
-      break;
-
-    case BLING_COMMAND_VISION:
-      //Done
-
       strobe(rgbColor_WHITE, 1, 150, 500);
       break;
 
-    //NEED
-
-    case BLING_COMMAND_DEFAULT:
-      //Done
-
-      solid(rgbColor_BLUE);
+    case BLING_COMMAND_DEFAULT: /* 9 */
+      //Done - was: solid(rgbColor_BLUE);
+      cogs(rgbColor_BLUE, rgbColor_YELLOW);
       break;
 
     default:

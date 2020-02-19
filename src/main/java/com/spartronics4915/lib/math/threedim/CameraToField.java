@@ -46,6 +46,7 @@ public class CameraToField
     private Affine3 mCamToRobot;
     private Affine3 mRobotToField;
     private Affine3 mCamToField;
+    private Affine3 mFieldToMount;
     private boolean mDirty;
 
     public CameraToField()
@@ -55,6 +56,7 @@ public class CameraToField
         mCamToRobot = new Affine3();
         mRobotToField = new Affine3();
         mCamToField = new Affine3();
+        mFieldToMount = new Affine3();
         mDirty = true;
     }
 
@@ -248,6 +250,12 @@ public class CameraToField
         return this.mRobotToField.transformVector(dir);
     }
 
+    public Vec3 fieldDirToMount(Vec3 dir)
+    {
+        this._rebuildTransforms();
+        return this.mFieldToMount.transformVector(dir);
+    }
+
     /**
      * updates the transform chain whenever any inputs have changed.
      */
@@ -259,6 +267,8 @@ public class CameraToField
                                                 this.mCamToMount);
             this.mCamToField = Affine3.concatenate(this.mRobotToField, 
                                                 this.mCamToRobot);
+            this.mFieldToMount = Affine3.concatenate(this.mMountToRobot,
+                                                this.mRobotToField).asInverse();
             this.mDirty = false;
         }
     }

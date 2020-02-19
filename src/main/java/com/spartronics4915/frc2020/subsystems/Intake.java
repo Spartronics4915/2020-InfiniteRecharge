@@ -38,6 +38,7 @@ public class Intake extends SpartronicsSubsystem
      */
     public void harvest()
     {
+        dashboardPutString("Status", "harvesting");
         mHarvestMotor.setDutyCycle(Constants.Intake.kHarvestSpeed);
     }
 
@@ -46,7 +47,7 @@ public class Intake extends SpartronicsSubsystem
      */
     public void reverse()
     {
-        System.out.println("here");
+        dashboardPutString("Status", "ejecting");
         mHarvestMotor.setDutyCycle(Constants.Intake.kEjectSpeed);
     }
 
@@ -65,6 +66,7 @@ public class Intake extends SpartronicsSubsystem
      */
     public void stop()
     {
+        dashboardPutString("Status", "stopped");
         mHarvestMotor.setNeutral();
     }
 }
