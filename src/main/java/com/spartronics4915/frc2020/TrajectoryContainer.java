@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.SortedMap;
 
 import com.spartronics4915.frc2020.Constants.Trajectory;
-import com.spartronics4915.frc2020.commands.LaserTurretToFieldPose;
 import com.spartronics4915.frc2020.commands.StateMapResetCommand;
 import com.spartronics4915.frc2020.commands.SuperstructureCommands;
 import com.spartronics4915.frc2020.subsystems.Drive;
@@ -269,8 +268,6 @@ public class TrajectoryContainer
                     ramseteController, stateEstimator.getEncoderRobotStateMap()))),
             new AutoMode("Characterize Drive",
                 new CharacterizeDriveBaseCommand(drive, Constants.Drive.kWheelDiameter)),
-            new AutoMode("Laser Turret",
-                new LaserTurretToFieldPose(stateEstimator.getCameraRobotStateMap())),
             new AutoMode("Right: Through Trench",
                 new TrajectoryTrackerCommand(drive,
                     TrajectoryContainer.left.getTrajectory(null, Destination.kLeftTrenchFar),

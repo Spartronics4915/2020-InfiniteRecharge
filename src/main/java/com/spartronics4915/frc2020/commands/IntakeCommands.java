@@ -24,6 +24,17 @@ public class IntakeCommands
      * Each of these parameters corresponds with a method in the CommandBase class.
      */
 
+    private Intake mIntake;
+    public IntakeCommands(Intake intake)
+    {
+        mIntake = intake;
+    }
+
+    public Intake getIntake()
+    {
+        return mIntake;
+    }
+
     /**
      * This {@link FunctionalCommand} harvests balls by running {@link Intake}.intake continuously,
      * unless terminated by a second press of the Harvest button or

@@ -12,6 +12,17 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public class IndexerCommands
 {
+    private Indexer mIndexer;
+    public IndexerCommands(Indexer indexer)
+    {
+        mIndexer = indexer;
+    }
+
+    public Indexer getIndexer()
+    {
+        return mIndexer;
+    }
+
     /**
      * Waits until a ball is held, then ends.
      */
