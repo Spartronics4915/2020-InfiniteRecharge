@@ -111,7 +111,6 @@ public class Robot extends TimedRobot
     @Override
     public void disabledInit()
     {
-        Logger.notice("@disabledInit: Requested BlingState.BLING_COMMAND_DISABLED");
         LED.getInstance().setBlingState(BlingState.BLING_COMMAND_DISABLED);
     }
 
@@ -131,8 +130,6 @@ public class Robot extends TimedRobot
         if (mAutonomousCommand != null)
         {
             mAutonomousCommand.schedule();
-			Logger.notice("@autonomousInit: Requested BlingState.BLING_COMMAND_AUTOMODE");
-			LED.getInstance().setBlingState(BlingState.BLING_COMMAND_AUTOMODE);
         }
 
         LED.getInstance().setBlingState(BlingState.BLING_COMMAND_AUTOMODE);
@@ -152,11 +149,9 @@ public class Robot extends TimedRobot
         if (mAutonomousCommand != null)
         {
             mAutonomousCommand.cancel();
-			Logger.notice("@teleopInit: Requested BlingState.BLING_COMMAND_STARTUP");
-			LED.getInstance().setBlingState(BlingState.BLING_COMMAND_STARTUP);
         }
 
-        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_STARTUP);
+        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_TELEOP);
     }
 
     /**
@@ -171,8 +166,7 @@ public class Robot extends TimedRobot
     public void testInit()
     {
         CommandScheduler.getInstance().cancelAll();
-		Logger.notice("@testInit: Requested BlingState.BLING_COMMAND_DEFAULT");
-		LED.getInstance().setBlingState(BlingState.BLING_COMMAND_DEFAULT);
+		LED.getInstance().setBlingState(BlingState.BLING_COMMAND_DRIVE_SLOW);
     }
 
     /**
