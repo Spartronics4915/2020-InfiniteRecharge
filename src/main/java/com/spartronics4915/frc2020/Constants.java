@@ -93,7 +93,7 @@ public final class Constants
         public static final int kTurretPotentiometerId = 0; // Analog
 
         public static final Pose2d kRobotToTurret = new Pose2d(Units.inchesToMeters(-3.72), Units.inchesToMeters(5.264), Rotation2d.fromDegrees(180.0));
-        
+
         // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
         public static final double kP = 0.05;
         public static final double kS = 0.0286; // 0.0654;
@@ -165,6 +165,7 @@ public final class Constants
         public static final double kTrackWidthMeters;
         public static final double kScrubFactor;
         public static final double kNativeUnitsPerRevolution;
+        public static final double kSlowModeMultiplier;
 
         public static final double kRobotMassKg = 1;
         public static final double kMoi = 1;
@@ -210,6 +211,7 @@ public final class Constants
                     kRightA = 0.0340;
                     kWheelDiameter = Units.inchesToMeters(6);
                     kNativeUnitsPerRevolution = 1440.0;
+                    kSlowModeMultiplier = 0.5;
                     kLeftOutputInverted = true;
                     kLeftFollowerOutputInverted = false;
                     kRightOutputInverted = true;
@@ -229,6 +231,7 @@ public final class Constants
                     kRightV = 1;
                     kRightA = 1;
                     kNativeUnitsPerRevolution = 10.71;
+                    kSlowModeMultiplier = 0.5;
                     kLeftOutputInverted = true;
                     kLeftFollowerOutputInverted = true;
                     kRightOutputInverted = false;
@@ -283,11 +286,11 @@ public final class Constants
         public static final double kGoalHeight = 8*12 + 2.25; // 98.25in
 
         // We assume here that the robot odometry is alliance-sensitive.
-        // When we're on the Blue alliance, coords are 
+        // When we're on the Blue alliance, coords are
         //      [0, xsize] x [yhalfsize, -yhalfsize]
-        // When we're on the Red alliance, coords are 
+        // When we're on the Red alliance, coords are
         //      [xsize, 0] x [-yhalfsize, yhalfsize]
-        // Given this behavior, we characterize Goals in our-alliance-relative 
+        // Given this behavior, we characterize Goals in our-alliance-relative
         // terms.
         public static final double[] kOpponentGoalCoords = {0, 67.5, kGoalHeight};
         public static final double[] kAllianceGoalCoords = {628, -67.5, kGoalHeight};
