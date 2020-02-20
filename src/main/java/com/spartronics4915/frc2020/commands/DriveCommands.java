@@ -1,7 +1,6 @@
 package com.spartronics4915.frc2020.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.Joystick;
 
 import com.spartronics4915.frc2020.Constants;
@@ -41,9 +40,25 @@ public class DriveCommands
         @Override
         public void execute()
         {
-            mDrive.arcadeDrive(
-                (mInverted ? -1 : 1) * (mSlow ? Constants.Drive.kSlowModeMultiplier : 1) * mJoystick.getY(),
-                (mInverted ? -1 : 1) * (mSlow ? Constants.Drive.kSlowModeMultiplier : 1) * mJoystick.getX());
+            // before:
+            // (mInverted ? -1 : 1) * (mSlow ? Constants.Drive.kSlowModeMultiplier : 1) * mJoystick.getY(),
+            // (mInverted ? -1 : 1) * (mSlow ? Constants.Drive.kSlowModeMultiplier : 1) * mJoystick.getX());
+
+            // after (with helpful comments)
+            double x = mJoystick.getX();
+            double y = mJoystick.getY(); 
+            y = -1;  // reverse the sense of joystick y, fwd should be positive
+            if(mSlow)
+            {
+                x *= Constants.Drive.kSlowModeMultiplier;
+                y *= Constants.Drive.kSlowModeMultiplier;
+            }
+            if(mInverted)
+            {
+                x *= -1;
+                y *= -1;
+            }
+            mDrive.arcadeDrive(y, x);
         }
     }
 
@@ -68,14 +83,11 @@ public class DriveCommands
         @Override
         public boolean isFinished()
         {
-            return true;
+           return true;
         }
     }
 
     /**
-     * Toggles the mSlow boolean through the bitwise XOR operator. Gross!
-     * (a much more readable way would be boolean = !boolean)
-     * <p>
      * Instantly ends, and goes back to the default TeleOpCommand.
      */
     public class ToggleSlow extends CommandBase
@@ -88,7 +100,7 @@ public class DriveCommands
         @Override
         public void initialize()
         {
-            mSlow ^= true;
+            mSlow = !mSlow;
         }
 
         @Override
@@ -99,9 +111,6 @@ public class DriveCommands
     }
 
     /**
-     * Toggles the mInverted boolean through the bitwise XOR operator. Gross!
-     * (a much more readable way would be boolean = !boolean)
-     * <p>
      * Instantly ends, and goes back to the default TeleOpCommand.
      */
     public class ToggleInverted extends CommandBase
@@ -114,7 +123,7 @@ public class DriveCommands
         @Override
         public void initialize()
         {
-            mInverted ^= true;
+            mInverted = !mInverted;
         }
 
         @Override
