@@ -56,9 +56,14 @@ public class RobotContainer
     private final PanelRotator mPanelRotator;
     private final LED mLED;
     private final Vision mVision;
+    private final Drive mDrive;
+    private final RamseteTracker mRamseteController = new RamseteTracker(2, 0.7);
+    private final RobotStateEstimator mStateEstimator;
+    private final TrajectoryContainer.AutoMode[] mAutoModes;
 
     /* subsystem commands */
     private final ClimberCommands mClimberCommands;
+    private final DriveCommands mDriveCommands;
     private final IntakeCommands mIntakeCommands;
     private final IndexerCommands mIndexerCommands;
     private final LauncherCommands mLauncherCommands;
@@ -68,10 +73,6 @@ public class RobotContainer
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
 
-    private final Drive mDrive;
-    private final RamseteTracker mRamseteController = new RamseteTracker(2, 0.7);
-    private final RobotStateEstimator mStateEstimator;
-    private final TrajectoryContainer.AutoMode[] mAutoModes;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -91,14 +92,13 @@ public class RobotContainer
             Logger.exception(e);
         }
         mDrive = new Drive();
+        mDriveCommands = new DriveCommands(mDrive);
         mStateEstimator = new RobotStateEstimator(mDrive,
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
             slamra);
         var slamraCommand = new StartEndCommand(() -> mStateEstimator.enable(),
             () -> mStateEstimator.stop(), mStateEstimator);
         mStateEstimator.setDefaultCommand(slamraCommand);
-
-
         mStateEstimator.resetRobotStateMaps(new Pose2d());
 
         mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController);
@@ -133,7 +133,7 @@ public class RobotContainer
         //     mLauncherCommands.new TrackPassively(mLauncher), mLauncher::inRange));
         mLauncher.setDefaultCommand(mLauncherCommands.new ShootBallTest());//mLauncherCommands.new TargetAndShoot(mLauncher));
         mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
-        mDrive.setDefaultCommand(new TeleOpCommand(mDrive, mJoystick));
+        mDrive.setDefaultCommand(mDriveCommands.new TeleOpCommand(mJoystick));
 
         // mLauncherCommands.new Zero(mLauncher).schedule();
         configureJoystickBindings();
@@ -145,7 +145,7 @@ public class RobotContainer
         // Note: changes to bling state can be augmented with:
         // .alongWith(new SetBlingStateCommand(mLED, BlingState.SOME_STATE)));
 
-        new JoystickButton(mJoystick, 1).whenPressed(mIndexerCommands.new ZeroSpinnerCommand(mIndexer));
+        new JoystickButton(mJoystick, 3).whenPressed(mIndexerCommands.new ZeroSpinnerCommand(mIndexer));
 
         new JoystickButton(mJoystick, 2).whenPressed(mIndexerCommands.new SpinIndexer(mIndexer, 5));
         new JoystickButton(mJoystick, 4).whenPressed(mIndexerCommands.new StartTransfer(mIndexer))
@@ -199,8 +199,8 @@ public class RobotContainer
                     mLauncherCommands.new ShootBallTestWithDistance(mLauncher)),
                 mLauncherCommands.new WaitForFlywheel(mLauncher)),
             new ParallelCommandGroup(mIndexerCommands.new LoadToLauncher(mIndexer, 5),
-                mLauncherCommands.new ShootBallTestWithDistance(mLauncher))));
-                */
+                mLauncherCommands.new ShootBallTestWithDistance(mLauncher))));*/
+        
         // new JoystickButton(mJoystick, 7).whileHeld(new
         // TrajectoryTrackerCommand(mDrive, mDrive,
         // this::throughTrench, mRamseteController,
