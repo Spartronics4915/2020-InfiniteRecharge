@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -129,12 +130,12 @@ public class RobotContainer
         // Default Commands run whenever no Command is scheduled to run for a subsystem
         mClimber.setDefaultCommand(mClimberCommands.new Stop(mClimber));
         mIntake.setDefaultCommand(mIntakeCommands.new Stop(mIntake));
-        // mIndexer.setDefaultCommand(mIndexerCommands.new ZeroAndStopGroup(mIndexer));
+        mIndexer.setDefaultCommand(mIndexerCommands.new Stop(mIndexer));
         // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new TargetAndShoot(mLauncher),
         //     mLauncherCommands.new TrackPassively(mLauncher), mLauncher::inRange));
         mLauncher.setDefaultCommand(mLauncherCommands.new ShootBallTest());//mLauncherCommands.new TargetAndShoot(mLauncher));
         mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
-        mDrive.setDefaultCommand(mDriveCommands.new TeleOpCommand(mJoystick));
+        // mDrive.setDefaultCommand(mDriveCommands.new TeleOpCommand(mJoystick));
 
         // mLauncherCommands.new Zero(mLauncher).schedule();
         configureJoystickBindings();
@@ -146,14 +147,13 @@ public class RobotContainer
         // Note: changes to bling state can be augmented with:
         // .alongWith(new SetBlingStateCommand(mLED, BlingState.SOME_STATE)));
 
-        new JoystickButton(mJoystick, 3).whenPressed(mIndexerCommands.new ZeroSpinnerCommand(mIndexer, true));
+        new JoystickButton(mJoystick, 3).whenPressed(new InstantCommand(() -> mIndexer.setZero()));
 
         new JoystickButton(mJoystick, 2).whenPressed(mIndexerCommands.new SpinIndexer(mIndexer, 5));
         new JoystickButton(mJoystick, 4).whenPressed(mIndexerCommands.new StartTransfer(mIndexer))
             .whenReleased(mIndexerCommands.new EndTransfer(mIndexer));
         new JoystickButton(mJoystick, 5).whenPressed(mIndexerCommands.new StartKicker(mIndexer))
             .whenReleased(mIndexerCommands.new EndKicker(mIndexer));
-        new JoystickButton(mJoystick, 6).whenPressed(mSuperstructureCommands.new LaunchSequence());
         /*
         new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
         new JoystickButton(mJoystick, 2).whenHeld(new LauncherCommands.Raise(mLauncher));
@@ -221,11 +221,13 @@ public class RobotContainer
         // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new
         // ConditionalCommand(mLauncherCommands.new Target));
 
+        new JoystickButton(mButtonBoard, 4).whenPressed(mSuperstructureCommands.new LaunchSequence(1));
+        new JoystickButton(mButtonBoard, 3).whenPressed(mSuperstructureCommands.new LaunchSequence(5));
         new JoystickButton(mButtonBoard, 2).toggleWhenPressed(mSuperstructureCommands.new IntakeRace());
-        new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
+        new JoystickButton(mButtonBoard, 1).toggleWhenPressed(mIntakeCommands.new Eject(mIntake));
 
-        new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract(mClimber));
-        new JoystickButton(mButtonBoard, 5).whileHeld(mClimberCommands.new Extend(mClimber));
+        new JoystickButton(mButtonBoard, 9).whileHeld(mClimberCommands.new Retract(mClimber));
+        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend(mClimber));
 
         new JoystickButton(mButtonBoard, 6)
             .whenPressed(mPanelRotatorCommands.new Raise(mPanelRotator));

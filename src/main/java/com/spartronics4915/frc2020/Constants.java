@@ -60,7 +60,7 @@ public final class Constants
             public static final double kVelocityP = 1; // FIXME: stand-in values
             public static final double kVelocityD = 1;
             public static final double kConversionRatio = 1;
-            public static final double kSpeed = 1;
+            public static final double kSpeed = 0.8;
         }
         public static final class Transfer
         {
@@ -222,17 +222,17 @@ public final class Constants
                     kTrackWidthMeters = 26.75;
                     kWheelDiameter = Units.inchesToMeters(8);
                     kScrubFactor = 1;
-                    kLeftS = 1;
-                    kLeftV = 1;
-                    kLeftA = 1;
-                    kRightS = 1;
-                    kRightV = 1;
-                    kRightA = 1;
+                    kLeftS = 0.241;
+                    kLeftV = 0.204;
+                    kLeftA = 0.0237;
+                    kRightS = 0.243;
+                    kRightV = 0.204;
+                    kRightA = 0.0261;
                     kNativeUnitsPerRevolution = 10.71;
-                    kLeftOutputInverted = true;
-                    kLeftFollowerOutputInverted = true;
-                    kRightOutputInverted = false;
-                    kRightFollowerOutputInverted = false;
+                    kLeftOutputInverted = false;
+                    kLeftFollowerOutputInverted = false;
+                    kRightOutputInverted = true;
+                    kRightFollowerOutputInverted = true;
 
                     kPigeonId = 1;
                     kDriveMotorConstructor = SpartronicsMax::makeMotor;
