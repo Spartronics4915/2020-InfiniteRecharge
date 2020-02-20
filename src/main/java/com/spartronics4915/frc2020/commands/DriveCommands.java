@@ -17,9 +17,7 @@ public class DriveCommands
     {
         mDrive = drive;
         mJoystick = joystick;
-        // universal joystick convention is that forward and left are negative
-        // as such, mInverted starts as true
-        mInverted = true;
+        mInverted = false;
         mSlow = false;
         mDrive.setDefaultCommand(new TeleOpCommand());
     }
@@ -27,8 +25,6 @@ public class DriveCommands
     /**
      * Runs the standard arcadeDrive, but with conditions (inverted / in slow mode)
      * given by a set of toggleable booleans.
-     * <p>
-     * Uses the ternary operator to avoid readable code.
      */
     public class TeleOpCommand extends CommandBase
     {
@@ -40,32 +36,23 @@ public class DriveCommands
         @Override
         public void execute()
         {
-            // before:
-            // (mInverted ? -1 : 1) * (mSlow ? Constants.Drive.kSlowModeMultiplier : 1) * mJoystick.getY(),
-            // (mInverted ? -1 : 1) * (mSlow ? Constants.Drive.kSlowModeMultiplier : 1) * mJoystick.getX());
+            // universal joystick convention is that forward and left are negative
+            // as such, the modifier starts negative
+            double modifier = -1;
 
-            // after (with helpful comments)
-            double x = mJoystick.getX();
-            double y = mJoystick.getY(); 
-            y = -1;  // reverse the sense of joystick y, fwd should be positive
-            if(mSlow)
-            {
-                x *= Constants.Drive.kSlowModeMultiplier;
-                y *= Constants.Drive.kSlowModeMultiplier;
-            }
-            if(mInverted)
-            {
-                x *= -1;
-                y *= -1;
-            }
-            mDrive.arcadeDrive(y, x);
+            if (mSlow)
+                modifier *= Constants.Drive.kSlowModeMultiplier;
+            if (mInverted)
+                modifier *= -1;
+
+            mDrive.arcadeDrive(modifier * mJoystick.getY(), modifier * mJoystick.getX());
         }
     }
 
     /**
-     * Written exclusively for the trigger, this command merely sets
-     * the drivetrain to slow mode. A corresponding UnsetSlow does not
-     * exist, as ToggleSlow would function fine.
+     * Written exclusively for the trigger, this command sets
+     * the drivetrain to slow mode.
+     * A corresponding UnsetSlow does not exist - ToggleSlow functions fine.
      */
     public class SetSlow extends CommandBase
     {
