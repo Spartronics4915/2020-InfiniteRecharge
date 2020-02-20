@@ -88,6 +88,7 @@ public class Launcher extends SpartronicsSubsystem
         mTargetTurretDirection = new Rotation2d();
 
         // One BAG motor for turret
+        // XXX: explain all these interesting constants.
         mTurretMotor = SpartronicsSRX.makeMotor(Constants.Launcher.kTurretId,
             SensorModel.fromMultiplier(Math.toDegrees(1.0 / 1024.0 / 11.75 / 20.0) * 2.0));// UNITS
                                                                                            // ARE
@@ -316,10 +317,9 @@ public class Launcher extends SpartronicsSubsystem
     @Override
     public void periodic()
     {
-        dashboardPutNumber("CurrentTurretAimAngle", getTurretDirection().getDegrees());
-
-        dashboardPutNumber("CurrentHoodAngle", getCurrentPitch().getDegrees());
-
-        dashboardPutNumber("CurrentFlywheelRPS", getCurrentRPS());
+        // nb: don't change these without changing Dashboard.
+        dashboardPutNumber("turretAngle", getTurretDirection().getDegrees());
+        dashboardPutNumber("hoodAngle", getCurrentPitch().getDegrees());
+        dashboardPutNumber("flywheelRPS", getCurrentRPS());
     }
 }

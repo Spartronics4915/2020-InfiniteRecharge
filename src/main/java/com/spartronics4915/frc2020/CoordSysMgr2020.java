@@ -1,7 +1,6 @@
 package com.spartronics4915.frc2020;
 
 import com.spartronics4915.lib.math.threedim.*;
-import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 
 /**
  * CamToField2020 extends CameraToField. See coordinate system comments
@@ -77,9 +76,16 @@ public class CoordSysMgr2020 extends CoordSysMgr
     private final Vec3 mCamFlipZ = new Vec3(-1, 0, 0);  // cam +z is turret's -x
 
     // mount to robot ------------------------------------------------------
-    // turret is mounted at robot back (3.72 inches behind robot center)
+    // turret is mounted at robot back/center, up from ground
     // turret's x axis is opposite robot's 
-    private final Vec3 mMntPos = new Vec3(-3.72, 5.264, 8); 
+    // NB: this mMntPos is derived from Constants.kRobotToTurret.
+    // We interpret this as:  3.72 inches behind and 5.264 inches
+    // to the right of the robot's origin. Current twodim code doesn't
+    // consider the z origin (offset from floor). This becomes important
+    // as we consider the camera "pitch"/tilt. Currently the height of
+    // the turret origin relative to the robot origin (on the carpet), is
+    // only guessed to be 8 inches.
+    private final Vec3 mMntPos = new Vec3(-3.72, 5.264, 8);
     private final Vec3 mMntAxis = Vec3.ZAxis;
     private final Affine3 mMntFlip = Affine3.fromRotation(180, this.mMntAxis);
 

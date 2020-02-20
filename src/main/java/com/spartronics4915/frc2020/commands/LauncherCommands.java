@@ -233,7 +233,7 @@ public class LauncherCommands
         public void execute()
         {
             mLauncher.turnTurret(Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("turretAngleSlider", 0)));
-            double dist = (double) mLauncher.dashboardGetNumber("targetDistance", 120);
+            double dist = (double) mLauncher.dashboardGetNumber("targetDistanceSlider", 120);
             mLauncher.runFlywheel(mLauncher.calcRPS(dist));
             mLauncher.adjustHood(mLauncher.calcPitch(dist));
         }

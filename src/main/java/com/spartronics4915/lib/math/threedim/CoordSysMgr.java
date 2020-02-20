@@ -1,7 +1,7 @@
 package com.spartronics4915.lib.math.threedim;
 
 /**
- * CameraToField captures the coordinate-system chain (kinematics) associated
+ * CoordSysMgr captures the coordinate-system chain (kinematics) associated
  * with a camera mounted on a potentially-moving mount attached to a robot.
  * To produce season-specific behavior, please subclass this class.
  * 
