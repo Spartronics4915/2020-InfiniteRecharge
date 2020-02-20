@@ -164,7 +164,7 @@ public class Launcher extends SpartronicsSubsystem
         mTargetTurretDirection = absoluteAngle;
         double output = mTurretPIDController.calculate(mTurretEncoder.getPosition(),
             Util.limit(absoluteAngle.getDegrees(), Constants.Launcher.kMaxAngle.getDegrees()));
-        mTurretMotor.setDutyCycle(output);
+        mTurretMotor.setPercentOutput(output);
     }
 
     /**
@@ -284,12 +284,12 @@ public class Launcher extends SpartronicsSubsystem
         /*if (mTurretMotor.getOutputCurrent() > Constants.Launcher.kTurretStallAmps)
         {
             mTurretEncoder.setPosition(45.0);
-            mTurretMotor.setDutyCycle(0.0);
+            mTurretMotor.setPercentOutput(0.0);
             zeroed = true;
         }
         else if (!zeroed)
         {
-            mTurretMotor.setDutyCycle(0.1);
+            mTurretMotor.setPercentOutput(0.1);
         }*/
         mTurretEncoder.setPosition(0.0);
     }
@@ -301,7 +301,7 @@ public class Launcher extends SpartronicsSubsystem
 
     public void stopTurret()
     {
-        mTurretMotor.setDutyCycle(0);
+        mTurretMotor.setPercentOutput(0);
     }
 
     @Override

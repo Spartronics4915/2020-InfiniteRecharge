@@ -174,13 +174,13 @@ public class SpartronicsSimulatedMotor implements SpartronicsMotor
     }
 
     @Override
-    public void setDutyCycle(double dutyCycle, double arbitraryFeedForwardVolts)
+    public void setPercentOutput(double dutyCycle, double arbitraryFeedForwardVolts)
     {
 
     }
 
     @Override
-    public void setDutyCycle(double dutyCycle)
+    public void setPercentOutput(double dutyCycle)
     {
 
     }
