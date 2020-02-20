@@ -143,7 +143,7 @@ public class RobotContainer
         // Note: changes to bling state can be augmented with:
         // .alongWith(new SetBlingStateCommand(mLED, BlingState.SOME_STATE)));
 
-        new JoystickButton(mJoystick, 1).whenPressed(mIndexerCommands.new ZeroSpinnerCommand(mIndexer));
+        new JoystickButton(mJoystick, 3).whenPressed(mIndexerCommands.new ZeroSpinnerCommand(mIndexer));
 
         new JoystickButton(mJoystick, 2).whenPressed(mIndexerCommands.new SpinIndexer(mIndexer, 5));
         new JoystickButton(mJoystick, 4).whenPressed(mIndexerCommands.new StartTransfer(mIndexer))
@@ -197,8 +197,8 @@ public class RobotContainer
                     mLauncherCommands.new ShootBallTestWithDistance(mLauncher)),
                 mLauncherCommands.new WaitForFlywheel(mLauncher)),
             new ParallelCommandGroup(mIndexerCommands.new LoadToLauncher(mIndexer, 5),
-                mLauncherCommands.new ShootBallTestWithDistance(mLauncher))));
-                */
+                mLauncherCommands.new ShootBallTestWithDistance(mLauncher))));*/
+        
         // new JoystickButton(mJoystick, 7).whileHeld(new
         // TrajectoryTrackerCommand(mDrive, mDrive,
         // this::throughTrench, mRamseteController,

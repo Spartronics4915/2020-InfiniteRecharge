@@ -92,6 +92,14 @@ public class LauncherCommands
         {
             trackTarget(mTarget);
         }
+
+        @Override
+        public void end(boolean interrupted) {
+            if(interrupted)
+            {
+                mLauncher.stopTurret();    
+            }
+        }
     }
 
     public class Zero extends CommandBase
@@ -160,6 +168,10 @@ public class LauncherCommands
         @Override
         public void end(boolean interrupted)
         {
+            if(interrupted) 
+            {
+                mLauncher.stopTurret();
+            }
             mLauncher.reset();
         }
     }
@@ -190,7 +202,8 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            double dist = (double) mLauncher.dashboardGetNumber("targetDistanceSlider", 120);
+            mLauncher.turnTurret(Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("turretAngleSlider", 0)));
+            double dist = (double) mLauncher.dashboardGetNumber("targetDistance", 120);
             mLauncher.runFlywheel(mLauncher.calcRPS(dist));
             mLauncher.adjustHood(mLauncher.calcPitch(dist));
         }
@@ -206,7 +219,11 @@ public class LauncherCommands
         @Override
         public void end(boolean interrupted)
         {
-            //mLauncher.reset();
+            if(interrupted) 
+            {
+                mLauncher.stopTurret();
+            }
+            mLauncher.reset();
         }
     }
 
@@ -262,6 +279,7 @@ public class LauncherCommands
         @Override
         public void end(boolean interrupted)
         {
+                mLauncher.stopTurret();
         }
     }
 
