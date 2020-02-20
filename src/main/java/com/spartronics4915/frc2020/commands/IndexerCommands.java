@@ -343,7 +343,7 @@ public class IndexerCommands
 
         public LoadToLauncher()
         {
-            this(5);
+            this(1);
         }
     }
 }

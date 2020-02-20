@@ -80,6 +80,7 @@ public class Vision extends SpartronicsSubsystem
         this.dashboardPutString(Constants.Vision.kStatusKey, "ready+waiting");
 
         this.mLEDRelay = new Relay(Constants.Vision.kLEDRelay);
+        mLEDRelay.set(Relay.Value.kOn);
         /// XXX: set the relay into a known/desired state!
         this.dashboardPutString(Constants.Vision.kLEDRelayKey, 
                             this.mLEDRelay.get().toString());
