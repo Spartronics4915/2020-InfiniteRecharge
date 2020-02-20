@@ -71,6 +71,7 @@ public class Robot extends TimedRobot
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our autonomous chooser on the dashboard.
         mRobotContainer = new RobotContainer();
+	    SmartDashboard.putString("LED state:", BlingState.BLING_COMMAND_OFF.toString());
         Logger.notice("@robotInit: Requested BlingState.BLING_COMMAND_OFF");
         LED.getInstance().setBlingState(BlingState.BLING_COMMAND_OFF);
 
@@ -131,8 +132,6 @@ public class Robot extends TimedRobot
         if (mAutonomousCommand != null)
         {
             mAutonomousCommand.schedule();
-			Logger.notice("@autonomousInit: Requested BlingState.BLING_COMMAND_AUTOMODE");
-			LED.getInstance().setBlingState(BlingState.BLING_COMMAND_AUTOMODE);
         }
 
         LED.getInstance().setBlingState(BlingState.BLING_COMMAND_AUTOMODE);
@@ -152,8 +151,6 @@ public class Robot extends TimedRobot
         if (mAutonomousCommand != null)
         {
             mAutonomousCommand.cancel();
-			Logger.notice("@teleopInit: Requested BlingState.BLING_COMMAND_STARTUP");
-			LED.getInstance().setBlingState(BlingState.BLING_COMMAND_STARTUP);
         }
 
         LED.getInstance().setBlingState(BlingState.BLING_COMMAND_STARTUP);
@@ -171,7 +168,6 @@ public class Robot extends TimedRobot
     public void testInit()
     {
         CommandScheduler.getInstance().cancelAll();
-		Logger.notice("@testInit: Requested BlingState.BLING_COMMAND_DEFAULT");
 		LED.getInstance().setBlingState(BlingState.BLING_COMMAND_DEFAULT);
     }
 
