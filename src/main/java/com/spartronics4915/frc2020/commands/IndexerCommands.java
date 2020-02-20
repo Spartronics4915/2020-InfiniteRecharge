@@ -377,7 +377,7 @@ public class IndexerCommands
 
         public LoadToLauncher(Indexer indexer)
         {
-            this(indexer, 1);
+            this(indexer, 4);
         }
     }
 }

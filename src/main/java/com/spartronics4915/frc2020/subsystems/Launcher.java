@@ -150,7 +150,7 @@ public class Launcher extends SpartronicsSubsystem
     public void adjustHood(Rotation2d angle)
     {
         mTargetAngle = Rotation2d
-            .fromDegrees(Math.min(angle.getDegrees(), Constants.Launcher.kMaxAngle.getDegrees()));
+            .fromDegrees(Math.min(angle.getDegrees(), Constants.Launcher.kHoodMaxAngle.getDegrees()));
         mAngleAdjusterMasterServo.setAngle(mTargetAngle.getDegrees());
         mAngleAdjusterFollowerServo.setAngle(180 - mTargetAngle.getDegrees());
     }
@@ -163,7 +163,7 @@ public class Launcher extends SpartronicsSubsystem
     {
         mTargetTurretDirection = absoluteAngle;
         double output = mTurretPIDController.calculate(mTurretEncoder.getPosition(),
-            Util.limit(absoluteAngle.getDegrees(), Constants.Launcher.kMaxAngle.getDegrees()));
+            Util.limit(absoluteAngle.getDegrees(), Constants.Launcher.kTurretMaxAngle.getDegrees()));
         mTurretMotor.setDutyCycle(output);
     }
 

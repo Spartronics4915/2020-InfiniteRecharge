@@ -66,7 +66,7 @@ public final class Constants
         {
             public static final int kMotorId = 11;
             public static final double kConversionRatio = 1;
-            public static final double kSpeed = -1.0;
+            public static final double kSpeed = -0.8;
         }
 
         public static final int kLimitSwitchId = 8; // Digital
@@ -105,15 +105,17 @@ public final class Constants
         public static final double kTurretD = 0.002;
 
         // Vals for interpolating lookup table, Distance units is in feet
-        public static final double[] kDistanceTable = new double[]{118.11, 157.48, 177.165, 196.85};
-        public static final double[] kAngleTable = new double[]{16.0, 20.0, 19.0, 24.0};
-        public static final double[] kRPSTable = new double[]{38.0, 41.5, 41.0, 45.0};
+        // Last two are good
+        public static final double[] kDistanceTable = new double[]{80.0, 118.11, 157.48, 177.165, 196.85, 240.0, 310.0};
+        public static final double[] kAngleTable =    new double[]{6.0,  16.0,   22.0,   19.0,    24.0,   25.0,  28.0};
+        public static final double[] kRPSTable =      new double[]{33.5, 38.0,   41.5,   41.0,    45.0,   49.0,  60.0};
         public static final int kLookupTableSize = kDistanceTable.length;
 
         /** RPS */
         public static final double kFlywheelVelocityTolerance = 1.0;
         public static final double kMaxRPS = 90.0; // Reasonable guess
-        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(30.0);
+        public static final Rotation2d kTurretMaxAngle = Rotation2d.fromDegrees(45.0);
+        public static final Rotation2d kHoodMaxAngle = Rotation2d.fromDegrees(35.0);
 
         public static Pose2d goalLocation = null;
         //unit is feet

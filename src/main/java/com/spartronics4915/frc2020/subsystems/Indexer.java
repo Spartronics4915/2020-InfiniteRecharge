@@ -68,7 +68,7 @@ public class Indexer extends SpartronicsSubsystem
         mIndexerMotor.setMotionProfileCruiseVelocity(Constants.Indexer.Spinner.kMaxVelocity); // Set motion profile
         mIndexerMotor.setMotionProfileMaxAcceleration(Constants.Indexer.Spinner.kMaxAcceleration);
         mIndexerMotor.setUseMotionProfileForPosition(true);
-        mIndexerMotor.setBrakeMode(true);
+        // mIndexerMotor.setBrakeMode(true);
 
         // Setup Optical Flag for zeroing position
         mLimitSwitch = new DigitalInput(Constants.Indexer.kLimitSwitchId);

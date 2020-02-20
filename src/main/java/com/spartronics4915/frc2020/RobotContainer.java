@@ -134,7 +134,7 @@ public class RobotContainer
         //     mLauncherCommands.new TrackPassively(mLauncher), mLauncher::inRange));
         mLauncher.setDefaultCommand(mLauncherCommands.new ShootBallTest());//mLauncherCommands.new TargetAndShoot(mLauncher));
         mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop(mPanelRotator));
-        mDrive.setDefaultCommand(mDriveCommands.new TeleOpCommand(mJoystick));
+        // mDrive.setDefaultCommand(mDriveCommands.new TeleOpCommand(mJoystick));
 
         // mLauncherCommands.new Zero(mLauncher).schedule();
         configureJoystickBindings();
@@ -153,7 +153,7 @@ public class RobotContainer
             .whenReleased(mIndexerCommands.new EndTransfer(mIndexer));
         new JoystickButton(mJoystick, 5).whenPressed(mIndexerCommands.new StartKicker(mIndexer))
             .whenReleased(mIndexerCommands.new EndKicker(mIndexer));
-        new JoystickButton(mJoystick, 6).whenPressed(mSuperstructureCommands.new LaunchSequence());
+        new JoystickButton(mJoystick, 1).whenPressed(mSuperstructureCommands.new LaunchSequence());
         /*
         new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
         new JoystickButton(mJoystick, 2).whenHeld(new LauncherCommands.Raise(mLauncher));
