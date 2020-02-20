@@ -55,7 +55,7 @@ import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
  *       
  */
 
-public class CamToField2020 extends CameraToField
+public class CoordSysMgr2020 extends CoordSysMgr
 {
     // camera to mount -----------------------------------------------------
     // camTilt represents the amount the camera is pointed up, measured in
@@ -77,9 +77,9 @@ public class CamToField2020 extends CameraToField
     private final Vec3 mCamFlipZ = new Vec3(-1, 0, 0);  // cam +z is turret's -x
 
     // mount to robot ------------------------------------------------------
-    // turret is mounted at robot back/center, up from ground
+    // turret is mounted at robot back (3.72 inches behind robot center)
     // turret's x axis is opposite robot's 
-    private final Vec3 mMntPos = new Vec3(-3.72, 5.264, 8);  // XXX: is 8 correct?
+    private final Vec3 mMntPos = new Vec3(-3.72, 5.264, 8); 
     private final Vec3 mMntAxis = Vec3.ZAxis;
     private final Affine3 mMntFlip = Affine3.fromRotation(180, this.mMntAxis);
 
@@ -87,7 +87,7 @@ public class CamToField2020 extends CameraToField
      * Constructor for the CamToField pipeline for 2020 robot.  Presumably
      * we need only a single instance.
      */
-    public CamToField2020()
+    public CoordSysMgr2020()
     {
         /* NB: see CamToFieldTests for validation. The file is located in
         * the tests subtree (rather than here) to prevent pollution of
@@ -100,16 +100,16 @@ public class CamToField2020 extends CameraToField
         Affine3 camOffset = Affine3.fromTranslation(mCamPos);
         Affine3 camToMount = Affine3.concatenate(camOffset, camRot);
         this.setCamToMount(camToMount);
-        this.updateTurretAngle(new Rotation2d());
+        this.updateTurretAngle(0);
     }
 
     /**
      * Called periodically to update the camToField conversion.
-     * @param rot - turret angle; 0 is "straight"
+     * @param angle - turret angle; 0 is "straight" (degrees)
      */
-    public void updateTurretAngle(Rotation2d rot)
+    public void updateTurretAngle(double angle)
     {
-        Affine3 m2rAim = Affine3.fromRotation(rot.getDegrees(), Vec3.ZAxis);
+        Affine3 m2rAim = Affine3.fromRotation(angle, Vec3.ZAxis);
         Affine3 m2rRot = Affine3.concatenate(mMntFlip, m2rAim);
         Affine3 m2rOffset = Affine3.fromTranslation(mMntPos);
         Affine3 mntToRobot = Affine3.concatenate(m2rOffset, m2rRot);

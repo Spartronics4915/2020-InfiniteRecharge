@@ -59,6 +59,7 @@ public class RobotContainer
     private final Drive mDrive;
     private final RamseteTracker mRamseteController = new RamseteTracker(2, 0.7);
     private final RobotStateEstimator mStateEstimator;
+    private final CoordSysMgr2020 mCamToField;
     private final TrajectoryContainer.AutoMode[] mAutoModes;
 
     /* subsystem commands */
@@ -99,6 +100,7 @@ public class RobotContainer
             () -> mStateEstimator.stop(), mStateEstimator);
         mStateEstimator.setDefaultCommand(slamraCommand);
         mStateEstimator.resetRobotStateMaps(new Pose2d());
+        mCamToField = new CoordSysMgr2020();
 
         mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController);
         String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
@@ -110,13 +112,14 @@ public class RobotContainer
         mLauncher = new Launcher();
         mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
-        mVision = new Vision(mStateEstimator, mLauncher);
+        mVision = new Vision(mStateEstimator, mCamToField, mLauncher);
 
         mClimberCommands = new ClimberCommands();
         mIntakeCommands = new IntakeCommands(mIntake);
         mIndexerCommands = new IndexerCommands(mIndexer);
         mLauncherCommands = new LauncherCommands(mLauncher, mIndexerCommands,
-                                mStateEstimator.getEncoderRobotStateMap());
+                                mStateEstimator.getEncoderRobotStateMap(),
+                                mCamToField);
         mPanelRotatorCommands = new PanelRotatorCommands();
         mSuperstructureCommands = new SuperstructureCommands(mLauncherCommands,
                                                           mIntakeCommands,

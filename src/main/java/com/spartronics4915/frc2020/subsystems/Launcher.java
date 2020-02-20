@@ -144,7 +144,7 @@ public class Launcher extends SpartronicsSubsystem
 
     /**
      * Rotates turret to a specific angle relative to the home position
-     * @param absoluteAngle Angle in degrees you want to turn the turret relative to the home position
+     * @param absoluteAngle Rotation2d expressing directed turret direction
      */
     public void turnTurret(Rotation2d absoluteAngle)
     {
@@ -152,6 +152,15 @@ public class Launcher extends SpartronicsSubsystem
         double output = mTurretPIDController.calculate(mTurretEncoder.getPosition(),
             Util.limit(absoluteAngle.getDegrees(), Constants.Launcher.kMaxAngle.getDegrees()));
         mTurretMotor.setDutyCycle(output);
+    }
+
+    /**
+     * Rotates turret to a specific angle relative to the home position
+     * @param absoluteAngle Angle in degrees you want to turn the turret relative to the home position
+     */
+    public void turnTurret(double angle)
+    {
+        this.turnTurret(Rotation2d.fromDegrees(angle));
     }
 
     /**

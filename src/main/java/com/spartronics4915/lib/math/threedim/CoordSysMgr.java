@@ -39,17 +39,17 @@ package com.spartronics4915.lib.math.threedim;
  *                |___|     |        x
  */
 
-public class CameraToField
+public class CoordSysMgr
 {
     private Affine3 mCamToMount;
     private Affine3 mMountToRobot;
+    private Affine3 mFieldToMount;
     private Affine3 mCamToRobot;
     private Affine3 mRobotToField;
     private Affine3 mCamToField;
-    private Affine3 mFieldToMount;
     private boolean mDirty;
 
-    public CameraToField()
+    public CoordSysMgr()
     {
         mCamToMount = new Affine3();
         mMountToRobot = new Affine3();
@@ -254,6 +254,12 @@ public class CameraToField
     {
         this._rebuildTransforms();
         return this.mFieldToMount.transformVector(dir);
+    }
+
+    public Vec3 fieldPointToMount(Vec3 pt)
+    {
+        this._rebuildTransforms();
+        return this.mFieldToMount.transformVector(pt);
     }
 
     /**

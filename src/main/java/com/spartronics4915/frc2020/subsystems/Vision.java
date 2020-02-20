@@ -15,11 +15,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Relay;
 
 import com.spartronics4915.frc2020.Constants;
-import com.spartronics4915.frc2020.CamToField2020;
+import com.spartronics4915.frc2020.CoordSysMgr2020;
 import com.spartronics4915.frc2020.subsystems.Launcher;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
+import com.spartronics4915.lib.util.Units;
 import com.spartronics4915.lib.math.twodim.geometry.*;
 import com.spartronics4915.lib.math.threedim.*;
 
@@ -49,16 +50,21 @@ public class Vision extends SpartronicsSubsystem
     }
 
     /* member variables -------------------------------------*/
-    RobotStateMap mOfficialRSM;
-    NetworkTableInstance mNetTab;
-    CamToField2020 mCamToField;
-    Launcher mLauncher;
-    Vec3 mOurTarget = new Vec3(Constants.Vision.kAllianceGoalCoords);
-    Vec3 mOpponentTarget = new Vec3(Constants.Vision.kOpponentGoalCoords);
+    final RobotStateMap mOfficialRSM;
+    final CoordSysMgr2020 mCoordSysMgr;
+    final NetworkTableInstance mNetTab;
+    final Launcher mLauncher;
     String mStatus;
     List<VisionEvent> mListeners;
     Deque<RobotStateMap.State> mVisionEstimates;
-    Relay mLEDRelay; 
+    final Relay mLEDRelay; 
+    double mLastTurretAngle;
+
+    /* NB: our targets are measured in inches, while RobotStateMap
+     * operates in meters!
+     */
+    final Vec3 mOurTarget = new Vec3(Constants.Vision.kAllianceGoalCoords);
+    final Vec3 mOpponentTarget = new Vec3(Constants.Vision.kOpponentGoalCoords);
 
     /**
      * Vision subsystem needs read-only access to RobotStateEstimator and
@@ -66,16 +72,19 @@ public class Vision extends SpartronicsSubsystem
      * @param rse
      * @param launcherSubsys
      */
-    public Vision(RobotStateEstimator rse, Launcher launcherSubsys)
+    public Vision(RobotStateEstimator rse, CoordSysMgr2020 coordSysMgr, 
+                    Launcher launcherSubsys)
     {
         this.mOfficialRSM = rse.getCameraRobotStateMap();
         this.mLauncher = launcherSubsys;
         this.mNetTab = NetworkTableInstance.getDefault();
-        this.mNetTab.addEntryListener(Constants.Vision.kTargetResultKey, this::turretTargetUpdate,
-            EntryListenerFlags.kUpdate);
-        this.mCamToField = new CamToField2020();
+        this.mNetTab.addEntryListener(Constants.Vision.kTargetResultKey, 
+                                    this::visionTargetUpdate,
+                                    EntryListenerFlags.kUpdate);
+        this.mCoordSysMgr = coordSysMgr;
         this.mListeners = new ArrayList<VisionEvent>();
         this.mVisionEstimates = new ArrayDeque<RobotStateMap.State>();
+        this.mLastTurretAngle = -180.; // in degrees (impossible angle for turret)
         this.setDefaultCommand(new ListenForTurretAndVision());
         this.dashboardPutString(Constants.Vision.kStatusKey, "ready+waiting");
 
@@ -123,11 +132,17 @@ public class Vision extends SpartronicsSubsystem
         // Then we really have nothing to contribute yet.
     }
 
+    private void updateTurretAngle(double newangle)
+    {
+        this.mLastTurretAngle = newangle;
+        this.mCoordSysMgr.updateTurretAngle(newangle);
+    }
+
     /**
      * Nettabcallback. Invoked when robot receives target updates from vision.
      * @param event - information about the entry that triggered the callback.
      */
-    private void turretTargetUpdate(EntryNotification event)
+    private void visionTargetUpdate(EntryNotification event)
     {
         NetworkTableValue v = event.getEntry().getValue();
         if (v.isString())
@@ -145,9 +160,7 @@ public class Vision extends SpartronicsSubsystem
             double camz = Double.parseDouble(vals[2]);
             double timestamp = Double.parseDouble(vals[3]);
             Vec3 tgtInCam = new Vec3(camx, camy, camz);
-            Rotation2d turretDegrees = mLauncher.getTurretDirection();
-            this.mCamToField.updateTurretAngle(turretDegrees);
-            Vec3 tgtInRobot = this.mCamToField.camPointToRobot(tgtInCam);
+            Vec3 tgtInRobot = this.mCoordSysMgr.camPointToRobot(tgtInCam);
             if (tgtInRobot.a1 <= 0)
                 this.dashboardPutString(Constants.Vision.kStatusKey, "CONFUSED!!!");
             else
@@ -184,10 +197,13 @@ public class Vision extends SpartronicsSubsystem
             }
 
             // here is the inverse estimate -----------------------------
-            mCamToField.updateRobotPose(robotHeading, tgtInRobot, fieldTarget);
-            Vec3 robotPos = mCamToField.robotPointToField(Vec3.ZeroPt);
-            // use robot's heading in our poseEsimtate
-            Pose2d poseEstimate = new Pose2d(robotPos.a1, robotPos.a2, r2d);
+            mCoordSysMgr.updateRobotPose(robotHeading, tgtInRobot, fieldTarget);
+            Vec3 robotPos = mCoordSysMgr.robotPointToField(Vec3.ZeroPt);
+            // use robot's heading in our poseEstimate - remember to
+            // convert from inches to meters.
+            Pose2d poseEstimate = new Pose2d(Units.inchesToMeters(robotPos.a1), 
+                                            Units.inchesToMeters(robotPos.a2), 
+                                            r2d);
             Iterator<VisionEvent> it = this.mListeners.iterator();
             while (it.hasNext())
             {
@@ -201,9 +217,12 @@ public class Vision extends SpartronicsSubsystem
 
             // now measure the distance between our estimate and the
             // official robot estimate.
-            double derror = robotPos.subtract(t2d.getX(), t2d.getY(), 0).length();
+            double derror = robotPos.subtract(Units.metersToInches(t2d.getX()), 
+                                              Units.metersToInches(t2d.getY()), 
+                                              0).length();
             this.dashboardPutNumber(Constants.Vision.kPoseErrorKey, derror);
 
+            // NB: robotPos is in inches! (dashboard too!)
             String pstr = String.format("%g %g %g", robotPos.a1, robotPos.a2, robotHeading);
             this.dashboardPutString(Constants.Vision.kPoseEstimateKey, pstr);
 
@@ -214,8 +233,10 @@ public class Vision extends SpartronicsSubsystem
             // offset. This is a "forward" estimate of our well-known
             // landmarks.  Hopefully these will produce nearly constant
             // and correct (!) results.
-            mCamToField.updateRobotPose(t2d.getX(), t2d.getY(), r2d.getDegrees());
-            Vec3 tgtInField = mCamToField.camPointToField(tgtInCam);
+            mCoordSysMgr.updateRobotPose(Units.metersToInches(t2d.getX()), 
+                                        Units.metersToInches(t2d.getY()), 
+                                        r2d.getDegrees());
+            Vec3 tgtInField = mCoordSysMgr.camPointToField(tgtInCam);
             String key = (fieldTarget == this.mOurTarget) ? 
                         Constants.Vision.kOurGoalEstimateKey :
                         Constants.Vision.kTheirGoalEstimateKey;
@@ -311,6 +332,11 @@ public class Vision extends SpartronicsSubsystem
             {
                 if(oldstate != Relay.Value.kOff)
                     mLEDRelay.set(Relay.Value.kOff);
+            }
+            double turretAngle = mLauncher.getTurretDirection().getDegrees();
+            if(Math.abs(turretAngle - mLastTurretAngle) > .5)
+            {
+                updateTurretAngle(turretAngle);
             }
         }
 
