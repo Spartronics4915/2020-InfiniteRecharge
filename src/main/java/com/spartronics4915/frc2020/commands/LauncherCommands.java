@@ -3,11 +3,14 @@ package com.spartronics4915.frc2020.commands;
 import java.util.function.BooleanSupplier;
 
 import com.spartronics4915.frc2020.Constants;
+import com.spartronics4915.frc2020.CoordSysMgr2020;
 import com.spartronics4915.frc2020.commands.IndexerCommands.LoadToLauncher;
 import com.spartronics4915.frc2020.subsystems.Indexer;
 import com.spartronics4915.frc2020.subsystems.Launcher;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
+import com.spartronics4915.lib.math.threedim.Vec3;
+import com.spartronics4915.lib.util.Units;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -22,21 +25,31 @@ public class LauncherCommands
     private final Launcher mLauncher;
     private final Indexer mIndexer;
     private final IndexerCommands mIndexerCommands;
+    final CoordSysMgr2020 mCoordSysMgr;
     private final RobotStateMap mStateMap;
-    private final Pose2d mMatchTarget;
+    private final Pose2d mMatchTargetMeters;
+    private final Vec3 mMatchTargetInches;
 
     public LauncherCommands(Launcher launcher, IndexerCommands indexerCommands, 
-                            RobotStateMap stateMap)
+                            RobotStateMap stateMap, CoordSysMgr2020 csmgr)
     {
         mLauncher = launcher;
         mIndexerCommands = indexerCommands;
         mIndexer = mIndexerCommands.getIndexer();
         mStateMap = stateMap;
+        mCoordSysMgr = csmgr;
         // our target is always on the opposite side of the field.  This
         // works for both Alliances since the field is symmetric and we
         // use the same coordinate system (rotated by 180) on the Dashboard.
-        mMatchTarget = new Pose2d(Constants.Vision.kAllianceGoalCoords[0],
-                                  Constants.Vision.kAllianceGoalCoords[0],
+        // (almost, since RSM is meters and dashboard is inches).
+        mMatchTargetInches = new Vec3(
+                                Constants.Vision.kAllianceGoalCoords[0],
+                                Constants.Vision.kAllianceGoalCoords[1],
+                                0); // on ground/robot origin
+
+        mMatchTargetMeters = new Pose2d(
+            Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[0]),
+            Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[1]),
                                   Rotation2d.fromDegrees(180));
     }
 
@@ -60,7 +73,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            double distance = trackTarget(mTarget);
+            double distance = trackTarget();
             mLauncher.runFlywheel(mLauncher.calcRPS(distance));
         }
 
@@ -73,9 +86,7 @@ public class LauncherCommands
 
     public class TrackPassively extends CommandBase
     {
-        Pose2d mTarget;
-
-        public TrackPassively(Pose2d target)
+        public TrackPassively()
         {
             addRequirements(mLauncher);
         }
@@ -90,7 +101,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            trackTarget(mTarget);
+            trackTarget();
         }
 
         @Override
@@ -125,20 +136,39 @@ public class LauncherCommands
     /**
      * @return Distance to the target in meters
      */
-    private double trackTarget(Pose2d target)
+    private double trackTarget()
     {
         Pose2d fieldToTurret = mStateMap.getLatestFieldToVehicle()
             .transformBy(Constants.Launcher.kRobotToTurret);
-        Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(target);
+        Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(mMatchTargetMeters);
         Rotation2d fieldAnglePointingToTarget = new Rotation2d(
                                 turretToTarget.getTranslation().getX(), 
                                 turretToTarget.getTranslation().getY(), 
                                 true);
         Rotation2d turretAngle = fieldAnglePointingToTarget.rotateBy(fieldToTurret.getRotation().inverse());
-        double distance = mTarget.distance(fieldToTurret);
+        double distance = mMatchTargetMeters.distance(fieldToTurret);
         mLauncher.adjustHood(mLauncher.calcPitch(distance));
         mLauncher.turnTurret(turretAngle);
         return distance;
+    }
+
+    private double trackTargetAlt()
+    {
+        // We assume that mCoordSysMgr is up-to-date - this includes
+        //  - robot's pose
+        //  - turret rotation
+        // 
+        // Compute the vector from turret origin on field to target
+        // 
+        Vec3 targetPointInMnt = mCoordSysMgr.fieldPointToMount(mMatchTargetInches);
+        double angle = targetPointInMnt.angleOnXYPlane();
+        double dist = targetPointInMnt.length();
+        if(angle > -45 && angle < 45)
+        {
+            mLauncher.adjustHood(mLauncher.calcPitch(dist));
+            mLauncher.turnTurret(angle);
+        }
+        return dist;
     }
 
     /*

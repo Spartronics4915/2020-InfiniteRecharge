@@ -7,21 +7,21 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
-class CamToFieldTests
+class CoordSysMgrTest
 {
     double kEpsilon = 1e-9;
 
     @Test
     public void usageExample()
     {
-        CamToField2020 ctof = new CamToField2020();
-        ctof.updateTurretAngle(new Rotation2d());
+        CoordSysMgr2020 ctof = new CoordSysMgr2020();
+        ctof.updateTurretAngle(0);
 
         // robot at center of field, pointing right
         ctof.updateRobotPose(320, 0, 0);
 
         Vec3 camOnField = ctof.camPointToField(new Vec3(0, 0, 0));
-        assert(camOnField.equals(new Vec3(305,12,8) , kEpsilon));
+        assert(camOnField.equals(new Vec3(316.28,17.264,8) , kEpsilon));
         Vec3 camDirOnField = ctof.camDirToField(new Vec3(0, 0, -1));
         assertEquals(camDirOnField.a1, -1, .2); // camera tilts into z-up
         assertEquals(camDirOnField.a2, 0, kEpsilon); // camera tilts into z-up
