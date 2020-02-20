@@ -89,10 +89,10 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public String getTargetColor()
     {
+        //TODO: change in testing to just return the color 90 degrees from you want the robot to spin to
         return DriverStation.getInstance().getGameSpecificMessage();
     }
 
-    // TODO: What will this return before Stage Two?
     /**
      * Gets the color the robot will spin until seeing
      *
