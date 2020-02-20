@@ -111,9 +111,14 @@ public class IndexerCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public ZeroSpinnerCommand(Indexer indexer)
+        public ZeroSpinnerCommand(Indexer indexer, boolean unzero)
         {
             mIndexer = indexer;
+            if (unzero)
+            {
+                mIndexer.unzero();
+            }
+
             addRequirements(mIndexer);
         }
 
@@ -165,14 +170,10 @@ public class IndexerCommands
 
     public class ZeroAndStopGroup extends SequentialCommandGroup
     {
-        private Indexer mIndexer;
-
         public ZeroAndStopGroup(Indexer indexer)
         {
-            mIndexer = indexer;
-
             addCommands(
-                new ZeroSpinnerCommand(indexer),
+                new ZeroSpinnerCommand(indexer, false),
                 new StopCommand(indexer)
             );
         }

@@ -104,6 +104,11 @@ public class Indexer extends SpartronicsSubsystem
         mIndexerMotor.getEncoder().setPosition(0);
     }
 
+    public void unzero()
+    {
+        mHasZeroed = false;
+    }
+
     public boolean hasZeroed()
     {
         return mHasZeroed;
@@ -219,6 +224,7 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void stop()
     {
+        mTransferMotor.setNeutral();
         mKickerMotor.setNeutral();
         mIndexerMotor.setNeutral();
     }
