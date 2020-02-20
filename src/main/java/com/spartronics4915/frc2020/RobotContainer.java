@@ -115,20 +115,10 @@ public class RobotContainer
         mIntakeCommands = new IntakeCommands(mIntake);
         mIndexerCommands = new IndexerCommands(mIndexer);
         mLauncherCommands = new LauncherCommands(mLauncher, mIndexerCommands,
-                                mStateEstimator.getEncoderRobotStateMap());
+            mStateEstimator.getEncoderRobotStateMap());
         mPanelRotatorCommands = new PanelRotatorCommands(mPanelRotator);
-        mSuperstructureCommands = new SuperstructureCommands(mIndexerCommands, 
-                                            mIntakeCommands, mLauncherCommands);
-
-        // Default Commands run whenever no Command is scheduled to run for a subsystem
-        mClimber.setDefaultCommand(mClimberCommands.new Stop());
-        mIntake.setDefaultCommand(mIntakeCommands.new Stop());
-        // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new TargetAndShoot(mLauncher),
-        //     mLauncherCommands.new TrackPassively(mLauncher), mLauncher::inRange));
-        mLauncher.setDefaultCommand(mLauncherCommands.new ShootBallTest());//mLauncherCommands.new TargetAndShoot(mLauncher));
-        mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop());
-        mDrive.setDefaultCommand(mDriveCommands.new TeleOpCommand());
-
+        mSuperstructureCommands = new SuperstructureCommands(mIndexerCommands,
+            mIntakeCommands, mLauncherCommands);
 
         // mLauncherCommands.new Zero(mLauncher).schedule();
         configureJoystickBindings();
