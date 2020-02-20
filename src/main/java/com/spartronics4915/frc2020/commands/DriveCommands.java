@@ -28,8 +28,7 @@ public class DriveCommands
         @Override
         public void execute()
         {
-            // To invert joystick controller, so forward... is forward
-            mDrive.arcadeDrive(mJoystick.getY(), mJoystick.getX());
+            mDrive.arcadeDrive(-mJoystick.getY(), -mJoystick.getX());
         }
     }
 }
