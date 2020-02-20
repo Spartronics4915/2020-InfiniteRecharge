@@ -1,28 +1,28 @@
 package com.spartronics4915.frc2020;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.spartronics4915.frc2020.TrajectoryContainer.Destination;
-import com.spartronics4915.frc2020.commands.*;
-import com.spartronics4915.frc2020.subsystems.*;
+import com.spartronics4915.frc2020.commands.ClimberCommands;
+import com.spartronics4915.frc2020.commands.DriveCommands;
+import com.spartronics4915.frc2020.commands.IndexerCommands;
+import com.spartronics4915.frc2020.commands.IntakeCommands;
+import com.spartronics4915.frc2020.commands.LauncherCommands;
+import com.spartronics4915.frc2020.commands.PanelRotatorCommands;
+import com.spartronics4915.frc2020.commands.SuperstructureCommands;
+import com.spartronics4915.frc2020.subsystems.Climber;
+import com.spartronics4915.frc2020.subsystems.Drive;
+import com.spartronics4915.frc2020.subsystems.Indexer;
+import com.spartronics4915.frc2020.subsystems.Intake;
+import com.spartronics4915.frc2020.subsystems.LED;
+import com.spartronics4915.frc2020.subsystems.Launcher;
+import com.spartronics4915.frc2020.subsystems.PanelRotator;
+import com.spartronics4915.frc2020.subsystems.Vision;
 import com.spartronics4915.lib.hardware.sensors.T265Camera;
 import com.spartronics4915.lib.hardware.sensors.T265Camera.CameraJNIException;
 import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
-import com.spartronics4915.lib.math.twodim.geometry.Pose2dWithCurvature;
-import com.spartronics4915.lib.math.twodim.geometry.Rectangle2d;
-import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
-import com.spartronics4915.lib.math.twodim.geometry.Translation2d;
-import com.spartronics4915.lib.math.twodim.trajectory.constraints.TimingConstraint;
-import com.spartronics4915.lib.math.twodim.trajectory.constraints.VelocityLimitRegionConstraint;
-import com.spartronics4915.lib.math.twodim.trajectory.types.TimedTrajectory;
-import com.spartronics4915.lib.subsystems.drive.CharacterizeDriveBaseCommand;
-import com.spartronics4915.lib.subsystems.drive.TrajectoryTrackerCommand;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
-import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 import com.spartronics4915.lib.util.Kinematics;
 import com.spartronics4915.lib.util.Logger;
 
@@ -30,11 +30,8 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class RobotContainer
@@ -117,9 +114,21 @@ public class RobotContainer
         mDriveCommands = new DriveCommands(mDrive, mJoystick);
         mIntakeCommands = new IntakeCommands(mIntake);
         mIndexerCommands = new IndexerCommands(mIndexer);
-        mLauncherCommands = new LauncherCommands(mLauncher, mIndexerCommands, mStateEstimator.getEncoderRobotStateMap());
+        mLauncherCommands = new LauncherCommands(mLauncher, mIndexerCommands,
+                                mStateEstimator.getEncoderRobotStateMap());
         mPanelRotatorCommands = new PanelRotatorCommands(mPanelRotator);
-        mSuperstructureCommands = new SuperstructureCommands(mIndexerCommands, mIntakeCommands, mLauncherCommands);
+        mSuperstructureCommands = new SuperstructureCommands(mIndexerCommands, 
+                                            mIntakeCommands, mLauncherCommands);
+
+        // Default Commands run whenever no Command is scheduled to run for a subsystem
+        mClimber.setDefaultCommand(mClimberCommands.new Stop());
+        mIntake.setDefaultCommand(mIntakeCommands.new Stop());
+        // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new TargetAndShoot(mLauncher),
+        //     mLauncherCommands.new TrackPassively(mLauncher), mLauncher::inRange));
+        mLauncher.setDefaultCommand(mLauncherCommands.new ShootBallTest());//mLauncherCommands.new TargetAndShoot(mLauncher));
+        mPanelRotator.setDefaultCommand(mPanelRotatorCommands.new Stop());
+        mDrive.setDefaultCommand(mDriveCommands.new TeleOpCommand());
+
 
         // mLauncherCommands.new Zero(mLauncher).schedule();
         configureJoystickBindings();

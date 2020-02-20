@@ -20,6 +20,11 @@ public class IndexerCommands
         // mIndexer.setDefaultCommand(mIndexerCommands.new ZeroAndStopGroup(mIndexer));
     }
 
+    public Indexer getIndexer()
+    {
+        return mIndexer;
+    }
+
     /**
      * Waits until a ball is held, then ends.
      */
