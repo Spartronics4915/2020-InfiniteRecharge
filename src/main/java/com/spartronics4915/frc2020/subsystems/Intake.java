@@ -39,7 +39,7 @@ public class Intake extends SpartronicsSubsystem
     public void harvest()
     {
         dashboardPutString("Status", "harvesting");
-        mHarvestMotor.setDutyCycle(Constants.Intake.kHarvestSpeed);
+        mHarvestMotor.setPercentOutput(Constants.Intake.kHarvestSpeed);
     }
 
     /**
@@ -48,7 +48,7 @@ public class Intake extends SpartronicsSubsystem
     public void reverse()
     {
         dashboardPutString("Status", "ejecting");
-        mHarvestMotor.setDutyCycle(Constants.Intake.kEjectSpeed);
+        mHarvestMotor.setPercentOutput(Constants.Intake.kEjectSpeed);
     }
 
     /**
@@ -59,7 +59,7 @@ public class Intake extends SpartronicsSubsystem
      *
      * @return Whether a ball is held
      */
-    
+
 
     /**
      * Universal stop method

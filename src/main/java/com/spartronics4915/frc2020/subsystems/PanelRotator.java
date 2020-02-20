@@ -60,7 +60,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void raise()
     {
-        mRaiseMotor.setDutyCycle(Constants.PanelRotator.kRaiseSpeed);
+        mRaiseMotor.setPercentOutput(Constants.PanelRotator.kRaiseSpeed);
     }
 
     /**
@@ -68,7 +68,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void lower()
     {
-        mRaiseMotor.setDutyCycle(Constants.PanelRotator.kLowerSpeed);
+        mRaiseMotor.setPercentOutput(Constants.PanelRotator.kLowerSpeed);
     }
 
     /**
@@ -76,7 +76,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void spin()
     {
-        mSpinMotor.setDutyCycle(Constants.PanelRotator.kSpinSpeed);
+        mSpinMotor.setPercentOutput(Constants.PanelRotator.kSpinSpeed);
     }
 
     // TODO: What will this return before Stage Two?
@@ -221,7 +221,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void stop()
     {
-        mSpinMotor.setDutyCycle(0);
-        mRaiseMotor.setDutyCycle(0);
+        mSpinMotor.setPercentOutput(0);
+        mRaiseMotor.setPercentOutput(0);
     }
 }

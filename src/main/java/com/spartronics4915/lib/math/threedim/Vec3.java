@@ -129,9 +129,21 @@ public class Vec3 extends DMatrix3
         return true;
     }
 
+    /**
+     * @return lenght of 3D vector. aka: distance of 3d point from origin.
+     */
     public double length()
     {
         return NormOps_DDF3.normF(this);
+    }
+
+    /**
+     * @return - length of xy components of vector.
+     *   aka: distance of xy point from origin.
+     */
+    public double lengthXY()
+    {
+        return Math.sqrt(this.a1*this.a1 + this.a2*this.a2);
     }
 
     public void normalize()

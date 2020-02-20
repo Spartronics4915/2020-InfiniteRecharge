@@ -1,10 +1,15 @@
 package com.spartronics4915.lib.math.threedim;
 
+import com.spartronics4915.lib.math.twodim.geometry.*;
+import com.spartronics4915.lib.util.Units;
+
 /**
- * CameraToField captures the coordinate-system chain (kinematics) associated
+ * CoordSysMgr captures the coordinate-system chain (kinematics) associated
  * with a camera mounted on a potentially-moving mount attached to a robot.
  * To produce season-specific behavior, please subclass this class.
- * 
+ */
+
+/*
  * Robot field pose (ie: robot position/heading in field coordinates)
  * aka the robotToField 
  *
@@ -39,17 +44,17 @@ package com.spartronics4915.lib.math.threedim;
  *                |___|     |        x
  */
 
-public class CameraToField
+public class CoordSysMgr
 {
     private Affine3 mCamToMount;
     private Affine3 mMountToRobot;
+    private Affine3 mFieldToMount;
     private Affine3 mCamToRobot;
     private Affine3 mRobotToField;
     private Affine3 mCamToField;
-    private Affine3 mFieldToMount;
     private boolean mDirty;
 
-    public CameraToField()
+    public CoordSysMgr()
     {
         mCamToMount = new Affine3();
         mMountToRobot = new Affine3();
@@ -110,8 +115,23 @@ public class CameraToField
     }
 
     /**
-     * Periodically update the robot pose via a string
-     * @param rposeString "x y angle" (angle in degrees)
+     * Updates internal state via a standard Pose2d (assumed in meters).
+     * @param fieldToVehicle - usually obtained via 
+     *   RobotStateMap.getLatestFieldToVehicle.
+     */
+    public void updateRobotPose(Pose2d fieldToVehicle)
+    {
+        Translation2d td = fieldToVehicle.getTranslation();
+        double x = Units.metersToInches(td.getX());
+        double y = Units.metersToInches(td.getY());
+        double angle = fieldToVehicle.getRotation().getDegrees();
+
+        this.updateRobotPose(x, y, angle);
+    }
+
+    /**
+     * Updates robot pose via a string.
+     * @param rposeString "x y angle" x, y in inches, angle in degrees
      */
     public void updateRobotPose(String rposeString)
     {
@@ -124,9 +144,9 @@ public class CameraToField
     }
 
     /**
-     * Periodically update internal notion of robot pose via numbers.
-     * @param x - x coordinate of robot origin on field
-     * @param y - y coordinate of robot origin on field
+     * Updates internal notion of robot pose via numbers.
+     * @param x - x coordinate of robot origin on field in inches
+     * @param y - y coordinate of robot origin on field in inches
      * @param angle - heading of robot in degrees.  If x of robot points to 
      * x of field, the angle is zero.
      */
@@ -143,8 +163,10 @@ public class CameraToField
      * and the known field coordinates of the same target, compute the
      * full robotToField coordinates.
      * @param knownHeading - measured in degrees in field coordinates
-     * @param robotTgt - target pt in robot coordinates (from vision)
-     * @param fieldTgt - known target location in field coords
+     * @param robotTgt - target pt in robot coordinates (from vision) -
+     *   measured in inches.
+     * @param fieldTgt - known target location in field coords - measured
+     *   in inches.
      */
     public void updateRobotPose(double knownHeading, final Vec3 robotTgt, 
                                 final Vec3 fieldTgt)
@@ -219,7 +241,7 @@ public class CameraToField
      * transformation can be used to compute a shooting distance as
      * follows:  
      *    Vec3 dist = camPointToMount(camTargetPt);
-     *    dist.a2 = 0; // we don't care about height
+     *    dist.a2 = 0; // if we don't care about height
      *    double distance = dist.length();
      */
     public Vec3 camPointToMount(Vec3 pt)
@@ -254,6 +276,12 @@ public class CameraToField
     {
         this._rebuildTransforms();
         return this.mFieldToMount.transformVector(dir);
+    }
+
+    public Vec3 fieldPointToMount(Vec3 pt)
+    {
+        this._rebuildTransforms();
+        return this.mFieldToMount.transformVector(pt);
     }
 
     /**

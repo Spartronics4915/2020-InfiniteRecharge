@@ -88,6 +88,7 @@ public class Launcher extends SpartronicsSubsystem
         mTargetTurretDirection = new Rotation2d();
 
         // One BAG motor for turret
+        // XXX: explain all these interesting constants.
         mTurretMotor = SpartronicsSRX.makeMotor(Constants.Launcher.kTurretId,
             SensorModel.fromMultiplier(Math.toDegrees(1.0 / 1024.0 / 11.75 / 20.0) * 2.0));// UNITS
                                                                                            // ARE
@@ -157,14 +158,23 @@ public class Launcher extends SpartronicsSubsystem
 
     /**
      * Rotates turret to a specific angle relative to the home position
-     * @param absoluteAngle Angle in degrees you want to turn the turret relative to the home position
+     * @param absoluteAngle Rotation2d expressing directed turret direction
      */
     public void turnTurret(Rotation2d absoluteAngle)
     {
         mTargetTurretDirection = absoluteAngle;
         double output = mTurretPIDController.calculate(mTurretEncoder.getPosition(),
             Util.limit(absoluteAngle.getDegrees(), Constants.Launcher.kMaxAngle.getDegrees()));
-        mTurretMotor.setDutyCycle(output);
+        mTurretMotor.setPercentOutput(output);
+    }
+
+    /**
+     * Rotates turret to a specific angle relative to the home position
+     * @param absoluteAngle Angle in degrees you want to turn the turret relative to the home position
+     */
+    public void turnTurret(double angle)
+    {
+        this.turnTurret(Rotation2d.fromDegrees(angle));
     }
 
     /**
@@ -284,12 +294,12 @@ public class Launcher extends SpartronicsSubsystem
         /*if (mTurretMotor.getOutputCurrent() > Constants.Launcher.kTurretStallAmps)
         {
             mTurretEncoder.setPosition(45.0);
-            mTurretMotor.setDutyCycle(0.0);
+            mTurretMotor.setPercentOutput(0.0);
             zeroed = true;
         }
         else if (!zeroed)
         {
-            mTurretMotor.setDutyCycle(0.1);
+            mTurretMotor.setPercentOutput(0.1);
         }*/
         mTurretEncoder.setPosition(0.0);
     }
@@ -301,16 +311,15 @@ public class Launcher extends SpartronicsSubsystem
 
     public void stopTurret()
     {
-        mTurretMotor.setDutyCycle(0);
+        mTurretMotor.setPercentOutput(0);
     }
 
     @Override
     public void periodic()
     {
-        dashboardPutNumber("CurrentTurretAimAngle", getTurretDirection().getDegrees());
-
-        dashboardPutNumber("CurrentHoodAngle", getCurrentPitch().getDegrees());
-
-        dashboardPutNumber("CurrentFlywheelRPS", getCurrentRPS());
+        // nb: don't change these nettable names without changing Dashboard.
+        dashboardPutNumber("turretAngle", getTurretDirection().getDegrees());
+        dashboardPutNumber("hoodAngle", getCurrentPitch().getDegrees());
+        dashboardPutNumber("flywheelRPS", getCurrentRPS());
     }
 }
