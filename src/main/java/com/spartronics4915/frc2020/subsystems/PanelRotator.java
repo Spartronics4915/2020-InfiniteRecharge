@@ -1,8 +1,5 @@
 package com.spartronics4915.frc2020.subsystems;
 
-import com.revrobotics.ColorMatch;
-import com.revrobotics.ColorMatchResult;
-import com.revrobotics.ColorSensorV3;
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
@@ -10,16 +7,21 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
+import com.revrobotics.ColorMatch;
+import com.revrobotics.ColorMatchResult;
+import com.revrobotics.ColorSensorV3;
+
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 
 public class PanelRotator extends SpartronicsSubsystem
 {
-    private final DigitalInput mOpticalFlagUp;
-    private final DigitalInput mLimitSwitchDown;
     private SpartronicsMotor mSpinMotor;
     private SpartronicsMotor mRaiseMotor;
+    private final DigitalInput mOpticalFlagUp;
+    private final DigitalInput mLimitSwitchDown;
     private final ColorSensorV3 mColorSensor;
 
     private String sensedColor;
@@ -34,7 +36,6 @@ public class PanelRotator extends SpartronicsSubsystem
 
         mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId);
         mSpinMotor.setBrakeMode(true);
-
         mRaiseMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId);
         mRaiseMotor.setBrakeMode(true);
 
@@ -82,20 +83,18 @@ public class PanelRotator extends SpartronicsSubsystem
 
     // TODO: What will this return before Stage Two?
     /**
-     * Gets the color the field needs to see to through game-specific messages
+     * Gets the color the field needs to see
      *
      * @return A String color - either Red, Blue, Yellow, or Green
      */
     public String getTargetColor()
     {
-        // return DriverStation.getInstance().getGameSpecificMessage();
-        //TODO: this is a placeholder because we don't have the field output in tests; change it before we are actually in the game
-        return "Red";
+        return DriverStation.getInstance().getGameSpecificMessage();
     }
 
     // TODO: What will this return before Stage Two?
     /**
-     * Gets the color the robot needs to spin to through game specific messages
+     * Gets the color the robot will spin until seeing
      *
      * @return A String color - either Red, Blue, Yellow, or Green
      */
@@ -174,20 +173,14 @@ public class PanelRotator extends SpartronicsSubsystem
     }
 
     /**
-     * Finds the distance between the sensor and what it is looking at
-     * @return 11-bit (0-2047) value
-     */
-    public int getDistance()
-    {
-        int distance = mColorSensor.getProximity();
-        
-        return distance;
-    }
-
-    /**
+     * The position of our color sensor and the field's has a difference of π/2, so
+     * we need to adjust targets accordingly.
+     * <p>
+     * See https://drive.google.com/uc?id=1BfoFJmpJg31txUqTG-OrJjeWgQdQsCNC
+     * for a diagram of how these line up.
+     * <p>
      * This code could be less redundant by taking a String parameter and converting it,
      * but it'll work out to be the same amount of code anyways, and this is clearer.
-     *
      * @return The current Color of the wheel as detected by the FMS.
      */
     public String getRotatedColor()
@@ -223,6 +216,15 @@ public class PanelRotator extends SpartronicsSubsystem
     }
 
     /**
+     * Finds the distance between the sensor and what it is looking at
+     * @return 11-bit (0-2047) value
+     */
+    public int getDistance()
+    {
+        return mColorSensor.getProximity();
+    }
+
+    /**
      * Checks if the top optical flag is broken
      *
      * @return whether the PanelManipulator is raised
@@ -253,9 +255,6 @@ public class PanelRotator extends SpartronicsSubsystem
         mRaiseMotor.setDutyCycle(0);
     }
 
-    /**
-     * According to Dana this runs all the time.
-     */
     public void periodic()
     {
         // these methods are put here to output stuff to the driver station
