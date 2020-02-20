@@ -10,6 +10,7 @@ import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -115,7 +116,7 @@ public class LauncherCommands
     }
 
     /**
-     * @return Distance to the target in meters
+     * @return Distance to the target in inches 
      */
     private double trackTarget(Pose2d target)
     {
@@ -127,7 +128,7 @@ public class LauncherCommands
                                 turretToTarget.getTranslation().getY(), 
                                 true);
         Rotation2d turretAngle = fieldAnglePointingToTarget.rotateBy(fieldToTurret.getRotation().inverse());
-        double distance = mTarget.distance(fieldToTurret);
+        double distance = Units.metersToInches(mTarget.distance(fieldToTurret));
         mLauncher.adjustHood(mLauncher.calcPitch(distance));
         mLauncher.turnTurret(turretAngle);
         return distance;
