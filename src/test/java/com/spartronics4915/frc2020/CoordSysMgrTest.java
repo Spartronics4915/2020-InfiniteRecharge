@@ -1,7 +1,6 @@
 package com.spartronics4915.frc2020;
 
 import com.spartronics4915.lib.math.threedim.*;
-import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;

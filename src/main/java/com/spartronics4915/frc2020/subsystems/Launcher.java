@@ -317,7 +317,7 @@ public class Launcher extends SpartronicsSubsystem
     @Override
     public void periodic()
     {
-        // nb: don't change these without changing Dashboard.
+        // nb: don't change these nettable names without changing Dashboard.
         dashboardPutNumber("turretAngle", getTurretDirection().getDegrees());
         dashboardPutNumber("hoodAngle", getCurrentPitch().getDegrees());
         dashboardPutNumber("flywheelRPS", getCurrentRPS());

@@ -27,12 +27,13 @@ public class LauncherCommands
     private final Vec3 mMatchTargetInches;
 
     public LauncherCommands(Launcher launcher, IndexerCommands indexerCommands,
-        RobotStateMap stateMap, CoordSysMgr2020 csmgr)
+        RobotStateMap stateMap)
     {
         mLauncher = launcher;
         mIndexerCommands = indexerCommands;
         mStateMap = stateMap;
-        mCoordSysMgr = csmgr;
+        mCoordSysMgr = new CoordSysMgr2020();
+    
         // our target is always on the opposite side of the field. This
         // works for both Alliances since the field is symmetric and we
         // use the same coordinate system (rotated by 180) on the Dashboard.
@@ -141,18 +142,22 @@ public class LauncherCommands
         return distance;
     }
 
+
+    /**
+     * return the distance to the tracked target.  If the target is within
+     * our "reach", we adjust both hood and turret angle.
+     */
     private double trackTargetAlt()
     {
-        // We assume that mCoordSysMgr is up-to-date - this includes
-        // - robot's pose
-        // - turret rotation
-        //
-        // Compute the vector from turret origin on field to target
-        //
+        Pose2d robotToField = mStateMap.getLatestFieldToVehicle();
+        double turretAngle = mLauncher.getTurretDirection().getDegrees();
+        this.mCoordSysMgr.updateTurretAngle(turretAngle);
+        this.mCoordSysMgr.updateRobotPose(robotToField);
+
         Vec3 targetPointInMnt = mCoordSysMgr.fieldPointToMount(mMatchTargetInches);
         double angle = targetPointInMnt.angleOnXYPlane();
         double dist = targetPointInMnt.length();
-        if (angle > -45 && angle < 45)
+        if (Math.abs(angle) < Constants.Launcher.kMaxAngleDegrees)
         {
             mLauncher.adjustHood(mLauncher.calcPitch(dist));
             mLauncher.turnTurret(angle);

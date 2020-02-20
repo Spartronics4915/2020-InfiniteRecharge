@@ -117,6 +117,7 @@ public final class Constants
         /** RPS */
         public static final double kFlywheelVelocityTolerance = 1.0;
         public static final double kMaxRPS = 90.0; // Reasonable guess
+        public static final double kMaxAngleDegrees = 30;
         public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(30.0);
 
         public static Pose2d goalLocation = null;

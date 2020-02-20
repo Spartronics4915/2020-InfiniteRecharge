@@ -1,5 +1,8 @@
 package com.spartronics4915.lib.math.threedim;
 
+import com.spartronics4915.lib.math.twodim.geometry.*;
+import com.spartronics4915.lib.util.Units;
+
 /**
  * CoordSysMgr captures the coordinate-system chain (kinematics) associated
  * with a camera mounted on a potentially-moving mount attached to a robot.
@@ -107,6 +110,22 @@ public class CoordSysMgr
     {
         this.mMountToRobot = mToR;
         this.mDirty = true;
+    }
+
+    /**
+     * update internal state (in inches) via a standard Pose2d (in meters)
+     * representations.
+     * @param fieldToVehicle - usually obtained via
+     *  RobotStateMap.getLatestFieldToVehicle.
+     */
+    public void updateRobotPose(Pose2d fieldToVehicle)
+    {
+        Translation2d td = fieldToVehicle.getTranslation();
+        double x = Units.metersToInches(td.getX());
+        double y = Units.metersToInches(td.getY());
+        double angle = fieldToVehicle.getRotation().getDegrees();
+
+        this.updateRobotPose(x, y, angle);
     }
 
     /**
