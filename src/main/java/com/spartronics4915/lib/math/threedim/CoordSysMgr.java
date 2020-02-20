@@ -7,7 +7,9 @@ import com.spartronics4915.lib.util.Units;
  * CoordSysMgr captures the coordinate-system chain (kinematics) associated
  * with a camera mounted on a potentially-moving mount attached to a robot.
  * To produce season-specific behavior, please subclass this class.
- * 
+ */
+
+/*
  * Robot field pose (ie: robot position/heading in field coordinates)
  * aka the robotToField 
  *
@@ -113,10 +115,9 @@ public class CoordSysMgr
     }
 
     /**
-     * update internal state (in inches) via a standard Pose2d (in meters)
-     * representations.
-     * @param fieldToVehicle - usually obtained via
-     *  RobotStateMap.getLatestFieldToVehicle.
+     * Updates internal state via a standard Pose2d (assumed in meters).
+     * @param fieldToVehicle - usually obtained via 
+     *   RobotStateMap.getLatestFieldToVehicle.
      */
     public void updateRobotPose(Pose2d fieldToVehicle)
     {
@@ -129,8 +130,8 @@ public class CoordSysMgr
     }
 
     /**
-     * Periodically update the robot pose via a string
-     * @param rposeString "x y angle" (angle in degrees)
+     * Updates robot pose via a string.
+     * @param rposeString "x y angle" x, y in inches, angle in degrees
      */
     public void updateRobotPose(String rposeString)
     {
@@ -143,9 +144,9 @@ public class CoordSysMgr
     }
 
     /**
-     * Periodically update internal notion of robot pose via numbers.
-     * @param x - x coordinate of robot origin on field
-     * @param y - y coordinate of robot origin on field
+     * Updates internal notion of robot pose via numbers.
+     * @param x - x coordinate of robot origin on field in inches
+     * @param y - y coordinate of robot origin on field in inches
      * @param angle - heading of robot in degrees.  If x of robot points to 
      * x of field, the angle is zero.
      */
@@ -162,8 +163,10 @@ public class CoordSysMgr
      * and the known field coordinates of the same target, compute the
      * full robotToField coordinates.
      * @param knownHeading - measured in degrees in field coordinates
-     * @param robotTgt - target pt in robot coordinates (from vision)
-     * @param fieldTgt - known target location in field coords
+     * @param robotTgt - target pt in robot coordinates (from vision) -
+     *   measured in inches.
+     * @param fieldTgt - known target location in field coords - measured
+     *   in inches.
      */
     public void updateRobotPose(double knownHeading, final Vec3 robotTgt, 
                                 final Vec3 fieldTgt)
@@ -238,7 +241,7 @@ public class CoordSysMgr
      * transformation can be used to compute a shooting distance as
      * follows:  
      *    Vec3 dist = camPointToMount(camTargetPt);
-     *    dist.a2 = 0; // we don't care about height
+     *    dist.a2 = 0; // if we don't care about height
      *    double distance = dist.length();
      */
     public Vec3 camPointToMount(Vec3 pt)

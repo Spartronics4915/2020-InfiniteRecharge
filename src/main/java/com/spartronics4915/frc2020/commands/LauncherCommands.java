@@ -144,8 +144,8 @@ public class LauncherCommands
 
 
     /**
-     * return the distance to the tracked target.  If the target is within
-     * our "reach", we adjust both hood and turret angle.
+     * return the distance (in meters) to the tracked target.  If the target 
+     * is within our field of view, we adjust both hood and turret angle.
      */
     private double trackTargetAlt()
     {
@@ -156,7 +156,12 @@ public class LauncherCommands
 
         Vec3 targetPointInMnt = mCoordSysMgr.fieldPointToMount(mMatchTargetInches);
         double angle = targetPointInMnt.angleOnXYPlane();
-        double dist = targetPointInMnt.length();
+        double dist = Units.inchesToMeters(targetPointInMnt.length());
+        if(angle > 180)
+        {
+            // [0-360] -> (-180, 180]
+            angle = -(360 - angle);
+        }
         if (Math.abs(angle) < Constants.Launcher.kMaxAngleDegrees)
         {
             mLauncher.adjustHood(mLauncher.calcPitch(dist));
