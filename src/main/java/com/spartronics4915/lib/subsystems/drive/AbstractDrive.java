@@ -24,8 +24,8 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
     {
         if (leftMotor.hadStartupError() || rightMotor.hadStartupError())
         {
-            mLeftMotor = new SpartronicsSimulatedMotor(leftMotor.getDeviceNumber());
-            mRightMotor = new SpartronicsSimulatedMotor(rightMotor.getDeviceNumber());
+            mLeftMotor = new SpartronicsSimulatedMotor(leftMotor.getDeviceNumber(), leftMotor.getFollower().getDeviceNumber());
+            mRightMotor = new SpartronicsSimulatedMotor(rightMotor.getDeviceNumber(), rightMotor.getFollower().getDeviceNumber());
             mIMU = new SpartronicsIMU()
             {
                 @Override

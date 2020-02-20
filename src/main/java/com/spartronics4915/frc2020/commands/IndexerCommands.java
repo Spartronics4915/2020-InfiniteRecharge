@@ -111,9 +111,14 @@ public class IndexerCommands
 
         // You should only use one subsystem per command. If multiple are needed, use a
         // CommandGroup.
-        public ZeroSpinnerCommand(Indexer indexer)
+        public ZeroSpinnerCommand(Indexer indexer, boolean unzero)
         {
             mIndexer = indexer;
+            if (unzero)
+            {
+                mIndexer.unzero();
+            }
+
             addRequirements(mIndexer);
         }
 
@@ -128,7 +133,7 @@ public class IndexerCommands
         @Override
         public boolean isFinished()
         {
-            return mIndexer.checkFlag();
+            return mIndexer.checkFlag() || mIndexer.hasZeroed();
         }
 
         // Called once the command ends or is interrupted.
@@ -138,6 +143,39 @@ public class IndexerCommands
             mIndexer.setZero();
             mIndexer.stopSpinner();
             mIndexer.returnToHome();
+        }
+    }
+
+    public class StopCommand extends CommandBase
+    {
+        private Indexer mIndexer;
+
+        public StopCommand(Indexer indexer)
+        {
+            mIndexer = indexer;
+        }
+
+        @Override
+        public void execute()
+        {
+            mIndexer.stop();
+        }
+
+        @Override
+        public boolean isFinished()
+        {
+            return false;
+        }
+    }
+
+    public class ZeroAndStopGroup extends SequentialCommandGroup
+    {
+        public ZeroAndStopGroup(Indexer indexer)
+        {
+            addCommands(
+                new ZeroSpinnerCommand(indexer, false),
+                new StopCommand(indexer)
+            );
         }
     }
 
@@ -339,7 +377,7 @@ public class IndexerCommands
 
         public LoadToLauncher(Indexer indexer)
         {
-            this(indexer, 5);
+            this(indexer, 1);
         }
     }
 }

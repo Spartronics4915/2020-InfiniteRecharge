@@ -31,6 +31,7 @@ public class Indexer extends SpartronicsSubsystem
 
     private boolean mIsLaunching = false;
     private boolean mIsTransferring = false;
+    private boolean mHasZeroed = false;
 
     private int mBallsHeld = 0;
 
@@ -99,7 +100,18 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void setZero()
     {
+        mHasZeroed = true;
         mIndexerMotor.getEncoder().setPosition(0);
+    }
+
+    public void unzero()
+    {
+        mHasZeroed = false;
+    }
+
+    public boolean hasZeroed()
+    {
+        return mHasZeroed;
     }
 
     /**
@@ -212,6 +224,7 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void stop()
     {
+        mTransferMotor.setNeutral();
         mKickerMotor.setNeutral();
         mIndexerMotor.setNeutral();
     }

@@ -104,10 +104,10 @@ public final class Constants
         public static final double kTurretI = 0;
         public static final double kTurretD = 0.002;
 
-        // Vals for interpolating lookup table
-        public static final double[] kDistanceTable = new double[]{0.0, 1.0};
-        public static final double[] kAngleTable = new double[]{0.0, 30.0};
-        public static final double[] kRPSTable = new double[]{40.0, 40.0};
+        // Vals for interpolating lookup table, Distance units is in feet
+        public static final double[] kDistanceTable = new double[]{3.0, 4.0, 4.5, 5.0};
+        public static final double[] kAngleTable = new double[]{16.0, 20.0, 19.0, 24.0};
+        public static final double[] kRPSTable = new double[]{38.0, 41.5, 41.0, 45.0};
         public static final int kLookupTableSize = kDistanceTable.length;
 
         /** RPS */
@@ -116,7 +116,11 @@ public final class Constants
         public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(30.0);
 
         public static Pose2d goalLocation = null;
-        public static double kTurretStallAmps = 2.0;
+        //unit is feet
+        public static final double MaxShootingDistance = 100;// FIXME: Figure out max distance
+        //unit is feet
+        public static final double MinShootingDistance = 0;// FIXME: Figure out min distance
+        public static double kTurretStallAmps = 2.0;//Stand in Value
     }
 
     public static final class OI
@@ -164,6 +168,8 @@ public final class Constants
 
         public static final double kRobotMassKg = 1;
         public static final double kMoi = 1;
+
+        public static final double kP = 0.01;
 
         // TODO: characterize
         public static final double kRightS;
