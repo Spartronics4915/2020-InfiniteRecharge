@@ -32,10 +32,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -73,7 +69,6 @@ public class RobotContainer
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
 
-
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -108,6 +103,7 @@ public class RobotContainer
         mJoystick = new Joystick(Constants.OI.kJoystickId);
         mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
 
+        /* constructing subsystems */
         mClimber = new Climber();
         mIntake = new Intake();
         mIndexer = new Indexer();
@@ -116,6 +112,7 @@ public class RobotContainer
         mLED = LED.getInstance();
         mVision = new Vision(mStateEstimator, mLauncher);
 
+        /* constructing subsystem commands */
         mClimberCommands = new ClimberCommands(mClimber);
         mDriveCommands = new DriveCommands(mDrive, mJoystick);
         mIntakeCommands = new IntakeCommands(mIntake);
@@ -134,6 +131,7 @@ public class RobotContainer
         // Note: changes to bling state can be augmented with:
         // .alongWith(new SetBlingStateCommand(mLED, BlingState.SOME_STATE)));
 
+        /*
         new JoystickButton(mJoystick, 1).whenPressed(mIndexerCommands.new ZeroSpinnerCommand(true));
         new JoystickButton(mJoystick, 2).whenPressed(mIndexerCommands.new SpinIndexer(5));
         new JoystickButton(mJoystick, 4).whenPressed(mIndexerCommands.new StartTransfer())
@@ -141,44 +139,18 @@ public class RobotContainer
         new JoystickButton(mJoystick, 5).whenPressed(mIndexerCommands.new StartKicker())
             .whenReleased(mIndexerCommands.new EndKicker());
         new JoystickButton(mJoystick, 6).whenPressed(mSuperstructureCommands.new LaunchSequence());
-
-        /*
-        new JoystickButton(mJoystick, 1).whenPressed(() -> mDrive.driveSlow()).whenReleased(() -> mDrive.driveNormal());
-        new JoystickButton(mJoystick, 2).whenHeld(new LauncherCommands.Raise(mLauncher));
-        new JoystickButton(mJoystick, 3).whenHeld(new LauncherCommands.Lower(mLauncher));
-        new JoystickButton(mJoystick, 4).whenHeld(new LauncherCommands.Left(mLauncher));
-        new JoystickButton(mJoystick, 5).whenHeld(new LauncherCommands.Right(mLauncher));
-        */
-
-        /* Switch Camera views
-        new JoystickButton(mJoystick, 6).whenPressed(
-            new InstantCommand(() -> mCamera.switch(Constants.Camera.kFrontId)));
-        new JoystickButton(mJoystick, 7).whenPressed(
-            new InstantCommand(() -> mCamera.switch(Constants.Camera.kRearId)));
-        new JoystickButton(mJoystick, 10).whenPressed(
-            new InstantCommand(() -> mCamera.switch(Constants.Camera.kIntakeId)));
-        new JoystickButton(mJoystick, 11).whenPressed(
-            new InstantCommand(() -> mCamera.switch(Constants.Camera.kTurretId)));
         */
 
         /*
-        new JoystickButton(mJoystick, 1)
-            .toggleWhenPressed(mLauncherCommands.new ShootBallTest());
+        new JoystickButton(mJoystick, 1).toggleWhenPressed(mLauncherCommands.new ShootBallTest());
         new JoystickButton(mJoystick, 2).toggleWhenPressed(mLauncherCommands.new Zero());
-        new JoystickButton(mJoystick, 3)
-            .toggleWhenPressed(mLauncherCommands.new HoodTest());
-        new JoystickButton(mJoystick, 4)
-            .toggleWhenPressed(mPanelRotatorCommands.new Raise());
-        new JoystickButton(mJoystick, 5)
-            .toggleWhenPressed(mPanelRotatorCommands.new Lower());
-        new JoystickButton(mJoystick, 6)
-            .toggleWhenPressed(mPanelRotatorCommands.new SpinToColor());
+        new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new HoodTest());
+        new JoystickButton(mJoystick, 4).toggleWhenPressed(mPanelRotatorCommands.new Raise());
+        new JoystickButton(mJoystick, 5).toggleWhenPressed(mPanelRotatorCommands.new Lower());
+        new JoystickButton(mJoystick, 6).toggleWhenPressed(mPanelRotatorCommands.new SpinToColor());
         */
 
-        // Test Command that fires all the balls after setting the Flywheel and Hood
-        // values from the smart dashboard
-
-        /*
+        /* Test Command that fires all balls after setting Flywheel/Hood values from SmartDashboard
         new JoystickButton(mJoystick, 4).toggleWhenPressed(new SequentialCommandGroup(
             new ParallelRaceGroup(
                 new ParallelCommandGroup(mIndexerCommands.new SpinUpKicker(mIndexer),
@@ -195,41 +167,38 @@ public class RobotContainer
                 mLauncherCommands.new ShootBallTestWithDistance(mLauncher))));
         */
 
-        // new JoystickButton(mJoystick, 7).whileHeld(new
-        // TrajectoryTrackerCommand(mDrive, mDrive,
-        // this::throughTrench, mRamseteController,
-        // mStateEstimator.getEncoderRobotStateMap()));
-        // new JoystickButton(mJoystick, 7).whileHeld(new
-        // TrajectoryTrackerCommand(mDrive, mDrive,
-        // this::toControlPanel, mRamseteController,
-        // mStateEstimator.getEncoderRobotStateMap()));
-        // new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new
-        // AutoAimTurret(mLauncher,Constants.Launcher.goalLocation,mStateEstimator.getEncoderRobotStateMap()));
+        /*
+        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
+            this::throughTrench, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
+        new JoystickButton(mJoystick, 7).whileHeld(new TrajectoryTrackerCommand(mDrive, mDrive,
+            this::toControlPanel, mRamseteController, mStateEstimator.getEncoderRobotStateMap()));
+        new JoystickButton(mJoystick, 3).toggleWhenPressed(mLauncherCommands.new AutoAimTurret(
+            mLauncher,Constants.Launcher.goalLocation,mStateEstimator.getEncoderRobotStateMap()));
+        */
     }
 
     private void configureButtonBoardBindings()
     {
-        // new JoystickButton(mButtonBoard, 0).whenPressed(LauncherCommands.new
-        // Launch(mLauncher));
-        // new JoystickButton(mButtonBoard, 1).toggleWhenPressed(new
-        // ConditionalCommand(mLauncherCommands.new Target));
+        new JoystickButton(mButtonBoard, 1).whenHeld(mClimberCommands.new Winch());
+        new JoystickButton(mButtonBoard, 2).whileHeld(mClimberCommands.new Extend());
+        new JoystickButton(mButtonBoard, 3).whileHeld(mClimberCommands.new Retract());
 
-        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(mSuperstructureCommands.new IntakeRace());
-        new JoystickButton(mButtonBoard, 3).toggleWhenPressed(mIntakeCommands.new Eject());
+        new JoystickButton(mButtonBoard, 4).toggleWhenPressed(mIntakeCommands.new Eject());
+        new JoystickButton(mButtonBoard, 5).toggleWhenPressed(mSuperstructureCommands.new IntakeRace());
 
-        new JoystickButton(mButtonBoard, 4).whileHeld(mClimberCommands.new Retract());
-        new JoystickButton(mButtonBoard, 5).whileHeld(mClimberCommands.new Extend());
+        // new JoystickButton(mButtonBoard, 6).toggleWhenPressed(new ConditionalCommand(mLauncherCommands.new Target());
+        // new JoystickButton(mButtonBoard, 7).whenPressed(LauncherCommands.new Launch());
 
-        new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise());
-        new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new Lower());
-        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new SpinRotation(), false);
-        new JoystickButton(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new SpinToColor());
+        new JoystickButton(mButtonBoard, 8).whenPressed(mPanelRotatorCommands.new Lower());
+        new JoystickButton(mButtonBoard, 9).whenPressed(mPanelRotatorCommands.new Raise());
+        new JoystickButton(mButtonBoard, 10).whenPressed(mPanelRotatorCommands.new SpinRotation(), false);
+        new JoystickButton(mButtonBoard, 11).whenPressed(mPanelRotatorCommands.new SpinToColor());
 
-        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new ExtendMin());
-
-        new JoystickButton(mButtonBoard, 12).whenPressed(mPanelRotatorCommands.new AutoSpinRotation());
-        new JoystickButton(mButtonBoard, 13).whenPressed(mPanelRotatorCommands.new AutoSpinToColor());
-        new JoystickButton(mButtonBoard, 14).whenHeld(mClimberCommands.new Winch());
+        // TODO: interface with the button board "joystick" potentially through GenericHID
+        // new JoystickButton(mButtonBoard, 12).whenPressed(mClimberCommands.new ExtendMin());
+        // new JoystickButton(mButtonBoard, 13).whenPressed(mClimberCommands.new ExtendMax());
+        // new JoystickButton(mButtonBoard, 14).whenPressed(mPanelRotatorCommands.new AutoSpinRotation());
+        // new JoystickButton(mButtonBoard, 15).whenPressed(mPanelRotatorCommands.new AutoSpinToColor());
 
         /* Four-way Joystick
         new JoystickButton(mButtonBoard, 15).whenHeld(new TurretRaiseCommand());
