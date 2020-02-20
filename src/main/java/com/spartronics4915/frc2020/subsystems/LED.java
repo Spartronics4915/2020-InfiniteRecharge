@@ -55,7 +55,7 @@ public class LED extends SpartronicsSubsystem
             mBlingPort.openPort();
 
             logInitialized(true);
-			Logger.notice("LED: Initialized!");
+            Logger.notice("LED: Initialized!");
         }
         catch (Exception e)
         {
@@ -125,6 +125,10 @@ public class LED extends SpartronicsSubsystem
         {
             logError("LED: Error writing to SerialPort - uninitializing LED subsystem");
             logInitialized(false);
+        }
+        else
+        {
+            this.dashboardPutString("LED state:", mBlingState.toString());
         }
     }
 
