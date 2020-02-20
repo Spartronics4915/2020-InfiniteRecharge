@@ -128,7 +128,7 @@ public class IndexerCommands
         @Override
         public boolean isFinished()
         {
-            return mIndexer.checkFlag();
+            return mIndexer.checkFlag() || mIndexer.hasZeroed();
         }
 
         // Called once the command ends or is interrupted.
@@ -138,6 +138,43 @@ public class IndexerCommands
             mIndexer.setZero();
             mIndexer.stopSpinner();
             mIndexer.returnToHome();
+        }
+    }
+
+    public class StopCommand extends CommandBase
+    {
+        private Indexer mIndexer;
+
+        public StopCommand(Indexer indexer)
+        {
+            mIndexer = indexer;
+        }
+
+        @Override
+        public void execute()
+        {
+            mIndexer.stop();
+        }
+
+        @Override
+        public boolean isFinished()
+        {
+            return false;
+        }
+    }
+
+    public class ZeroAndStopGroup extends SequentialCommandGroup
+    {
+        private Indexer mIndexer;
+
+        public ZeroAndStopGroup(Indexer indexer)
+        {
+            mIndexer = indexer;
+
+            addCommands(
+                new ZeroSpinnerCommand(indexer),
+                new StopCommand(indexer)
+            );
         }
     }
 
