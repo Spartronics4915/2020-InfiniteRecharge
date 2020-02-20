@@ -131,6 +131,15 @@ public class RobotContainer
         // Note: changes to bling state can be augmented with:
         // .alongWith(new SetBlingStateCommand(mLED, BlingState.SOME_STATE)));
 
+        new JoystickButton(mJoystick, 1).whenPressed(mDriveCommands.new SetSlow())
+            .whenReleased(mDriveCommands.new ToggleSlow());
+        // Chris has expressed he doesn't want functionality on buttons 2, 4, and 5
+        new JoystickButton(mJoystick, 3).whenPressed(mDriveCommands.new ToggleInverted()); // TODO: alongWith Vision
+
+        // Both JoystickButton 6 and 7 have the same functionality - they're close together + on passive hand side
+        new JoystickButton(mJoystick, 6).whenPressed(mDriveCommands.new ToggleSlow()); // TODO: alongWith Vision
+        new JoystickButton(mJoystick, 7).whenPressed(mDriveCommands.new ToggleSlow()); // TODO: alongWith Vision
+
         /*
         new JoystickButton(mJoystick, 1).whenPressed(mIndexerCommands.new ZeroSpinnerCommand(true));
         new JoystickButton(mJoystick, 2).whenPressed(mIndexerCommands.new SpinIndexer(5));
