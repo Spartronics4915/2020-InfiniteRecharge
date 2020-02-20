@@ -93,14 +93,14 @@ public interface SpartronicsMotor
      * @param dutyCycle            Output in perecnt.
      * @param arbitraryFeedforward Additional arbitrary feedforward in Volts.
      */
-    void setDutyCycle(double dutyCycle, double arbitraryFeedForwardVolts);
+    void setPercentOutput(double dutyCycle, double arbitraryFeedForwardVolts);
 
     /**
      * Sets the output as a percentage (like setOpenLoop).
      *
      * @param dutyCycle Output in percent.
      */
-    void setDutyCycle(double dutyCycle);
+    void setPercentOutput(double dutyCycle);
 
     /**
      * Sets the target output velocity.

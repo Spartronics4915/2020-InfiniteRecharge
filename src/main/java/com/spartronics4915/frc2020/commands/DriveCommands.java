@@ -8,32 +8,27 @@ import com.spartronics4915.frc2020.subsystems.Drive;
 
 public class DriveCommands
 {
-    private Drive mDrive;
+    private final Drive mDrive;
+    private final Joystick mJoystick;
 
-    public DriveCommands(Drive drive)
+    public DriveCommands(Drive drive, Joystick joystick)
     {
         mDrive = drive;
-    }
-
-    Drive getDrive()
-    {
-        return mDrive;
+        mJoystick = joystick;
+        mDrive.setDefaultCommand(new TeleOpCommand());
     }
 
     public class TeleOpCommand extends CommandBase
     {
-        private final Joystick mJoystick;
-        public TeleOpCommand(Joystick joy)
+        public TeleOpCommand()
         {
-            mJoystick = joy;
             addRequirements(mDrive);
         }
 
         @Override
         public void execute()
         {
-            mDrive.arcadeDrive(mJoystick.getY(), mJoystick.getX()); // To invert joystick controller,
-                                                                // so forward... is forward
+            mDrive.arcadeDrive(-mJoystick.getY(), -mJoystick.getX());
         }
     }
 }

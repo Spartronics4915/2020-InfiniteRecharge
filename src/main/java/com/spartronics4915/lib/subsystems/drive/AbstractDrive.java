@@ -114,8 +114,8 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
 
     public void tankDrive(double leftPercent, double rightPercent)
     {
-        mLeftMotor.setDutyCycle(leftPercent);
-        mRightMotor.setDutyCycle(rightPercent);
+        mLeftMotor.setPercentOutput(leftPercent);
+        mRightMotor.setPercentOutput(rightPercent);
     }
 
     @Override
@@ -135,7 +135,7 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
     {
         return mDifferentialDrive;
     }
-    
+
     @Override
     public void periodic()
     {
