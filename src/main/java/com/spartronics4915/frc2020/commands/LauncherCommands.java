@@ -11,38 +11,32 @@ import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public class LauncherCommands
 {
     private final Launcher mLauncher;
-    private final Indexer mIndexer;
     private final IndexerCommands mIndexerCommands;
     private final RobotStateMap mStateMap;
     private final Pose2d mTarget;
 
-    public LauncherCommands(Launcher launcher, Indexer indexer, 
-                    IndexerCommands indexerCommands, RobotStateMap stateMap)
+    public LauncherCommands(Launcher launcher, IndexerCommands indexerCommands, RobotStateMap stateMap)
     {
         mLauncher = launcher;
-        mIndexer = indexer;
         mIndexerCommands = indexerCommands;
         mStateMap = stateMap;
         mTarget = null;
-    }
-
-    public Launcher getLauncher()
-    {
-        return mLauncher;
+        // mLauncher.setDefaultCommand(new ConditionalCommand(mLauncherCommands.new TargetAndShoot(mLauncher),
+        //     mLauncherCommands.new TrackPassively(mLauncher), mLauncher::inRange));
+        // mLauncherCommands.new TargetAndShoot(mLauncher));
+        mLauncher.setDefaultCommand(new ShootBallTest());
     }
 
     public class TargetAndShoot extends CommandBase
     {
-        public Pose2d mTarget;
+        private Pose2d mTarget;
+
         public TargetAndShoot(Pose2d target)
         {
             mTarget = target;
@@ -58,24 +52,20 @@ public class LauncherCommands
         }
 
         @Override
-        public void end(boolean interrupted) {
+        public void end(boolean interrupted)
+        {
             mLauncher.stopTurret();
         }
     }
 
     public class TrackPassively extends CommandBase
     {
-        Pose2d mTarget;
+        private Pose2d mTarget;
 
         public TrackPassively(Pose2d target)
         {
+            mTarget = target;
             addRequirements(mLauncher);
-        }
-
-        // Called when the command is initially scheduled.
-        @Override
-        public void initialize()
-        {
         }
 
         // Called every time the scheduler runs while the command is scheduled.
@@ -122,11 +112,11 @@ public class LauncherCommands
         Pose2d fieldToTurret = mStateMap.getLatestFieldToVehicle()
             .transformBy(Constants.Launcher.kRobotToTurret);
         Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(target);
-        Rotation2d fieldAnglePointingToTarget = new Rotation2d(
-                                turretToTarget.getTranslation().getX(), 
-                                turretToTarget.getTranslation().getY(), 
-                                true);
-        Rotation2d turretAngle = fieldAnglePointingToTarget.rotateBy(fieldToTurret.getRotation().inverse());
+        Rotation2d fieldAnglePointingToTarget =
+            new Rotation2d(turretToTarget.getTranslation().getX(),
+            turretToTarget.getTranslation().getY(), true);
+        Rotation2d turretAngle = fieldAnglePointingToTarget
+            .rotateBy(fieldToTurret.getRotation().inverse());
         double distance = mTarget.distance(fieldToTurret);
         mLauncher.adjustHood(mLauncher.calcPitch(distance));
         mLauncher.turnTurret(turretAngle);
@@ -151,9 +141,10 @@ public class LauncherCommands
         public void execute()
         {
             mLauncher.runFlywheel((double) mLauncher.dashboardGetNumber("flywheelRPSSlider", 0));
-            mLauncher.adjustHood(
-                Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("hoodAngleSlider", 0)));
-            mLauncher.turnTurret(Rotation2d.fromDegrees((double) mLauncher.dashboardGetNumber("turretAngleSlider", 0)));
+            mLauncher.adjustHood(Rotation2d.fromDegrees(
+                (double) mLauncher.dashboardGetNumber("hoodAngleSlider", 0)));
+            mLauncher.turnTurret(Rotation2d.fromDegrees(
+                (double) mLauncher.dashboardGetNumber("turretAngleSlider", 0)));
         }
 
         // Called once the command ends or is interrupted.
@@ -171,9 +162,9 @@ public class LauncherCommands
     // XXX: subclass CommandBase so we don't need the launcher
     public class WaitForFlywheel extends WaitUntilCommand
     {
-        public WaitForFlywheel(Launcher launcher)
+        public WaitForFlywheel()
         {
-            super(() -> launcher.isFlywheelSpun());
+            super(mLauncher::isFlywheelSpun);
         }
     }
 
@@ -211,7 +202,7 @@ public class LauncherCommands
         @Override
         public void end(boolean interrupted)
         {
-            if(interrupted) 
+            if (interrupted) 
             {
                 mLauncher.stopTurret();
             }
@@ -224,7 +215,7 @@ public class LauncherCommands
         public ShootingTest()
         {
             addCommands(new ShootBallTest(),
-                mIndexerCommands.new LoadToLauncher(mIndexer, 4));
+                mIndexerCommands.new LoadToLauncher(4));
         }
     }
 
@@ -233,7 +224,7 @@ public class LauncherCommands
         public ShootingCalculatedTest()
         {
             addCommands(new ShootBallTestWithDistance(),
-                mIndexerCommands.new LoadToLauncher(mIndexer, 4));
+                mIndexerCommands.new LoadToLauncher(4));
         }
     }
 
@@ -244,12 +235,6 @@ public class LauncherCommands
         public TurretTest()
         {
             addRequirements(mLauncher);
-        }
-
-        // Called when the command is initially scheduled.
-        @Override
-        public void initialize()
-        {
         }
 
         // Called every time the scheduler runs while the command is scheduled.
