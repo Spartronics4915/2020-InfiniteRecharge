@@ -17,6 +17,7 @@ import com.spartronics4915.lib.util.TriFunction;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Units;
+import edu.wpi.first.wpilibj.util.WPILibVersion;
 
 public final class Constants
 {
@@ -33,7 +34,8 @@ public final class Constants
         catch (IOException e)
         {
         }
-        Logger.notice("Running on " + sConfig + " constants");
+        Logger.notice("Running on machineconfig " + sConfig + " constants");
+        Logger.notice("Running WPILibVersion " + WPILibVersion.Version);
     }
 
     public static final class Climber
