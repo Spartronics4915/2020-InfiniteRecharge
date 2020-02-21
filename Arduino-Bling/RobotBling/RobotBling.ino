@@ -81,19 +81,20 @@ const rgbColor rgbColor_MAGENTA_DIM(0x330033);
    Animation index
     - List of animation used by Spartronics -- MUST match LED subsystem BlingStates
     - loop() matches the animation to the command entered on the serial port
+    - Note: java naming convention used to keep Dana happy :)
 */
 enum
 {
-  BLING_COMMAND_OFF = 0,
-  BLING_COMMAND_DISABLED,
-  BLING_COMMAND_AUTOMODE,
-  BLING_COMMAND_TELEOP,
-  BLING_COMMAND_LAUNCH,
-  BLING_COMMAND_INTAKE,
-  BLING_COMMAND_DRIVE_SLOW,
-  BLING_COMMAND_CLIMBING,
-  BLING_COMMAND_VISION,
-  BLING_COMMAND_EJECT,
+  kOff = 0,
+  kDisabled,
+  kAuto,
+  kTeleop,
+  kLaunch,
+  kIntake,
+  kDriveSlow,
+  kClimb,
+  kVision,
+  kEject,
 
   // Add new bling states immediately above this line
 
@@ -112,7 +113,7 @@ enum
 */
 
 // A global variable to hold the current command to be executed
-uint8_t currentCommand = BLING_COMMAND_OFF;
+uint8_t currentCommand = kOff;
 
 // The breadcrumb to get us back to the beginning of the loop
 // See 'man setjmp' for details on usage
@@ -198,54 +199,54 @@ void loop()
   {
     // Annimations -- commands to match the enums above!
 
-    case BLING_COMMAND_OFF: /* 0 */
+    case kOff: /* 0 */
       /** All LEDs are OFF */
       solid(rgbColor_OFF);
       break;
 
-    case BLING_COMMAND_DISABLED:    /* 1 */
+    case kDisabled:    /* 1 */
       /** All LEDs are solid ORANGE -- matches RSL disabled color */
       solid(rgbColor_ORANGE);
       break;
 
-    case BLING_COMMAND_AUTOMODE: /* 2 */
+    case kAuto: /* 2 */
       /** All LEDs are solid WHITE @ default brightness */
       solid(rgbColor_WHITE);
       break;
 
-    case BLING_COMMAND_TELEOP: /* 3 */
+    case kTeleop: /* 3 */
       /** spartronics BLUE & YELLOW cogs @ default brightness */
       cogs(rgbColor_BLUE, rgbColor_YELLOW);
       break;
 
-    case BLING_COMMAND_LAUNCH:  /* 4 */
+    case kLaunch:  /* 4 */
       /** short FULL bright flash */
       flash(FLASH_TIME_INTERVAL, rgbColor_WHITE.color, 255);
-      currentCommand = BLING_COMMAND_OFF;       // since we may want to flash more than once, we are resetting command to OFF, so launch can rerun
+      currentCommand = kOff;       // since we may want to flash more than once, we are resetting command to OFF, so launch can rerun
      break;
 
-    case BLING_COMMAND_INTAKE:  /* 5 */
+    case kIntake:  /* 5 */
       /** spartronics BLUE and YELLOW crawler from opposite sides */
       //strobe(rgbColor_YELLOW, 1, 100, 0);
       spartronicsCrawler(10 /* delay */, rgbColor_BLUE.color, rgbColor_YELLOW.color, 30 /* length of on LEDs */);
       break;
 
-    case BLING_COMMAND_DRIVE_SLOW: /* 6 */
+    case kDriveSlow: /* 6 */
       /** pixel by pixel first fill colors w/ BLUE and then reverse/replace with YELLOW */
       fillSpartronicsColorsPixelByPixel(rgbColor_BLUE, rgbColor_YELLOW, 25 /* wait */);
       break;
 
-    case BLING_COMMAND_CLIMBING:  /* 7 */
+    case kClimb:  /* 7 */
       /** fade between spartronics colors BLUE and YELLOW */
       spartronics_fade(10 /* wait */, rgbColor_BLUE.color /* color1 */, rgbColor_YELLOW.color /* color2 */, 255 /* brightness*/);
       break;
 
-    case BLING_COMMAND_VISION: /* 8 */
+    case kVision: /* 8 */
       /** strobe WHITE */
       strobe(rgbColor_WHITE, 1 /* num flashes */, 150 /* flash delay */, 500 /* wait between strobes */);
       break;
 
-    case BLING_COMMAND_EJECT: /* 9 */
+    case kEject: /* 9 */
       /** strobe WHITE every strobe pause */
       strobe(rgbColor_WHITE, 1 /* # of flashes */, 150 /* flash delay */, 1000 /* strobe pause */);
       break;
@@ -254,6 +255,6 @@ void loop()
       /** All LEDs are OFF */
       solid(rgbColor_OFF);
       // The currentCommand is not handled in this switch statement, and may be corrupt. Reset it to a good value.
-      currentCommand = BLING_COMMAND_OFF;
+      currentCommand = kOff;
   }
 }
