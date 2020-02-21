@@ -22,13 +22,24 @@ public class LEDCommands
 
     /**
      * This {@ InstantCommand} schedules the bling state change request
-     * Changing bling state is a write & forget process
+     * Changing bling state is a write & forget process.  Note that
+     * we don't utilized the standard constructor and instead override
+     * the initialize method.  This is because we can't access mLED in
+     * a runnable being passed to the standard super constructor.
      */
     public class SetBlingState extends InstantCommand
     {
-        public SetBlingState(BlingState blingState)
+        BlingState mState;
+        public SetBlingState(BlingState s)
         {
-            super(() -> { mLED.setBlingState(blingState); }, mLED);
+            super();
+            this.addRequirements(mLED);
+            this.mState = s;
+        }
+        @Override
+        public void initialize()
+        {
+            mLED.setBlingState(this.mState);
         }
     }
 
