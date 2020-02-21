@@ -1,7 +1,7 @@
 package com.spartronics4915.frc2020.commands;
 
 import com.spartronics4915.frc2020.subsystems.LED;
-import com.spartronics4915.frc2020.subsystems.LED.BlingState;
+import com.spartronics4915.frc2020.subsystems.LED.Bling;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
@@ -29,8 +29,8 @@ public class LEDCommands
      */
     public class SetBlingState extends InstantCommand
     {
-        BlingState mState;
-        public SetBlingState(BlingState s)
+        Bling mState;
+        public SetBlingState(Bling s)
         {
             super();
             this.addRequirements(mLED);

@@ -3,7 +3,7 @@ package com.spartronics4915.frc2020;
 import com.spartronics4915.lib.hardware.CANCounter;
 import com.spartronics4915.lib.util.Logger;
 import com.spartronics4915.frc2020.subsystems.LED;
-import com.spartronics4915.frc2020.subsystems.LED.BlingState;
+import com.spartronics4915.frc2020.subsystems.LED.Bling;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -72,7 +72,7 @@ public class Robot extends TimedRobot
         // and put our autonomous chooser on the dashboard.
         mRobotContainer = new RobotContainer();
         Logger.notice("@robotInit: Requested BlingState.BLING_COMMAND_OFF");
-        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_OFF);
+        LED.getInstance().setBlingState(Bling.kOff);
 
 
         SmartDashboard.putString("CANBusStatus", CANCounter.getStatusMessage());
@@ -111,7 +111,7 @@ public class Robot extends TimedRobot
     @Override
     public void disabledInit()
     {
-        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_DISABLED);
+        LED.getInstance().setBlingState(Bling.kDisabled);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class Robot extends TimedRobot
             mAutonomousCommand.schedule();
         }
 
-        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_AUTOMODE);
+        LED.getInstance().setBlingState(Bling.kAuto);
     }
 
     /**
@@ -151,7 +151,7 @@ public class Robot extends TimedRobot
             mAutonomousCommand.cancel();
         }
 
-        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_TELEOP);
+        LED.getInstance().setBlingState(Bling.kTeleop);
     }
 
     /**
@@ -166,7 +166,7 @@ public class Robot extends TimedRobot
     public void testInit()
     {
         CommandScheduler.getInstance().cancelAll();
-		LED.getInstance().setBlingState(BlingState.BLING_COMMAND_DRIVE_SLOW);
+		LED.getInstance().setBlingState(Bling.kDriveSlow);
     }
 
     /**
