@@ -38,14 +38,19 @@ public class DriveCommands
         {
             // universal joystick convention is that forward and left are negative
             // as such, the modifier starts negative
-            double modifier = -1;
+            double y = -1 * mJoystick.getY();
+            double x = -1 * mJoystick.getX();
 
             if (mSlow)
-                modifier *= Constants.Drive.kSlowModeMultiplier;
+            {
+                y *= Constants.Drive.kSlowModeMultiplier;
+                x *= Constants.Drive.kSlowModeMultiplier;
+            }
             if (mInverted)
-                modifier *= -1;
+                y *= -1;
 
-            mDrive.arcadeDrive(modifier * mJoystick.getY(), modifier * mJoystick.getX());
+            y = Math.copySign(Math.pow(Math.abs(y), 5.0/3.0), y);
+            mDrive.arcadeDrive(y, x);
         }
     }
 
