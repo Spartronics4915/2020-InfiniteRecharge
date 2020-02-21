@@ -10,11 +10,13 @@ import com.spartronics4915.frc2020.commands.IntakeCommands;
 import com.spartronics4915.frc2020.commands.LauncherCommands;
 import com.spartronics4915.frc2020.commands.PanelRotatorCommands;
 import com.spartronics4915.frc2020.commands.SuperstructureCommands;
+import com.spartronics4915.frc2020.commands.LEDCommands;
 import com.spartronics4915.frc2020.subsystems.Climber;
 import com.spartronics4915.frc2020.subsystems.Drive;
 import com.spartronics4915.frc2020.subsystems.Indexer;
 import com.spartronics4915.frc2020.subsystems.Intake;
 import com.spartronics4915.frc2020.subsystems.LED;
+import com.spartronics4915.frc2020.subsystems.LED.BlingState;
 import com.spartronics4915.frc2020.subsystems.Launcher;
 import com.spartronics4915.frc2020.subsystems.PanelRotator;
 import com.spartronics4915.frc2020.subsystems.Vision;
@@ -56,6 +58,7 @@ public class RobotContainer
     private final TrajectoryContainer.AutoMode[] mAutoModes;
 
     /* subsystem commands */
+    private final LEDCommands mLEDCommands;
     private final ClimberCommands mClimberCommands;
     private final DriveCommands mDriveCommands;
     private final IntakeCommands mIntakeCommands;
@@ -111,6 +114,7 @@ public class RobotContainer
         mVision = new Vision(mStateEstimator, mLauncher);
 
         /* constructing subsystem commands */
+        mLEDCommands = new LEDCommands(mLED);
         mClimberCommands = new ClimberCommands(mClimber);
         mDriveCommands = new DriveCommands(mDrive, mJoystick);
         mIntakeCommands = new IntakeCommands(mIntake);
@@ -128,19 +132,22 @@ public class RobotContainer
 
     private void configureJoystickBindings()
     {
-        // Note: changes to bling state can be augmented with:
-        // .alongWith(new SetBlingStateCommand(mLED, BlingState.SOME_STATE)));
-
-        new JoystickButton(mJoystick, 1).whenPressed(mDriveCommands.new SetSlow())
-            .whenReleased(mDriveCommands.new ToggleSlow());
+        /* toggle animation to indicate SLOW vs NORMAL drive speeds */
+        new JoystickButton(mJoystick, 1).whenPressed(mDriveCommands.new SetSlow()
+                .alongWith(mLEDCommands.new SetBlingState(BlingState.BLING_COMMAND_DRIVE_SLOW)))
+            .whenReleased(mDriveCommands.new ToggleSlow()
+                .alongWith(mLEDCommands.new SetBlingState(BlingState.BLING_COMMAND_TELEOP)));
         new JoystickButton(mJoystick, 8).whenPressed(new InstantCommand(() -> mIndexer.setZero()));
 
         // Chris has expressed he doesn't want functionality on buttons 2, 4, and 5
         new JoystickButton(mJoystick, 3).whenPressed(mDriveCommands.new ToggleInverted()); // TODO: alongWith Vision
 
         // Both JoystickButton 6 and 7 have the same functionality - they're close together + on passive hand side
-        new JoystickButton(mJoystick, 6).whenPressed(mDriveCommands.new ToggleSlow()); // TODO: alongWith Vision
-        new JoystickButton(mJoystick, 7).whenPressed(mDriveCommands.new ToggleSlow()); // TODO: alongWith Vision
+        /* animation for drive SLOW */
+        new JoystickButton(mJoystick, 6).whenPressed(mDriveCommands.new ToggleSlow() // TODO: alongWith Vision
+            .alongWith(mLEDCommands.new SetBlingState(BlingState.BLING_COMMAND_DRIVE_SLOW)));
+        new JoystickButton(mJoystick, 7).whenPressed(mDriveCommands.new ToggleSlow() // TODO: alongWith Vision
+            .alongWith(mLEDCommands.new SetBlingState(BlingState.BLING_COMMAND_DRIVE_SLOW)));
 
         /*
         new JoystickButton(mJoystick, 1).whenPressed(mIndexerCommands.new ZeroSpinnerCommand(true));
@@ -190,20 +197,39 @@ public class RobotContainer
 
     private void configureButtonBoardBindings()
     {
-        new JoystickButton(mButtonBoard, 4).whenPressed(mSuperstructureCommands.new LaunchSequence(1));
-        new JoystickButton(mButtonBoard, 3).whenPressed(mSuperstructureCommands.new LaunchSequence(5));
-        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(mSuperstructureCommands.new IntakeRace());
-        new JoystickButton(mButtonBoard, 1).toggleWhenPressed(mIntakeCommands.new Eject());
+        /* animate launch */
+        new JoystickButton(mButtonBoard, 4).whenPressed(mSuperstructureCommands.new LaunchSequence(1)
+            .alongWith(mLEDCommands.new SetBlingState(BlingState.BLING_COMMAND_LAUNCH)));
+        /* TODO: validate multiple launch animations */
+        new JoystickButton(mButtonBoard, 3).whenPressed(mSuperstructureCommands.new LaunchSequence(5))
+            .whileActiveContinuous(mLEDCommands.new SetBlingState(BlingState.BLING_COMMAND_LAUNCH));
+        /* animation for pickup: change bling state when command active/inactive */
+        // TODO: validate pickup animation
+        new JoystickButton(mButtonBoard, 2).toggleWhenPressed(mSuperstructureCommands.new IntakeRace())
+            .whenActive(mLEDCommands.new SetBlingState(BlingState.BLING_COMMAND_INTAKE))
+            .whenInactive(mLEDCommands.new SetBlingState(BlingState.BLING_COMMAND_TELEOP));
+        /* animation for eject: change bling state when command active/inactive */
+        // TODO: validate eject animation
+        new JoystickButton(mButtonBoard, 1).toggleWhenPressed(mIntakeCommands.new Eject())
+            .whenActive(mLEDCommands.new SetBlingState(BlingState.BLING_COMMAND_EJECT))
+            .whenInactive(mLEDCommands.new SetBlingState(BlingState.BLING_COMMAND_TELEOP));
 
-        new JoystickButton(mButtonBoard, 8).whenHeld(mClimberCommands.new Winch());
-        new JoystickButton(mButtonBoard, 9).whileHeld(mClimberCommands.new Retract());
-        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend());
+        /* animation for climb -- note, we are not differentiating different climb states */
+        new JoystickButton(mButtonBoard, 8).whenHeld(mClimberCommands.new Winch()
+            .alongWith(mLEDCommands.new SetBlingState(BlingState.BLING_COMMAND_CLIMBING)));
+        new JoystickButton(mButtonBoard, 9).whileHeld(mClimberCommands.new Retract()
+            .alongWith(mLEDCommands.new SetBlingState(BlingState.BLING_COMMAND_CLIMBING)));
+        new JoystickButton(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend()
+            .alongWith(mLEDCommands.new SetBlingState(BlingState.BLING_COMMAND_CLIMBING)));
 
         // new JoystickButton(mButtonBoard, 6).toggleWhenPressed(new ConditionalCommand(mLauncherCommands.new Target());
         // new JoystickButton(mButtonBoard, 7).whenPressed(LauncherCommands.new Launch());
 
-        new JoystickButton(mButtonBoard, 5).whenPressed(mPanelRotatorCommands.new Lower());
-        new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise());
+        /* turning off LEDs for control panel actions to minimize interference */
+        new JoystickButton(mButtonBoard, 5).whenPressed(mPanelRotatorCommands.new Lower()
+            .alongWith(mLEDCommands.new SetBlingState(BlingState.BLING_COMMAND_TELEOP)));
+        new JoystickButton(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise()
+            .alongWith(mLEDCommands.new SetBlingState(BlingState.BLING_COMMAND_OFF)));
         new JoystickButton(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new SpinToColor());
 
         // TODO: interface with the button board "joystick" potentially through GenericHID
