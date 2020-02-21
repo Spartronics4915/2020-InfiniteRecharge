@@ -73,10 +73,15 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
         return mIMU.getYaw().rotateBy(mIMUOffset);
     }
 
+    public double getExtraStateNumber()
+    {
+        return 0;
+    }
+
     public void arcadeDrive(double linearPercent, double rotationPercent)
     {
-        double maxInput = Math
-            .copySign(Math.max(Math.abs(linearPercent), Math.abs(rotationPercent)), linearPercent);
+        double maxInput = Math.copySign(Math.max(Math.abs(linearPercent), 
+                                        Math.abs(rotationPercent)), linearPercent);
 
         double leftMotorOutput, rightMotorOutput;
 

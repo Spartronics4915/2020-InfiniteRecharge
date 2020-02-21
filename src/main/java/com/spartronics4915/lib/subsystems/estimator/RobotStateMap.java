@@ -6,6 +6,21 @@ import com.spartronics4915.lib.util.Interpolable;
 import com.spartronics4915.lib.util.InterpolatingDouble;
 import com.spartronics4915.lib.util.InterpolatingTreeMap;
 
+/**
+ * Container for time-indexed state estimates of a robot.
+ * Used to monitor robot state history and to infer state at
+ * intermediate points in time.  Currently we don't support an
+ * explicit extrapolate method.  Position can be extrapolated by
+ * applying the velocity * dtime to the sample pose.
+ * 
+ * Each season, the contents of RobotStateMap might vary.  For
+ * example, in 2020 we need to include the state of the turret angle.
+ * Other years, not.  Rather than get carried with templatizing RobotStateMap
+ * by a season-specific state, we're currently simply adding a single
+ * field whose interpretation can vary each season.  This approach
+ * was deemed less-invasive due to the interop between RobotStateEsimator,
+ * AbstractDrive and RobotStateMap.
+ */
 public class RobotStateMap
 {
     private static final int kObservationBufferSize = 100;
@@ -14,37 +29,77 @@ public class RobotStateMap
     {
         public Pose2d pose;
         public Twist2d integrationVelocity, predictedVelocity;
+        public InterpolatingDouble extraStateNumber;
         public double timestamp;
 
+        /**
+         * default constructor
+         */
         public State()
         {
             this.pose = new Pose2d();
             this.integrationVelocity = new Twist2d();
             this.predictedVelocity = new Twist2d();
+            this.extraStateNumber = new InterpolatingDouble(.0);
             this.timestamp = 0;
         }
 
+        /**
+         * copy constructor
+         */
         public State(State other)
         {
             this.pose = other.pose;
             this.integrationVelocity = other.integrationVelocity;
             this.predictedVelocity = other.predictedVelocity;
+            this.extraStateNumber = other.extraStateNumber;
             this.timestamp = other.timestamp;
         }
 
-        public State(Pose2d pose, Twist2d iVel, Twist2d pVel, double ts)
+        /**
+         * constructor variant supporting extraStateNumber
+         * @param pose
+         * @param iVel
+         * @param pVel
+         * @param extraStateNumber
+         * @param ts
+         */
+        public State(Pose2d pose, Twist2d iVel, Twist2d pVel, double extraStateNumber,
+                    double ts)
         {
             this.pose = pose;
             this.integrationVelocity = iVel;
             this.predictedVelocity = pVel;
+            this.extraStateNumber.value = extraStateNumber;
             this.timestamp = ts;
         }
 
+        /**
+         * constructor variant that doesn't care about extraStateNumber
+         * @param p
+         * @param ts
+         */
         public State(Pose2d p, double ts)
         {
             this.pose = p;
             this.integrationVelocity = new Twist2d();
             this.predictedVelocity = new Twist2d();
+            this.extraStateNumber = new InterpolatingDouble(.0);
+            this.timestamp = ts;
+        }
+
+        /**
+         * constructor variant that does care about extraStateNumber
+         * @param p
+         * @param extraStateNumber
+         * @param ts
+         */
+        public State(Pose2d p, double extraStateNumber, double ts)
+        {
+            this.pose = p;
+            this.integrationVelocity = new Twist2d();
+            this.predictedVelocity = new Twist2d();
+            this.extraStateNumber.value = extraStateNumber;
             this.timestamp = ts;
         }
 
@@ -60,6 +115,7 @@ public class RobotStateMap
                 final State s = new State(this.pose.interpolate(other.pose, pct),
                     this.integrationVelocity.interpolate(other.integrationVelocity, pct),
                     this.predictedVelocity.interpolate(other.predictedVelocity, pct),
+                    this.extraStateNumber.interpolate(other.extraStateNumber, pct).value,
                     this.timestamp + pct * (other.timestamp - this.timestamp));
                 return s;
             }
@@ -76,6 +132,7 @@ public class RobotStateMap
 
     /**
      * Resets the field to robot transform (robot's position on the field)
+     * Default value of extraStateNumber reset is currently zero.
      */
     public synchronized void reset(double startTime, Pose2d initialPose)
     {
@@ -84,16 +141,39 @@ public class RobotStateMap
         mDistanceDriven = 0.0;
     }
 
+    /**
+     * Resets the field to robot transform (robot's position on the field)
+     * as well as the extraStateNumber.
+     */
+    public synchronized void reset(double startTime, Pose2d initialPose, 
+                                    double extraStateNumber)
+    {
+        mStateMap = new InterpolatingTreeMap<>(kObservationBufferSize);
+        mStateMap.put(new InterpolatingDouble(startTime), 
+                      new State(initialPose, extraStateNumber, startTime));
+        mDistanceDriven = 0.0;
+    }
+
     public synchronized void resetDistanceDriven()
     {
         mDistanceDriven = 0.0;
     }
 
-    public synchronized void addObservations(double timestamp, Pose2d pose, Twist2d velI,
-        Twist2d velP)
+    /*
+    public synchronized void addObservations(double timestamp, Pose2d pose, 
+        Twist2d velI, Twist2d velP)
     {
         InterpolatingDouble ts = new InterpolatingDouble(timestamp);
-        mStateMap.put(ts, new State(pose, velI, velP, timestamp));
+        mStateMap.put(ts, new State(pose, velI, velP, 0., timestamp));
+        mDistanceDriven += velI.dx; // Math.hypot(velocity.dx, velocity.dy);
+    }
+    */
+    
+    public synchronized void addObservations(double timestamp, Pose2d pose, 
+        Twist2d velI, Twist2d velP, double extraStateNumber)
+    {
+        InterpolatingDouble ts = new InterpolatingDouble(timestamp);
+        mStateMap.put(ts, new State(pose, velI, velP, extraStateNumber, timestamp));
         mDistanceDriven += velI.dx; // Math.hypot(velocity.dx, velocity.dy);
         // do we care about time here?
         // no: if dx is measured in distance/loopinterval (loopinterval == 1)
