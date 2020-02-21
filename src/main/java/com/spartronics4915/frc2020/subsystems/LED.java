@@ -35,7 +35,7 @@ public class LED extends SpartronicsSubsystem
         if (sInstance == null)
         {
             sInstance = new LED();
-            mBlingState = BlingState.BLING_COMMAND_STARTUP;
+            mBlingState = BlingState.BLING_COMMAND_TELEOP;
         }
         return sInstance;
     }
@@ -55,7 +55,7 @@ public class LED extends SpartronicsSubsystem
             mBlingPort.openPort();
 
             logInitialized(true);
-			Logger.notice("LED: Initialized!");
+            Logger.notice("LED: Initialized!");
         }
         catch (Exception e)
         {
@@ -64,12 +64,12 @@ public class LED extends SpartronicsSubsystem
         }
     }
 
-    // Update LED blingState to dashboard
+    // LED has no need for periodic updates. State change info is updated in the method
+    // setBlingState().
     @Override
     public void periodic()
     {
         super.periodic();
-        this.dashboardPutString("LED state:", mBlingState.toString());
     }
 
     /**
@@ -80,15 +80,15 @@ public class LED extends SpartronicsSubsystem
         // blingStates MUST match Arduino sketch code
         // bling code is passed in for use in the BlingState methods
         BLING_COMMAND_OFF("0"), // turn off bling
-        BLING_COMMAND_STARTUP("1"), // Startup phase
-        BLING_COMMAND_DISABLED("2"), // robot powered on but disabled (in disabledInit())
-        BLING_COMMAND_AUTOMODE("3"), // ...
-        BLING_COMMAND_SHOOTING("4"), // ...
-        BLING_COMMAND_PICKUP("5"), // ...
-        BLING_COMMAND_LOADING("6"), // ...
+        BLING_COMMAND_DISABLED("1"), // robot powered on but disabled (in disabledInit())
+        BLING_COMMAND_AUTOMODE("2"), // autonomous init
+        BLING_COMMAND_TELEOP("3"), // teleop init and general driving
+        BLING_COMMAND_LAUNCH("4"), // ...
+        BLING_COMMAND_INTAKE("5"), // ...
+        BLING_COMMAND_DRIVE_SLOW("6"), // ...
         BLING_COMMAND_CLIMBING("7"), // ...
         BLING_COMMAND_VISION("8"), // ...
-        BLING_COMMAND_DEFAULT("9"), // ...
+        BLING_COMMAND_EJECT("9"), // ...
         ; // semicolon to state more to follow
 
         private final String blingCode;
@@ -113,18 +113,25 @@ public class LED extends SpartronicsSubsystem
         if (!isInitialized())
         {
             logError("LED: setBlingState called but LED subsystem is NOT initialized!");
+            dashboardPutString("LED state:", "NOT initialized");
             return;
         }
 
-        // Save current blingState for smartdashboard display
+        // Save current blingState
         mBlingState = blingState;
 
         // Convert state to byte message and sent to serial port
-        byte[] message = blingState.getBlingMessage();
+        byte[] message = mBlingState.getBlingMessage();
         if (mBlingPort.writeBytes(message, message.length) == -1)
         {
             logError("LED: Error writing to SerialPort - uninitializing LED subsystem");
+            dashboardPutString("LED state:", "Write Error!");
             logInitialized(false);
+        }
+        else
+        {
+            dashboardPutString("LED state:", mBlingState.toString());
+            logDebug("LED state: " + mBlingState.toString());
         }
     }
 

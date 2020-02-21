@@ -1,11 +1,14 @@
 package com.spartronics4915.frc2020.commands;
 
+import java.util.Set;
+
 import com.spartronics4915.frc2020.subsystems.Indexer;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
@@ -143,15 +146,8 @@ public class IndexerCommands
         }
     }
 
-    public class StopCommand extends CommandBase
+    public class Stop extends CommandBase
     {
-        private Indexer mIndexer;
-
-        public StopCommand(Indexer indexer)
-        {
-            mIndexer = indexer;
-        }
-
         @Override
         public void execute()
         {
@@ -163,16 +159,11 @@ public class IndexerCommands
         {
             return false;
         }
-    }
 
-    public class ZeroAndStopGroup extends SequentialCommandGroup
-    {
-        public ZeroAndStopGroup(Indexer indexer)
+        @Override
+        public Set<Subsystem> getRequirements()
         {
-            addCommands(
-                new ZeroSpinnerCommand(false),
-                new StopCommand(indexer)
-            );
+            return Set.of(mIndexer);
         }
     }
 

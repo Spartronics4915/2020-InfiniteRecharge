@@ -19,11 +19,11 @@ public class SuperstructureCommands
 
     public class LaunchSequence extends SequentialCommandGroup
     {
-        public LaunchSequence()
+        public LaunchSequence(int ballsToShoot)
         {
             addCommands(
                 mLauncherCommands.new WaitForFlywheel(),
-                mIndexerCommands.new LoadToLauncher()
+                mIndexerCommands.new LoadToLauncher(ballsToShoot)
             );
         }
     }
