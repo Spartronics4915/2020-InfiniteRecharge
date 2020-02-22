@@ -20,6 +20,11 @@ public class SpartronicsSimulatedMotor implements SpartronicsMotor
         return dev;
     }
 
+    public static void resetGlobalState()
+    {
+        sMotors = new HashMap<>();
+    }
+
     private double mMotionProfileMaxAcceleration = 0;
     private boolean mOutputInverted = false;
     private boolean mBrakeMode = false;

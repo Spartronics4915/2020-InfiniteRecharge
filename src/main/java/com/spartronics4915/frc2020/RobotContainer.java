@@ -20,6 +20,7 @@ import com.spartronics4915.frc2020.subsystems.LED.Bling;
 import com.spartronics4915.frc2020.subsystems.Launcher;
 import com.spartronics4915.frc2020.subsystems.PanelRotator;
 import com.spartronics4915.frc2020.subsystems.Vision;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.hardware.sensors.T265Camera;
 import com.spartronics4915.lib.hardware.sensors.T265Camera.CameraJNIException;
 import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
@@ -36,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj.RobotBase;
 
 public class RobotContainer
 {
@@ -44,28 +46,28 @@ public class RobotContainer
     public final NetworkTableEntry mAutoModeEntry = NetworkTableInstance.getDefault()
         .getTable("SmartDashboard").getEntry("AutoStrategy");
 
-    /* subsystems */
-    private final Climber mClimber;
-    private final Intake mIntake;
-    private final Indexer mIndexer;
-    private final Launcher mLauncher;
-    private final PanelRotator mPanelRotator;
-    private final LED mLED;
-    private final Vision mVision;
-    private final Drive mDrive;
-    private final RamseteTracker mRamseteController = new RamseteTracker(2, 0.7);
-    private final RobotStateEstimator mStateEstimator;
-    private final TrajectoryContainer.AutoMode[] mAutoModes;
+    /* subsystems, public for easier unit testing */
+    public final Climber mClimber;
+    public final Intake mIntake;
+    public final Indexer mIndexer;
+    public final Launcher mLauncher;
+    public final PanelRotator mPanelRotator;
+    public final LED mLED;
+    public final Vision mVision;
+    public final Drive mDrive;
+    public final RamseteTracker mRamseteController = new RamseteTracker(2, 0.7);
+    public final RobotStateEstimator mStateEstimator;
+    public final TrajectoryContainer.AutoMode[] mAutoModes;
 
-    /* subsystem commands */
-    private final LEDCommands mLEDCommands;
-    private final ClimberCommands mClimberCommands;
-    private final DriveCommands mDriveCommands;
-    private final IntakeCommands mIntakeCommands;
-    private final IndexerCommands mIndexerCommands;
-    private final LauncherCommands mLauncherCommands;
-    private final PanelRotatorCommands mPanelRotatorCommands;
-    private final SuperstructureCommands mSuperstructureCommands;
+    /* subsystem commands, public for easier unit testing */
+    public final LEDCommands mLEDCommands;
+    public final ClimberCommands mClimberCommands;
+    public final DriveCommands mDriveCommands;
+    public final IntakeCommands mIntakeCommands;
+    public final IndexerCommands mIndexerCommands;
+    public final LauncherCommands mLauncherCommands;
+    public final PanelRotatorCommands mPanelRotatorCommands;
+    public final SuperstructureCommands mSuperstructureCommands;
 
     private final Joystick mJoystick;
     private final Joystick mButtonBoard;
@@ -84,7 +86,7 @@ public class RobotContainer
         catch (CameraJNIException | UnsatisfiedLinkError e)
         {
             slamra = null;
-            Logger.exception(e);
+            Logger.warning("RobotContainer: T265 camera is unavailable");
         }
 
         mDrive = new Drive();
@@ -101,8 +103,17 @@ public class RobotContainer
             .collect(Collectors.joining(","));
         SmartDashboard.putString(kAutoOptionsKey, autoModeList);
 
-        mJoystick = new Joystick(Constants.OI.kJoystickId);
-        mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
+        if(RobotBase.isReal())
+        {
+            mJoystick = new Joystick(Constants.OI.kJoystickId);
+            mButtonBoard = new Joystick(Constants.OI.kButtonBoardId);
+        }
+        else
+        {
+            SpartronicsSimulatedMotor.resetGlobalState();
+            mJoystick = null;
+            mButtonBoard = null;
+        }
 
         /* constructing subsystems */
         mClimber = new Climber();
@@ -126,8 +137,11 @@ public class RobotContainer
             mIntakeCommands, mLauncherCommands);
 
         // mLauncherCommands.new Zero(mLauncher).schedule();
-        configureJoystickBindings();
-        configureButtonBoardBindings();
+        if(RobotBase.isReal())
+        {
+            configureJoystickBindings();
+            configureButtonBoardBindings();
+        }
     }
 
     private void configureJoystickBindings()

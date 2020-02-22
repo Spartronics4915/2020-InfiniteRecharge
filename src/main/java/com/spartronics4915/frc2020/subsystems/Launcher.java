@@ -65,17 +65,14 @@ public class Launcher extends SpartronicsSubsystem
     public Launcher()
     {
         // ONE NEO for flywheel
+        boolean initSuccess = true;
         mFlywheelMasterMotor = SpartronicsMax.makeMotor(Constants.Launcher.kFlywheelMasterId);
         if (mFlywheelMasterMotor.hadStartupError())
         {
             logError("Flywheel Motor Startup Failed");
             mFlywheelMasterMotor = new SpartronicsSimulatedMotor(
                 Constants.Launcher.kFlywheelMasterId);
-            logInitialized(false);
-        }
-        else
-        {
-            logInitialized(true);
+            initSuccess = false;
         }
         mFlywheelMasterMotor.setVelocityGains(Constants.Launcher.kP, 0, 0, 0); // ref value is
                                                                                // 0.00036
@@ -98,12 +95,9 @@ public class Launcher extends SpartronicsSubsystem
         {
             logError("Turret Motor Startup Failed");
             mTurretMotor = new SpartronicsSimulatedMotor(Constants.Launcher.kTurretId);
-            logInitialized(false);
+            initSuccess = false;
         }
-        else
-        {
-            logInitialized(true);
-        }
+
         mTurretMotor.setSoftLimits(45, -45);
         mTurretEncoder = mTurretMotor.getEncoder();
         mTurretPIDController = new PIDController(Constants.Launcher.kTurretP, 0,
@@ -126,6 +120,7 @@ public class Launcher extends SpartronicsSubsystem
         }
         mTurretZeroed = false;
         reset();
+        logInitialized(initSuccess);
     }
 
     /**
