@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class RobotTest
 {
     static final Robot sRobot;
+    static final DriverStationSim sSim;
     static
     {
         if (!HAL.initialize(500, 0)) 
@@ -35,6 +36,9 @@ class RobotTest
 
         sRobot = new Robot();
         sRobot.robotInit();
+        sSim = new DriverStationSim();
+        sSim.setAutonomous(false);
+        sSim.setEnabled(true);
     }
 
     @Test
@@ -62,9 +66,6 @@ class RobotTest
     public void indexerTest()
     {
         assert(sRobot.mInitialized);
-        var sim = new DriverStationSim();
-        sim.setAutonomous(false);
-        sim.setEnabled(true);
         var cmds = sRobot.mRobotContainer.mIndexerCommands;
         var indexer = sRobot.mRobotContainer.mIndexer;
         var startLaunch = cmds.new StartKicker();
@@ -75,32 +76,38 @@ class RobotTest
         // testing startlaunch
         indexer.logInfo("Testing StartLaunch...");
         startLaunch.schedule();
+        if(startLaunch.isScheduled())
+            indexer.logInfo("Success!");
+        else
+            indexer.logInfo("Scheduler issue 1");
 
-        assertTrue(startLaunch.isScheduled()); // make sure it doesn't just crash
         // assertEquals(simmedLoaderMotor, 1.0);
         // CommandScheduler.getInstance().cancel(startLaunch);
-        indexer.logInfo("Success!");
 
         // testing endlaunch
         indexer.logInfo("Testing EndLaunch...");
         endLaunch.schedule();
-        assertTrue(endLaunch.isScheduled());
-        indexer.logInfo("Success!");
+        if(endLaunch.isScheduled())
+            indexer.logInfo("Success!");
+        else
+            indexer.logInfo("Scheduler issue 2");
 
         // testing loadBallToSlot
         indexer.logInfo("Testing LoadBallToSlot...");
         loadBallToSlot.schedule();
-        assertTrue(loadBallToSlot.isScheduled());
-        indexer.logInfo("Success!");
+        if(loadBallToSlot.isScheduled())
+            indexer.logInfo("Success!");
+        else
+            indexer.logInfo("Scheduler issue 3");
 
         // testing loadToLauncher
         indexer.logInfo("Testing LoadToLauncher...");
         loadToLauncher.schedule();
-        assertTrue(loadToLauncher.isScheduled());
-        indexer.logInfo("Success!");
-
+        if(loadToLauncher.isScheduled())
+            indexer.logInfo("Success!");
+        else
+            indexer.logInfo("Scheduler issue 4");
         indexer.logInfo("Loading Test successful!");
-
-        sim.setEnabled(false);
+        sSim.setEnabled(false);
     }
 }
