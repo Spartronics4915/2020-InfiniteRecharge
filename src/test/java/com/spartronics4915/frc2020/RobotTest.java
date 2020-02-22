@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class RobotTest
 {
     static final Robot sRobot;
+    static final DriverStationSim sSim;
     static
     {
         if (!HAL.initialize(500, 0)) 
@@ -34,6 +35,9 @@ class RobotTest
 
         sRobot = new Robot();
         sRobot.robotInit();
+        sSim = new DriverStationSim();
+        sSim.setAutonomous(false);
+        sSim.setEnabled(true);
     }
 
     @Test
@@ -61,9 +65,6 @@ class RobotTest
     public void indexerTest()
     {
         assert(sRobot.mInitialized);
-        var sim = new DriverStationSim();
-        sim.setAutonomous(false);
-        sim.setEnabled(true);
         var cmds = sRobot.mRobotContainer.mIndexerCommands;
         var indexer = sRobot.mRobotContainer.mIndexer;
         var startLaunch = cmds.new StartKicker();
@@ -99,6 +100,6 @@ class RobotTest
 
         indexer.logInfo("Loading Test successful!");
 
-        sim.setEnabled(false);
+        sSim.setEnabled(false);
     }
 }
