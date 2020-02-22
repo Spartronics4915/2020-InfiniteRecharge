@@ -160,9 +160,8 @@ public class Vision extends SpartronicsSubsystem
                 turretAngle = Double.parseDouble(vals[4]);
             else
             {
-                // assume that extraStateNumber contains the turretAngle
-                // this was delivered by Drive.getExtraStateNumber
-                turretAngle = officialState.extraStateNumber.value;
+                // this was delivered by Drive.getTurretAngle to RSE
+                turretAngle = officialState.turretAngle.value;
             }
             Vec3 tgtInCam = new Vec3(camx, camy, camz);
             Vec3 tgtInRobot = this.mCoordSysMgr.camPointToRobot(tgtInCam);

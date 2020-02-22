@@ -29,7 +29,7 @@ public class RobotStateMap
     {
         public Pose2d pose;
         public Twist2d integrationVelocity, predictedVelocity;
-        public InterpolatingDouble extraStateNumber;
+        public InterpolatingDouble turretAngle;
         public double timestamp;
 
         /**
@@ -40,7 +40,7 @@ public class RobotStateMap
             this.pose = new Pose2d();
             this.integrationVelocity = new Twist2d();
             this.predictedVelocity = new Twist2d();
-            this.extraStateNumber = new InterpolatingDouble(.0);
+            this.turretAngle = new InterpolatingDouble(.0);
             this.timestamp = 0;
         }
 
@@ -52,30 +52,30 @@ public class RobotStateMap
             this.pose = other.pose;
             this.integrationVelocity = other.integrationVelocity;
             this.predictedVelocity = other.predictedVelocity;
-            this.extraStateNumber = other.extraStateNumber;
+            this.turretAngle = other.turretAngle;
             this.timestamp = other.timestamp;
         }
 
         /**
-         * constructor variant supporting extraStateNumber
+         * constructor variant supporting turretAngle
          * @param pose
          * @param iVel
          * @param pVel
-         * @param extraStateNumber
+         * @param turretAngle
          * @param ts
          */
-        public State(Pose2d pose, Twist2d iVel, Twist2d pVel, double extraStateNumber,
+        public State(Pose2d pose, Twist2d iVel, Twist2d pVel, double turretAngle,
                     double ts)
         {
             this.pose = pose;
             this.integrationVelocity = iVel;
             this.predictedVelocity = pVel;
-            this.extraStateNumber.value = extraStateNumber;
+            this.turretAngle = new InterpolatingDouble(turretAngle);
             this.timestamp = ts;
         }
 
         /**
-         * constructor variant that doesn't care about extraStateNumber
+         * constructor variant that doesn't care about turretAngle
          * @param p
          * @param ts
          */
@@ -84,22 +84,22 @@ public class RobotStateMap
             this.pose = p;
             this.integrationVelocity = new Twist2d();
             this.predictedVelocity = new Twist2d();
-            this.extraStateNumber = new InterpolatingDouble(.0);
+            this.turretAngle = new InterpolatingDouble(.0);
             this.timestamp = ts;
         }
 
         /**
-         * constructor variant that does care about extraStateNumber
+         * constructor variant that does care about turretAngle
          * @param p
-         * @param extraStateNumber
+         * @param turretAngle
          * @param ts
          */
-        public State(Pose2d p, double extraStateNumber, double ts)
+        public State(Pose2d p, double turretAngle, double ts)
         {
             this.pose = p;
             this.integrationVelocity = new Twist2d();
             this.predictedVelocity = new Twist2d();
-            this.extraStateNumber.value = extraStateNumber;
+            this.turretAngle = new InterpolatingDouble(turretAngle);
             this.timestamp = ts;
         }
 
@@ -115,7 +115,7 @@ public class RobotStateMap
                 final State s = new State(this.pose.interpolate(other.pose, pct),
                     this.integrationVelocity.interpolate(other.integrationVelocity, pct),
                     this.predictedVelocity.interpolate(other.predictedVelocity, pct),
-                    this.extraStateNumber.interpolate(other.extraStateNumber, pct).value,
+                    this.turretAngle.interpolate(other.turretAngle, pct).value,
                     this.timestamp + pct * (other.timestamp - this.timestamp));
                 return s;
             }
@@ -132,7 +132,7 @@ public class RobotStateMap
 
     /**
      * Resets the field to robot transform (robot's position on the field)
-     * Default value of extraStateNumber reset is currently zero.
+     * Default value of turretAngle reset is currently zero.
      */
     public synchronized void reset(double startTime, Pose2d initialPose)
     {
@@ -143,14 +143,14 @@ public class RobotStateMap
 
     /**
      * Resets the field to robot transform (robot's position on the field)
-     * as well as the extraStateNumber.
+     * as well as the turretAngle.
      */
     public synchronized void reset(double startTime, Pose2d initialPose, 
-                                    double extraStateNumber)
+                                    double turretAngle)
     {
         mStateMap = new InterpolatingTreeMap<>(kObservationBufferSize);
         mStateMap.put(new InterpolatingDouble(startTime), 
-                      new State(initialPose, extraStateNumber, startTime));
+                      new State(initialPose, turretAngle, startTime));
         mDistanceDriven = 0.0;
     }
 
@@ -170,10 +170,10 @@ public class RobotStateMap
     */
     
     public synchronized void addObservations(double timestamp, Pose2d pose, 
-        Twist2d velI, Twist2d velP, double extraStateNumber)
+        Twist2d velI, Twist2d velP, double turretAngle)
     {
         InterpolatingDouble ts = new InterpolatingDouble(timestamp);
-        mStateMap.put(ts, new State(pose, velI, velP, extraStateNumber, timestamp));
+        mStateMap.put(ts, new State(pose, velI, velP, turretAngle, timestamp));
         mDistanceDriven += velI.dx; // Math.hypot(velocity.dx, velocity.dy);
         // do we care about time here?
         // no: if dx is measured in distance/loopinterval (loopinterval == 1)

@@ -73,7 +73,7 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
         return mIMU.getYaw().rotateBy(mIMUOffset);
     }
 
-    public double getExtraStateNumber()
+    public double getTurretAngle()
     {
         return 0;
     }

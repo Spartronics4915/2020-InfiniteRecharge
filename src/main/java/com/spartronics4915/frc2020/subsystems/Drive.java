@@ -59,7 +59,7 @@ public class Drive extends AbstractDrive
     }
 
     @Override
-    public double getExtraStateNumber()
+    public double getTurretAngle()
     {
         return mLauncher.getTurretDirection().getDegrees();
     }

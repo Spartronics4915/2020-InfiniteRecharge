@@ -187,7 +187,7 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         /* record the new state estimate */
         double ts = Timer.getFPGATimestamp();
         mEncoderStateMap.addObservations(ts, nextP, iVal, pVal,
-            mDrive.getExtraStateNumber());
+            mDrive.getTurretAngle());
 
         // We convert meters/loopinterval and radians/loopinterval to meters/sec and
         // radians/sec
@@ -213,7 +213,7 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         mSLAMCamera.start((CameraUpdate update) -> 
         {
             mCameraStateMap.addObservations(Timer.getFPGATimestamp(), update.pose, update.velocity,
-                new Twist2d(), mDrive.getExtraStateNumber());
+                new Twist2d(), mDrive.getTurretAngle());
             SmartDashboard.putString("RobotState/cameraConfidence", update.confidence.toString());
         });
     }
