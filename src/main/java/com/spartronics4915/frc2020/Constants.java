@@ -15,6 +15,7 @@ import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.util.Logger;
 import com.spartronics4915.lib.util.TriFunction;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj.util.WPILibVersion;
@@ -149,6 +150,27 @@ public final class Constants
     {
         public static final int kJoystickId = 0;
         public static final int kButtonBoardId = 1;
+        public static class DeviceSpec
+        {
+            public String name;
+            public int portId;
+            public int numButtons;
+            public Joystick joystick;
+            public DeviceSpec(String nm, int id, int nbut)
+            {
+                this.name = nm;
+                this.portId = id;
+                this.numButtons = nbut;
+                this.joystick = null;
+            }
+        }
+        public static DeviceSpec[] deviceList;
+        static
+        {
+            deviceList = new DeviceSpec[2];
+            deviceList[0] = new DeviceSpec("Logitech Attack 3", kJoystickId, 12);
+            deviceList[1] = new DeviceSpec("ButtonBoard", kButtonBoardId, 18);
+        }
     }
 
     public static final class PanelRotator
