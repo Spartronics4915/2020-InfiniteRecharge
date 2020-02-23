@@ -17,11 +17,11 @@ import com.spartronics4915.lib.math.threedim.*;
 * x, y and z (z for robot origin is assumed 0 the floor).  Turret may 
 * also be rotated to point opposite to the robot front.
 * 
-*                   y   y
-*                 ._|___|____. 
-*              x--|-t   |    |             
-*                 |     o-----x
-*                 |          |
+*                       y
+*                 ._____|____. 
+*              x--|-T   |    |             
+*                 | |   o-----x
+*                 | y        |
 *                 |__________| 
 *                   
 * 
@@ -64,25 +64,25 @@ public class CoordSysMgr2020 extends CoordSysMgr
     // camera with a mark. Measure the distance from height of the mark
     // to the camera origin. Measure the distance from the wall. Use
     // degrees(atan2(mark, dist)) to compute the tilt angle.
-    private final double mCamTilt = 20; // if you change this also change
+    public static final double kCamTilt = 20;
 
     // camPos represents offset of camera's origin relative to turret origin.
     // (measured in inches). Camera origin is the center of the focal point.
     // So we do expect some z offset as well as x.
-    private final Vec3 mCamPos = new Vec3(8, 0, 2.25);
+    public static final Vec3 kCamPos = new Vec3(8, 0, 2.25);
 
     // camFlips maps camera axes to mount axes. eg: cam x is turret -y (above)
-    private final Vec3 mCamFlipX = new Vec3(0, -1, 0); // cam +x is turret's -y
-    private final Vec3 mCamFlipY = new Vec3(0, 0, 1); // cam +y is turret's +z
-    private final Vec3 mCamFlipZ = new Vec3(-1, 0, 0); // cam +z is turret's -x
+    public static final Vec3 kCamFlipX = new Vec3(0, -1, 0); // cam +x is turret's -y
+    public static final Vec3 kCamFlipY = new Vec3(0, 0, 1); // cam +y is turret's +z
+    public static final Vec3 kCamFlipZ = new Vec3(-1, 0, 0); // cam +z is turret's -x
 
     // mount to robot ------------------------------------------------------
-    // turret is mounted at robot back/center, up from ground
-    // turret's x axis is opposite robot's
-
-    private final Vec3 mMntPos = new Vec3(-3.72, 5.264, 15.625);
-    private final Vec3 mMntAxis = Vec3.ZAxis;
-    private final Affine3 mMntFlip = Affine3.fromRotation(180, this.mMntAxis);
+    // turret is mounted at robot back/left, up from ground
+    // turret's x axis is opposite robot's. 
+    // (eg: 3in behind, 5in to the left, 15in off ground)
+    public static final Vec3 kMntPos = new Vec3(-3.72, 5.264, 15.625);
+    public static final Vec3 kMntAxis = Vec3.ZAxis;
+    public static final Affine3 kMntFlip = Affine3.fromRotation(180, kMntAxis);
 
     /**
      * Constructor for the CamToField pipeline for 2020 robot.  Presumably
