@@ -185,11 +185,13 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         final Pose2d nextP = mKinematics.integrateForwardKinematics(last.pose, iVal);
 
         /* record the new state estimate */
-        mEncoderStateMap.addObservations(Timer.getFPGATimestamp(), nextP, iVal, pVal);
+        double ts = Timer.getFPGATimestamp();
+        mEncoderStateMap.addObservations(ts, nextP, iVal, pVal,
+            mDrive.getTurretAngle());
 
         // We convert meters/loopinterval and radians/loopinterval to meters/sec and
         // radians/sec
-        final double loopintervalToSeconds = 1 / (Timer.getFPGATimestamp() - last.timestamp);
+        final double loopintervalToSeconds = 1 / (ts - last.timestamp);
         final Twist2d normalizedIVal = iVal.scaled(loopintervalToSeconds);
 
         if (mSLAMCamera != null)
@@ -205,12 +207,13 @@ public class RobotStateEstimator extends SpartronicsSubsystem
             return;
         }
 
-        // Callback is called from a different thread... We avoid data races because
-        // RobotSteteMap is thread-safe
+        // Callback is called from a different thread... We avoid data races 
+        // because RobotSteteMap is thread-safe
         mSLAMCamera.stop();
-        mSLAMCamera.start((CameraUpdate update) -> {
+        mSLAMCamera.start((CameraUpdate update) -> 
+        {
             mCameraStateMap.addObservations(Timer.getFPGATimestamp(), update.pose, update.velocity,
-                new Twist2d());
+                new Twist2d(), mDrive.getTurretAngle());
             SmartDashboard.putString("RobotState/cameraConfidence", update.confidence.toString());
         });
     }

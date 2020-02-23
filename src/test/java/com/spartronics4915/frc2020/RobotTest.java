@@ -8,6 +8,7 @@ import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.hal.sim.DriverStationSim;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.hal.HAL;
 
 import org.junit.jupiter.api.Test;
