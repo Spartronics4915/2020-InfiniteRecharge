@@ -89,19 +89,6 @@ public class RobotContainer
             Logger.warning("RobotContainer: T265 camera is unavailable");
         }
 
-        mDrive = new Drive();
-        mStateEstimator = new RobotStateEstimator(mDrive,
-            new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
-            slamra);
-        var slamraCommand = new StartEndCommand(() -> mStateEstimator.enable(),
-            () -> mStateEstimator.stop(), mStateEstimator);
-        mStateEstimator.setDefaultCommand(slamraCommand);
-        mStateEstimator.resetRobotStateMaps(new Pose2d());
-
-        mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController);
-        String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
-            .collect(Collectors.joining(","));
-        SmartDashboard.putString(kAutoOptionsKey, autoModeList);
 
         if(RobotBase.isReal())
         {
@@ -122,7 +109,21 @@ public class RobotContainer
         mLauncher = new Launcher();
         mPanelRotator = new PanelRotator();
         mLED = LED.getInstance();
+        mDrive = new Drive(mLauncher);
+        mStateEstimator = new RobotStateEstimator(mDrive,
+            new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
+            slamra);
+        var slamraCommand = new StartEndCommand(() -> mStateEstimator.enable(),
+            () -> mStateEstimator.stop(), mStateEstimator);
+        mStateEstimator.setDefaultCommand(slamraCommand);
+        mStateEstimator.resetRobotStateMaps(new Pose2d());
         mVision = new Vision(mStateEstimator, mLauncher);
+
+        /* publish our automodes to the dashboard -----------------*/
+        mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController);
+        String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
+            .collect(Collectors.joining(","));
+        SmartDashboard.putString(kAutoOptionsKey, autoModeList);
 
         /* constructing subsystem commands */
         mLEDCommands = new LEDCommands(mLED);
