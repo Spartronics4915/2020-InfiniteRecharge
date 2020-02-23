@@ -1,46 +1,40 @@
 package com.spartronics4915.frc2020.commands;
 
-import com.spartronics4915.frc2020.subsystems.Indexer;
-import com.spartronics4915.frc2020.subsystems.Intake;
-import com.spartronics4915.frc2020.subsystems.Launcher;
-import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
-import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
-
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class SuperstructureCommands
 {
-    public IndexerCommands mIndexerCommands;
-    public IntakeCommands mIntakeCommands;
-    public LauncherCommands mLauncherCommands;
+    private IndexerCommands mIndexerCommands;
+    private IntakeCommands mIntakeCommands;
+    private LauncherCommands mLauncherCommands;
 
-    public SuperstructureCommands(RobotStateMap stateMap, Pose2d targetPose)
+    public SuperstructureCommands(IndexerCommands indexerCommands,
+        IntakeCommands intakeCommands, LauncherCommands launcherCommands)
     {
-        mIndexerCommands = new IndexerCommands();
-        mIntakeCommands = new IntakeCommands();
-        mLauncherCommands = new LauncherCommands(stateMap, targetPose);
+        mLauncherCommands = launcherCommands;
+        mIntakeCommands = intakeCommands;
+        mIndexerCommands = indexerCommands;
     }
 
     public class LaunchSequence extends SequentialCommandGroup
     {
-        public LaunchSequence(Indexer indexer, Launcher launcher)
+        public LaunchSequence(int ballsToShoot)
         {
             addCommands(
-                mLauncherCommands.new WaitForFlywheel(launcher),
-                mIndexerCommands.new LoadToLauncher(indexer)
+                mLauncherCommands.new WaitForFlywheel(),
+                mIndexerCommands.new LoadToLauncher(ballsToShoot)
             );
         }
     }
 
     public class IntakeRace extends ParallelRaceGroup
     {
-        public IntakeRace(Indexer indexer, Intake intake)
+        public IntakeRace()
         {
             addCommands(
-                mIntakeCommands.new Harvest(intake),
-                mIndexerCommands.new LoadFromIntake(indexer)
+                mIntakeCommands.new Harvest(),
+                mIndexerCommands.new LoadFromIntake()
             );
         }
     }

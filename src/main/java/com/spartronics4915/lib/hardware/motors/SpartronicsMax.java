@@ -138,7 +138,7 @@ public class SpartronicsMax implements SpartronicsMotor
         // We only use SPARK MAXes for brushless motors
         // If that changes we can make motor type configurable
         var master = new CANSparkMax(deviceNumber, MotorType.kBrushless);
-        CANSparkMax follower = new CANSparkMax(deviceNumber, MotorType.kBrushless);
+        CANSparkMax follower = new CANSparkMax(followerDeviceNumber, MotorType.kBrushless);
         follower.follow(master);
         return new SpartronicsMax(master, sensorModel, feedbackSensor, follower);
     }
@@ -300,16 +300,16 @@ public class SpartronicsMax implements SpartronicsMotor
     }
 
     @Override
-    public void setDutyCycle(double dutyCycle, double arbitraryFeedForwardVolts)
+    public void setPercentOutput(double dutyCycle, double arbitraryFeedForwardVolts)
     {
         mPIDController.setReference(dutyCycle, ControlType.kDutyCycle, 0,
             arbitraryFeedForwardVolts);
     }
 
     @Override
-    public void setDutyCycle(double dutyCycle)
+    public void setPercentOutput(double dutyCycle)
     {
-        setDutyCycle(dutyCycle, 0.0);
+        setPercentOutput(dutyCycle, 0.0);
     }
 
     @Override

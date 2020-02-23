@@ -3,7 +3,7 @@ package com.spartronics4915.frc2020;
 import com.spartronics4915.lib.hardware.CANCounter;
 import com.spartronics4915.lib.util.Logger;
 import com.spartronics4915.frc2020.subsystems.LED;
-import com.spartronics4915.frc2020.subsystems.LED.BlingState;
+import com.spartronics4915.frc2020.subsystems.LED.Bling;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -22,7 +22,8 @@ import java.util.jar.Manifest;
 public class Robot extends TimedRobot
 {
     private Command mAutonomousCommand;
-    private RobotContainer mRobotContainer;
+    RobotContainer mRobotContainer; // accessible for easier testing
+    public boolean mInitialized = false;
 
     // PDP is used to detect total-current-draw, in 2019 we had spurious
     // CAN errors.  If this happens in 2020, we can live without it.
@@ -71,8 +72,8 @@ public class Robot extends TimedRobot
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our autonomous chooser on the dashboard.
         mRobotContainer = new RobotContainer();
-        Logger.notice("@robotInit: Requested BlingState.BLING_COMMAND_OFF");
-        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_OFF);
+        Logger.info("@robotInit: Requested Bling.kOff");
+        LED.getInstance().setBlingState(Bling.kOff);
 
 
         SmartDashboard.putString("CANBusStatus", CANCounter.getStatusMessage());
@@ -80,6 +81,7 @@ public class Robot extends TimedRobot
 
         // print out available serial ports for information
         LED.getInstance().enumerateAvailablePorts();
+        mInitialized = true;
     }
 
     @Override
@@ -111,8 +113,7 @@ public class Robot extends TimedRobot
     @Override
     public void disabledInit()
     {
-        Logger.notice("@disabledInit: Requested BlingState.BLING_COMMAND_DISABLED");
-        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_DISABLED);
+        LED.getInstance().setBlingState(Bling.kDisabled);
     }
 
     @Override
@@ -131,11 +132,9 @@ public class Robot extends TimedRobot
         if (mAutonomousCommand != null)
         {
             mAutonomousCommand.schedule();
-			Logger.notice("@autonomousInit: Requested BlingState.BLING_COMMAND_AUTOMODE");
-			LED.getInstance().setBlingState(BlingState.BLING_COMMAND_AUTOMODE);
         }
 
-        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_AUTOMODE);
+        LED.getInstance().setBlingState(Bling.kAuto);
     }
 
     /**
@@ -152,11 +151,9 @@ public class Robot extends TimedRobot
         if (mAutonomousCommand != null)
         {
             mAutonomousCommand.cancel();
-			Logger.notice("@teleopInit: Requested BlingState.BLING_COMMAND_STARTUP");
-			LED.getInstance().setBlingState(BlingState.BLING_COMMAND_STARTUP);
         }
 
-        LED.getInstance().setBlingState(BlingState.BLING_COMMAND_STARTUP);
+        LED.getInstance().setBlingState(Bling.kTeleop);
     }
 
     /**
@@ -171,8 +168,7 @@ public class Robot extends TimedRobot
     public void testInit()
     {
         CommandScheduler.getInstance().cancelAll();
-		Logger.notice("@testInit: Requested BlingState.BLING_COMMAND_DEFAULT");
-		LED.getInstance().setBlingState(BlingState.BLING_COMMAND_DEFAULT);
+		LED.getInstance().setBlingState(Bling.kDriveSlow);
     }
 
     /**

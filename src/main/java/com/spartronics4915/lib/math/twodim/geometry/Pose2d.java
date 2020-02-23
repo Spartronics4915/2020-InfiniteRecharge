@@ -12,24 +12,42 @@ public class Pose2d implements State<Pose2d>
     private final Translation2d mTranslation;
     private final Rotation2d mRotation;
 
+    /**
+     * construct default Pose2d
+     */
     public Pose2d()
     {
         mTranslation = new Translation2d();
         mRotation = new Rotation2d();
     }
 
+    /**
+     * construct Pose2d from params
+     * @param x 
+     * @param y
+     * @param rotation (a Rotation2d)
+     */
     public Pose2d(double x, double y, final Rotation2d rotation)
     {
         mTranslation = new Translation2d(x, y);
         mRotation = rotation;
     }
 
+    /**
+     * construct a Pose2d from parameters
+     * @param translation (a Translation2d)
+     * @param rotation (a Rotation2d)
+     */
     public Pose2d(final Translation2d translation, final Rotation2d rotation)
     {
         mTranslation = translation;
         mRotation = rotation;
     }
 
+    /**
+     * copy-construct a Pose2d
+     * @param other
+     */
     public Pose2d(final Pose2d other)
     {
         mTranslation = new Translation2d(other.mTranslation);

@@ -1,5 +1,11 @@
 package com.spartronics4915.frc2020;
 
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import com.revrobotics.ColorMatch;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
@@ -8,19 +14,30 @@ import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.util.Logger;
 import com.spartronics4915.lib.util.TriFunction;
-import com.revrobotics.ColorMatch;
 
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Units;
-
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.function.BiFunction;
+import edu.wpi.first.wpilibj.util.WPILibVersion;
 
 public final class Constants
 {
+    public static String sConfig;
+    static  // check our machine id so subsystems can support multiple configs
+    {
+        sConfig = "default";
+        Path machineIDPath = FileSystems.getDefault().getPath(System.getProperty("user.home"),
+            "machineid");
+        try
+        {
+            sConfig = Files.readString(machineIDPath).trim().toLowerCase();
+        }
+        catch (IOException e)
+        {
+        }
+        Logger.notice("Running on machineconfig " + sConfig + " constants");
+        Logger.notice("Running WPILibVersion " + WPILibVersion.Version);
+    }
+
     public static final class Climber
     {
         public static final int kLiftMotorId = 5;
@@ -60,7 +77,7 @@ public final class Constants
             public static final double kVelocityP = 1; // FIXME: stand-in values
             public static final double kVelocityD = 1;
             public static final double kConversionRatio = 1;
-            public static final double kSpeed = 1;
+            public static final double kSpeed = 0.8;
         }
         public static final class Transfer
         {
@@ -92,8 +109,12 @@ public final class Constants
         public static final int kTurretId = 8;
         public static final int kTurretPotentiometerId = 0; // Analog
 
-        public static final Pose2d kRobotToTurret = new Pose2d(Units.inchesToMeters(-3.72), Units.inchesToMeters(5.264), Rotation2d.fromDegrees(180.0));
-        
+        // XXX: consider whether to adopt CamToField2020, we currently have 
+        // competing implementations.
+        public static final Pose2d kRobotToTurret = new Pose2d(Units.inchesToMeters(-3.72), 
+                                                    Units.inchesToMeters(5.264), 
+                                                    Rotation2d.fromDegrees(180.0));
+    
         // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
         public static final double kP = 0.05;
         public static final double kS = 0.0286; // 0.0654;
@@ -104,19 +125,24 @@ public final class Constants
         public static final double kTurretI = 0;
         public static final double kTurretD = 0.002;
 
-        // Vals for interpolating lookup table
-        public static final double[] kDistanceTable = new double[]{0.0, 1.0};
-        public static final double[] kAngleTable = new double[]{0.0, 30.0};
-        public static final double[] kRPSTable = new double[]{40.0, 40.0};
+        // Vals for interpolating lookup table, Distance units is in feet
+        public static final double[] kDistanceTable = new double[]{3.0, 4.0, 4.5, 5.0};
+        public static final double[] kAngleTable = new double[]{16.0, 20.0, 19.0, 24.0};
+        public static final double[] kRPSTable = new double[]{38.0, 41.5, 41.0, 45.0};
         public static final int kLookupTableSize = kDistanceTable.length;
 
         /** RPS */
         public static final double kFlywheelVelocityTolerance = 1.0;
         public static final double kMaxRPS = 90.0; // Reasonable guess
+        public static final double kMaxAngleDegrees = 30;
         public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(30.0);
 
         public static Pose2d goalLocation = null;
-        public static double kTurretStallAmps = 2.0;
+        //unit is feet
+        public static final double MaxShootingDistance = 100;// FIXME: Figure out max distance
+        //unit is feet
+        public static final double MinShootingDistance = 0;// FIXME: Figure out min distance
+        public static double kTurretStallAmps = 2.0;//Stand in Value
     }
 
     public static final class OI
@@ -161,9 +187,12 @@ public final class Constants
         public static final double kTrackWidthMeters;
         public static final double kScrubFactor;
         public static final double kNativeUnitsPerRevolution;
+        public static final double kSlowModeMultiplier;
 
         public static final double kRobotMassKg = 1;
         public static final double kMoi = 1;
+
+        public static final double kP = 0.01;
 
         // TODO: characterize
         public static final double kRightS;
@@ -179,19 +208,7 @@ public final class Constants
         // Initialize blank fields that are robot-specific here
         static
         {
-            String config = "default";
-            Path machineIDPath = FileSystems.getDefault().getPath(System.getProperty("user.home"),
-                "machineid");
-            try
-            {
-                config = Files.readString(machineIDPath).trim().toLowerCase();
-            }
-            catch (IOException e)
-            {
-            }
-            Logger.notice("Running on " + config + " constants");
-
-            switch (config)
+            switch (sConfig)
             {
                 case "test chassis":
                     kTrackWidthMeters = Units.inchesToMeters(23.75);
@@ -204,6 +221,7 @@ public final class Constants
                     kRightA = 0.0340;
                     kWheelDiameter = Units.inchesToMeters(6);
                     kNativeUnitsPerRevolution = 1440.0;
+                    kSlowModeMultiplier = 0.5;
                     kLeftOutputInverted = true;
                     kLeftFollowerOutputInverted = false;
                     kRightOutputInverted = true;
@@ -216,17 +234,18 @@ public final class Constants
                     kTrackWidthMeters = 26.75;
                     kWheelDiameter = Units.inchesToMeters(8);
                     kScrubFactor = 1;
-                    kLeftS = 1;
-                    kLeftV = 1;
-                    kLeftA = 1;
-                    kRightS = 1;
-                    kRightV = 1;
-                    kRightA = 1;
+                    kLeftS = 0.241;
+                    kLeftV = 0.204;
+                    kLeftA = 0.0237;
+                    kRightS = 0.243;
+                    kRightV = 0.204;
+                    kRightA = 0.0261;
                     kNativeUnitsPerRevolution = 10.71;
-                    kLeftOutputInverted = true;
-                    kLeftFollowerOutputInverted = true;
-                    kRightOutputInverted = false;
-                    kRightFollowerOutputInverted = false;
+                    kSlowModeMultiplier = 0.5;
+                    kLeftOutputInverted = false;
+                    kLeftFollowerOutputInverted = false;
+                    kRightOutputInverted = true;
+                    kRightFollowerOutputInverted = true;
 
                     kPigeonId = 1;
                     kDriveMotorConstructor = SpartronicsMax::makeMotor;
@@ -252,14 +271,19 @@ public final class Constants
 
     public static final class Estimator
     {
-        public static final Pose2d kSlamraToRobot = new Pose2d(Units.inchesToMeters(-6.4375), Units.inchesToMeters(10.625), Rotation2d.fromDegrees(90));//new Pose2d(-0.390525, 0, new Rotation2d());
-        public static final Pose2d kVisionToRobot = new Pose2d(0.390525, 0, Rotation2d.fromDegrees(0));
+        // XXX: consider whether to adopt CamToField2020, we currently
+        //  have competing implementations. 
+        // If new measurements for Vision or Turret mounting are obtained,
+        // please also update CoordSysMgr20202.java.
         public static final double kMeasurementCovariance = 0.001;
+        public static final Pose2d kSlamraToRobot = new Pose2d(Units.inchesToMeters(-6.4375), 
+                                                            Units.inchesToMeters(10.625), 
+                                                            Rotation2d.fromDegrees(90));
     }
 
     public static final class Vision
     {
-        /* Camera mount geometry is located in CamToField2020.java */
+        /* Camera+mount geometry is located in CamToField2020.java */
 
         /* Raspi/Vision server status on /Vision namespace ------------------*/
         public static final String kTurretTargetTable = "/Vision/Target";
@@ -277,15 +301,15 @@ public final class Constants
         public static final double kGoalHeight = 8*12 + 2.25; // 98.25in
 
         // We assume here that the robot odometry is alliance-sensitive.
-        // When we're on the Blue alliance, coords are 
+        // When we're on the Blue alliance, coords are
         //      [0, xsize] x [yhalfsize, -yhalfsize]
-        // When we're on the Red alliance, coords are 
+        // When we're on the Red alliance, coords are
         //      [xsize, 0] x [-yhalfsize, yhalfsize]
-        // Given this behavior, we characterize Goals in our-alliance-relative 
+        // Given this behavior, we characterize Goals in our-alliance-relative
         // terms.
         public static final double[] kOpponentGoalCoords = {0, 67.5, kGoalHeight};
         public static final double[] kAllianceGoalCoords = {628, -67.5, kGoalHeight};
 
-        public static final int kLEDRelay = 0; // Relay, not DIO pin!!!
+        public static final int kLEDRelayPin = 0; // Relay, not DIO pin!!!
     }
 }
