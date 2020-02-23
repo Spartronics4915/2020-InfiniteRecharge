@@ -32,7 +32,17 @@ public class ButtonFactory
         case "noOI":
         case "testbed": // testbed might have its own config, which we embody here.
             break;
+        case "test chassis": // main drive tester
+            {
+                int id = Constants.OI.kJoystickId;
+                mDeviceList[id].joystick = new Joystick(id);
+                mDeviceList[id].numButtons = 4; // maybe 0 is better?
+            }
+            break;
+        case "Athena":
+        case "robot2020":
         case "default":
+            // here we trust in Constants.OI values
             for(int i=0;i<mDeviceList.length;i++)
                 mDeviceList[i].joystick = new Joystick(mDeviceList[i].portId);
             break;
