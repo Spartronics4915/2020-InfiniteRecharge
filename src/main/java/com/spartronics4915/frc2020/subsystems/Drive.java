@@ -12,7 +12,8 @@ import com.spartronics4915.lib.subsystems.drive.AbstractDrive;
 public class Drive extends AbstractDrive
 {
     private Launcher mLauncher;
-    public Drive(Launcher l)
+
+    public Drive(Launcher launcher)
     {
         super(
             SpartronicsMax.makeMotor(
@@ -46,16 +47,18 @@ public class Drive extends AbstractDrive
                     Constants.Drive.kRobotMassKg,
                     Constants.Drive.kRightS,
                     Constants.Drive.kRightV,
-                    Constants.Drive.kRightA)));
+                    Constants.Drive.kRightA))); // end super()
+
+        mLauncher = launcher;
+
         mLeftMotor.setOutputInverted(Constants.Drive.kLeftOutputInverted);
         mRightMotor.setOutputInverted(Constants.Drive.kRightOutputInverted);
+
         mLeftMotor.getFollower().setOutputInverted(Constants.Drive.kLeftFollowerOutputInverted);
         mRightMotor.getFollower().setOutputInverted(Constants.Drive.kRightFollowerOutputInverted);
 
         mLeftMotor.setVelocityGains(Constants.Drive.kP, 0);
         mRightMotor.setVelocityGains(Constants.Drive.kP, 0);
-
-        mLauncher = l;
     }
 
     @Override
