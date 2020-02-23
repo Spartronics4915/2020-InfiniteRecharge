@@ -1,6 +1,7 @@
 package com.spartronics4915.frc2020;
 
-import com.spartronics4915.lib.util.Logger;
+import java.util.HashSet;
+import java.util.Objects;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.button.Button;
@@ -9,9 +10,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 
+import com.spartronics4915.lib.util.Logger;
+
 public class ButtonFactory
 {
-    Constants.OI.DeviceSpec[] mDeviceList;
+
+    private Constants.OI.DeviceSpec[] mDeviceList;
+    private HashSet<ButtonSpec> mInUse;
+
     ButtonFactory()
     {
         /* our job is to configure Constants.OI.deviceList according
@@ -19,6 +25,7 @@ public class ButtonFactory
          */
         String config; 
         mDeviceList = Constants.OI.deviceList;
+        mInUse = new HashSet<>();
         if(!RobotBase.isReal())
         {
             config = "noOI";
@@ -49,9 +56,13 @@ public class ButtonFactory
         }
     }
 
-    Joystick getJoystick(int devid)
+    /**
+     * return the joystick object for the given port.
+     * NB: the result may be null!
+     */
+    Joystick getJoystick(int port)
     {
-        return this.mDeviceList[devid].joystick;
+        return this.mDeviceList[port].joystick;
     }
 
     /**
@@ -61,16 +72,23 @@ public class ButtonFactory
      * @param buttonid
      * @return either a Joystick button or an InvalidButton
      */
-    Button create(int deviceid, int buttonid)
+    Button create(int deviceId, int buttonId)
     {
-        if(deviceid < this.mDeviceList.length)
+        var spec = new ButtonSpec(deviceId, buttonId);
+        if(mInUse.contains(spec))
         {
-            var dev = this.mDeviceList[deviceid];
-            // buttonIds indexOrigin is 1
-            if(dev.joystick != null && buttonid <= dev.numButtons)
-                return new JoystickButton(dev.joystick, buttonid);
+            Logger.warning("ButtonFactory button collision " + 
+                            deviceId + " " + buttonId);
         }
-        return new InvalidButton(0, buttonid);
+        mInUse.add(spec);
+        if(deviceId < this.mDeviceList.length)
+        {
+            var dev = this.mDeviceList[deviceId];
+            // buttonIds indexOrigin is 1
+            if(dev.joystick != null && buttonId <= dev.numButtons)
+                return new JoystickButton(dev.joystick, buttonId);
+        }
+        return new InvalidButton(0, buttonId);
     }
 
     /* we don't extend JoystickButton because the super is always
@@ -125,6 +143,40 @@ public class ButtonFactory
         {
             // no-op
             return this;
+        }
+
+    }
+
+    private static class ButtonSpec
+    {
+        private final int port;
+        private final int bId;
+
+        public ButtonSpec(int usbport, int buttonId)
+        {
+            port = usbport;
+            bId = buttonId;
+        }
+
+        // https://stackoverflow.com/questions/262367/type-safety-unchecked-cast
+        @SuppressWarnings("unchecked")
+        @Override
+        public boolean equals(Object o)
+        {
+            if (this == o)
+                return true;
+            if (o == null)
+                return false;
+            if (!(o instanceof ButtonSpec))
+                return false;
+            return port == ((ButtonSpec) o).port && 
+                   bId == ((ButtonSpec) o).bId;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return (port << 8)  + bId;
         }
 
     }
