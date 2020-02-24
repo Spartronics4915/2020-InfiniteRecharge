@@ -26,6 +26,11 @@ public class SuperstructureCommands
                 mIndexerCommands.new LoadToLauncher(ballsToShoot)
             );
         }
+        /** XXX: should this shoot > 1? */
+        public LaunchSequence()
+        {
+            this(1);
+        }
     }
 
     public class IntakeRace extends ParallelRaceGroup

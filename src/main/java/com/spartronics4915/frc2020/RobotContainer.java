@@ -101,9 +101,11 @@ public class RobotContainer
         mStateEstimator = new RobotStateEstimator(mDrive,
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
             slamra);
-        var slamraCommand = new StartEndCommand(() -> mStateEstimator.enable(),
-            () -> mStateEstimator.stop(), mStateEstimator);
-        mStateEstimator.setDefaultCommand(slamraCommand);
+        StartEndCommand slamraCmd = new StartEndCommand(
+                                        () -> mStateEstimator.enable(),
+                                        () -> mStateEstimator.stop(), 
+                                        mStateEstimator);
+        mStateEstimator.setDefaultCommand(slamraCmd);
         mStateEstimator.resetRobotStateMaps(new Pose2d());
         mVision = new Vision(mStateEstimator, mLauncher);
 
@@ -128,12 +130,11 @@ public class RobotContainer
         mSuperstructureCommands = new SuperstructureCommands(mIndexerCommands,
             mIntakeCommands, mLauncherCommands);
 
-        // mLauncherCommands.new Zero(mLauncher).schedule();
-        if(RobotBase.isReal())
-        {
-            configureJoystickBindings();
-            configureButtonBoardBindings();
-        }
+        // Default Commands are established in each commands class
+
+        // NB: ButtonFactory handles the !RobotBase.isReal case.
+        configureJoystickBindings();
+        configureButtonBoardBindings();
     }
 
     private void configureJoystickBindings()
@@ -155,6 +156,14 @@ public class RobotContainer
         mButtons.create(mJoystick, 7).whenPressed(mDriveCommands.new ToggleSlow() // TODO: alongWith Vision
             .alongWith(mLEDCommands.new SetBlingState(Bling.kDriveSlow)));
 
+        mButtons.create(mJoystick, 3).whenPressed(mIndexerCommands.new ZeroSpinnerCommand(true));
+
+        mButtons.create(mJoystick, 2).whenPressed(mIndexerCommands.new SpinIndexer(5));
+        mButtons.create(mJoystick, 4).whenPressed(mIndexerCommands.new StartTransfer())
+            .whenReleased(mIndexerCommands.new EndTransfer());
+        mButtons.create(mJoystick, 5).whenPressed(mIndexerCommands.new StartKicker())
+            .whenReleased(mIndexerCommands.new EndKicker());
+        mButtons.create(mJoystick, 1).whenPressed(mSuperstructureCommands.new LaunchSequence());
         /*
         mButtons.create(mJoystick, 1).whenPressed(mIndexerCommands.new ZeroSpinnerCommand(true));
         mButtons.create(mJoystick, 2).whenPressed(mIndexerCommands.new SpinIndexer(5));
