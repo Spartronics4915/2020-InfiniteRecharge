@@ -140,7 +140,6 @@ public class T265Camera
     {
         if (mIsStarted)
             throw new RuntimeException("T265 camera is already started");
-        setPose(new Pose2d());
         mPoseConsumer = poseConsumer;
         mIsStarted = true;
     }
@@ -183,9 +182,13 @@ public class T265Camera
      */
     public synchronized void setPose(Pose2d newPose)
     {
-        mZeroingOffset = newPose
-            .transformBy(new Pose2d(mLastRecievedPose.getTranslation().inverse(),
-                mLastRecievedPose.getRotation().inverse()));
+        mZeroingOffset = new Pose2d(
+            mLastRecievedPose.getTranslation().inverse().translateBy(newPose.getTranslation()),
+            mLastRecievedPose.getRotation().rotateBy(newPose.getRotation()));
+        // mZeroingOffset = mLastRecievedPose.inverse().transformBy(newPose);
+        // mZeroingOffset = newPose
+        // .transformBy(new Pose2d(mLastRecievedPose.getTranslation().inverse(),
+        // mLastRecievedPose.getRotation().inverse()));
     }
 
     /**
@@ -245,8 +248,7 @@ public class T265Camera
         }
 
         final Pose2d transformedPose = new Pose2d(
-            currentPose.getTranslation().translateBy(mZeroingOffset.getTranslation())
-                .rotateBy(mZeroingOffset.getRotation()),
+            currentPose.getTranslation().translateBy(mZeroingOffset.getTranslation()),
             currentPose.getRotation().rotateBy(mZeroingOffset.getRotation()));
         mPoseConsumer.accept(new CameraUpdate(transformedPose,
             new Twist2d(dx, 0.0, Rotation2d.fromRadians(dtheta)), confidence));

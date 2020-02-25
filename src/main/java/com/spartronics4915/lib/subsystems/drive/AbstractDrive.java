@@ -141,5 +141,8 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
     {
         dashboardPutNumber("imuHeading", mIMU.getYaw().getDegrees());
         dashboardPutNumber("imuHeadingAdjusted", getIMUHeading().getDegrees());
+
+        dashboardPutNumber("leftSpeed", getLeftMotor().getEncoder().getVelocity());
+        dashboardPutNumber("rightSpeed", getRightMotor().getEncoder().getVelocity());
     }
 }

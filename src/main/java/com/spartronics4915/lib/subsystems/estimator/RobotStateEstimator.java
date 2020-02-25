@@ -9,6 +9,7 @@ import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.math.twodim.geometry.Twist2d;
 import com.spartronics4915.lib.hardware.sensors.T265Camera;
+import com.spartronics4915.lib.hardware.sensors.T265Camera.CameraJNIException;
 import com.spartronics4915.lib.hardware.sensors.T265Camera.CameraUpdate;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import com.spartronics4915.lib.subsystems.drive.AbstractDrive;
@@ -194,7 +195,17 @@ public class RobotStateEstimator extends SpartronicsSubsystem
 
         if (mSLAMCamera != null)
         {
-            mSLAMCamera.sendOdometry(normalizedIVal);
+            try
+            {
+                // Sometimes (for unknown reasons) the native code can't send odometry info
+                // We throw a Java exception when this happens, but we'd like to ignore that in
+                // this situation
+                mSLAMCamera.sendOdometry(normalizedIVal);
+            }
+            catch (CameraJNIException e)
+            {
+                Logger.exception(e);
+            }
         }
     }
 

@@ -6,6 +6,9 @@ import com.spartronics4915.lib.math.twodim.physics.DifferentialDrive.ChassisStat
 import com.spartronics4915.lib.math.twodim.physics.DifferentialDrive.DriveDynamics;
 import com.spartronics4915.lib.math.twodim.physics.DifferentialDrive.WheelState;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
+
 /**
  * This interface gives you a little more help than
  * {@link TrajectoryTrackerDriveBase}. It makes it so that you don't have to use
@@ -44,6 +47,9 @@ public interface DifferentialTrackerDriveBase extends TrajectoryTrackerDriveBase
     public default void setOutput(WheelState wheelVelocitiesRadiansPerSecond,
         WheelState wheelVoltages)
     {
+        SmartDashboard.putNumber("Drive/leftSpeedTarget", wheelVelocitiesRadiansPerSecond.left * Units.inchesToMeters(8));
+        SmartDashboard.putNumber("Drive/rightSpeedTarget", wheelVelocitiesRadiansPerSecond.right  * Units.inchesToMeters(8));
+
         getLeftMotor().setVelocity(
             (wheelVelocitiesRadiansPerSecond.left * getDifferentialDrive().wheelRadius()),
             wheelVoltages.left);

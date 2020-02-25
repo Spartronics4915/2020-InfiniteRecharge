@@ -1,5 +1,7 @@
 package com.spartronics4915.lib.hardware.motors;
 
+import com.spartronics4915.lib.util.Logger;
+
 public interface SpartronicsMotor
 {
 
@@ -167,4 +169,12 @@ public interface SpartronicsMotor
      * @param reverseLimitCustomUnits Reverse soft limit position in custom units.
      */
     void setSoftLimits(double forwardLimitCustomUnits, double reverseLimitCustomUnits);
+
+    /**
+     * @param limitAmps Max stator current in amps.
+     */
+    default void setStatorCurrentLimit(int limitAmps)
+    {
+        Logger.warning("Stator current limit not implemented for device number " + getDeviceNumber() + "!");
+    }
 }
