@@ -144,7 +144,7 @@ public class Vision extends SpartronicsSubsystem
             // expect a string of the form:
             // "-33.35 -35.50 -100 22.35557 [turretAngle]" (camx, camy, camz, timestamp, turretAngle)
             // Turret angle may be delivered since its value in the past
-            // is required to estimate robot pose.  If vision doesn't deliver
+            // is required to estimate robot pose. If vision doesn't deliver
             // it, we'll either accept error, assume that the turret doesn't
             // move or need to extend RobotStateEstimator.state to include this
             // information.

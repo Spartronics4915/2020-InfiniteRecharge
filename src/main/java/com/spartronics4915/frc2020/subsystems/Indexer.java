@@ -18,6 +18,7 @@ public class Indexer extends SpartronicsSubsystem
     private double mTargetPosition = 0;
 
     private SpartronicsMotor mIndexerMotor;
+    private SpartronicsMotor mUnjamMotor;
     private SpartronicsMotor mKickerMotor;
     private SpartronicsMotor mTransferMotor;
 
@@ -42,12 +43,14 @@ public class Indexer extends SpartronicsSubsystem
         // Set up Spinner
         mIndexerModel = SensorModel.fromMultiplier(Constants.Indexer.Spinner.kConversionRatio);
         mIndexerMotor = SpartronicsMax.makeMotor(Constants.Indexer.Spinner.kMotorId, mIndexerModel);
+        mUnjamMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId);
         // Set up Loader
         mKickerModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);
         mKickerMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Loader.kMotorId, mKickerModel); // BAG motor
         // Set up Transfer
-        mTransferModel = SensorModel.fromMultiplier(Constants.Indexer.Transfer.kConversionRatio);
-        mTransferMotor = SpartronicsMax.makeMotor(Constants.Indexer.Transfer.kMotorId, mTransferModel);
+        mTransferMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Transfer.kMotorId);
+
+        stop();
 
         if (mIndexerMotor.hadStartupError() || mKickerMotor.hadStartupError() || mTransferMotor.hadStartupError())
         {
@@ -69,6 +72,7 @@ public class Indexer extends SpartronicsSubsystem
         mIndexerMotor.setMotionProfileMaxAcceleration(Constants.Indexer.Spinner.kMaxAcceleration);
         mIndexerMotor.setUseMotionProfileForPosition(true);
         mIndexerMotor.setBrakeMode(true);
+        mIndexerMotor.getEncoder().setPosition(0.0);
 
         // Setup Optical Flag for zeroing position
         mLimitSwitch = new DigitalInput(Constants.Indexer.kLimitSwitchId);
@@ -143,6 +147,8 @@ public class Indexer extends SpartronicsSubsystem
     {
         if (N != 0)
         {
+            mUnjamMotor.setPercentOutput(1.0);
+
             double deltaPosition = 0.25 * N; // Cast N to double and convert to rotations
             mTargetPosition += deltaPosition;
         }
@@ -227,6 +233,7 @@ public class Indexer extends SpartronicsSubsystem
         mTransferMotor.setNeutral();
         mKickerMotor.setNeutral();
         mIndexerMotor.setNeutral();
+        mUnjamMotor.setNeutral();
     }
 
     /**
@@ -235,6 +242,7 @@ public class Indexer extends SpartronicsSubsystem
     public void stopSpinner()
     {
         mIndexerMotor.setNeutral();
+        mUnjamMotor.setNeutral();
     }
 
     public boolean isAtPosition()

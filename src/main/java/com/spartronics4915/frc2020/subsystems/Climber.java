@@ -49,6 +49,8 @@ public class Climber extends SpartronicsSubsystem
         mLiftMotor = SpartronicsSRX.makeMotor(Constants.Climber.kLiftMotorId);
         mWinchMotor = SpartronicsMax.makeMotor(Constants.Climber.kWinchMotorId);
 
+        stop();
+
         if (mLiftMotor.hadStartupError() || mWinchMotor.hadStartupError())
         {
             mLiftMotor = new SpartronicsSimulatedMotor(Constants.Climber.kLiftMotorId);

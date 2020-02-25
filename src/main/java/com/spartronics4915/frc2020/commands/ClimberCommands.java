@@ -155,7 +155,7 @@ public class ClimberCommands
     {
         public Winch()
         {
-            super(new WinchPrimary(), new WinchSecondary());
+            super(/*new WinchPrimary(), */new WinchSecondary());
         }
     }
 

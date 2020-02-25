@@ -84,7 +84,7 @@ public class IndexerCommands
         @Override
         public void execute()
         {
-            if (!mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded()
+            if (!mIndexer.getSlotBallLoaded()
                 && mIndexer.areFinsAligned())
                 mIndexer.transfer();
             else

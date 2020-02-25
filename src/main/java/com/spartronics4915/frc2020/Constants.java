@@ -96,8 +96,8 @@ public final class Constants
         public static final int kHarvestMotorId = 12;
         public static final int kProximitySensorId = 5; // Digital
 
-        public static final double kHarvestSpeed = 0.5; // XXX: test
-        public static final double kEjectSpeed = -0.5;  // XXX: test
+        public static final double kHarvestSpeed = 0.8; // XXX: test
+        public static final double kEjectSpeed = -0.8;  // XXX: test
     }
 
     public static final class Launcher
@@ -112,7 +112,8 @@ public final class Constants
         // XXX: consider whether to adopt CamToField2020, we currently have 
         // competing implementations.
         public static final Pose2d kRobotToTurret = new Pose2d(Units.inchesToMeters(-3.72), 
-                                                    Units.inchesToMeters(5.264), 
+                                                    Units.inchesToMeters(5.264),
+                                                    // z = 
                                                     Rotation2d.fromDegrees(180.0));
     
         // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
@@ -126,9 +127,9 @@ public final class Constants
         public static final double kTurretD = 0.002;
 
         // Vals for interpolating lookup table, Distance units is in feet
-        public static final double[] kDistanceTable = new double[]{3.0, 4.0, 4.5, 5.0};
-        public static final double[] kAngleTable = new double[]{16.0, 20.0, 19.0, 24.0};
-        public static final double[] kRPSTable = new double[]{38.0, 41.5, 41.0, 45.0};
+        public static final double[] kDistanceTable = new double[]{9.8425, 9.8425};
+        public static final double[] kAngleTable = new double[]{16.0, 16.0};
+        public static final double[] kRPSTable = new double[]{38.0, 38.0};
         public static final int kLookupTableSize = kDistanceTable.length;
 
         /** RPS */
@@ -173,6 +174,9 @@ public final class Constants
     {
         public static final TriFunction<Integer, SensorModel, Integer, SpartronicsMotor> kDriveMotorConstructor;
 
+        public static final double kCenterToFrontBumper = Units.inchesToMeters(17.375);
+        public static final double kCenterToSideBumper = Units.inchesToMeters(18.875);
+
         public static final boolean kRightOutputInverted;
         public static final boolean kRightFollowerOutputInverted;
         public static final boolean kLeftOutputInverted;
@@ -192,7 +196,7 @@ public final class Constants
         public static final double kRobotMassKg = 1;
         public static final double kMoi = 1;
 
-        public static final double kP = 0.01;
+        public static final double kP = 0;
 
         // TODO: characterize
         public static final double kRightS;
@@ -265,8 +269,9 @@ public final class Constants
             Units.inchesToMeters(138), Rotation2d.fromDegrees(180));
         public static final Pose2d kStartPointMiddle = new Pose2d(Units.inchesToMeters(508),
             Units.inchesToMeters(-65), Rotation2d.fromDegrees(180));
-        public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(508),
-            Units.inchesToMeters(-138), Rotation2d.fromDegrees(180));
+        public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(510) - Constants.Drive.kCenterToFrontBumper,
+            Units.inchesToMeters(-161.625) + Constants.Drive.kCenterToSideBumper,
+            Rotation2d.fromDegrees(180));
     }
 
     public static final class Estimator
@@ -276,9 +281,9 @@ public final class Constants
         // If new measurements for Vision or Turret mounting are obtained,
         // please also update CoordSysMgr20202.java.
         public static final double kMeasurementCovariance = 0.001;
-        public static final Pose2d kSlamraToRobot = new Pose2d(Units.inchesToMeters(-6.4375), 
-                                                            Units.inchesToMeters(10.625), 
-                                                            Rotation2d.fromDegrees(90));
+        public static final Pose2d kSlamraToRobot = new Pose2d(Units.inchesToMeters(-11.75), 
+                                                            Units.inchesToMeters(-4.75), 
+                                                            new Rotation2d());
     }
 
     public static final class Vision

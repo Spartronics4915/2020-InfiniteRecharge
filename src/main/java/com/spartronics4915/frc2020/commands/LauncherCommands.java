@@ -14,6 +14,7 @@ import com.spartronics4915.lib.util.Units;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
@@ -33,7 +34,7 @@ public class LauncherCommands
         mIndexerCommands = indexerCommands;
         mStateMap = stateMap;
         mCoordSysMgr = new CoordSysMgr2020();
-    
+
         // our target is always on the opposite side of the field. This
         // works for both Alliances since the field is symmetric and we
         // use the same coordinate system (rotated by 180) on the Dashboard.
@@ -47,6 +48,9 @@ public class LauncherCommands
             Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[0]),
             Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[1]),
             Rotation2d.fromDegrees(180));
+
+        // mLauncher.setDefaultCommand(new ShootBallTest());
+        mLauncher.setDefaultCommand(new TargetAndShoot());
     }
 
     public Launcher getLauncher()
@@ -142,7 +146,6 @@ public class LauncherCommands
         return distance;
     }
 
-
     /**
      * return the distance (in meters) to the tracked target.  If the target 
      * is within our field of view, we adjust both hood and turret angle.
@@ -157,7 +160,7 @@ public class LauncherCommands
         Vec3 targetPointInMnt = mCoordSysMgr.fieldPointToMount(mMatchTargetInches);
         double angle = targetPointInMnt.angleOnXYPlane();
         double dist = Units.inchesToMeters(targetPointInMnt.length());
-        if(angle > 180)
+        if (angle > 180)
         {
             // [0-360] -> (-180, 180]
             angle = -(360 - angle);

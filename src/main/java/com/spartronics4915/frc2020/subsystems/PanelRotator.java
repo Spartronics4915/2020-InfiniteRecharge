@@ -35,7 +35,7 @@ public class PanelRotator extends SpartronicsSubsystem
         mOpticalFlagUp = new DigitalInput(Constants.PanelRotator.kOpticalFlagUpId);
         mLimitSwitchDown = new DigitalInput(Constants.PanelRotator.kLimitSwitchDownId);
         mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId);
-        mRaiseMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId);
+        mRaiseMotor = new SpartronicsSimulatedMotor(42);//SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId);
 
         mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         mColorMatcher.addColorMatch(Constants.PanelRotator.kRedTarget);
