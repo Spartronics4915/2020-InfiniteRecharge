@@ -118,8 +118,8 @@ public class LED extends SpartronicsSubsystem
         // If NOT initialized we should not be calling any LED methods
         if (!isInitialized())
         {
-            logError("LED: setBlingState called but LED subsystem is NOT initialized!");
-            dashboardPutString("LED state:", "NOT initialized");
+            // logError("LED: setBlingState called but LED subsystem is NOT initialized!");
+            // dashboardPutString("LED state:", "NOT initialized");
             return;
         }
 
@@ -130,8 +130,8 @@ public class LED extends SpartronicsSubsystem
         byte[] message = mBlingState.getBlingMessage();
         if (mBlingPort.writeBytes(message, message.length) == -1)
         {
-            logError("LED: Error writing to SerialPort - uninitializing LED subsystem");
-            dashboardPutString("LED state:", "Write Error!");
+            // logError("LED: Error writing to SerialPort - uninitializing LED subsystem");
+            // dashboardPutString("LED state:", "Write Error!");
             logInitialized(false);
         }
         else
