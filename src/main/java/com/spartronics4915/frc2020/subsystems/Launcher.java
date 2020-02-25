@@ -146,7 +146,7 @@ public class Launcher extends SpartronicsSubsystem
     public void adjustHood(Rotation2d angle)
     {
         mTargetAngle = Rotation2d
-            .fromDegrees(Math.min(angle.getDegrees(), Constants.Launcher.kMaxAngle.getDegrees()));
+            .fromDegrees(Math.min(angle.getDegrees(), Constants.Launcher.kHoodMaxAngle.getDegrees()));
         mAngleAdjusterMasterServo.setAngle(mTargetAngle.getDegrees());
         mAngleAdjusterFollowerServo.setAngle(180 - mTargetAngle.getDegrees());
     }
@@ -159,17 +159,13 @@ public class Launcher extends SpartronicsSubsystem
     {
         mTargetTurretDirection = absoluteAngle;
         double output = mTurretPIDController.calculate(mTurretEncoder.getPosition(),
-            Util.limit(absoluteAngle.getDegrees(), Constants.Launcher.kMaxAngle.getDegrees()));
+            Util.limit(absoluteAngle.getDegrees(), Constants.Launcher.kTurretMaxAngle.getDegrees()));
         mTurretMotor.setPercentOutput(output);
     }
 
-    /**
-     * Rotates turret to a specific angle relative to the home position
-     * @param absoluteAngle Angle in degrees you want to turn the turret relative to the home position
-     */
-    public void turnTurret(double angle)
+    public void turnTurret(double degrees)
     {
-        this.turnTurret(Rotation2d.fromDegrees(angle));
+        this.turnTurret(Rotation2d.fromDegrees(degrees));
     }
 
     /**
@@ -227,7 +223,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public Rotation2d calcPitch(double distance)
     {
-        return table.getInterpolated(new InterpolatingDouble(distance/100.0)).hoodAngle;
+        return table.getInterpolated(new InterpolatingDouble(distance)).hoodAngle;
     }
 
     /**
@@ -237,7 +233,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public double calcRPS(double distance)
     {
-        return table.getInterpolated(new InterpolatingDouble(distance/100.0)).flywheelSpeedRPS.value;
+        return table.getInterpolated(new InterpolatingDouble(distance)).flywheelSpeedRPS.value;
     }
 
     /**
