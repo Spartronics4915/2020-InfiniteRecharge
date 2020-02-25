@@ -1,12 +1,18 @@
 package com.spartronics4915.frc2020;
 
+import com.spartronics4915.frc2020.commands.*;
+import com.spartronics4915.frc2020.subsystems.*;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
+import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.util.Logger;
+
 import edu.wpi.first.hal.sim.DriverStationSim;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.hal.HAL;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * a simple test of basic robot init.  This turns out to be quite
@@ -21,25 +27,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class RobotTest
 {
-    static class emptySubsystem extends SpartronicsSubsystem
+    static final Robot sRobot;
+    static final DriverStationSim sSim;
+    static
     {
-        public emptySubsystem() {}
-    }
+        if (!HAL.initialize(500, 0)) 
+            Logger.warning("HAL already initialized");
 
-    private static emptySubsystem sSubsys = new emptySubsystem();
-    private static DriverStationSim sSim;
-
-    RobotTest()
-    {
+        sRobot = new Robot();
+        sRobot.robotInit();
         sSim = new DriverStationSim();
-        //sSim.setAutonomous(false); // these cause a crash
-        //sSim.setEnabled(true);
+        sSim.setAutonomous(false);
+        sSim.setEnabled(true);
     }
 
     @Test
     public void initTest()
-    {
-        sSubsys.logNotice("initTest found this config: " + Constants.sConfig);        
+    {        
+        Logger.notice("initTest found this config: " + Constants.sConfig);
     }
 
     /* this test, when run interactively is sorta interesting, we
@@ -51,10 +56,58 @@ class RobotTest
      *      - CTR: CAN frame not received/too-stale.
      *      - Joystick Button 1 on port 0 not available, check if controller is plugged in
     */
-    // @Test
-    public void initRobot()
+    @Test
+    public void robotInitTest()
     {
-        RobotBase.startRobot(Robot::new);
+        assert(sRobot.mInitialized);
+    }
+
+    @Test
+    public void indexerTest()
+    {
+        assert(sRobot.mInitialized);
+        var cmds = sRobot.mRobotContainer.mIndexerCommands;
+        var indexer = sRobot.mRobotContainer.mIndexer;
+        var startLaunch = cmds.new StartKicker();
+        var endLaunch = cmds.new EndKicker();
+        var loadBallToSlot = cmds.new LoadBallToSlotGroup(0);
+        var loadToLauncher = cmds.new LoadToLauncher();
+
+        // testing startlaunch
+        indexer.logInfo("Testing StartLaunch...");
+        startLaunch.schedule();
+        if(startLaunch.isScheduled())
+            indexer.logInfo("Success!");
+        else
+            indexer.logInfo("Scheduler issue 1");
+
+        // assertEquals(simmedLoaderMotor, 1.0);
+        // CommandScheduler.getInstance().cancel(startLaunch);
+
+        // testing endlaunch
+        indexer.logInfo("Testing EndLaunch...");
+        endLaunch.schedule();
+        if(endLaunch.isScheduled())
+            indexer.logInfo("Success!");
+        else
+            indexer.logInfo("Scheduler issue 2");
+
+        // testing loadBallToSlot
+        indexer.logInfo("Testing LoadBallToSlot...");
+        loadBallToSlot.schedule();
+        if(loadBallToSlot.isScheduled())
+            indexer.logInfo("Success!");
+        else
+            indexer.logInfo("Scheduler issue 3");
+
+        // testing loadToLauncher
+        indexer.logInfo("Testing LoadToLauncher...");
+        loadToLauncher.schedule();
+        if(loadToLauncher.isScheduled())
+            indexer.logInfo("Success!");
+        else
+            indexer.logInfo("Scheduler issue 4");
+        indexer.logInfo("Loading Test successful!");
         sSim.setEnabled(false);
     }
 }

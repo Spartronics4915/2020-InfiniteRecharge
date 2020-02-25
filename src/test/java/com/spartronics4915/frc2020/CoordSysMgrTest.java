@@ -25,7 +25,7 @@ class CoordSysMgrTest
         // when turret angle is 0.
         Vec3 camOnRobot = ctof.camPointToRobot(Vec3.ZeroPt);
         double dist = camOnRobot.length(), distXY;
-        assert(dist > 5 && dist < 20);
+        assert(dist > 20 && dist < 25);
         // for a robot and turret angle of 0, predict camera position on field.
         Vec3 camPtOnField = ctof.camPointToField(new Vec3(0, 0, 0));
         Vec3 camDirOnField = ctof.camDirToField(new Vec3(0, 0, -1));
@@ -37,25 +37,26 @@ class CoordSysMgrTest
         // Let's see where a point 100 inches away from camera is
         // should be "behind the robot" offset by combination of
         // turret and camera offsets.
-        Vec3 p0 = ctof.camPointToRobot(new Vec3(0, 0, -100));
+        Vec3 tgt = new Vec3(0, 0, -100);
+        Vec3 p0 = ctof.camPointToRobot(tgt);
         assert(p0.a1 < -100); // mostly behind the robot (x is front)
         distXY = p0.lengthXY();
         assert(distXY > 100); // farther from robot than camera (even xy only)
 
         // Now point turret directly toward turret right (robot left)
         ctof.updateTurretAngle(-90); // turret x is fwd, +y is left
-        p0 = ctof.camPointToRobot(new Vec3(0, 0, -100));
+        p0 = ctof.camPointToRobot(tgt);
         assert(p0.a2 > 100); // mostly to the left of the robot (+y is left)
         distXY = p0.lengthXY();
         assert(distXY > 100); // since robot origin is farther from target
 
-        // point turret directly left
+        // point turret directly to its left (robot right)
         ctof.updateTurretAngle(90);
-        p0 = ctof.camPointToRobot(new Vec3(0, 0, -100));
+        p0 = ctof.camPointToRobot(tgt);
         assert(p0.a2 < -90); // mostly to the left of the robot (+y is left)
         double distXY2 = p0.length();
-        // robot origin closer to points turret sees to its right.
-        assert(distXY2 < distXY); 
+        // robot origin farther from points turret sees to its right.
+        assert(distXY2 > distXY); 
 
         // robot heading north, target below/right, 45 degrees,
         // variant of updateRobotPose that estimates the robot transform

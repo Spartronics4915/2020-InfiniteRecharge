@@ -154,8 +154,15 @@ public class Vision extends SpartronicsSubsystem
             double camy = Double.parseDouble(vals[1]);
             double camz = Double.parseDouble(vals[2]);
             double timestamp = Double.parseDouble(vals[3]);
-            double turretAngle = (vals.length == 5) ? 
-                Double.parseDouble(vals[4]) : mLauncher.getTurretDirection().getDegrees();
+            RobotStateMap.State officialState = mOfficialRSM.get(timestamp);
+            double turretAngle;
+            if(vals.length == 5) 
+                turretAngle = Double.parseDouble(vals[4]);
+            else
+            {
+                // this was delivered by Drive.getTurretAngle to RSE
+                turretAngle = officialState.turretAngle.value;
+            }
             Vec3 tgtInCam = new Vec3(camx, camy, camz);
             Vec3 tgtInRobot = this.mCoordSysMgr.camPointToRobot(tgtInCam);
             if (tgtInRobot.a1 <= 0)
@@ -174,7 +181,6 @@ public class Vision extends SpartronicsSubsystem
             // 3. use likely target to localize robot to field
             // 4. produce an updated estimate of robot location (trust RSE orientation)
             // 5. store this in our version of a RobotStateMap (at time)
-            RobotStateMap.State officialState = mOfficialRSM.get(timestamp);
             Pose2d robotToField = officialState.pose;
             Translation2d t2d = robotToField.getTranslation();
             Rotation2d r2d = robotToField.getRotation();
@@ -197,8 +203,8 @@ public class Vision extends SpartronicsSubsystem
             this.mCoordSysMgr.updateTurretAngle(turretAngle);
             this.mCoordSysMgr.updateRobotPose(robotHeading, tgtInRobot, fieldTarget);
             Vec3 robotPos = mCoordSysMgr.robotPointToField(Vec3.ZeroPt);
-            // use robot's heading in our poseEstimate - remember to
-            // convert from inches to meters.
+            // Use robot's heading in our poseEstimate - remember to convert 
+            // from inches to meters before commiting to RSM.
             Pose2d poseEstimate = new Pose2d(Units.inchesToMeters(robotPos.a1), 
                                             Units.inchesToMeters(robotPos.a2), 
                                             r2d);

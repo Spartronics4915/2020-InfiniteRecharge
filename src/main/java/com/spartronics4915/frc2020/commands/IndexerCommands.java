@@ -360,8 +360,17 @@ public class IndexerCommands
     {
         public LoadToLauncher(int ballsToShoot)
         {
-            double spinDistance = (mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded()) ? 0.5 : 0;
+            sharedInit(ballsToShoot);
+        }
 
+        public LoadToLauncher()
+        {
+            sharedInit(4);
+        }
+
+        private void sharedInit(int ballsToShoot)
+        {
+            double spinDistance = (mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded()) ? 0.5 : 0;
             addCommands(
                 // new AlignIndexer(mIndexer),
                 new SpinIndexer(-spinDistance),
@@ -376,9 +385,5 @@ public class IndexerCommands
             );
         }
 
-        public LoadToLauncher()
-        {
-            this(1);
-        }
     }
 }

@@ -48,14 +48,20 @@ public class LED extends SpartronicsSubsystem
                 .filter((SerialPort p) -> p.getPortDescription().equals(kPortDescription)
                     && !p.isOpen())
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Device not found: " + kPortDescription));
-
-            mBlingPort.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
-            mBlingPort.setFlowControl(SerialPort.FLOW_CONTROL_DISABLED);
-            mBlingPort.openPort();
-
-            logInitialized(true);
-            Logger.notice("LED: Initialized!");
+                .orElse(null);
+            if(mBlingPort == null)
+            {
+                logError("Device not found: " + kPortDescription);
+                logInitialized(false);
+            }
+            else
+            {
+                mBlingPort.setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+                mBlingPort.setFlowControl(SerialPort.FLOW_CONTROL_DISABLED);
+                mBlingPort.openPort();
+                logInitialized(true);
+                Logger.notice("LED: Initialized!");
+            }
         }
         catch (Exception e)
         {

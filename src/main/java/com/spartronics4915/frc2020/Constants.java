@@ -15,6 +15,7 @@ import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.util.Logger;
 import com.spartronics4915.lib.util.TriFunction;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj.util.WPILibVersion;
@@ -83,7 +84,7 @@ public final class Constants
         {
             public static final int kMotorId = 11;
             public static final double kConversionRatio = 1;
-            public static final double kSpeed = -1.0;
+            public static final double kSpeed = -0.8;
         }
 
         public static final int kLimitSwitchId = 8; // Digital
@@ -127,16 +128,19 @@ public final class Constants
         public static final double kTurretD = 0.002;
 
         // Vals for interpolating lookup table, Distance units is in feet
-        public static final double[] kDistanceTable = new double[]{9.8425, 9.8425};
-        public static final double[] kAngleTable = new double[]{16.0, 16.0};
-        public static final double[] kRPSTable = new double[]{38.0, 38.0};
+        // Last three are good
+        public static final double[] kDistanceTable = new double[]{80.0, 118.11, 157.48, 177.165, 196.85, 240.0, 310.0};
+        public static final double[] kAngleTable =    new double[]{6.0,  16.0,   20.0,   19.0,    24.0,   25.0,  28.0};
+        public static final double[] kRPSTable =      new double[]{33.5, 38.0,   41.0,   41.0,    45.0,   49.0,  60.0};
         public static final int kLookupTableSize = kDistanceTable.length;
 
         /** RPS */
         public static final double kFlywheelVelocityTolerance = 1.0;
         public static final double kMaxRPS = 90.0; // Reasonable guess
-        public static final double kMaxAngleDegrees = 30;
-        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(30.0);
+
+        public static final double kMaxAngleDegrees = 45;
+        public static final Rotation2d kTurretMaxAngle = Rotation2d.fromDegrees(45.0);
+        public static final Rotation2d kHoodMaxAngle = Rotation2d.fromDegrees(35.0);
 
         public static Pose2d goalLocation = null;
         //unit is feet
@@ -150,6 +154,27 @@ public final class Constants
     {
         public static final int kJoystickId = 0;
         public static final int kButtonBoardId = 1;
+        public static class DeviceSpec
+        {
+            public String name;
+            public int portId;
+            public int numButtons;
+            public Joystick joystick;
+            public DeviceSpec(String nm, int id, int nbut)
+            {
+                this.name = nm;
+                this.portId = id;
+                this.numButtons = nbut;
+                this.joystick = null;
+            }
+        }
+        public static DeviceSpec[] deviceList;
+        static
+        {
+            deviceList = new DeviceSpec[2];
+            deviceList[0] = new DeviceSpec("Logitech Attack 3", kJoystickId, 12);
+            deviceList[1] = new DeviceSpec("ButtonBoard", kButtonBoardId, 18);
+        }
     }
 
     public static final class PanelRotator

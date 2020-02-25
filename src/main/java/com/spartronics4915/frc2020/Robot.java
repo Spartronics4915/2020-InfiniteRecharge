@@ -22,7 +22,8 @@ import java.util.jar.Manifest;
 public class Robot extends TimedRobot
 {
     private Command mAutonomousCommand;
-    private RobotContainer mRobotContainer;
+    RobotContainer mRobotContainer; // accessible for easier testing
+    public boolean mInitialized = false;
 
     // PDP is used to detect total-current-draw, in 2019 we had spurious
     // CAN errors.  If this happens in 2020, we can live without it.
@@ -71,7 +72,7 @@ public class Robot extends TimedRobot
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our autonomous chooser on the dashboard.
         mRobotContainer = new RobotContainer();
-        Logger.notice("@robotInit: Requested BlingState.BLING_COMMAND_OFF");
+        Logger.info("@robotInit: Requested Bling.kOff");
         LED.getInstance().setBlingState(Bling.kOff);
 
 
@@ -80,6 +81,7 @@ public class Robot extends TimedRobot
 
         // print out available serial ports for information
         LED.getInstance().enumerateAvailablePorts();
+        mInitialized = true;
     }
 
     @Override
