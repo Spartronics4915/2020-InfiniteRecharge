@@ -65,7 +65,7 @@ public final class Constants
             public static final double kPositionD = 0;
             public static final double kConversionRatio = 1.0 / (187.0/20.0*9.0);
             public static final double kMaxVelocity = 1;
-            public static final double kMaxAcceleration = 0.5;
+            public static final double kMaxAcceleration = 0.85;
             public static final double kStallThreshold = 90.0; // FIXME: stand-in values
 
             /** Degrees */
@@ -129,9 +129,9 @@ public final class Constants
 
         // Vals for interpolating lookup table, Distance units is in feet
         // Last three are good
-        public static final double[] kDistanceTable = new double[]{80.0, 118.11, 157.48, 177.165, 196.85, 240.0, 310.0};
-        public static final double[] kAngleTable =    new double[]{6.0,  16.0,   20.0,   19.0,    24.0,   25.0,  28.0};
-        public static final double[] kRPSTable =      new double[]{33.5, 38.0,   41.0,   41.0,    45.0,   49.0,  60.0};
+        public static final double[] kDistanceTable = new double[]{139.0, 163.0, 211.0, 271.0, 319.0, 439.0};//{80.0, 118.11, 157.48, 177.165, 196.85, 240.0, 310.0};
+        public static final double[] kAngleTable =    new double[]{0.0,0.0,0.0,0.0,0.0,0.0};//{6.0,  16.0,   20.0,   19.0,    24.0,   25.0,  28.0};
+        public static final double[] kRPSTable =      new double[]{43.0, 42.6, 45.25, 47.25, 50.75, 64.0};//{33.5, 38.0,   41.0,   41.0,    45.0,   49.0,  60.0};
         public static final int kLookupTableSize = kDistanceTable.length;
 
         /** RPS */
