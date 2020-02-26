@@ -57,6 +57,11 @@ public class Drive extends AbstractDrive
         mLeftMotor.getFollower().setOutputInverted(Constants.Drive.kLeftFollowerOutputInverted);
         mRightMotor.getFollower().setOutputInverted(Constants.Drive.kRightFollowerOutputInverted);
 
+        mLeftMotor.setStatorCurrentLimit(30);
+        mRightMotor.setStatorCurrentLimit(30);
+        mLeftMotor.getFollower().setStatorCurrentLimit(30);
+        mRightMotor.getFollower().setStatorCurrentLimit(30);
+
         mLeftMotor.setVelocityGains(Constants.Drive.kP, 0);
         mRightMotor.setVelocityGains(Constants.Drive.kP, 0);
     }

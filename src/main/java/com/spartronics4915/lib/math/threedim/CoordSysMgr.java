@@ -192,7 +192,7 @@ public class CoordSysMgr
      */
     public Vec3 camPointToField(Vec3 pt)
     {
-        this._rebuildTransforms();
+        this.rebuildTransforms();
         return this.mCamToField.transformPoint(pt);
     }
 
@@ -205,7 +205,7 @@ public class CoordSysMgr
      */
     public Vec3 camDirToField(Vec3 dir)
     {
-        this._rebuildTransforms();
+        this.rebuildTransforms();
         return this.mCamToField.transformVector(dir);
     }
 
@@ -219,7 +219,7 @@ public class CoordSysMgr
      */
     public Vec3 camPointToRobot(Vec3 pt)
     {
-        this._rebuildTransforms();
+        this.rebuildTransforms();
         return this.mCamToRobot.transformPoint(pt);
 
     }
@@ -233,7 +233,7 @@ public class CoordSysMgr
      */
     public Vec3 camDirToRobot(Vec3 dir)
     {
-        this._rebuildTransforms();
+        this.rebuildTransforms();
         return this.mCamToRobot.transformVector(dir);
     }
 
@@ -247,7 +247,7 @@ public class CoordSysMgr
      */
     public Vec3 camPointToMount(Vec3 pt)
     {
-        this._rebuildTransforms();
+        this.rebuildTransforms();
         return this.mCamToMount.transformVector(pt);
     }
 
@@ -275,20 +275,20 @@ public class CoordSysMgr
 
     public Vec3 fieldDirToMount(Vec3 dir)
     {
-        this._rebuildTransforms();
+        this.rebuildTransforms();
         return this.mFieldToMount.transformVector(dir);
     }
 
     public Vec3 fieldPointToMount(Vec3 pt)
     {
-        this._rebuildTransforms();
+        this.rebuildTransforms();
         return this.mFieldToMount.transformVector(pt);
     }
 
     /**
      * updates the transform chain whenever any inputs have changed.
      */
-    private void _rebuildTransforms()
+    private void rebuildTransforms()
     {
         if(this.mDirty)
         {

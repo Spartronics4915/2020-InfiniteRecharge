@@ -15,6 +15,7 @@ import com.spartronics4915.lib.math.twodim.geometry.Translation2d;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
+import com.spartronics4915.lib.subsystems.estimator.VisionEvent;
 import com.spartronics4915.lib.util.Units;
 
 import edu.wpi.first.networktables.EntryListenerFlags;
@@ -43,17 +44,6 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class Vision extends SpartronicsSubsystem
 {
-    /* public interfaces ------------------------------------*/
-    public class VisionEvent implements Runnable
-    {
-        public Pose2d mVisionEstimate=null;
-        public double mTimestamp=0;
-
-        public void run()
-        {
-        }; // override me
-    }
-
     /* member variables -------------------------------------*/
     private final RobotStateMap mOfficialRSM;
     private final CoordSysMgr2020 mCoordSysMgr;
@@ -77,7 +67,7 @@ public class Vision extends SpartronicsSubsystem
      */
     public Vision(RobotStateEstimator rse, Launcher launcher)
     {
-        this.mOfficialRSM = rse.getCameraRobotStateMap();
+        this.mOfficialRSM = rse.getBestRobotStateMap();
         this.mLauncher = launcher;
         this.mCoordSysMgr = new CoordSysMgr2020(); // our private copy
 
@@ -144,7 +134,7 @@ public class Vision extends SpartronicsSubsystem
             // expect a string of the form:
             // "-33.35 -35.50 -100 22.35557 [turretAngle]" (camx, camy, camz, timestamp, turretAngle)
             // Turret angle may be delivered since its value in the past
-            // is required to estimate robot pose.  If vision doesn't deliver
+            // is required to estimate robot pose. If vision doesn't deliver
             // it, we'll either accept error, assume that the turret doesn't
             // move or need to extend RobotStateEstimator.state to include this
             // information.

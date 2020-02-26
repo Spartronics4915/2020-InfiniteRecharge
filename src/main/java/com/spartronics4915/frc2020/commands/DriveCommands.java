@@ -39,7 +39,7 @@ public class DriveCommands
             // universal joystick convention is that forward and left are negative
             // as such, the modifier starts negative
             double y = -1 * mJoystick.getY();
-            double x = -1 * mJoystick.getX();
+            double x = mJoystick.getX();
 
             if (mSlow)
             {
@@ -50,7 +50,16 @@ public class DriveCommands
                 y *= -1;
 
             y = Math.copySign(Math.pow(Math.abs(y), 5.0/3.0), y);
-            mDrive.arcadeDrive(y, x);
+            mDrive.arcadeDrive(applyDeadzone(y), applyDeadzone(x));
+        }
+
+        private double applyDeadzone(double val)
+        {
+            if (Math.abs(val) < 0.1)
+            {
+                return 0.0;
+            }
+            return val;
         }
     }
 

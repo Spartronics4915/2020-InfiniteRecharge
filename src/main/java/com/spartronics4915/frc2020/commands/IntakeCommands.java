@@ -1,17 +1,25 @@
 package com.spartronics4915.frc2020.commands;
 
+import java.util.Set;
+
+import com.spartronics4915.frc2020.subsystems.Indexer;
 import com.spartronics4915.frc2020.subsystems.Intake;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class IntakeCommands
 {
     private final Intake mIntake;
+    private final Indexer mIndexer;
 
-    public IntakeCommands(Intake intake)
+    public IntakeCommands(Intake intake, Indexer indexer)
     {
         mIntake = intake;
+        mIndexer = indexer;
         mIntake.setDefaultCommand(new Stop());
     }
 
@@ -28,11 +36,30 @@ public class IntakeCommands
      * This {@link StartEndCommand} harvests balls by running {@link Intake}.intake continuously,
      * unless terminated by a second press of the Harvest button.
      */
-    public class Harvest extends StartEndCommand
+    public class Harvest extends CommandBase
     {
-        public Harvest()
+        @Override
+        public void initialize()
         {
-            super(mIntake::harvest, mIntake::stop, mIntake);
+            mIntake.harvest();
+        }
+
+        @Override
+        public boolean isFinished()
+        {
+            return mIndexer.getIntakeBallLoaded();
+        }
+
+        @Override
+        public void end(boolean interrupted)
+        {
+            mIntake.stop();
+        }
+
+        @Override
+        public Set<Subsystem> getRequirements()
+        {
+            return Set.of(mIntake);
         }
     }
 

@@ -3,12 +3,8 @@ package com.spartronics4915.frc2020.subsystems;
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
-import com.spartronics4915.lib.hardware.motors.SensorModel;
-import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 
 /**
@@ -21,7 +17,7 @@ public class Intake extends SpartronicsSubsystem
 
     public Intake()
     {
-        mHarvestMotor = SpartronicsMax.makeMotor(Constants.Intake.kHarvestMotorId);
+        mHarvestMotor = SpartronicsSRX.makeMotor(Constants.Intake.kHarvestMotorId);
         if (mHarvestMotor.hadStartupError())
         {
             mHarvestMotor = new SpartronicsSimulatedMotor(Constants.Intake.kHarvestMotorId);
@@ -31,6 +27,10 @@ public class Intake extends SpartronicsSubsystem
         {
             logInitialized(true);
         }
+
+        stop();
+
+        mHarvestMotor.setOutputInverted(true);
     }
 
     /**

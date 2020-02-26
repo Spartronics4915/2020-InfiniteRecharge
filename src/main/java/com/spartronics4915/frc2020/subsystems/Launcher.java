@@ -120,6 +120,9 @@ public class Launcher extends SpartronicsSubsystem
         }
         mTurretZeroed = false;
         reset();
+        mTurretMotor.setNeutral();
+        mFlywheelMasterMotor.setNeutral();
+        
         logInitialized(initSuccess);
     }
 
@@ -148,7 +151,7 @@ public class Launcher extends SpartronicsSubsystem
         mTargetAngle = Rotation2d
             .fromDegrees(Math.min(angle.getDegrees(), Constants.Launcher.kHoodMaxAngle.getDegrees()));
         mAngleAdjusterMasterServo.setAngle(mTargetAngle.getDegrees());
-        mAngleAdjusterFollowerServo.setAngle(180 - mTargetAngle.getDegrees());
+        mAngleAdjusterFollowerServo.setAngle(172.8 - mTargetAngle.getDegrees());
     }
 
     /**
