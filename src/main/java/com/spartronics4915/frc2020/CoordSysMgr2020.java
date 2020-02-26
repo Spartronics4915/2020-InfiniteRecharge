@@ -1,6 +1,7 @@
 package com.spartronics4915.frc2020;
 
 import com.spartronics4915.lib.math.threedim.*;
+import com.spartronics4915.lib.math.threedim.math3.*;
 
 /**
  * CoordSysMgr2020 extends CoordSysMgr. See comments therein. We extend 

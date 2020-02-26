@@ -1,4 +1,4 @@
-package com.spartronics4915.lib.math.threedim;
+package com.spartronics4915.lib.math.threedim.ejml;
 
 import org.ejml.data.DMatrix4x4;
 import org.ejml.data.DMatrix4;
@@ -227,7 +227,7 @@ public class Quaternion
         }
     }
 
-    DMatrix4 asDMatrix4()
+    public DMatrix4 asDMatrix4()
     {
         return this.mQ;
     }
@@ -237,7 +237,7 @@ public class Quaternion
      * nb: translation and projection fields are 0.
      * @return
      */
-    DMatrix4x4 asDMatrix4x4()
+    public DMatrix4x4 asDMatrix4x4()
     {
         DMatrix4x4 result = new DMatrix4x4();
         DMatrix4 q = this.mQ;
@@ -289,12 +289,12 @@ public class Quaternion
         return result;
     }
 
-    boolean equals(Quaternion rhs)
+    public boolean equals(Quaternion rhs)
     {
         return this.equals(rhs, 1e-9);
     }
 
-    boolean equals(Quaternion rhs, double epsilon)
+    public boolean equals(Quaternion rhs, double epsilon)
     {
         if (Math.abs(this.mQ.a1 - rhs.mQ.a1) > epsilon)
             return false;
@@ -307,7 +307,7 @@ public class Quaternion
         return true;
     }
 
-    String asString()
+    public String asString()
     {
         return String.format("q %g %g %g %g", this.mQ.a1, this.mQ.a2, this.mQ.a3, this.mQ.a4);
 
