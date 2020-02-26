@@ -109,10 +109,14 @@ public class DrivetrainEstimator
             return;
         }
 
-        for (var st : mPastObserverStates.tailMap(closestEntry.getKey()).values())
+        var tailMap = mPastObserverStates.tailMap(closestEntry.getKey(), true);
+        for (var st : tailMap.values())
         {
-            mObserver.setXhat(st.xHat);
-            mObserver.setP(st.errorCovariances);
+            if (visionRobotPose != null)
+            {
+                mObserver.setP(st.errorCovariances);
+                mObserver.setXhat(st.xHat);
+            }
             update(st.slamMeasurements, visionRobotPose, st.inputs);
 
             visionRobotPose = null;

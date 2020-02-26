@@ -30,21 +30,22 @@ public class DrivetrainEstimatorTest
     @Test
     public void testEstimator()
     {
-        var stateStdDevs = new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.002, 0.002, 0.001);
-        var measurementStdDevs = new MatBuilder<>(Nat.N6(), Nat.N1()).fill(0.1, 0.1, 0.1, 0.0005,
-            0.0005, 0.0002);
-        var est = new DrivetrainEstimator(stateStdDevs, measurementStdDevs, 200, new Pose2d());
+        var stateStdDevs = new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.02, 0.02, 0.01);
+        var measurementStdDevs = new MatBuilder<>(Nat.N6(), Nat.N1()).fill(0.1, 0.1, 0.1, 0.005,
+            0.005, 0.002);
+        var est = new DrivetrainEstimator(stateStdDevs, measurementStdDevs, 3, new Pose2d());
 
         final double dt = 0.01;
         final double visionUpdateRate = 0.2;
 
         var traj = TrajectoryGenerator.defaultTrajectoryGenerator.generateTrajectory(
             List.of(
-                // new Pose2d(),
-                // new Pose2d(3, 3, new Rotation2d())
-                new Pose2d(), new Pose2d(20, 20, Rotation2d.fromDegrees(0)),
-                new Pose2d(23, 23, Rotation2d.fromDegrees(173)),
-                new Pose2d(54, 54, new Rotation2d())),
+                new Pose2d(),
+                new Pose2d(3, 3, new Rotation2d())
+                // new Pose2d(), new Pose2d(20, 20, Rotation2d.fromDegrees(0)),
+                // new Pose2d(23, 23, Rotation2d.fromDegrees(173)),
+                // new Pose2d(54, 54, new Rotation2d())
+            ),
             List.of(),
             0, 0,
             1, 1,
@@ -106,7 +107,7 @@ public class DrivetrainEstimatorTest
                 lastVisionUpdateT = t;
                 lastVisionUpdate = realPose.getPose()
                     .transformBy(new Pose2d(rand.nextGaussian() * 0.05, rand.nextGaussian() * 0.05,
-                        Rotation2d.fromRadians(rand.nextGaussian() * 0.02)));
+                        Rotation2d.fromRadians(rand.nextGaussian() * 0.002)));
 
                 visionXs.add(lastVisionUpdate.getTranslation().getX());
                 visionYs.add(lastVisionUpdate.getTranslation().getY());
@@ -148,13 +149,14 @@ public class DrivetrainEstimatorTest
         System.out.println("Mean error (meters): " + errorSum / (traj.getTotalTime() / dt));
         System.out.println("Max error (meters):  " + maxError);
 
-        new SwingWrapper<>(chart).displayChart();
-        try
-        {
-            Thread.sleep(1000000000);
-        }
-        catch (InterruptedException e)
-        {
-        }
+        // Uncomment for fun graphs
+        // new SwingWrapper<>(chart).displayChart();
+        // try
+        // {
+        //     Thread.sleep(1000000000);
+        // }
+        // catch (InterruptedException e)
+        // {
+        // }
     }
 }
