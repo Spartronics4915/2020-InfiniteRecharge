@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.CoordSysMgr2020;
-import com.spartronics4915.lib.math.threedim.Vec3;
+import com.spartronics4915.lib.math.threedim.math3.Vec3;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.math.twodim.geometry.Translation2d;
@@ -165,7 +165,7 @@ public class Vision extends SpartronicsSubsystem
             }
             Vec3 tgtInCam = new Vec3(camx, camy, camz);
             Vec3 tgtInRobot = this.mCoordSysMgr.camPointToRobot(tgtInCam);
-            if (tgtInRobot.a1 <= 0)
+            if (tgtInRobot.getX() <= 0)
                 this.dashboardPutString(Constants.Vision.kStatusKey, "CONFUSED!!!");
             else
                 this.dashboardPutString(Constants.Vision.kStatusKey, "active");
@@ -205,8 +205,8 @@ public class Vision extends SpartronicsSubsystem
             Vec3 robotPos = mCoordSysMgr.robotPointToField(Vec3.ZeroPt);
             // Use robot's heading in our poseEstimate - remember to convert 
             // from inches to meters before commiting to RSM.
-            Pose2d poseEstimate = new Pose2d(Units.inchesToMeters(robotPos.a1), 
-                                            Units.inchesToMeters(robotPos.a2), 
+            Pose2d poseEstimate = new Pose2d(Units.inchesToMeters(robotPos.getX()), 
+                                            Units.inchesToMeters(robotPos.getY()), 
                                             r2d);
             Iterator<VisionEvent> it = this.mListeners.iterator();
             while (it.hasNext())
@@ -227,7 +227,8 @@ public class Vision extends SpartronicsSubsystem
             this.dashboardPutNumber(Constants.Vision.kPoseErrorKey, derror);
 
             // NB: robotPos is in inches! (dashboard too!)
-            String pstr = String.format("%g %g %g", robotPos.a1, robotPos.a2, robotHeading);
+            String pstr = String.format("%g %g %g", 
+                            robotPos.getX(), robotPos.getY(), robotHeading);
             this.dashboardPutString(Constants.Vision.kPoseEstimateKey, pstr);
 
             double delay = Timer.getFPGATimestamp() - timestamp;

@@ -1,5 +1,7 @@
 package com.spartronics4915.lib.math.threedim;
 
+import com.spartronics4915.lib.math.threedim.ejml.*;
+
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Random;
@@ -11,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class AffineTests
+class AffineTestsEjml
 {
     double kEpsilon = 1e-9;
 
