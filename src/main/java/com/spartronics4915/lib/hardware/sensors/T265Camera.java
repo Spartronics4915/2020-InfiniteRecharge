@@ -77,7 +77,7 @@ public class T265Camera
     private long mNativeCameraObjectPointer = 0;
     private boolean mIsStarted = false;
     private Pose2d mRobotOffset;
-    private Pose2d mZeroingOffset = new Pose2d();
+    private Pose2d mOrigin = new Pose2d();
     private Pose2d mLastRecievedPose = new Pose2d();
     private Consumer<CameraUpdate> mPoseConsumer = null;
 
@@ -182,13 +182,7 @@ public class T265Camera
      */
     public synchronized void setPose(Pose2d newPose)
     {
-        mZeroingOffset = new Pose2d(
-            mLastRecievedPose.getTranslation().inverse().translateBy(newPose.getTranslation()),
-            mLastRecievedPose.getRotation().rotateBy(newPose.getRotation()));
-        // mZeroingOffset = mLastRecievedPose.inverse().transformBy(newPose);
-        // mZeroingOffset = newPose
-        // .transformBy(new Pose2d(mLastRecievedPose.getTranslation().inverse(),
-        // mLastRecievedPose.getRotation().inverse()));
+        mOrigin = newPose;
     }
 
     /**
@@ -247,9 +241,7 @@ public class T265Camera
                     "Unknown confidence ordinal \"" + confOrdinal + "\" passed from native code");
         }
 
-        final Pose2d transformedPose = new Pose2d(
-            currentPose.getTranslation().translateBy(mZeroingOffset.getTranslation()),
-            currentPose.getRotation().rotateBy(mZeroingOffset.getRotation()));
+        final Pose2d transformedPose = mOrigin.transformBy(currentPose);
         mPoseConsumer.accept(new CameraUpdate(transformedPose,
             new Twist2d(dx, 0.0, Rotation2d.fromRadians(dtheta)), confidence));
     }
