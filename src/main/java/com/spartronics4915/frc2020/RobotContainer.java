@@ -178,14 +178,11 @@ public class RobotContainer
                                                                                   // Vision
             .alongWith(mLEDCommands.new SetBlingState(Bling.kDriveSlow)));
 
-        mButtons.create(mJoystick, 3).whenPressed(mIndexerCommands.new ZeroSpinnerCommand(true));
-
         mButtons.create(mJoystick, 2).whenPressed(mIndexerCommands.new SpinIndexer(5));
         mButtons.create(mJoystick, 4).whenPressed(mIndexerCommands.new StartTransfer())
             .whenReleased(mIndexerCommands.new EndTransfer());
         mButtons.create(mJoystick, 5).whenPressed(mIndexerCommands.new StartKicker())
             .whenReleased(mIndexerCommands.new EndKicker());
-        mButtons.create(mJoystick, 1).whenPressed(mSuperstructureCommands.new LaunchSequence());
         /*
         mButtons.create(mJoystick, 1).whenPressed(mIndexerCommands.new ZeroSpinnerCommand(true));
         mButtons.create(mJoystick, 2).whenPressed(mIndexerCommands.new SpinIndexer(5));
