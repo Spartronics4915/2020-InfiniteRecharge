@@ -27,7 +27,7 @@ class AffineTestsMath3
         assertEquals(nPt.length(), 1, kEpsilon);
 
         Matrix3 op = aPt.outerProduct(bPt);
-        op.print(); // can be viewed if you "Run Test" in vscode, also in log
+        // op.print(); // can be viewed if you "Run Test" in vscode, also in log
         assertEquals(op.getEntry(0,0), 2, kEpsilon);
         assertEquals(op.getEntry(1,1), 8, kEpsilon);
         assertEquals(op.getEntry(2,2), 18, kEpsilon);

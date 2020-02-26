@@ -30,7 +30,7 @@ class AffineTestsEjml
         assertEquals(nPt.length(), 1, kEpsilon);
 
         DMatrix3x3 op = aPt.outerProduct(bPt);
-        op.print(); // can be viewed if you "Run Test" in vscode, also in log
+        // op.print(); // can be viewed if you "Run Test" in vscode, also in log
         assertEquals(op.a11, 2, kEpsilon);
         assertEquals(op.a22, 8, kEpsilon);
         assertEquals(op.a33, 18, kEpsilon);
@@ -175,9 +175,9 @@ class AffineTestsEjml
         Quaternion q5 = new Quaternion(a1);
         String q5s = q5.asString();
         assertEquals(q5s, "q 0.965926 0.149429 0.149429 0.149429");
-        a1.print();
+        // a1.print();
         Affine3 a2 = Affine3.fromQuaternion(q5);
-        a2.print();
+        // a2.print();
         assert(a1.equals(a2, kEpsilon));
         
         /*
