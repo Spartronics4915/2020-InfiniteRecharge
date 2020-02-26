@@ -85,7 +85,7 @@ public class DrivetrainEstimator
             x.get(0, 0), x.get(1, 0), x.get(2, 0));
     }
 
-    public void addVisionMeasurement(Pose2d visionRobotPose, double timestampSeconds)
+    public synchronized void addVisionMeasurement(Pose2d visionRobotPose, double timestampSeconds)
     {
         var low = mPastObserverStates.floorEntry(timestampSeconds);
         var high = mPastObserverStates.ceilingEntry(timestampSeconds);
@@ -129,7 +129,7 @@ public class DrivetrainEstimator
      * 
      * @return The estimated pose of the robot.
      */
-    public Pose2d update(Pose2d slamRobotPose, double dleftMeters, double drightMeters,
+    public synchronized Pose2d update(Pose2d slamRobotPose, double dleftMeters, double drightMeters,
         double dthetaRadians, double timeSeconds)
     {
         var u = new MatBuilder<>(Nat.N3(), Nat.N1()).fill(dleftMeters, drightMeters, dthetaRadians);

@@ -23,7 +23,7 @@ import com.spartronics4915.lib.util.InterpolatingTreeMap;
  */
 public class RobotStateMap
 {
-    private static final int kObservationBufferSize = 100;
+    private static final int kObservationBufferSize = 300;
 
     static public class State implements Interpolable<State>
     {
