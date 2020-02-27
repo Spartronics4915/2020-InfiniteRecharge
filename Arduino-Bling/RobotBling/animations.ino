@@ -444,12 +444,15 @@ void flash(unsigned long timeInterval, uint32_t color, uint8_t brightness)
   showPixels();
 }
 
-void rainbowCycle(int SpeedDelay) {
+void rainbowCycle(unsigned long SpeedDelay) 
+{
   byte *c;
   uint16_t i, j;
 
-  for(j=0; j<256*5; j++) { // 5 cycles of all colors on wheel
-    for(i=0; i< NUM_LEDS; i++) {
+  for(j=0; j<256*5; j++) 
+  { // 5 cycles of all colors on wheel
+    for(i=0; i< NUM_LEDS; i++) 
+	{
       c=Wheel(((i * 256 / NUM_LEDS) + j) & 255);
       pixels.setPixelColor(i, *c, *(c+1), *(c+2));
     }
@@ -459,19 +462,25 @@ void rainbowCycle(int SpeedDelay) {
 }
 
 // used by rainbowCycle and theaterChaseRainbow
-byte * Wheel(byte WheelPos) {
+byte * Wheel(byte WheelPos) 
+{
   static byte c[3];
 
-  if(WheelPos < 85) {
+  if(WheelPos < 85) 
+  {
    c[0]=WheelPos * 3;
    c[1]=255 - WheelPos * 3;
    c[2]=0;
-  } else if(WheelPos < 170) {
+  } 
+  else if(WheelPos < 170) 
+  {
    WheelPos -= 85;
    c[0]=255 - WheelPos * 3;
    c[1]=0;
    c[2]=WheelPos * 3;
-  } else {
+  } 
+  else 
+  {
    WheelPos -= 170;
    c[0]=0;
    c[1]=WheelPos * 3;
@@ -481,20 +490,24 @@ byte * Wheel(byte WheelPos) {
   return c;
 }
 
-void theaterChaseRainbow(int SpeedDelay) {
+void theaterChaseRainbow(unsigned long SpeedDelay) {
   byte *c;
 
-  for (int j=0; j < 256; j++) {     // cycle all 256 colors in the wheel
-    for (int q=0; q < 3; q++) {
-        for (int i=0; i < NUM_LEDS; i=i+3) {
-          c = Wheel( (i+j) % 255);
-          pixels.setPixelColor(i+q, *c, *(c+1), *(c+2));    //turn every third pixel on
-        }
+  for (int j=0; j < 256; j++) 
+	{     // cycle all 256 colors in the wheel
+    for (int q=0; q < 3; q++) 
+		{
+			for (int i=0; i < NUM_LEDS; i=i+3) 
+			{
+        c = Wheel( (i+j) % 255);
+        pixels.setPixelColor(i+q, *c, *(c+1), *(c+2));    //turn every third pixel on
+			}
         showPixels();
 
         delay(SpeedDelay);
 
-        for (int i=0; i < NUM_LEDS; i=i+3) {
+        for (int i=0; i < NUM_LEDS; i=i+3) 
+				{
           pixels.setPixelColor(i+q, 0,0,0);        //turn every third pixel off
         }
     }
