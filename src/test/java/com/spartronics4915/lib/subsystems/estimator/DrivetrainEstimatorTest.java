@@ -150,13 +150,13 @@ public class DrivetrainEstimatorTest
         System.out.println("Max error (meters):  " + maxError);
 
         // Uncomment for fun graphs
-        // new SwingWrapper<>(chart).displayChart();
-        // try
-        // {
-        //     Thread.sleep(1000000000);
-        // }
-        // catch (InterruptedException e)
-        // {
-        // }
+        new SwingWrapper<>(chart).displayChart();
+        try
+        {
+            Thread.sleep(1000000000);
+        }
+        catch (InterruptedException e)
+        {
+        }
     }
 }

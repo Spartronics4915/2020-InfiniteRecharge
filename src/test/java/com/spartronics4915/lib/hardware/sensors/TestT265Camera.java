@@ -21,6 +21,15 @@ public class TestT265Camera
     private boolean mDataRecieved = false;
     private final Object mLock = new Object();
 
+    @Test
+    public void testGeometry()
+    {
+        final Pose2d origin = new Pose2d(5, -5, Rotation2d.fromDegrees(180));
+        
+        final Pose2d currentPose = new Pose2d(1, 1, Rotation2d.fromDegrees(180));
+        System.out.println(origin.transformBy(currentPose));
+    }
+
     @Tag("hardwareDependant")
     @Test
     public void testNewCamera() throws InterruptedException

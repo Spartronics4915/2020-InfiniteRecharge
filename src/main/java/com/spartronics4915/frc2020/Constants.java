@@ -227,7 +227,7 @@ public final class Constants
         public static final double kRobotMassKg = 1;
         public static final double kMoi = 1;
 
-        public static final double kP = 0;
+        public static final double kP = 0.05;
 
         // TODO: characterize
         public static final double kRightS;
@@ -257,23 +257,23 @@ public final class Constants
                     kWheelDiameter = Units.inchesToMeters(6);
                     kNativeUnitsPerRevolution = 1440.0;
                     kSlowModeMultiplier = 0.5;
-                    kLeftOutputInverted = true;
+                    kLeftOutputInverted = false;
                     kLeftFollowerOutputInverted = false;
                     kRightOutputInverted = true;
-                    kRightFollowerOutputInverted = false;
+                    kRightFollowerOutputInverted = true;
 
                     kPigeonId = -1;
                     kDriveMotorConstructor = SpartronicsSRX::makeMotor;
                     break;
                 default:
-                    kTrackWidthMeters = 26.75;
+                    kTrackWidthMeters = Units.inchesToMeters(26.75);
                     kWheelDiameter = Units.inchesToMeters(8);
                     kScrubFactor = 1;
                     kLeftS = 0.241;
-                    kLeftV = 0.204;
+                    kLeftV = 0.804;
                     kLeftA = 0.0237;
                     kRightS = 0.243;
-                    kRightV = 0.204;
+                    kRightV = 0.804;
                     kRightA = 0.0261;
                     kNativeUnitsPerRevolution = 10.71;
                     kSlowModeMultiplier = 0.5;
