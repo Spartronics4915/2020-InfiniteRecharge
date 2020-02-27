@@ -273,10 +273,18 @@ class CoordSysMgrTest
         /*
          *  Now rotate our robot 35, turret needs to turn by negative equiv
          */
-        Pose2d r1 = new Pose2d(robotX, robotY, 215);
+        Pose2d r1 = new Pose2d(robotX, robotY, 180+35);
         TargetInfo i1 = this.trackTarget(r1, matchTargetMeters);
         assert(Math.abs(i1.distance - 5) < turretDist);
-        assert(i1.degrees < 0 && i1.degrees > -35); // ie: a large negative turn
+        assert(i1.degrees < -33 && i1.degrees > -35); // ie: a large negative turn
+
+        /*
+         *  Now rotate our robot 35, turret needs to turn by negative equiv
+         */
+        Pose2d r2 = new Pose2d(robotX, robotY, 180-35);
+        TargetInfo i2 = this.trackTarget(r2, matchTargetMeters);
+        assert(Math.abs(i2.distance - 5) < turretDist);
+        assert(i2.degrees > 35 && i1.degrees < 37); // ie: a large negative turn
     }
 
     private static class AltTargetInfo
@@ -296,11 +304,11 @@ class CoordSysMgrTest
         Vec3 targetInches = new Vec3(Units.metersToInches(x.getX()), 
                                     Units.metersToInches(x.getY()), 
                                     0); 
-        Vec3 targetPointInMnt = ctof.fieldPointToMount(targetInches);
+        Vec3 targetInMnt = ctof.fieldPointToMount(targetInches);
 
         // return our results in meters and degrees
-        result.distance = Units.inchesToMeters(targetPointInMnt.length());
-        result.angle = targetPointInMnt.angleOnXYPlane();
+        result.distance = Units.inchesToMeters(targetInMnt.length());
+        result.angle = targetInMnt.angleOnXYPlane();
         if (result.angle > 180)
         {
             // [0-360] -> (-180, 180]
@@ -331,10 +339,18 @@ class CoordSysMgrTest
         /*
          *  Now rotate our robot 35, turret needs to turn by negative equiv
          */
-        Pose2d r1 = new Pose2d(robotX, robotY, 215);
+        Pose2d r1 = new Pose2d(robotX, robotY, 180+35);
         AltTargetInfo i1 = this.trackTargetAlt(ctof, r1, matchTargetMeters);
         assert(Math.abs(i1.distance - 5) < turretDist);
-        assert(i1.angle < 0 && i1.angle > -35); // ie: a large negative turn
+        assert(i1.angle < -33 && i1.angle > -35); // ie: a large negative turn
+
+        /*
+         *  Now rotate our robot -35, turret needs to turn by positive equiv
+         */
+        Pose2d r2 = new Pose2d(robotX, robotY, 180-35);
+        AltTargetInfo i2 = this.trackTargetAlt(ctof, r2, matchTargetMeters);
+        assert(Math.abs(i2.distance - 5) < turretDist);
+        assert(i2.angle > 35 && i2.angle < 37); // ie: a large negative turn
     }
 
 }
