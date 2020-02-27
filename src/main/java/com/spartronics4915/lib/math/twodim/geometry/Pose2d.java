@@ -34,6 +34,17 @@ public class Pose2d implements State<Pose2d>
     }
 
     /**
+     * @param x
+     * @param y
+     * @param headingInDegrees
+     */
+    public Pose2d(double x, double y, double headingInDegrees)
+    {
+        mTranslation = new Translation2d(x, y);
+        mRotation = Rotation2d.fromDegrees(headingInDegrees);
+    }
+
+    /**
      * construct a Pose2d from parameters
      * @param translation (a Translation2d)
      * @param rotation (a Rotation2d)

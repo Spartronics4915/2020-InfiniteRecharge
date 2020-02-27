@@ -150,7 +150,7 @@ public class RobotStateEstimator extends SpartronicsSubsystem
             mSLAMCamera.setPose(pose);
         }
         mDrive.setIMUHeading(pose.getRotation());
-        Logger.notice("RSE: " + pose.toString());
+        // Logger.notice("RSE: " + pose.toString());
     }
 
     @Override
