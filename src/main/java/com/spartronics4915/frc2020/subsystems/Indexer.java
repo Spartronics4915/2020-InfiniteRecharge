@@ -106,6 +106,7 @@ public class Indexer extends SpartronicsSubsystem
     {
         mHasZeroed = true;
         mIndexerMotor.getEncoder().setPosition(0);
+        mTargetPosition = 0.0;
     }
 
     public void unzero()
@@ -247,7 +248,7 @@ public class Indexer extends SpartronicsSubsystem
 
     public boolean isAtPosition()
     {
-        return Math.abs(mTargetPosition - mIndexerMotor.getEncoder().getPosition()) * 360 < Constants.Indexer.Spinner.kPositionTolerance;
+        return (Math.abs(mTargetPosition - mIndexerMotor.getEncoder().getPosition()) * 360.0 )< Constants.Indexer.Spinner.kPositionTolerance;
     }
 
     public void addBalls(int i)

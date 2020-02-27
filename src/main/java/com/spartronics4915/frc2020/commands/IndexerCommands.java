@@ -377,7 +377,7 @@ public class IndexerCommands
                 new StartKicker(),
                 new LoadBallToSlot(1 + spinDistance),
                 new ParallelCommandGroup(
-                    new WaitCommand(0.4), new StartTransfer()),
+                    new WaitCommand(0.25), new StartTransfer()),
                 new SpinIndexer(ballsToShoot - 1),
                 new EndKicker(),
                 new EndTransfer(),
