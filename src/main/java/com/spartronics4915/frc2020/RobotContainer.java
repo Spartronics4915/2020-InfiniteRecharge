@@ -59,7 +59,7 @@ public class RobotContainer
     public final LED mLED;
     public final Vision mVision;
     public final Drive mDrive;
-    public final TrajectoryTracker mRamseteController = new FeedForwardTracker();
+    public final TrajectoryTracker mRamseteController = new RamseteTracker(2, 0.7);
     public final RobotStateEstimator mStateEstimator;
     public final TrajectoryContainer.AutoMode[] mAutoModes;
 
@@ -112,13 +112,13 @@ public class RobotContainer
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
             slamra,
             ekf,
-            EstimatorSource.Fused);
+            EstimatorSource.VisualSLAM);
         StartEndCommand slamraCmd = new StartEndCommand(
             () -> mStateEstimator.enable(),
             () -> mStateEstimator.stop(),
             mStateEstimator);
         mStateEstimator.setDefaultCommand(slamraCmd);
-        mStateEstimator.resetRobotStateMaps(new Pose2d());
+        mStateEstimator.resetRobotStateMaps(Constants.Trajectory.kStartPointRight);
         mVision = new Vision(mStateEstimator, mLauncher);
 
         if (!RobotBase.isReal()) // we're unit testing
@@ -131,10 +131,12 @@ public class RobotContainer
         mIntakeCommands = new IntakeCommands(mIntake, mIndexer);
         mIndexerCommands = new IndexerCommands(mIndexer);
         mLauncherCommands = new LauncherCommands(mLauncher, mIndexerCommands,
-            mStateEstimator.getEncoderRobotStateMap());
+            mStateEstimator.getBestRobotStateMap());
         mPanelRotatorCommands = new PanelRotatorCommands(mPanelRotator);
         mSuperstructureCommands = new SuperstructureCommands(mIndexerCommands,
             mIntakeCommands, mLauncherCommands);
+
+        mVision.registerTargetListener(mStateEstimator.getVisionListener());
 
         // Default Commands are established in each commands class
 

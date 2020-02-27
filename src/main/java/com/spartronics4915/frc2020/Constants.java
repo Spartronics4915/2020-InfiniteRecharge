@@ -70,8 +70,8 @@ public final class Constants
             public static final double kPositionP = 0.005;
             public static final double kPositionD = 0;
             public static final double kConversionRatio = 1.0 / (187.0/20.0*9.0);
-            public static final double kMaxVelocity = 1;
-            public static final double kMaxAcceleration = 0.5;
+            public static final double kMaxVelocity = 1.5;
+            public static final double kMaxAcceleration = 2;
             public static final double kStallThreshold = 90.0; // FIXME: stand-in values
 
             /** Degrees */
@@ -135,9 +135,9 @@ public final class Constants
 
         // Vals for interpolating lookup table, Distance units is in feet
         // Last three are good
-        public static final double[] kDistanceTable = new double[]{80.0, 118.11, 157.48, 177.165, 196.85, 240.0, 310.0};
-        public static final double[] kAngleTable =    new double[]{6.0,  16.0,   20.0,   19.0,    24.0,   25.0,  28.0};
-        public static final double[] kRPSTable =      new double[]{33.5, 38.0,   41.0,   41.0,    45.0,   49.0,  60.0};
+        public static final double[] kDistanceTable = new double[]{139.0, 163.0, 211.0, 271.0, 319.0, 439.0};//{80.0, 118.11, 157.48, 177.165, 196.85, 240.0, 310.0};
+        public static final double[] kAngleTable =    new double[]{0.0,0.0,0.0,0.0,0.0,0.0};//{6.0,  16.0,   20.0,   19.0,    24.0,   25.0,  28.0};
+        public static final double[] kRPSTable =      new double[]{43.0, 42.6, 45.25, 47.25, 50.75, 64.0};//{33.5, 38.0,   41.0,   41.0,    45.0,   49.0,  60.0};
         public static final int kLookupTableSize = kDistanceTable.length;
 
         /** RPS */
@@ -227,7 +227,7 @@ public final class Constants
         public static final double kRobotMassKg = 1;
         public static final double kMoi = 1;
 
-        public static final double kP = 0;
+        public static final double kP = 0.01;
 
         // TODO: characterize
         public static final double kRightS;
@@ -257,23 +257,23 @@ public final class Constants
                     kWheelDiameter = Units.inchesToMeters(6);
                     kNativeUnitsPerRevolution = 1440.0;
                     kSlowModeMultiplier = 0.5;
-                    kLeftOutputInverted = true;
+                    kLeftOutputInverted = false;
                     kLeftFollowerOutputInverted = false;
                     kRightOutputInverted = true;
-                    kRightFollowerOutputInverted = false;
+                    kRightFollowerOutputInverted = true;
 
                     kPigeonId = -1;
                     kDriveMotorConstructor = SpartronicsSRX::makeMotor;
                     break;
                 default:
-                    kTrackWidthMeters = 26.75;
+                    kTrackWidthMeters = Units.inchesToMeters(26.75);
                     kWheelDiameter = Units.inchesToMeters(8);
                     kScrubFactor = 1;
                     kLeftS = 0.241;
-                    kLeftV = 0.204;
+                    kLeftV = 0.404;
                     kLeftA = 0.0237;
                     kRightS = 0.243;
-                    kRightV = 0.204;
+                    kRightV = 0.404;
                     kRightA = 0.0261;
                     kNativeUnitsPerRevolution = 10.71;
                     kSlowModeMultiplier = 0.5;
@@ -294,7 +294,7 @@ public final class Constants
         public static final double kStartVelocityMetersPerSec = 0;
         public static final double kEndVelocityMetersPerSec = 0;
         public static final double kMaxVelocityMetersPerSec = 1;
-        public static final double kMaxAccelerationMeterPerSecSq = .1;
+        public static final double kMaxAccelerationMeterPerSecSq = 0.5;
 
         public static final Pose2d kStartPointLeft = new Pose2d(Units.inchesToMeters(508),
             Units.inchesToMeters(138), Rotation2d.fromDegrees(180));

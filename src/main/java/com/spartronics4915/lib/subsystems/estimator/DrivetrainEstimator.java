@@ -40,6 +40,7 @@ public class DrivetrainEstimator
 {
 
     private static final double kNominalDt = 0.01;
+    private static final int kMaxPastObserverStates = 200;
 
     private final ExtendedKalmanFilter<N3, N3, N3> mObserver;
     private final ExtendedKalmanFilter<N3, N3, N6> mVisionObserver;
@@ -134,6 +135,11 @@ public class DrivetrainEstimator
     {
         var u = new MatBuilder<>(Nat.N3(), Nat.N1()).fill(dleftMeters, drightMeters, dthetaRadians);
         mPastObserverStates.put(timeSeconds, new ObserverState(mObserver, u, slamRobotPose));
+
+        if (mPastObserverStates.size() > kMaxPastObserverStates)
+        {
+            mPastObserverStates.remove(mPastObserverStates.firstKey());
+        }
 
         return update(slamRobotPose, null, u);
     }

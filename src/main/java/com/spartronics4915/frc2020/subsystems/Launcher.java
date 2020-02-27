@@ -87,9 +87,8 @@ public class Launcher extends SpartronicsSubsystem
         // One BAG motor for turret
         // XXX: explain all these interesting constants.
         mTurretMotor = SpartronicsSRX.makeMotor(Constants.Launcher.kTurretId,
-            SensorModel.fromMultiplier(Math.toDegrees(1.0 / 1024.0 / 11.75 / 20.0) * 2.0));// UNITS
-                                                                                           // ARE
-                                                                                           // GOOD
+            SensorModel.fromMultiplier(Math.toDegrees(1.0 / 1024.0 / 11.75 / 20.0) * 2.0));
+
 
         if (mTurretMotor.hadStartupError())
         {
@@ -100,6 +99,7 @@ public class Launcher extends SpartronicsSubsystem
 
         mTurretMotor.setSoftLimits(45, -45);
         mTurretEncoder = mTurretMotor.getEncoder();
+        // mTurretEncoder.setPosition(0);
         mTurretPIDController = new PIDController(Constants.Launcher.kTurretP, 0,
             Constants.Launcher.kTurretD);
         mTurretPIDController.setTolerance(1.0);

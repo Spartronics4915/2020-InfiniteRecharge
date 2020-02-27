@@ -16,7 +16,7 @@ public class Drive extends AbstractDrive
     public Drive(Launcher launcher)
     {
         super(
-            SpartronicsMax.makeMotor(
+            Constants.Drive.kDriveMotorConstructor.apply(
                 Constants.Drive.kLeftDriveMaster,
                 SensorModel.fromWheelDiameter(
                     Constants.Drive.kWheelDiameter,
