@@ -318,7 +318,7 @@ public class IndexerCommands
                 new WaitForBallHeld(),
                 new LoadBallToSlot(0),
                 new ParallelCommandGroup(
-                    new WaitCommand(0.4), new StartTransfer()),
+                    new WaitCommand(0.3), new StartTransfer()),
                 new SpinIndexer(1),
                 new EndTransfer(),
                 new InstantCommand(() -> mIndexer.addBalls(1), mIndexer)

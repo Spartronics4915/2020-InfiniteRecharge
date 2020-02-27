@@ -70,8 +70,8 @@ public final class Constants
             public static final double kPositionP = 0.005;
             public static final double kPositionD = 0;
             public static final double kConversionRatio = 1.0 / (187.0/20.0*9.0);
-            public static final double kMaxVelocity = 1;
-            public static final double kMaxAcceleration = 0.85;
+            public static final double kMaxVelocity = 1.5;
+            public static final double kMaxAcceleration = 2;
             public static final double kStallThreshold = 90.0; // FIXME: stand-in values
 
             /** Degrees */
@@ -227,7 +227,7 @@ public final class Constants
         public static final double kRobotMassKg = 1;
         public static final double kMoi = 1;
 
-        public static final double kP = 0.05;
+        public static final double kP = 0.01;
 
         // TODO: characterize
         public static final double kRightS;
@@ -270,10 +270,10 @@ public final class Constants
                     kWheelDiameter = Units.inchesToMeters(8);
                     kScrubFactor = 1;
                     kLeftS = 0.241;
-                    kLeftV = 0.804;
+                    kLeftV = 0.404;
                     kLeftA = 0.0237;
                     kRightS = 0.243;
-                    kRightV = 0.804;
+                    kRightV = 0.404;
                     kRightA = 0.0261;
                     kNativeUnitsPerRevolution = 10.71;
                     kSlowModeMultiplier = 0.5;
@@ -294,7 +294,7 @@ public final class Constants
         public static final double kStartVelocityMetersPerSec = 0;
         public static final double kEndVelocityMetersPerSec = 0;
         public static final double kMaxVelocityMetersPerSec = 1;
-        public static final double kMaxAccelerationMeterPerSecSq = .1;
+        public static final double kMaxAccelerationMeterPerSecSq = 0.5;
 
         public static final Pose2d kStartPointLeft = new Pose2d(Units.inchesToMeters(508),
             Units.inchesToMeters(138), Rotation2d.fromDegrees(180));

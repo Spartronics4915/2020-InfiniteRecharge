@@ -99,7 +99,7 @@ public class Launcher extends SpartronicsSubsystem
 
         mTurretMotor.setSoftLimits(45, -45);
         mTurretEncoder = mTurretMotor.getEncoder();
-        mTurretEncoder.setPosition(0);
+        // mTurretEncoder.setPosition(0);
         mTurretPIDController = new PIDController(Constants.Launcher.kTurretP, 0,
             Constants.Launcher.kTurretD);
         mTurretPIDController.setTolerance(1.0);

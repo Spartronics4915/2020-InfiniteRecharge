@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class TrajectoryContainer
 {
@@ -185,7 +186,7 @@ public class TrajectoryContainer
     public static final TrajectoryCollection middle = new TrajectoryCollection(
         Constants.Trajectory.kStartPointMiddle);
     public static final TrajectoryCollection right = new TrajectoryCollection(
-        Constants.Trajectory.kStartPointRight);
+        Constants.Trajectory.kStartPointMiddle);
     public static final TrajectoryCollection eightBall = new TrajectoryCollection(
         Constants.Trajectory.kStartPointMiddle);
     public static final TrajectoryCollection driveStraight = new TrajectoryCollection(
@@ -263,8 +264,9 @@ public class TrajectoryContainer
                 superstructureCommands.new LaunchSequence())),
             new AutoMode("Right",
                 new SequentialCommandGroup(
+                    new WaitCommand(0.5),
                     new StateMapResetCommand(stateEstimator, TrajectoryContainer.right.mStartPoint),
-                    superstructureCommands.new LaunchSequence(3),
+                    superstructureCommands.new LaunchSequence(5),
                     new ParallelCommandGroup(
                         new TrajectoryTrackerCommand(drive,
                             TrajectoryContainer.right.getTrajectory(null,
@@ -278,7 +280,7 @@ public class TrajectoryContainer
                         TrajectoryContainer.right.getTrajectory(Destination.kRightTrenchFar,
                             Destination.kRightShootingPosition),
                         ramseteController, stateEstimator.getBestRobotStateMap()),
-                    superstructureCommands.new LaunchSequence(3))),
+                    superstructureCommands.new LaunchSequence(5))),
             new AutoMode("Eight Ball", new SequentialCommandGroup(
                 new StateMapResetCommand(stateEstimator, TrajectoryContainer.eightBall.mStartPoint),
                 superstructureCommands.new LaunchSequence(3),
