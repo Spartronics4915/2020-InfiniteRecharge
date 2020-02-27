@@ -131,14 +131,14 @@ public final class Constants
 
     public static final class PanelRotator
     {
-        public static final int kOpticalFlagUpId = 7;
         public static final int kLimitSwitchDownId = 6;
+        public static final int kOpticalFlagUpId = 7;
         public static final int kSpinMotorId = 13;
         public static final int kRaiseMotorId = 14;
 
         public static final double kRaiseSpeed = -0.25;
         public static final double kLowerSpeed = 0.25;
-        public static final double kSpinSpeed = 0.25; // XXX: test
+        public static final double kSpinSpeed = 0.5; // XXX: test
         public static final double kConfidenceMinimum = 0.3; // FIXME: almost certainly incorrect
 
         public static final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114); // XXX: test these values in a variety of conditions
