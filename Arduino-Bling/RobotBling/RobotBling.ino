@@ -95,8 +95,6 @@ enum
   kClimb,
   kVision,
   kEject,
-  kRainbow,
-  kTheater,
 
   // Add new bling states immediately above this line
 
@@ -252,15 +250,6 @@ void loop()
       /** strobe WHITE every strobe pause */
       strobe(rgbColor_WHITE, 1 /* # of flashes */, 150 /* flash delay */, 1000 /* strobe pause */);
       break;
-
-	case kRainbow: /* : */
-	  /** Gradual rainbow transition */
-	  rainbowCycle(20);
-	  break;
-
-	case kTheater: /* ; */
-	  theaterChaseRainbow(50);
-	  break;
 
     default:
       /** All LEDs are OFF */
