@@ -106,6 +106,19 @@ public class SpartronicsMax implements SpartronicsMotor
         kInternal, kAnalogRelative, kAnalogAbsolute
     }
 
+    // Temporary!!!!
+    public static SpartronicsMotor makeMotorBrushed(int deviceNumber)
+    {
+        if (RobotBase.isSimulation())
+        {
+            return new SpartronicsSimulatedMotor(deviceNumber);
+        }
+
+        Logger.warning("You're using a **temporary** Spark Max brushed constructor! Revert to brushless when you plug in a brushless motor, or be smitten by the Rev Robotics (tm) gods!!!1!");
+
+        return new SpartronicsMax(new CANSparkMax(deviceNumber, MotorType.kBrushed), SensorModel.fromMultiplier(1), FeedbackSensorType.kInternal, null);
+    }
+
     public static SpartronicsMotor makeMotor(int deviceNumber, SensorModel sensorModel,
         FeedbackSensorType feedbackSensor)
     {
@@ -138,7 +151,7 @@ public class SpartronicsMax implements SpartronicsMotor
         // We only use SPARK MAXes for brushless motors
         // If that changes we can make motor type configurable
         var master = new CANSparkMax(deviceNumber, MotorType.kBrushless);
-        CANSparkMax follower = new CANSparkMax(deviceNumber, MotorType.kBrushless);
+        CANSparkMax follower = new CANSparkMax(followerDeviceNumber, MotorType.kBrushless);
         follower.follow(master);
         return new SpartronicsMax(master, sensorModel, feedbackSensor, follower);
     }
@@ -300,16 +313,16 @@ public class SpartronicsMax implements SpartronicsMotor
     }
 
     @Override
-    public void setDutyCycle(double dutyCycle, double arbitraryFeedForwardVolts)
+    public void setPercentOutput(double dutyCycle, double arbitraryFeedForwardVolts)
     {
         mPIDController.setReference(dutyCycle, ControlType.kDutyCycle, 0,
             arbitraryFeedForwardVolts);
     }
 
     @Override
-    public void setDutyCycle(double dutyCycle)
+    public void setPercentOutput(double dutyCycle)
     {
-        setDutyCycle(dutyCycle, 0.0);
+        setPercentOutput(dutyCycle, 0.0);
     }
 
     @Override
@@ -408,6 +421,12 @@ public class SpartronicsMax implements SpartronicsMotor
 
         mSparkMax.setSoftLimit(SoftLimitDirection.kForward, (float) mSensorModel.toNativeUnits(forwardLimitCustomUnits));
         mSparkMax.setSoftLimit(SoftLimitDirection.kReverse, (float) mSensorModel.toNativeUnits(reverseLimitCustomUnits));
+    }
+
+    @Override
+    public void setStatorCurrentLimit(int limitAmps)
+    {
+        mSparkMax.setSmartCurrentLimit(limitAmps);
     }
 
 }

@@ -1,11 +1,6 @@
-package com.spartronics4915.lib.math.threedim;
+package com.spartronics4915.lib.math.threedim.math3;
 
 import java.util.ArrayList;
-import org.ejml.data.DMatrix4x4;
-import org.ejml.data.DMatrix3x3;
-import org.ejml.data.DMatrix4;
-import org.ejml.dense.fixed.CommonOps_DDF4;
-/* http://ejml.org/javadoc/org/ejml/dense/fixed/CommonOps_DDF4.html */
 
 /* Affine3 is a specialization of DMatrix4x4.  Its purpose is to
  * present a constrained interface to users, focused on the expression
@@ -102,17 +97,22 @@ public class Affine3
     }
 
     /* --------------------------------------------------------------------*/
-    private DMatrix4x4 mMatrix;
+    private Matrix4 mMatrix;
+    private double[] mVec4 = new double[4];
 
     public Affine3()
     {
-        this.mMatrix = new DMatrix4x4();
-        CommonOps_DDF4.setIdentity(this.mMatrix);
+        this.mMatrix = Matrix4.identity();
     }
 
-    public Affine3(DMatrix4x4 m)
+    public Affine3(Matrix4 m)
     {
         this.mMatrix = m;
+    }
+
+    public Affine3(double [][]d)
+    {
+        this.mMatrix = new Matrix4(d);
     }
 
     /**
@@ -121,7 +121,7 @@ public class Affine3
      */
     public Affine3(Vec3 xlate)
     {
-        this(xlate.a1, xlate.a2, xlate.a3);
+        this(xlate.getX(), xlate.getY(), xlate.getZ());
     }
 
     /**
@@ -132,11 +132,11 @@ public class Affine3
      */
     public Affine3(double x, double y, double z)
     {
-        this.mMatrix = new DMatrix4x4();
-        CommonOps_DDF4.setIdentity(this.mMatrix);
-        this.mMatrix.a14 = x;
-        this.mMatrix.a24 = y;
-        this.mMatrix.a34 = z;
+        this.mMatrix = Matrix4.identity();
+        double d[][] = this.mMatrix.getDataRef();
+        d[0][3] = x;
+        d[1][3] = y;
+        d[2][3] = z;
     }
 
     /**
@@ -146,19 +146,19 @@ public class Affine3
      * @param ytgt
      * @param ztgt
      */
-    Affine3(final Vec3 xtgt, final Vec3 ytgt, final Vec3 ztgt)
+    public Affine3(final Vec3 xtgt, final Vec3 ytgt, final Vec3 ztgt)
     {
-        this.mMatrix = new DMatrix4x4();
-        CommonOps_DDF4.setIdentity(this.mMatrix);
-        this.mMatrix.a11 = xtgt.a1;
-        this.mMatrix.a21 = xtgt.a2;
-        this.mMatrix.a31 = xtgt.a3;
-        this.mMatrix.a12 = ytgt.a1;
-        this.mMatrix.a22 = ytgt.a2;
-        this.mMatrix.a32 = ytgt.a3;
-        this.mMatrix.a13 = ztgt.a1;
-        this.mMatrix.a23 = ztgt.a2;
-        this.mMatrix.a33 = ztgt.a3;
+        this.mMatrix = Matrix4.identity();
+        double d[][] = this.mMatrix.getDataRef();
+        d[0][0] = xtgt.getX();
+        d[1][0] = xtgt.getY();
+        d[2][0] = xtgt.getZ();
+        d[0][1] = ytgt.getX();
+        d[1][1] = ytgt.getY();
+        d[2][1] = ytgt.getZ();
+        d[0][2] = ztgt.getX();
+        d[1][2] = ztgt.getY();
+        d[2][2] = ztgt.getZ();
     }
 
     /**
@@ -186,7 +186,7 @@ public class Affine3
 
         Affine3 trans = new Affine3(x,y,z);
         Affine3 rot = new Affine3(new Quaternion(q0, q1, q2, q3));
-        Affine3 result =  Affine3.concatenate(trans, rot);
+        Affine3 result = Affine3.concatenate(trans, rot);
         this.mMatrix = result.mMatrix;
     } 
 
@@ -196,7 +196,9 @@ public class Affine3
      */
     public Affine3(Quaternion q)
     {
-        this.mMatrix = q.asDMatrix4x4();
+        this.mMatrix = Matrix4.identity();
+        Matrix3 m = q.asMatrix3();
+        this.mMatrix.setSubMatrix(m.getDataRef(), 0, 0);
     }
 
     /**
@@ -208,55 +210,15 @@ public class Affine3
      */
     public Affine3(double angle, final Vec3 axis, final Vec3 pt)
     {
-        Vec3 uaxis = axis.asUnit();
-        double rads = Math.toRadians(angle);
-        double sina = Math.sin(rads);
-        double cosa = Math.cos(rads);
-        // diag is scale
-        DMatrix4x4 m = new DMatrix4x4();
-        this.mMatrix = m;
-
-        m.a11 = cosa;
-        m.a22 = cosa;
-        m.a33 = cosa;
-
-        m.a41 = m.a42 = m.a43 = 0;
-        m.a44 = 1;
-
-        // a += d
-        DMatrix3x3 d = uaxis.outerProduct(uaxis);
-        double f1 = 1.0 - cosa;
-        m.a11 += d.a11 * f1;
-        m.a12 += d.a12 * f1;
-        m.a13 += d.a13 * f1;
-        m.a21 += d.a21 * f1;
-        m.a22 += d.a22 * f1;
-        m.a23 += d.a23 * f1;
-        m.a31 += d.a31 * f1;
-        m.a32 += d.a32 * f1;
-        m.a33 += d.a33 * f1;
-
-        uaxis.multiply(sina);
-
-        // a.mMatrix.a11 += 0;
-        m.a12 -= uaxis.a3;
-        m.a13 += uaxis.a2;
-
-        m.a21 += uaxis.a3;
-        // a.mMatrix.a22 += 0;
-        m.a23 -= uaxis.a1;
-
-        m.a31 -= uaxis.a2;
-        m.a32 += uaxis.a1;
-        // a.mMatrix.a33 += 0
-
+        Quaternion q = new Quaternion(angle, axis);
+        this.mMatrix = new Matrix4(q.asMatrix3());
         if(pt != null)
         {
-            // M[:3, 3] = point - numpy.dot(R, point)
             Vec3 pp = pt.subtract(this.transformVector(pt));
-            m.a14 = pp.a1;
-            m.a24 = pp.a2;
-            m.a34 = pp.a3;
+            double[][] d4 = mMatrix.getDataRef();
+            d4[0][3] = pp.getX();
+            d4[1][3] = pp.getY();
+            d4[2][3] = pp.getZ();
         }
     }
 
@@ -264,7 +226,7 @@ public class Affine3
      * Expose our matrix represention to the outer world.
      * @return ejml DMatrix4x4 
      */
-    public DMatrix4x4 asMatrix()
+    public Matrix4 asMatrix()
     {
         return this.mMatrix;
     }
@@ -276,12 +238,7 @@ public class Affine3
      */
     public String asString()
     {
-        Quaternion q = new Quaternion(this, false); // extract quaternion
-        DMatrix4 qm = q.asDMatrix4();
-        String result = String.format("o %g %g %g q %g %g %g %g", this.mMatrix.a14, 
-                                this.mMatrix.a24, this.mMatrix.a34,
-                                qm.a1, qm.a2, qm.a3, qm.a4);
-        return result;
+        return null;
     }
 
     public boolean equals(final Affine3 rhs)
@@ -291,28 +248,7 @@ public class Affine3
 
     public boolean equals(final Affine3 rhs, double epsilon)
     {
-        final DMatrix4x4 m1 = this.mMatrix;
-        final DMatrix4x4 m2 = rhs.mMatrix;
-        if(Math.abs(m1.a11 - m2.a11) > epsilon) return false;
-        if(Math.abs(m1.a12 - m2.a12) > epsilon) return false;
-        if(Math.abs(m1.a13 - m2.a13) > epsilon) return false;
-        if(Math.abs(m1.a14 - m2.a14) > epsilon) return false;
-
-        if(Math.abs(m1.a21 - m2.a21) > epsilon) return false;
-        if(Math.abs(m1.a22 - m2.a22) > epsilon) return false;
-        if(Math.abs(m1.a23 - m2.a23) > epsilon) return false;
-        if(Math.abs(m1.a24 - m2.a24) > epsilon) return false;
-
-        if(Math.abs(m1.a31 - m2.a31) > epsilon) return false;
-        if(Math.abs(m1.a32 - m2.a32) > epsilon) return false;
-        if(Math.abs(m1.a33 - m2.a33) > epsilon) return false;
-        if(Math.abs(m1.a34 - m2.a34) > epsilon) return false;
-
-        if(Math.abs(m1.a41 - m2.a41) > epsilon) return false;
-        if(Math.abs(m1.a42 - m2.a42) > epsilon) return false;
-        if(Math.abs(m1.a43 - m2.a43) > epsilon) return false;
-        if(Math.abs(m1.a44 - m2.a44) > epsilon) return false;
-        return true;
+        return this.mMatrix.equals(rhs.mMatrix, epsilon);
     }
 
     /**
@@ -320,8 +256,7 @@ public class Affine3
      */
     public double trace()
     {
-        return this.mMatrix.a11 + this.mMatrix.a22 + 
-               this.mMatrix.a33 + this.mMatrix.a44;
+        return this.mMatrix.getTrace();
     }
 
     public void print()
@@ -350,7 +285,7 @@ public class Affine3
      */
     public Affine3 translate(Vec3 v)
     {
-        return this.translate(v.a1, v.a2, v.a3);
+        return this.translate(v.getX(), v.getY(), v.getZ());
     }
 
     public Affine3 translate(double x, double y, double z)
@@ -362,107 +297,86 @@ public class Affine3
 
     public Vec3 getTranslation()
     {
-        return new Vec3(this.mMatrix.a14, this.mMatrix.a24, this.mMatrix.a34);
+        double m4[][] = this.mMatrix.getDataRef();
+        return new Vec3(m4[0][3], m4[1][3], m4[2][3]);
     }
     
     /**
-     * Applies the matrix inverse operation to this.
+     * multiplies this Affine3 by another, this now contains product.
      */
-    public void invert()
+    public void multiply(final Affine3 rhs)
     {
-        DMatrix4x4 inv = new DMatrix4x4();
-        CommonOps_DDF4.invert(this.mMatrix, inv);
-        this.mMatrix = inv;
+        Affine3 prod = this.asProduct(rhs);
+        this.mMatrix = prod.mMatrix;
+    }
+
+    public Affine3 asProduct(final Affine3 rhs)
+    {
+        return new Affine3(this.mMatrix.multiply(rhs.mMatrix).getDataRef());
     }
 
     /**
      * Compute matrix inverse
      * @return the inverse of this Affine3
      */
+    public void invert()
+    {
+        Matrix4 imat = this.mMatrix.invert();
+        this.mMatrix = imat;
+    }
+
     public Affine3 asInverse()
     {
-        DMatrix4x4 inv = new DMatrix4x4();
-        CommonOps_DDF4.invert(this.mMatrix, inv);
-        return new Affine3(inv);
-    }
-
-    /**
-     * Apply the transform to this via matrix multiplication.
-     * @param rhs
-     */
-    public void multiply(final Affine3 rhs)
-    {
-        DMatrix4x4 result = new DMatrix4x4();
-        CommonOps_DDF4.mult(this.mMatrix, rhs.mMatrix, result);
-        this.mMatrix = result;
-    }
-
-    /**
-     * return the result of matrix multiplication of this and rhs.
-     * @param rhs
-     * @return the product of this and rhs.
-     */
-    public Affine3 asProduct(final Affine3 rhs)
-    {
-        DMatrix4x4 result = new DMatrix4x4();
-        CommonOps_DDF4.mult(this.mMatrix, rhs.mMatrix, result);
-        return new Affine3(result);
+        return new Affine3(this.mMatrix.invert());
     }
 
     public Vec3 transformPoint(final Vec3 in)
     {
-        DMatrix4 x = new DMatrix4();
-        DMatrix4 out4 = new DMatrix4();
-        x.a1 = in.a1;
-        x.a2 = in.a2;
-        x.a3 = in.a3;
-        x.a4 = 1; // <---  as point
-        CommonOps_DDF4.mult(this.mMatrix, x, out4);
-        return new Vec3(out4.a1, out4.a2, out4.a3);
+        this.mVec4[0] = in.getX();
+        this.mVec4[1] = in.getY();
+        this.mVec4[2] = in.getZ();
+        this.mVec4[3] = 1; // <- point
+        double opt[] = this.mMatrix.operate(this.mVec4);
+        return new Vec3(opt[0], opt[1], opt[2]);
+        // return new Vec3(out4.a1, out4.a2, out4.a3);
+    }
+
+    public Vec3 transformVector(final Vec3 in)
+    {
+        this.mVec4[0] = in.getX();
+        this.mVec4[1] = in.getY();
+        this.mVec4[2] = in.getZ();
+        this.mVec4[3] = 0; // <- vector
+        double opt[] = this.mMatrix.operate(this.mVec4);
+        return new Vec3(opt[0], opt[1], opt[2]);
     }
 
     public ArrayList<Vec3> transformPoints(final Vec3 ...in)
     {
         ArrayList<Vec3> result = new ArrayList<Vec3>();
-        DMatrix4 x = new DMatrix4();
-        DMatrix4 out4 = new DMatrix4();
-        x.a4 = 1; // <---  as point
+        this.mVec4[3] = 1; // <---  as point
         for(final Vec3 v : in)
         {
-            x.a1 = v.a1;
-            x.a2 = v.a2;
-            x.a3 = v.a3;
-            CommonOps_DDF4.mult(this.mMatrix, x, out4);
-            result.add(new Vec3(out4.a1, out4.a2, out4.a3));
+            this.mVec4[0] = v.getX();
+            this.mVec4[1] = v.getY();
+            this.mVec4[2] = v.getZ();
+            double opt[] = this.mMatrix.operate(this.mVec4);
+            result.add(new Vec3(opt[0], opt[1], opt[2]));
         }
         return result;
-    }
-
-    public Vec3 transformVector(final Vec3 in)
-    {
-        DMatrix4 x = new DMatrix4();
-        DMatrix4 out4 = new DMatrix4();
-        x.a1 = in.a1;
-        x.a2 = in.a2;
-        x.a3 = in.a3;
-        x.a4 = 0; // <--  make it a direction
-        CommonOps_DDF4.mult(this.mMatrix, x, out4);
-        return new Vec3(out4.a1, out4.a2, out4.a3);
     }
 
     public ArrayList<Vec3> transformVectors(final Vec3 ...in)
     {
         ArrayList<Vec3> result = new ArrayList<Vec3>();
-        DMatrix4 x = new DMatrix4();
-        DMatrix4 out4 = new DMatrix4();
-        x.a4 = 0; // <--- make it a direction
-        for(Vec3 v : in)
+        this.mVec4[3] = 0; // <---  as vector
+        for(final Vec3 v : in)
         {
-            x.a1 = v.a1;
-            x.a2 = v.a2;
-            x.a3 = v.a3;
-            CommonOps_DDF4.mult(this.mMatrix, x, out4);
-            result.add(new Vec3(out4.a1, out4.a2, out4.a3));
+            this.mVec4[0] = v.getX();
+            this.mVec4[1] = v.getY();
+            this.mVec4[2] = v.getZ();
+            double opt[] = this.mMatrix.operate(this.mVec4);
+            result.add(new Vec3(opt[0], opt[1], opt[2]));
         }
         return result;
     }

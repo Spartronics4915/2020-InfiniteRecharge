@@ -1,4 +1,4 @@
-package com.spartronics4915.lib.math.threedim;
+package com.spartronics4915.lib.math.threedim.ejml;
 
 import org.ejml.data.DMatrix3; // Vec3
 import org.ejml.data.DMatrix3x3; // Vec3
@@ -40,6 +40,21 @@ public class Vec3 extends DMatrix3
     {
         super(v[0], v[1], v[2]);
         assert v.length == 3;
+    }
+
+    public double getX()
+    {
+        return this.a1;
+    }
+
+    public double getY()
+    {
+        return this.a2;
+    }
+
+    public double getZ()
+    {
+        return this.a3;
     }
 
     public Vec3 add(final Vec3 rhs)
@@ -129,9 +144,21 @@ public class Vec3 extends DMatrix3
         return true;
     }
 
+    /**
+     * @return lenght of 3D vector. aka: distance of 3d point from origin.
+     */
     public double length()
     {
         return NormOps_DDF3.normF(this);
+    }
+
+    /**
+     * @return - length of xy components of vector.
+     *   aka: distance of xy point from origin.
+     */
+    public double lengthXY()
+    {
+        return Math.sqrt(this.a1*this.a1 + this.a2*this.a2);
     }
 
     public void normalize()

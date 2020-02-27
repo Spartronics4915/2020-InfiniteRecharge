@@ -24,8 +24,8 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
     {
         if (leftMotor.hadStartupError() || rightMotor.hadStartupError())
         {
-            mLeftMotor = new SpartronicsSimulatedMotor(leftMotor.getDeviceNumber());
-            mRightMotor = new SpartronicsSimulatedMotor(rightMotor.getDeviceNumber());
+            mLeftMotor = new SpartronicsSimulatedMotor(leftMotor.getDeviceNumber(), leftMotor.getFollower().getDeviceNumber());
+            mRightMotor = new SpartronicsSimulatedMotor(rightMotor.getDeviceNumber(), rightMotor.getFollower().getDeviceNumber());
             mIMU = new SpartronicsIMU()
             {
                 @Override
@@ -73,10 +73,15 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
         return mIMU.getYaw().rotateBy(mIMUOffset);
     }
 
+    public double getTurretAngle()
+    {
+        return 0;
+    }
+
     public void arcadeDrive(double linearPercent, double rotationPercent)
     {
-        double maxInput = Math
-            .copySign(Math.max(Math.abs(linearPercent), Math.abs(rotationPercent)), linearPercent);
+        double maxInput = Math.copySign(Math.max(Math.abs(linearPercent), 
+                                        Math.abs(rotationPercent)), linearPercent);
 
         double leftMotorOutput, rightMotorOutput;
 
@@ -114,8 +119,8 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
 
     public void tankDrive(double leftPercent, double rightPercent)
     {
-        mLeftMotor.setDutyCycle(leftPercent);
-        mRightMotor.setDutyCycle(rightPercent);
+        mLeftMotor.setPercentOutput(leftPercent);
+        mRightMotor.setPercentOutput(rightPercent);
     }
 
     @Override
@@ -135,11 +140,14 @@ public abstract class AbstractDrive extends SpartronicsSubsystem implements Diff
     {
         return mDifferentialDrive;
     }
-    
+
     @Override
     public void periodic()
     {
         dashboardPutNumber("imuHeading", mIMU.getYaw().getDegrees());
         dashboardPutNumber("imuHeadingAdjusted", getIMUHeading().getDegrees());
+
+        dashboardPutNumber("leftSpeed", getLeftMotor().getEncoder().getVelocity());
+        dashboardPutNumber("rightSpeed", getRightMotor().getEncoder().getVelocity());
     }
 }

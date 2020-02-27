@@ -1,5 +1,7 @@
 package com.spartronics4915.lib.hardware.motors;
 
+import com.spartronics4915.lib.util.Logger;
+
 public interface SpartronicsMotor
 {
 
@@ -93,14 +95,14 @@ public interface SpartronicsMotor
      * @param dutyCycle            Output in perecnt.
      * @param arbitraryFeedforward Additional arbitrary feedforward in Volts.
      */
-    void setDutyCycle(double dutyCycle, double arbitraryFeedForwardVolts);
+    void setPercentOutput(double dutyCycle, double arbitraryFeedForwardVolts);
 
     /**
      * Sets the output as a percentage (like setOpenLoop).
      *
      * @param dutyCycle Output in percent.
      */
-    void setDutyCycle(double dutyCycle);
+    void setPercentOutput(double dutyCycle);
 
     /**
      * Sets the target output velocity.
@@ -167,4 +169,12 @@ public interface SpartronicsMotor
      * @param reverseLimitCustomUnits Reverse soft limit position in custom units.
      */
     void setSoftLimits(double forwardLimitCustomUnits, double reverseLimitCustomUnits);
+
+    /**
+     * @param limitAmps Max stator current in amps.
+     */
+    default void setStatorCurrentLimit(int limitAmps)
+    {
+        Logger.warning("Stator current limit not implemented for device number " + getDeviceNumber() + "!");
+    }
 }

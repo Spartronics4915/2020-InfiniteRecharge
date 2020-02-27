@@ -35,7 +35,7 @@ public class PanelRotator extends SpartronicsSubsystem
         mOpticalFlagUp = new DigitalInput(Constants.PanelRotator.kOpticalFlagUpId);
         mLimitSwitchDown = new DigitalInput(Constants.PanelRotator.kLimitSwitchDownId);
         mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId);
-        mRaiseMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId);
+        mRaiseMotor = new SpartronicsSimulatedMotor(42);//SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId);
 
         mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         mColorMatcher.addColorMatch(Constants.PanelRotator.kRedTarget);
@@ -60,7 +60,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void raise()
     {
-        mRaiseMotor.setDutyCycle(Constants.PanelRotator.kRaiseSpeed);
+        mRaiseMotor.setPercentOutput(Constants.PanelRotator.kRaiseSpeed);
     }
 
     /**
@@ -68,7 +68,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void lower()
     {
-        mRaiseMotor.setDutyCycle(Constants.PanelRotator.kLowerSpeed);
+        mRaiseMotor.setPercentOutput(Constants.PanelRotator.kLowerSpeed);
     }
 
     /**
@@ -76,7 +76,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void spin()
     {
-        mSpinMotor.setDutyCycle(Constants.PanelRotator.kSpinSpeed);
+        mSpinMotor.setPercentOutput(Constants.PanelRotator.kSpinSpeed);
     }
 
     // TODO: What will this return before Stage Two?
@@ -221,7 +221,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void stop()
     {
-        mSpinMotor.setDutyCycle(0);
-        mRaiseMotor.setDutyCycle(0);
+        mSpinMotor.setPercentOutput(0);
+        mRaiseMotor.setPercentOutput(0);
     }
 }
