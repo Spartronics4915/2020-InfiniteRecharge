@@ -1,5 +1,6 @@
 package com.spartronics4915.lib.math.threedim;
 
+import com.spartronics4915.lib.math.threedim.math3.*;
 import com.spartronics4915.lib.math.twodim.geometry.*;
 import com.spartronics4915.lib.util.Units;
 

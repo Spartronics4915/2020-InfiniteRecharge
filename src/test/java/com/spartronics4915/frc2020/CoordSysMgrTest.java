@@ -1,6 +1,6 @@
 package com.spartronics4915.frc2020;
 
-import com.spartronics4915.lib.math.threedim.*;
+import com.spartronics4915.lib.math.threedim.math3.*;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,7 +19,7 @@ class CoordSysMgrTest
         // robot at center of field, pointing right
         Vec3 robotPt = new Vec3(320, 0, 0);
         double robotHeading = 0;
-        ctof.updateRobotPose(robotPt.a1, robotPt.a2, robotHeading);
+        ctof.updateRobotPose(robotPt.getX(), robotPt.getY(), robotHeading);
 
         // This should give us the location of the camera relative to the robot
         // when turret angle is 0.
@@ -29,8 +29,8 @@ class CoordSysMgrTest
         // for a robot and turret angle of 0, predict camera position on field.
         Vec3 camPtOnField = ctof.camPointToField(new Vec3(0, 0, 0));
         Vec3 camDirOnField = ctof.camDirToField(new Vec3(0, 0, -1));
-        assertEquals(camDirOnField.a1, -1, .2); // camera tilts into z-up
-        assertEquals(camDirOnField.a2, 0, kEpsilon); // camera tilts into z-up
+        assertEquals(camDirOnField.getX(), -1, .2); // camera tilts into z-up
+        assertEquals(camDirOnField.getY(), 0, kEpsilon); // camera tilts into z-up
         distXY = camPtOnField.subtract(robotPt).lengthXY();
         assert(distXY < 18);
 
@@ -39,21 +39,21 @@ class CoordSysMgrTest
         // turret and camera offsets.
         Vec3 tgt = new Vec3(0, 0, -100);
         Vec3 p0 = ctof.camPointToRobot(tgt);
-        assert(p0.a1 < -100); // mostly behind the robot (x is front)
+        assert(p0.getX() < -100); // mostly behind the robot (x is front)
         distXY = p0.lengthXY();
         assert(distXY > 100); // farther from robot than camera (even xy only)
 
         // Now point turret directly toward turret right (robot left)
         ctof.updateTurretAngle(-90); // turret x is fwd, +y is left
         p0 = ctof.camPointToRobot(tgt);
-        assert(p0.a2 > 100); // mostly to the left of the robot (+y is left)
+        assert(p0.getY() > 100); // mostly to the left of the robot (+y is left)
         distXY = p0.lengthXY();
         assert(distXY > 100); // since robot origin is farther from target
 
         // point turret directly to its left (robot right)
         ctof.updateTurretAngle(90);
         p0 = ctof.camPointToRobot(tgt);
-        assert(p0.a2 < -90); // mostly to the left of the robot (+y is left)
+        assert(p0.getY() < -90); // mostly to the left of the robot (+y is left)
         double distXY2 = p0.length();
         // robot origin farther from points turret sees to its right.
         assert(distXY2 > distXY); 
@@ -69,9 +69,9 @@ class CoordSysMgrTest
         Vec3 robotLocation = ctof.robotPointToField(Vec3.ZeroPt);
         Vec3 tMinusR = knownFieldLocationTarget.subtract(robotLocation);
         assertEquals(robotRelativeTarget.length(), tMinusR.length(), kEpsilon);
-        assertEquals(tMinusR.a1, 100, kEpsilon);
-        assertEquals(tMinusR.a2, -100, kEpsilon);
-        assertEquals(tMinusR.a3, 96, kEpsilon);
+        assertEquals(tMinusR.getX(), 100, kEpsilon);
+        assertEquals(tMinusR.getY(), -100, kEpsilon);
+        assertEquals(tMinusR.getZ(), 96, kEpsilon);
 
         // same as above, but now the target is exactly behind the robot so
         // the y coord of tMinusR is 0
@@ -80,7 +80,7 @@ class CoordSysMgrTest
         robotLocation = ctof.robotPointToField(Vec3.ZeroPt);
         tMinusR = knownFieldLocationTarget.subtract(robotLocation);
         assertEquals(robotRelativeTarget.length(), tMinusR.length(), kEpsilon);
-        assertEquals(tMinusR.a2, 0, kEpsilon);
+        assertEquals(tMinusR.getY(), 0, kEpsilon);
 
 
         // robot heading west (field x+) at midfield
@@ -182,7 +182,7 @@ class CoordSysMgrTest
         // from turret origin, we expect points to be as well.
         Vec3 target = new Vec3(0, 0, -120); // center of camera 12 ft away
         Vec3 tgtPtMount = camToMount.transformPoint(target);
-        assertEquals(camOff.a2, tgtPtMount.a2, kEpsilon); // y coords match
+        assertEquals(camOff.getY(), tgtPtMount.getY(), kEpsilon); // y coords match
 
         // Check for non-zero angle between tgtPtMount and x axis
         double cosAngle = tgtPtMount.asUnit().dot(Vec3.XAxis);

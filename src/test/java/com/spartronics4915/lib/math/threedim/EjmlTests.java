@@ -1,5 +1,7 @@
 package com.spartronics4915.lib.math.threedim;
 
+import com.spartronics4915.lib.math.threedim.ejml.*;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.ejml.data.Complex_F64;
