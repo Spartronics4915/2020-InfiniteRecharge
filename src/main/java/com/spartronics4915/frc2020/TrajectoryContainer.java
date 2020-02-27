@@ -164,7 +164,8 @@ public class TrajectoryContainer
         {
             var startPose = start == null ? null : start.pose;
             var endPose = end == null ? null : end.pose;
-            System.out.println(mStartPoint + ", " + startPose + ", " + endPose);
+
+            //  System.out.println("getTrajectory: " + mStartPoint + ", " + startPose + ", " + endPose);
 
             return mTrajectories.get(new DestinationCouple(start, end, false));
         }
