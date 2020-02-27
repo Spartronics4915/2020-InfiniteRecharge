@@ -124,12 +124,6 @@ public class RobotContainer
         if (!RobotBase.isReal()) // we're unit testing
             SpartronicsSimulatedMotor.resetGlobalState();
 
-        /* publish our automodes to the dashboard -----------------*/
-        mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController);
-        String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
-            .collect(Collectors.joining(","));
-        SmartDashboard.putString(kAutoOptionsKey, autoModeList);
-
         /* constructing subsystem commands */
         mLEDCommands = new LEDCommands(mLED);
         mClimberCommands = new ClimberCommands(mClimber);
@@ -147,6 +141,13 @@ public class RobotContainer
         // NB: ButtonFactory handles the !RobotBase.isReal case.
         configureJoystickBindings();
         configureButtonBoardBindings();
+
+        /* publish our automodes to the dashboard -----------------*/
+        mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController, mSuperstructureCommands);
+        String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
+            .collect(Collectors.joining(","));
+        SmartDashboard.putString(kAutoOptionsKey, autoModeList);
+        
     }
 
     private void configureJoystickBindings()
