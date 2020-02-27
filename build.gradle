@@ -103,11 +103,12 @@ jar {
 test {
     useJUnitPlatform {
         // Some tests only work if you have the right stuff plugged in
-        // Pass -PallTests if you want tests with the excluded tags
+        // Pass -PallTests if you want tests with the excluded tag
         if (!project.hasProperty("allTests")) {
             excludeTags "hardwareDependant"
         }
     }
+    systemProperty 'java.awt.headless', 'true'
     testLogging {
         events "PASSED", "SKIPPED", "FAILED"
         exceptionFormat "full"
