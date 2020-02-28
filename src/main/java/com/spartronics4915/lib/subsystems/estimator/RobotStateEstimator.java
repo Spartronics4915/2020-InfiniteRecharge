@@ -41,6 +41,7 @@ public class RobotStateEstimator extends SpartronicsSubsystem
     private T265Camera mSLAMCamera;
     private final VisionEvent mVisionEventListener;
     private DrivetrainEstimator mEKF;
+    private Notifier mNotifier;
 
     private final EstimatorSource mBestEstimatorSource;
 
@@ -97,7 +98,8 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         }
 
         // Run this at 100 Hz
-        new Notifier(this::run).startPeriodic(1 / 100.0);
+        this.mNotifier = new Notifier(this::run);
+        this.mNotifier.startPeriodic(1 / 100.0);
     }
 
     public VisionEvent getVisionListener()
