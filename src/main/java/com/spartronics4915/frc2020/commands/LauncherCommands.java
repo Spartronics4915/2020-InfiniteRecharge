@@ -26,6 +26,7 @@ public class LauncherCommands
     private final RobotStateMap mStateMap;
     private final Pose2d mMatchTargetMeters;
     private final Vec3 mMatchTargetInches;
+    private final Vec3 mInnerTargetInches;
 
     public LauncherCommands(Launcher launcher, IndexerCommands indexerCommands,
         RobotStateMap stateMap)
@@ -42,7 +43,8 @@ public class LauncherCommands
         mMatchTargetInches = new Vec3(
             Constants.Vision.kAllianceGoalCoords[0],
             Constants.Vision.kAllianceGoalCoords[1],
-            0); // on ground/robot origin
+            0); // on ground/robot origin - we could include height if of value
+        mInnerTargetInches = new Vec3(Constants.Vision.kAllianceInnerGoalCoords);
 
         mMatchTargetMeters = new Pose2d(
             Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[0]),
@@ -161,14 +163,15 @@ public class LauncherCommands
         this.mCoordSysMgr.updateRobotPose(robotToField);
 
         // convert the match target in field coords into turret-relative coords
-        Vec3 targetInMnt = mCoordSysMgr.fieldPointToMount(mMatchTargetInches);
-
         // targetInMnt "says it all".
+        Vec3 targetInMnt = mCoordSysMgr.fieldPointToMount(mMatchTargetInches);
+        Vec3 innerTargetInMnt = mCoordSysMgr.fieldPointToMount(mInnerTargetInches);
+
         double angle = targetInMnt.angleOnXYPlane();
-        double dist = Units.inchesToMeters(targetInMnt.length());
+        double dist = targetInMnt.lengthXY(); // already in inches
         if (angle > 180)
         {
-            // [0-360] -> (-180, 180]
+            // [0-360) -> (-180, 180]
             angle = -(360 - angle);
         }
         if (Math.abs(angle) < Constants.Launcher.kMaxAngleDegrees)

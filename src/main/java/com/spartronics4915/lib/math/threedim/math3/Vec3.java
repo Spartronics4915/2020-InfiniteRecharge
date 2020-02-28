@@ -128,6 +128,12 @@ public class Vec3
         return Math.toDegrees(Math.atan2(nv.getY(), nv.getX()));
     }
 
+    public double angleOnXZPlane()
+    {
+        Vec3 nv = new Vec3(this.getX(), 0, this.getZ()).asUnit();
+        return Math.toDegrees(Math.atan2(nv.getZ(), nv.getX()));
+    }
+
     public double dot(final Vec3 rhs)
     {
         return Vector3D.dotProduct(this.mVec3, rhs.mVec3);
@@ -164,14 +170,11 @@ public class Vec3
     }
 
     /**
-     * @return - length of xy components of vector.
-     *   aka: distance of xy point from origin.
+     * @return length of 2D vector on XY plane
      */
     public double lengthXY()
     {
-        double x = this.getX();
-        double y = this.getY();
-        return Math.sqrt(x*x + y*y);
+        return Math.hypot(this.mVec3.getX(), this.mVec3.getY());
     }
 
     // mutable

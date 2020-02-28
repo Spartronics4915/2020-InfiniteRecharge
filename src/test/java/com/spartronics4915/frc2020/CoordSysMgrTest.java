@@ -235,7 +235,8 @@ class CoordSysMgrTest
             result.fieldToTurret.getRotation().inverse());
         double wrongDistance = target.distance(result.fieldToTurret);
         result.distance = Math.hypot(turretToTarget.getTranslation().getX(),
-            turretToTarget.getTranslation().getY());
+                                turretToTarget.getTranslation().getY());
+        result.distance = Units.metersToInches(result.distance);
         result.degrees = result.turretAngle.getDegrees();
         return result;
     }
@@ -243,14 +244,18 @@ class CoordSysMgrTest
     @Test
     void turretTrackTest()
     {
-        // LauncherCommands.trackTarget()
+        // cf: LauncherCommands.trackTarget()
+        // Pose2d is always in meters (by convention)
         Pose2d matchTargetMeters = new Pose2d(
             Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[0]),
             Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[1]),
             Rotation2d.fromDegrees(180));
+
+        // all our validations are in inches
         double turretDist = Math.hypot(
             Constants.Launcher.kRobotToTurret.getTranslation().getX(),
             Constants.Launcher.kRobotToTurret.getTranslation().getY());
+        turretDist = Units.metersToInches(turretDist);
 
         /*
         // start with a trivial/verifiable case:
@@ -263,11 +268,12 @@ class CoordSysMgrTest
         //                 | y        |
         //                 |__________| 
         */
+        double expectedDist = Units.metersToInches(5);
         double robotX = matchTargetMeters.getTranslation().getX() - 5;
         double robotY = matchTargetMeters.getTranslation().getY();
         Pose2d r0 = new Pose2d(robotX, robotY, 180);
         TargetInfo i0 = this.trackTarget(r0, matchTargetMeters);
-        assert(Math.abs(i0.distance - 5) < turretDist);
+        assert(Math.abs(i0.distance - expectedDist) < turretDist);
         assert(i0.degrees > 0 && i0.degrees < 2); // ie: a small positive turn
 
         /*
@@ -275,7 +281,7 @@ class CoordSysMgrTest
          */
         Pose2d r1 = new Pose2d(robotX, robotY, 180+35);
         TargetInfo i1 = this.trackTarget(r1, matchTargetMeters);
-        assert(Math.abs(i1.distance - 5) < turretDist);
+        assert(Math.abs(i1.distance - expectedDist) < turretDist);
         assert(i1.degrees < -33 && i1.degrees > -35); // ie: a large negative turn
 
         /*
@@ -283,43 +289,58 @@ class CoordSysMgrTest
          */
         Pose2d r2 = new Pose2d(robotX, robotY, 180-35);
         TargetInfo i2 = this.trackTarget(r2, matchTargetMeters);
-        assert(Math.abs(i2.distance - 5) < turretDist);
+        assert(Math.abs(i2.distance - expectedDist) < turretDist);
         assert(i2.degrees > 35 && i1.degrees < 37); // ie: a large negative turn
     }
 
     private static class AltTargetInfo
     {
         public double distance;
-        public double angle;
+        public double yawAngle;
+        public double pitchAngle;
+        public double innerDistance;
+        public double innerYawAngle;
+        public double innerPitchAngle;
+        public double fixYaw(double a)
+        {
+            if(a > 180)
+                a = -(360 - yawAngle);
+            return a;
+        }
+        public double fixDist(double d)
+        {
+            return d; // no fixup, since we're operating in inches
+        }
     }
+
     private AltTargetInfo trackTargetAlt(CoordSysMgr2020 ctof, 
-                                        final Pose2d robot, final Pose2d target)
+                                        final Pose2d robot, 
+                                        final Vec3 targetInches,
+                                        final Vec3 innerTargetInches)
     {
         AltTargetInfo result = new AltTargetInfo();
-        // Pose2d is presumed always in meters
-        ctof.updateRobotPose(robot); // requies robot to be in meters
+        // Pose2d is presumed always in meters (by convention)
+        ctof.updateRobotPose(robot); 
 
         // but CoordSysMgr currently works in inches
-        Translation2d x = target.getTranslation();
-        Vec3 targetInches = new Vec3(Units.metersToInches(x.getX()), 
-                                    Units.metersToInches(x.getY()), 
-                                    0); 
         Vec3 targetInMnt = ctof.fieldPointToMount(targetInches);
+        Vec3 innerTargetInMnt = ctof.fieldPointToMount(innerTargetInches);
 
-        // return our results in meters and degrees
-        result.distance = Units.inchesToMeters(targetInMnt.length());
-        result.angle = targetInMnt.angleOnXYPlane();
-        if (result.angle > 180)
-        {
-            // [0-360] -> (-180, 180]
-            result.angle = -(360 - result.angle);
-        }
+        // return our results in inches and degrees
+        result.distance = result.fixDist(targetInMnt.lengthXY());
+        result.yawAngle = result.fixYaw(targetInMnt.angleOnXYPlane());
+        result.pitchAngle = targetInMnt.angleOnXZPlane();
+        result.innerDistance = result.fixDist(innerTargetInMnt.lengthXY());
+        result.innerYawAngle = result.fixYaw(innerTargetInMnt.angleOnXYPlane());
+        result.innerPitchAngle = innerTargetInMnt.angleOnXZPlane();
         return result;
     }
     @Test
     void turretTrackAltTest()
     {
         CoordSysMgr2020 ctof = new CoordSysMgr2020();
+        Vec3 matchTargetInches = new Vec3(Constants.Vision.kAllianceGoalCoords);
+        Vec3 innerTargetInches = new Vec3(Constants.Vision.kAllianceInnerGoalCoords);
         Pose2d matchTargetMeters = new Pose2d(
             Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[0]),
             Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[1]),
@@ -329,28 +350,60 @@ class CoordSysMgrTest
         double turretDist = Math.hypot(
             Constants.Launcher.kRobotToTurret.getTranslation().getX(),
             Constants.Launcher.kRobotToTurret.getTranslation().getY());
+        turretDist = Units.metersToInches(turretDist);
 
         // robot 5m distant, points away from target, in horizontal alignment
+        double expectedDist = Units.metersToInches(5);
         Pose2d r0 = new Pose2d(robotX, robotY, 180);
-        AltTargetInfo i0 = this.trackTargetAlt(ctof, r0, matchTargetMeters);
-        assert(Math.abs(i0.distance - 5) < turretDist);
-        assert(i0.angle > 0 && i0.angle < 2); // ie: a small positive turn
+        AltTargetInfo i0 = this.trackTargetAlt(ctof, r0, matchTargetInches, 
+                                            innerTargetInches);
+        assert(Math.abs(i0.distance - expectedDist) < turretDist);
+        assert(i0.yawAngle > 0 && i0.yawAngle < 2); // ie: a small positive turn
+        // at 5m, the difference in pitch angle between inner and outer is 
+        // significant around 2.5 degrees, but the yaw angle isn't
+        assert(Math.abs(i0.innerYawAngle - i0.yawAngle) < .25); // 1/4 degree
+        assertEquals((i0.pitchAngle - i0.innerPitchAngle), 2.5, .3); 
 
         /*
          *  Now rotate our robot 35, turret needs to turn by negative equiv
          */
         Pose2d r1 = new Pose2d(robotX, robotY, 180+35);
-        AltTargetInfo i1 = this.trackTargetAlt(ctof, r1, matchTargetMeters);
-        assert(Math.abs(i1.distance - 5) < turretDist);
-        assert(i1.angle < -33 && i1.angle > -35); // ie: a large negative turn
+        AltTargetInfo i1 = this.trackTargetAlt(ctof, r1, matchTargetInches,
+                                                innerTargetInches);
+        assert(Math.abs(i1.distance - expectedDist) < turretDist);
+        assert(i1.yawAngle < -33 && i1.yawAngle > -35); // ie: a large negative turn
+        assert(Math.abs(i1.innerYawAngle - i1.yawAngle) < .25); // 1/4 degree
+        assertEquals((i0.pitchAngle - i0.innerPitchAngle), 2.5, .3); 
 
         /*
          *  Now rotate our robot -35, turret needs to turn by positive equiv
          */
         Pose2d r2 = new Pose2d(robotX, robotY, 180-35);
-        AltTargetInfo i2 = this.trackTargetAlt(ctof, r2, matchTargetMeters);
-        assert(Math.abs(i2.distance - 5) < turretDist);
-        assert(i2.angle > 35 && i2.angle < 37); // ie: a large negative turn
-    }
+        AltTargetInfo i2 = this.trackTargetAlt(ctof, r2, matchTargetInches,
+                                                innerTargetInches);
+        assert(Math.abs(i2.distance - expectedDist) < turretDist);
+        assert(i2.yawAngle > 35 && i2.yawAngle < 37); // ie: a large negative turn
+        assert(Math.abs(i2.innerYawAngle - i2.yawAngle) < .25); // 1/4 degree
+        assertEquals((i0.pitchAngle - i0.innerPitchAngle), 2.5, .3); 
 
+        /*
+         * Explore targeting from up-close. The apex of the "target zone"
+         * triangle is 26in away.
+         */
+        // robot-center 26in distant, points away from target, in horizontal alignment
+        // - the pitch is 74 degreees, 58 degrees to inner
+        // - yaw angles are substantially different (13 and 6 degrees)
+        expectedDist = 26; 
+        robotX = matchTargetMeters.getTranslation().getX() - Units.inchesToMeters(26);
+        robotY = matchTargetMeters.getTranslation().getY();
+        Pose2d r3 = new Pose2d(robotX, robotY, 180);
+        AltTargetInfo i3 = this.trackTargetAlt(ctof, r3, matchTargetInches,
+                                                innerTargetInches);
+        assert(Math.abs(i3.distance - expectedDist) < turretDist);
+        assertEquals(i3.innerDistance, 52, .5);
+        assertEquals(i3.yawAngle, 13, .5);
+        assertEquals(i3.innerYawAngle, 6, .5);
+        assertEquals(i3.pitchAngle, 75, .5);
+        assertEquals(i3.innerPitchAngle, 58, .5);
+    }
 }

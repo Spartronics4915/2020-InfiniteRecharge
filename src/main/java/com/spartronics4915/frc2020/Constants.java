@@ -343,6 +343,7 @@ public final class Constants
         public static final String kLEDRelayKey = "LEDRelay";
 
         public static final double kGoalHeight = 8*12 + 2.25; // 98.25in
+        public static final double kInnerGoalDepth = 24 + 5.25; // sec 3, pg 22
 
         // We assume here that the robot odometry is alliance-sensitive.
         // When we're on the Blue alliance, coords are
@@ -353,6 +354,7 @@ public final class Constants
         // terms.
         public static final double[] kOpponentGoalCoords = {0, 67.5, kGoalHeight};
         public static final double[] kAllianceGoalCoords = {628, -67.5, kGoalHeight};
+        public static final double[] kAllianceInnerGoalCoords = {628+kInnerGoalDepth, -67.5, kGoalHeight};
 
         public static final int kLEDRelayPin = 0; // Relay, not DIO pin!!!
     }
