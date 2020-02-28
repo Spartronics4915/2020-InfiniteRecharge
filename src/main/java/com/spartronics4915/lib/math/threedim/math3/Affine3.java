@@ -98,7 +98,6 @@ public class Affine3
 
     /* --------------------------------------------------------------------*/
     private Matrix4 mMatrix;
-    private double[] mVec4 = new double[4];
 
     public Affine3()
     {
@@ -332,35 +331,38 @@ public class Affine3
 
     public Vec3 transformPoint(final Vec3 in)
     {
-        this.mVec4[0] = in.getX();
-        this.mVec4[1] = in.getY();
-        this.mVec4[2] = in.getZ();
-        this.mVec4[3] = 1; // <- point
-        double opt[] = this.mMatrix.operate(this.mVec4);
+        double[] vec4 = new double[4];
+        vec4[0] = in.getX();
+        vec4[1] = in.getY();
+        vec4[2] = in.getZ();
+        vec4[3] = 1; // <- point
+        double opt[] = this.mMatrix.operate(vec4);
         return new Vec3(opt[0], opt[1], opt[2]);
         // return new Vec3(out4.a1, out4.a2, out4.a3);
     }
 
     public Vec3 transformVector(final Vec3 in)
     {
-        this.mVec4[0] = in.getX();
-        this.mVec4[1] = in.getY();
-        this.mVec4[2] = in.getZ();
-        this.mVec4[3] = 0; // <- vector
-        double opt[] = this.mMatrix.operate(this.mVec4);
+        double[] vec4 = new double[4];
+        vec4[0] = in.getX();
+        vec4[1] = in.getY();
+        vec4[2] = in.getZ();
+        vec4[3] = 0; // <- vector
+        double opt[] = this.mMatrix.operate(vec4);
         return new Vec3(opt[0], opt[1], opt[2]);
     }
 
     public ArrayList<Vec3> transformPoints(final Vec3 ...in)
     {
         ArrayList<Vec3> result = new ArrayList<Vec3>();
-        this.mVec4[3] = 1; // <---  as point
+        double[] vec4 = new double[4];
+        vec4[3] = 1; // <---  as point
         for(final Vec3 v : in)
         {
-            this.mVec4[0] = v.getX();
-            this.mVec4[1] = v.getY();
-            this.mVec4[2] = v.getZ();
-            double opt[] = this.mMatrix.operate(this.mVec4);
+            vec4[0] = v.getX();
+            vec4[1] = v.getY();
+            vec4[2] = v.getZ();
+            double opt[] = this.mMatrix.operate(vec4);
             result.add(new Vec3(opt[0], opt[1], opt[2]));
         }
         return result;
@@ -369,13 +371,14 @@ public class Affine3
     public ArrayList<Vec3> transformVectors(final Vec3 ...in)
     {
         ArrayList<Vec3> result = new ArrayList<Vec3>();
-        this.mVec4[3] = 0; // <---  as vector
+        double[] vec4 = new double[4];
+        vec4[3] = 0; // <---  as vector
         for(final Vec3 v : in)
         {
-            this.mVec4[0] = v.getX();
-            this.mVec4[1] = v.getY();
-            this.mVec4[2] = v.getZ();
-            double opt[] = this.mMatrix.operate(this.mVec4);
+            vec4[0] = v.getX();
+            vec4[1] = v.getY();
+            vec4[2] = v.getZ();
+            double opt[] = this.mMatrix.operate(vec4);
             result.add(new Vec3(opt[0], opt[1], opt[2]));
         }
         return result;

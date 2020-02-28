@@ -67,7 +67,7 @@ public class Drive extends AbstractDrive
     }
 
     @Override
-    public double getTurretAngle()
+    public double getTurretAngle() // XXX: why is getTurretAngle in Drive, of all places?
     {
         return mLauncher.getTurretDirection().getDegrees();
     }

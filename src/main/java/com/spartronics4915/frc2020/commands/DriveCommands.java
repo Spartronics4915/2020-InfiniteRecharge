@@ -47,9 +47,9 @@ public class DriveCommands
                 x *= Constants.Drive.kSlowModeMultiplier;
             }
             if (mInverted)
-                y *= -1;
+                y *= -1; // intentionally only invert y
 
-            y = Math.copySign(Math.pow(Math.abs(y), 5.0/3.0), y);
+            y = Math.copySign(Math.pow(Math.abs(y), 5.0/3.0), y); // apply response curve
             mDrive.arcadeDrive(applyDeadzone(y), applyDeadzone(x));
         }
 
@@ -64,8 +64,7 @@ public class DriveCommands
     }
 
     /**
-     * Written exclusively for the trigger, this command sets
-     * the drivetrain to slow mode.
+     * Written exclusively for the trigger, this command sets the drivetrain to slow mode.
      * A corresponding UnsetSlow does not exist - ToggleSlow functions fine.
      */
     public class SetSlow extends CommandBase

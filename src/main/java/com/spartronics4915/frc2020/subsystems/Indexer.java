@@ -24,7 +24,6 @@ public class Indexer extends SpartronicsSubsystem
 
     private SensorModel mIndexerModel;
     private SensorModel mKickerModel;
-    private SensorModel mTransferModel;
 
     private DigitalInput mLimitSwitch;
     private DigitalInput mOpticalProxSensor;
