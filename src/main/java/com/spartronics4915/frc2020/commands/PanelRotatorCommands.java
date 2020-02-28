@@ -130,6 +130,11 @@ public class PanelRotatorCommands
                 mPanelRotator.logError("Color Sensor: No data provided");
                 return true;
             }
+            else if (mPanelRotator.getLimitSwitchDown())
+            {
+                mPanelRotator.logError("Arm is down, so the wheel is stopped");
+                return true;
+            }
             else
                 return false;
 
@@ -189,6 +194,16 @@ public class PanelRotatorCommands
             if (mPanelRotator.getColorConfidence() < Constants.PanelRotator.kConfidenceMinimum)
             {
                 mPanelRotator.logError("Confidence too low!");
+                return true;
+            }
+            else if (mPanelRotator.getRotatedColor().equals("Error"))
+            {
+                mPanelRotator.logError("Color Sensor: No data provided");
+                return true;
+            }
+            else if (mPanelRotator.getLimitSwitchDown())
+            {
+                mPanelRotator.logError("Arm is down, so the wheel is stopped");
                 return true;
             }
 
