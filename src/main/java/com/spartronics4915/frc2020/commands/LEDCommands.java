@@ -30,17 +30,18 @@ public class LEDCommands
     public class SetBlingState extends InstantCommand
     {
         Bling mState;
+
         public SetBlingState(Bling s)
         {
             super();
             this.addRequirements(mLED);
             this.mState = s;
         }
+
         @Override
         public void initialize()
         {
             mLED.setBlingState(this.mState);
         }
     }
-
 }

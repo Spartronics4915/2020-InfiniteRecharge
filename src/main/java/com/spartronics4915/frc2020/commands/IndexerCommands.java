@@ -23,11 +23,6 @@ public class IndexerCommands
         // mIndexer.setDefaultCommand(mIndexerCommands.new ZeroAndStopGroup(mIndexer));
     }
 
-    public Indexer getIndexer()
-    {
-        return mIndexer;
-    }
-
     /**
      * Waits until a ball is held, then ends.
      */
@@ -36,13 +31,6 @@ public class IndexerCommands
         public WaitForBallHeld()
         {
             super(mIndexer::getIntakeBallLoaded);
-        }
-
-        @Override
-        public void initialize()
-        {
-            super.initialize();
-            System.out.println("WaitForBallHeld");
         }
     }
 
@@ -77,7 +65,6 @@ public class IndexerCommands
         @Override
         public void initialize()
         {
-            System.out.println("LoadBallToSlot");
             mIndexer.rotateN(mSpinCount);
         }
 
@@ -115,10 +102,7 @@ public class IndexerCommands
         public ZeroSpinnerCommand(boolean unzero)
         {
             if (unzero)
-            {
                 mIndexer.unzero();
-            }
-
             addRequirements(mIndexer);
         }
 
@@ -190,13 +174,6 @@ public class IndexerCommands
         public EndKicker()
         {
             super(mIndexer::endLaunch, mIndexer);
-        }
-
-        @Override
-        public void initialize()
-        {
-            super.initialize();
-            System.out.println("EndKicker");
         }
     }
 
@@ -384,6 +361,5 @@ public class IndexerCommands
                 new InstantCommand(() -> mIndexer.addBalls(-ballsToShoot), mIndexer)
             );
         }
-
     }
 }

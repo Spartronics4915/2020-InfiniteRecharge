@@ -10,7 +10,7 @@ import com.spartronics4915.frc2020.subsystems.Vision;
  * Very little going on here currently:
  *  1. (driver or autonomous) control over VisionLED releay
  *  2. default behavior listening for dashboard request to change LED state.
- * 
+ *
  * NB: turret angle updates are under the control of LauncherCommands.
  *   we assume that the updated turret angle is correctly delivered
  *   to the CoordSysMgr.
@@ -36,16 +36,16 @@ public class VisionCommands
      * An instant command that can turn on, off or toggle the VisionLED relay.
      * This probably should be invoked automatically when odometry determines
      * that we're in a place where vision targeting is enabled.
-     * 
+     *
      * XXX: perhaps this should be the central control for acquisition:
-     *   ie: light is off, we could notify raspi to rest 
+     *   ie: light is off, we could notify raspi to rest
      */
     public class SetLEDRelay extends InstantCommand
     {
         LEDStateChange mStateChange;
         public SetLEDRelay(LEDStateChange c)
         {
-            super(); 
+            super();
             // NB: I think it's legit to say 'no subsystem requirements'.
             // since we're the only one who cares about this relay.
             // Now we won't unschedule our default command on each toggle.
@@ -57,7 +57,7 @@ public class VisionCommands
         {
             // this is where InstantCommand does its thing
             boolean oldstate = mVision.isLEDOn(), newstate;
-            switch(mStateChange)
+            switch (mStateChange)
             {
             case kOff:
                 newstate = false;
@@ -65,7 +65,7 @@ public class VisionCommands
             case kOn:
                 newstate = true;
                 break;
-            case kToggle:
+            case kToggle: // jumping to default is intended behavior
             default:
                 newstate = !oldstate;
                 break;
@@ -92,7 +92,7 @@ public class VisionCommands
             // synchronize mLEDRelay with LEDRelay network table value.
             boolean newstate = mVision.dashboardGetBoolean(Constants.Vision.kLEDRelayKey, true);
             boolean oldstate = mVision.isLEDOn();
-            if(newstate != oldstate)
+            if (newstate != oldstate)
                 mVision.setLED(newstate);
         }
 
@@ -102,5 +102,4 @@ public class VisionCommands
             return false; // for clarity, we're always in this mode
         }
     }
-
 }
