@@ -14,7 +14,6 @@ import com.spartronics4915.lib.util.Logger;
 
 public class ButtonFactory
 {
-
     private Constants.OI.DeviceSpec[] mDeviceList;
     private HashSet<ButtonSpec> mInUse;
 
@@ -23,10 +22,10 @@ public class ButtonFactory
         /* our job is to configure Constants.OI.deviceList according
          * to runtime configuration inputs
          */
-        String config; 
+        String config;
         mDeviceList = Constants.OI.deviceList;
         mInUse = new HashSet<>();
-        if(!RobotBase.isReal())
+        if (!RobotBase.isReal())
         {
             config = "noOI";
             Logger.notice("ButtonFactory: configuring buttons for no OI");
@@ -50,7 +49,7 @@ public class ButtonFactory
         case "robot2020":
         case "default":
             // here we trust in Constants.OI values
-            for(int i=0;i<mDeviceList.length;i++)
+            for (int i = 0; i < mDeviceList.length; i++)
                 mDeviceList[i].joystick = new Joystick(mDeviceList[i].portId);
             break;
         }
@@ -75,17 +74,16 @@ public class ButtonFactory
     Button create(int deviceId, int buttonId)
     {
         var spec = new ButtonSpec(deviceId, buttonId);
-        if(mInUse.contains(spec))
+        if (mInUse.contains(spec))
         {
-            Logger.warning("ButtonFactory button collision " + 
-                            deviceId + " " + buttonId);
+            Logger.warning("ButtonFactory button collision " + deviceId + " " + buttonId);
         }
         mInUse.add(spec);
-        if(deviceId < this.mDeviceList.length)
+        if (deviceId < this.mDeviceList.length)
         {
             var dev = this.mDeviceList[deviceId];
             // buttonIds indexOrigin is 1
-            if(dev.joystick != null && buttonId <= dev.numButtons)
+            if (dev.joystick != null && buttonId <= dev.numButtons)
                 return new JoystickButton(dev.joystick, buttonId);
         }
         return new InvalidButton(0, buttonId);
@@ -96,7 +94,7 @@ public class ButtonFactory
      */
     private static class InvalidButton extends Button
     {
-        public InvalidButton(int port, int button) 
+        public InvalidButton(int port, int button)
         {
         }
 
@@ -144,7 +142,6 @@ public class ButtonFactory
             // no-op
             return this;
         }
-
     }
 
     private static class ButtonSpec
@@ -169,7 +166,7 @@ public class ButtonFactory
                 return false;
             if (!(o instanceof ButtonSpec))
                 return false;
-            return port == ((ButtonSpec) o).port && 
+            return port == ((ButtonSpec) o).port &&
                    bId == ((ButtonSpec) o).bId;
         }
 
@@ -178,6 +175,5 @@ public class ButtonFactory
         {
             return (port << 8)  + bId;
         }
-
     }
 }

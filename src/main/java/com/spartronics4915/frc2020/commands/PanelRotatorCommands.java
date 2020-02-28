@@ -4,7 +4,6 @@ import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.subsystems.PanelRotator;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
@@ -17,21 +16,6 @@ public class PanelRotatorCommands
         mPanelRotator = panelRotator;
         mPanelRotator.setDefaultCommand(new Stop());
     }
-
-    /**
-     * Commands with simple logic statements should be implemented as a
-     * {@link FunctionalCommand}. This saves the overhead of a full
-     * {@link CommandBase}, but still allows us to deal with isFinished.
-     * <p>
-     * A FunctionalCommand takes five inputs:
-     * @param Runnable onInit
-     * @param Runnable onExecute
-     * @param Consumer<Boolean> onEnd (boolean interrupted)
-     * @param BooleanSupplier isFinished
-     * @param Subsystem requirement For both the CommandScheduler and the above method references.
-     * <p>
-     * Each of these parameters corresponds with a method in the CommandBase class.
-     */
 
     /**
      * This Raise {@link CommandBase} calls {@link PanelRotator}.raise
@@ -100,12 +84,6 @@ public class PanelRotatorCommands
     }
 
     /**
-     * Commands that are "complex", or have > simple logic within them,
-     * should be put here. They simply extend {@link CommandBase} and
-     * are written as such.
-     */
-
-    /**
      * This {@link CommandBase} will spin the color wheel to the correct color as broadcast
      * by the FMS.
      * No "optimization" is implemented - the spinner only moves clockwise/counterclockwise.
@@ -150,6 +128,11 @@ public class PanelRotatorCommands
             else if (mPanelRotator.getRotatedColor().equals("Error"))
             {
                 mPanelRotator.logError("Color Sensor: No data provided");
+                return true;
+            }
+            else if (mPanelRotator.getLimitSwitchDown())
+            {
+                mPanelRotator.logError("Arm is down, so the wheel is stopped");
                 return true;
             }
             else
@@ -213,6 +196,16 @@ public class PanelRotatorCommands
                 mPanelRotator.logError("Confidence too low!");
                 return true;
             }
+            else if (mPanelRotator.getRotatedColor().equals("Error"))
+            {
+                mPanelRotator.logError("Color Sensor: No data provided");
+                return true;
+            }
+            else if (mPanelRotator.getLimitSwitchDown())
+            {
+                mPanelRotator.logError("Arm is down, so the wheel is stopped");
+                return true;
+            }
 
             // If the detected color has changed, iterate the eighths counter.
             currentColor = mPanelRotator.getRotatedColor();
@@ -250,11 +243,7 @@ public class PanelRotatorCommands
         }
     }
 
-    /**
-     * These names are frustratingly vague. TODO: determine a better prefix than "auto"
-     * <p>
-     * FIXME: Will the act of lowering / raising the wheel spin the control panel?
-     */
+    /* These won't work without backing up the robot.
     public class AutoSpinRotation extends SequentialCommandGroup
     {
         public AutoSpinRotation()
@@ -264,10 +253,6 @@ public class PanelRotatorCommands
         }
     }
 
-    /**
-     * Should be a one-press stop for automatically spinning to the correct color.
-     * FIXME: won't work because of the wheel hangover
-     */
     public class AutoSpinToColor extends SequentialCommandGroup
     {
         public AutoSpinToColor()
@@ -275,4 +260,5 @@ public class PanelRotatorCommands
             super(new Raise(), new SpinToColor(), new Lower());
         }
     }
+    */
 }

@@ -28,7 +28,7 @@ public class Robot extends TimedRobot
     // PDP is used to detect total-current-draw, in 2019 we had spurious
     // CAN errors.  If this happens in 2020, we can live without it.
     // See more notes in robotPeriodic below.
-    private PowerDistributionPanel mPDP; 
+    private PowerDistributionPanel mPDP;
 
     private static final String kRobotLogVerbosity = "Robot/Verbosity";
 
@@ -36,9 +36,8 @@ public class Robot extends TimedRobot
     public void robotInit()
     {
         Logger.logRobotInit();
-    
-        try (InputStream manifest =
-                getClass().getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF"))
+
+        try (InputStream manifest = getClass().getClassLoader().getResourceAsStream("META-INF/MANIFEST.MF"))
         {
             // build a version string
             Attributes attributes = new Manifest(manifest).getMainAttributes();
@@ -67,7 +66,7 @@ public class Robot extends TimedRobot
         shed.onCommandInterrupt((c) -> Logger.info(c.getName() + " interrupted"));
 
         // if CAN bus spews, delete (see notes at top)
-        this.mPDP = new PowerDistributionPanel(); 
+        this.mPDP = new PowerDistributionPanel();
 
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our autonomous chooser on the dashboard.
@@ -87,14 +86,14 @@ public class Robot extends TimedRobot
     @Override
     public void robotPeriodic()
     {
-        // robotPeriodic runs in all "match epochs".  
-        // Oddly, the scheduler is *not* operational during "disabled epoch" 
-        // because it follows the LiveWindow disabled state.  
+        // robotPeriodic runs in all "match epochs".
+        // Oddly, the scheduler is *not* operational during "disabled epoch"
+        // because it follows the LiveWindow disabled state.
         // The scheduler is responsible for invoking all Subsystem's periodic
         // method so we don't expect dashboard updates without this running.
-        // IterativeRobotBase is the one that controls the LiveWindow state 
-        // and it explicitly disables LiveWindow traffic when the robot is 
-        // disabled.  Contrast this with the "test epoch". In this mode, the 
+        // IterativeRobotBase is the one that controls the LiveWindow state
+        // and it explicitly disables LiveWindow traffic when the robot is
+        // disabled.  Contrast this with the "test epoch". In this mode, the
         // scheduler does run as do all LiveWindow functions.
         CommandScheduler.getInstance().run();
 
@@ -105,7 +104,7 @@ public class Robot extends TimedRobot
         // Dashboard can rely on LiveWindow but then we don't receive
         // updates when robot is disabled.
         SmartDashboard.putNumber("Robot/TotalCurrent", this.mPDP.getTotalCurrent());
-    }    
+    }
 
     /**
      * This function is called once each time the robot enters Disabled mode.
@@ -168,7 +167,7 @@ public class Robot extends TimedRobot
     public void testInit()
     {
         CommandScheduler.getInstance().cancelAll();
-		LED.getInstance().setBlingState(Bling.kDriveSlow);
+		LED.getInstance().setBlingState(Bling.kDriveSlow); // TODO: cycle through bling animations?
     }
 
     /**

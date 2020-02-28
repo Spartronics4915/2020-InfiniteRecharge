@@ -5,7 +5,6 @@ import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 /**
@@ -17,15 +16,15 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
  * to be represented in a sourcecode file, we utilize java "nested classes" to
  * define multiple classes in a single file. More detail can be found
  * here: https://docs.oracle.com/javase/tutorial/java/javaOO/nested.html.
- * 
+ *
  * There are two kinds of inner classes supported by java:
- * 
+ *
  *    1. static public class Foo
- *      A static inner class instance can be constructed without access to an 
- *      instance of the outer class.  Commands generally require access to one 
+ *      A static inner class instance can be constructed without access to an
+ *      instance of the outer class.  Commands generally require access to one
  *      or more subystems so minimimally:
  *          CommandBase b = new Outerclass.InnerStaticClass(mMySubsystem);
- * 
+ *
  *    2. public class Bar
  *      A regular inner class must be constructed via the 'new' method
  *      associated with the outer class *instance*.  Now we can implicity
@@ -33,15 +32,15 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
  *      Sharing data amongst many Commands might be accomplished via this
  *      pattern.  Minimally:
  *         CommandBase b = mMySubsystem.new InnerClass();
- * 
+ *
  *      This approach suffers when your InnerClass wants to inherit behavior
  *      from certain wpilibj commands that are tailored for inline
  *      construction.  One example of this is InstantCommand as extended
  *      in Test5 below.  In order to construct an instance of InstantCommand
- *      we must pass a Runnable as well as one or more subsystems via super(). 
- *      The only problem is that we can't access OuterClass instance variables 
- *      until after InnerClass is constructed.  To work around this, we must 
- *      pass in references to the required subsystem as well as any other 
+ *      we must pass a Runnable as well as one or more subsystems via super().
+ *      The only problem is that we can't access OuterClass instance variables
+ *      until after InnerClass is constructed.  To work around this, we must
+ *      pass in references to the required subsystem as well as any other
  *      parameters to express the construction, like so:
  *          CommandBase b = mMySubsystem.new InnerClass(mMySubsystem);
  *      This feels a little weird. In the case of InstantCommand there
@@ -49,51 +48,51 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
  *      simply override the minimal behavior.  See Test5a, below.
  *      This is not possible with FunctionalCommand and you should consider
  *      these comments from FunctionalCommand:
- *        A command that allows the user to pass in functions for each of 
- *        the basic command methods through the constructor.  Useful for 
+ *        A command that allows the user to pass in functions for each of
+ *        the basic command methods through the constructor.  Useful for
  *        inline definitions of complex commands - note, however, that if a
- *        command is beyond a certain complexity it is usually better practice 
+ *        command is beyond a certain complexity it is usually better practice
  *        to write a proper class for it than to inline it.
  *
  * Above we discuss two innerclass solutions. There is also a third
  * approach available to us as exemplified in our MakeCmd method, below.
  * Pick the best for your application, though option #1 is likely preferred.
- * 
+ *
  * Executive summary:
  *
- * 1. Contextualized inner class 
+ * 1. Contextualized inner class
  *  - access to outerclass member variables, only not as args to super.
  *  - requires unusual, but legal, java syntax for construction
- *  - if you wish to subclass simple base classes (ie: InstantCommand, 
+ *  - if you wish to subclass simple base classes (ie: InstantCommand,
  *    StartStopCommand, FunctionalCommand) either follow example Test5a
  *    or simply bail on the use of FunctionalCommand in favor of CommandBase.
  *  - odd-looking constructor syntax:  mCommandFactory.new Test5a();
- * 
+ *
  * 2. Independant inner class
  *  - no access to outerclass member variables
  *  - yes access to outerclass static variables
  *  - standard constructor syntax:  new ExampleCommandFactory.Test7(mCameraSys)
- * 
+ *
  * 3. Enumerated MakeCmd method
  *  - easy to read and use, but the dispatch is switch-based
  *
  * Usage:
  *   This examples operates on a single subsystem.  Note that some commands may
- *   require or operate on more than one subsystem.  This example could be 
- *   extended to accept an ArrayList<SpartronicsSubsystem> or 
- *   Set<SpartronicsSubsystem>. Or explicitly require, say, the DriveTrain 
+ *   require or operate on more than one subsystem.  This example could be
+ *   extended to accept an ArrayList<SpartronicsSubsystem> or
+ *   Set<SpartronicsSubsystem>. Or explicitly require, say, the DriveTrain
  *   subsystem.
  *
  *   in RobotContainer():
  *     this.mCamera = new CameraSubsystem();
- *      
+ *
  *     // ExampleCommandFactory constructor accepts subsystem and
  *     // misc parameters to store in the instance.  These will be
  *     // be available to methods of inner classes unless the methods
  *     // are defined in the constructor or passed to the super during
- *     // construction. 
- *     this.mCamCmds = new ExampleCommandFactory(mCamera, ...parameters...); 
- * 
+ *     // construction.
+ *     this.mCamCmds = new ExampleCommandFactory(mCamera, ...parameters...);
+ *
  *   See RobotContainer::configureTestCommands(), for instantiatioon examples.
  *
  */
@@ -170,8 +169,8 @@ public class ExampleCommandFactory
         }
     }
 
-    // Example InstantCommand. Question: why not just place the lambda 
-    // expression in the caller? Answer: to encapsulate the details of the 
+    // Example InstantCommand. Question: why not just place the lambda
+    // expression in the caller? Answer: to encapsulate the details of the
     // expression in this file and not the caller (ownership of files is clearer)
     public class Test5 extends InstantCommand
     {
@@ -181,7 +180,7 @@ public class ExampleCommandFactory
             // to super since it may run it before we're fully constructed.
             // We require that the subsystem be passed in if this InstantCommand
             // 'requires' it. Error message:
-            //   cannot refer to 'this' nor 'super' while explicitly invoking a 
+            //   cannot refer to 'this' nor 'super' while explicitly invoking a
             //   constructorJava(134217866)
             super(() -> { subsys.logInfo("Run Test5"); }, subsys);
         }
@@ -257,7 +256,7 @@ public class ExampleCommandFactory
 
     // A public static (inner) class allows us to reference
     // this class without contructing an instance of our outer
-    // class.  ie: we can be instantiated via: 
+    // class.  ie: we can be instantiated via:
     //      new ExampleCommandFactory.Test7(mySubsys)
     public static class Test7 extends StartEndCommand
     {

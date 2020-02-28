@@ -1,9 +1,7 @@
 package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.frc2020.Constants;
-import com.spartronics4915.frc2020.commands.LauncherCommands;
 import com.spartronics4915.lib.hardware.motors.SensorModel;
-import com.spartronics4915.lib.hardware.motors.SpartronicsAnalogEncoder;
 import com.spartronics4915.lib.hardware.motors.SpartronicsEncoder;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
@@ -12,13 +10,10 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.math.Util;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
-import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
 import com.spartronics4915.lib.util.Interpolable;
 import com.spartronics4915.lib.util.InterpolatingDouble;
 import com.spartronics4915.lib.util.InterpolatingTreeMap;
 
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -74,8 +69,7 @@ public class Launcher extends SpartronicsSubsystem
                 Constants.Launcher.kFlywheelMasterId);
             initSuccess = false;
         }
-        mFlywheelMasterMotor.setVelocityGains(Constants.Launcher.kP, 0, 0, 0); // ref value is
-                                                                               // 0.00036
+        mFlywheelMasterMotor.setVelocityGains(Constants.Launcher.kP, 0, 0, 0); // ref value is 0.00036
         mFeedforwardCalculator = new SimpleMotorFeedforward(Constants.Launcher.kS,
             Constants.Launcher.kV, Constants.Launcher.kA);
         mFlywheelMasterMotor.setOutputInverted(false);
@@ -88,7 +82,6 @@ public class Launcher extends SpartronicsSubsystem
         // XXX: explain all these interesting constants.
         mTurretMotor = SpartronicsSRX.makeMotor(Constants.Launcher.kTurretId,
             SensorModel.fromMultiplier(Math.toDegrees(1.0 / 1024.0 / 11.75 / 20.0) * 2.0));
-
 
         if (mTurretMotor.hadStartupError())
         {
@@ -122,7 +115,7 @@ public class Launcher extends SpartronicsSubsystem
         reset();
         mTurretMotor.setNeutral();
         mFlywheelMasterMotor.setNeutral();
-        
+
         logInitialized(initSuccess);
     }
 
@@ -245,8 +238,7 @@ public class Launcher extends SpartronicsSubsystem
      */
     public boolean inRange(Double distance)
     {
-        // TODO figure out actual bounds of the range and make a check for the turret
-        // rotation
+        // TODO figure out actual bounds of the range and make a check for the turret rotation
         boolean inRange = (distance < Units.feetToMeters(Constants.Launcher.MaxShootingDistance)
             || distance > Units.feetToMeters(Constants.Launcher.MinShootingDistance));
         return inRange;
@@ -285,7 +277,8 @@ public class Launcher extends SpartronicsSubsystem
 
     public void zeroTurret()
     {
-        /*if (mTurretMotor.getOutputCurrent() > Constants.Launcher.kTurretStallAmps)
+        /*
+        if (mTurretMotor.getOutputCurrent() > Constants.Launcher.kTurretStallAmps)
         {
             mTurretEncoder.setPosition(45.0);
             mTurretMotor.setPercentOutput(0.0);
@@ -294,7 +287,8 @@ public class Launcher extends SpartronicsSubsystem
         else if (!zeroed)
         {
             mTurretMotor.setPercentOutput(0.1);
-        }*/
+        }
+        */
         mTurretEncoder.setPosition(0.0);
     }
 
