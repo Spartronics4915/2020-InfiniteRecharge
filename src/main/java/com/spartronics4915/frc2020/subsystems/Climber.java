@@ -2,7 +2,6 @@ package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
-import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
@@ -36,7 +35,7 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
  * 2) Winch
  *
  * USE CASE 4: RETRACT
- * 1) Press the retract button
+ * 1) Hold the retract button
  */
 public class Climber extends SpartronicsSubsystem
 {
@@ -49,8 +48,6 @@ public class Climber extends SpartronicsSubsystem
         mLiftMotor = SpartronicsSRX.makeMotor(Constants.Climber.kLiftMotorId);
         mWinchMotor = SpartronicsMax.makeMotor(Constants.Climber.kWinchMotorId);
 
-        stop();
-
         if (mLiftMotor.hadStartupError() || mWinchMotor.hadStartupError())
         {
             mLiftMotor = new SpartronicsSimulatedMotor(Constants.Climber.kLiftMotorId);
@@ -61,6 +58,8 @@ public class Climber extends SpartronicsSubsystem
         {
             logInitialized(true);
         }
+
+        stop();
     }
 
     /**
@@ -118,19 +117,5 @@ public class Climber extends SpartronicsSubsystem
     public boolean secondaryIsStalled()
     {
         return mWinchMotor.getOutputCurrent() >= Constants.Climber.kSecondaryStallThreshold;
-    }
-
-    private double mMaxAmps = Double.NEGATIVE_INFINITY;
-
-    @Override
-    public void periodic()
-    {
-        double amps = mWinchMotor.getOutputCurrent();
-        if (amps > mMaxAmps)
-        {
-            mMaxAmps = amps;
-            dashboardPutNumber("winchCurrentMax", mMaxAmps);
-        }
-        dashboardPutNumber("winchCurrent", mMaxAmps);
     }
 }

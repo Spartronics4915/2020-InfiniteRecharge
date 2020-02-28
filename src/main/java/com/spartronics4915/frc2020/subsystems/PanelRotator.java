@@ -1,7 +1,6 @@
 package com.spartronics4915.frc2020.subsystems;
 
 import com.spartronics4915.frc2020.Constants;
-import com.spartronics4915.lib.hardware.motors.SensorModel;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
@@ -35,7 +34,8 @@ public class PanelRotator extends SpartronicsSubsystem
         mOpticalFlagUp = new DigitalInput(Constants.PanelRotator.kOpticalFlagUpId);
         mLimitSwitchDown = new DigitalInput(Constants.PanelRotator.kLimitSwitchDownId);
         mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId);
-        mRaiseMotor = new SpartronicsSimulatedMotor(42);//SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId);
+        // SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId);
+        mRaiseMotor = new SpartronicsSimulatedMotor(42); // FIXME: we have enough pdp ports - add back before competitions
 
         mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
         mColorMatcher.addColorMatch(Constants.PanelRotator.kRedTarget);
@@ -201,7 +201,6 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public boolean getOpticalFlagUp()
     {
-        // TODO: Double-check this
         return mOpticalFlagUp.get();
     }
 
@@ -212,7 +211,6 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public boolean getLimitSwitchDown()
     {
-        // TODO: Double-check this
         return mLimitSwitchDown.get();
     }
 

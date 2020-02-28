@@ -32,8 +32,7 @@ public final class Constants
     static  // check our machine id so subsystems can support multiple configs
     {
         sConfig = "default";
-        Path machineIDPath = FileSystems.getDefault().getPath(System.getProperty("user.home"),
-            "machineid");
+        Path machineIDPath = FileSystems.getDefault().getPath(System.getProperty("user.home"), "machineid");
         try
         {
             sConfig = Files.readString(machineIDPath).trim().toLowerCase();
@@ -50,7 +49,7 @@ public final class Constants
         public static final int kLiftMotorId = 5;
         public static final int kWinchMotorId = 6;
         public static final double kExtendSpeed = 1.0; // XXX: test
-        public static final double kWinchSpeed = -0.85; // XXX: test
+        public static final double kWinchSpeed = -0.85; // TODO: test! (this shouldn't have to be negative)
         public static final double kRetractSpeed = -1.0; // XXX: test
         public static final double kReverseWinchSpeed = 1.0; // XXX: test
         public static final double kStallThreshold = 90.0; // FIXME: stand-in value
@@ -69,7 +68,7 @@ public final class Constants
             public static final double kVelocityD = 0;
             public static final double kPositionP = 0.005;
             public static final double kPositionD = 0;
-            public static final double kConversionRatio = 1.0 / (187.0/20.0*9.0);
+            public static final double kConversionRatio = 1.0 / (187.0 / 20.0 * 9.0);
             public static final double kMaxVelocity = 1.5;
             public static final double kMaxAcceleration = 2;
             public static final double kStallThreshold = 90.0; // FIXME: stand-in values
@@ -103,26 +102,24 @@ public final class Constants
         public static final int kHarvestMotorId = 12;
         public static final int kProximitySensorId = 5; // Digital
 
-        public static final double kHarvestSpeed = 0.8; // XXX: test
-        public static final double kEjectSpeed = -0.8;  // XXX: test
+        public static final double kHarvestSpeed = 0.8;
+        public static final double kEjectSpeed = -0.8;
     }
 
     public static final class Launcher
     {
-        public static final int kFlywheelMasterId = 7; // CHANGE TO 7
+        public static final int kFlywheelMasterId = 7;
         public static final int kFlywheelFollowerId = -1; // Solid brass
         public static final int kAngleAdjusterMasterId = 0; // PWM
         public static final int kAngleAdjusterFollowerId = 1; // PWM
         public static final int kTurretId = 8;
         public static final int kTurretPotentiometerId = 0; // Analog
 
-        // XXX: consider whether to adopt CamToField2020, we currently have 
+        // XXX: consider whether to adopt CamToField2020, we currently have
         // competing implementations.
-        public static final Pose2d kRobotToTurret = new Pose2d(Units.inchesToMeters(-3.72), 
-                                                    Units.inchesToMeters(5.264),
-                                                    // z = 
-                                                    Rotation2d.fromDegrees(180.0));
-    
+        public static final Pose2d kRobotToTurret = new Pose2d(Units.inchesToMeters(-3.72),
+            Units.inchesToMeters(5.264), Rotation2d.fromDegrees(180.0));
+
         // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
         public static final double kP = 0.05;
         public static final double kS = 0.0286; // 0.0654;
@@ -149,11 +146,11 @@ public final class Constants
         public static final Rotation2d kHoodMaxAngle = Rotation2d.fromDegrees(35.0);
 
         public static Pose2d goalLocation = null;
-        //unit is feet
+        /** Feet */
         public static final double MaxShootingDistance = 100;// FIXME: Figure out max distance
-        //unit is feet
+        /** Feet */
         public static final double MinShootingDistance = 0;// FIXME: Figure out min distance
-        public static double kTurretStallAmps = 2.0;//Stand in Value
+        public static double kTurretStallAmps = 2.0; // Stand in Value
     }
 
     public static final class OI
@@ -308,21 +305,20 @@ public final class Constants
     public static final class Estimator
     {
         // XXX: consider whether to adopt CamToField2020, we currently
-        //  have competing implementations. 
+        //  have competing implementations.
         // If new measurements for Vision or Turret mounting are obtained,
         // please also update CoordSysMgr20202.java.
         public static final double kT265InternalMeasurementCovariance = 0.001;
-        public static final Pose2d kSlamraToRobot = new Pose2d(Units.inchesToMeters(-11.75), 
-                                                            Units.inchesToMeters(-4.75), 
-                                                            new Rotation2d());
+        public static final Pose2d kSlamraToRobot = new Pose2d(Units.inchesToMeters(-11.75),
+            Units.inchesToMeters(-4.75), new Rotation2d());
 
         public static final Matrix<N3, N1> kStateStdDevs = new MatBuilder<>(Nat.N3(), Nat.N1())
             .fill(0.02, 0.02, 0.01);
         public static final Matrix<N6, N1> measurementStdDevs = new MatBuilder<>(Nat.N6(), Nat.N1())
-            .fill(0.1, 0.1, 0.1, 0.005,
-                0.005, 0.002);
+            .fill(0.1, 0.1, 0.1, 0.005, 0.005, 0.002);
         public static final double kSlamStdDevsPerMeter = 3;
-        public static final Pose2d kApproximateStartingPose = new Pose2d(Units.inchesToMeters(508), 0, Rotation2d.fromDegrees(180));
+        public static final Pose2d kApproximateStartingPose = new Pose2d(Units.inchesToMeters(508), 0,
+            Rotation2d.fromDegrees(180));
     }
 
     public static final class Vision

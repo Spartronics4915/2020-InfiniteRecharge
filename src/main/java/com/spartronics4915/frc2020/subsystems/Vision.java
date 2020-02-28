@@ -27,16 +27,16 @@ import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.Timer;
 
 /**
- * The Vision subsystem has these responsibilities 
- * 
+ * The Vision subsystem has these responsibilities
+ *
  * - to listen for vision coprocessor results and use it to estimate
  *   robot pose.  NB: this estimate is for a moment in the past associated
  *   with the timestamp delivered with the vision target position.
  * - to turn on & off the vision LED
- * 
- * We estimate the robot pose whenever we receive a vision target update from 
- * raspi. This pose should be delivered to the CoordSysManager. 
- * NB: there's an alternate operating mode where we the raspi-Vision 
+ *
+ * We estimate the robot pose whenever we receive a vision target update from
+ * raspi. This pose should be delivered to the CoordSysManager.
+ * NB: there's an alternate operating mode where we the raspi-Vision
  * code computes/estimates robot pose. In that case our job would be
  * to ensure that all required robot state would be presented to
  * the network tables.
@@ -50,8 +50,7 @@ public class Vision extends SpartronicsSubsystem
     private final NetworkTableInstance mNetTab;
     private List<VisionEvent> mListeners;
     private Deque<RobotStateMap.State> mVisionEstimates;
-    private final Relay mLEDRelay; 
-    private final Launcher mLauncher;
+    private final Relay mLEDRelay;
 
     /* NB: our targets are measured in inches, while RobotStateMap
      * operates in meters!
@@ -65,16 +64,14 @@ public class Vision extends SpartronicsSubsystem
      * @param rse
      * @param launcherSubsys
      */
-    public Vision(RobotStateEstimator rse, Launcher launcher)
+    public Vision(RobotStateEstimator rse)
     {
         this.mOfficialRSM = rse.getBestRobotStateMap();
-        this.mLauncher = launcher;
         this.mCoordSysMgr = new CoordSysMgr2020(); // our private copy
 
         this.mNetTab = NetworkTableInstance.getDefault();
-        this.mNetTab.addEntryListener(Constants.Vision.kTargetResultKey, 
-                                    this::visionTargetUpdate,
-                                    EntryListenerFlags.kUpdate);
+        this.mNetTab.addEntryListener(Constants.Vision.kTargetResultKey,
+            this::visionTargetUpdate,  EntryListenerFlags.kUpdate);
         this.mListeners = new ArrayList<VisionEvent>();
         this.mVisionEstimates = new ArrayDeque<RobotStateMap.State>();
         this.dashboardPutString(Constants.Vision.kStatusKey, "ready+waiting");
@@ -82,8 +79,8 @@ public class Vision extends SpartronicsSubsystem
         this.mLEDRelay = new Relay(Constants.Vision.kLEDRelayPin);
         mLEDRelay.set(Relay.Value.kOn);
         /// XXX: set the relay into a known/desired state!
-        this.dashboardPutString(Constants.Vision.kLEDRelayKey, 
-                            this.mLEDRelay.get().toString());
+        this.dashboardPutString(Constants.Vision.kLEDRelayKey,
+            this.mLEDRelay.get().toString());
     }
 
     /* VisionEvents -----------------------------------------------*/
@@ -91,7 +88,7 @@ public class Vision extends SpartronicsSubsystem
      * register interest in vision events - caller may subclass
      * VisionEvent.  Alternative is just to request access to
      * the mVisionEstimates queue.
-     * @param l - 
+     * @param l -
      */
     public void registerTargetListener(VisionEvent l)
     {
@@ -146,7 +143,7 @@ public class Vision extends SpartronicsSubsystem
             double timestamp = Double.parseDouble(vals[3]);
             RobotStateMap.State officialState = mOfficialRSM.get(timestamp);
             double turretAngle;
-            if(vals.length == 5) 
+            if (vals.length == 5)
                 turretAngle = Double.parseDouble(vals[4]);
             else
             {
@@ -177,7 +174,7 @@ public class Vision extends SpartronicsSubsystem
             double robotHeading = r2d.getDegrees();
             Vec3 fieldTarget;
             // Our target is at field heading == -180 since the turret is
-            // mounted on back.. 
+            // mounted on back..
             if ((robotHeading < 90 && robotHeading > -90) || robotHeading > 270)
             {
                 // We're more likely to see theirs than ours.
@@ -193,11 +190,10 @@ public class Vision extends SpartronicsSubsystem
             this.mCoordSysMgr.updateTurretAngle(turretAngle);
             this.mCoordSysMgr.updateRobotPose(robotHeading, tgtInRobot, fieldTarget);
             Vec3 robotPos = mCoordSysMgr.robotPointToField(Vec3.ZeroPt);
-            // Use robot's heading in our poseEstimate - remember to convert 
+            // Use robot's heading in our poseEstimate - remember to convert
             // from inches to meters before commiting to RSM.
-            Pose2d poseEstimate = new Pose2d(Units.inchesToMeters(robotPos.getX()), 
-                                            Units.inchesToMeters(robotPos.getY()), 
-                                            r2d);
+            Pose2d poseEstimate = new Pose2d(Units.inchesToMeters(robotPos.getX()),
+                Units.inchesToMeters(robotPos.getY()), r2d);
             Iterator<VisionEvent> it = this.mListeners.iterator();
             while (it.hasNext())
             {
@@ -211,14 +207,13 @@ public class Vision extends SpartronicsSubsystem
 
             // now measure the distance between our estimate and the
             // official robot estimate (at timestamp).
-            double derror = robotPos.subtract(Units.metersToInches(t2d.getX()), 
-                                              Units.metersToInches(t2d.getY()), 
-                                              0).length();
+            double derror = robotPos.subtract(Units.metersToInches(t2d.getX()),
+                Units.metersToInches(t2d.getY()), 0).length();
             this.dashboardPutNumber(Constants.Vision.kPoseErrorKey, derror);
 
             // NB: robotPos is in inches! (dashboard too!)
-            String pstr = String.format("%g %g %g", 
-                            robotPos.getX(), robotPos.getY(), robotHeading);
+            String pstr = String.format("%g %g %g",
+                robotPos.getX(), robotPos.getY(), robotHeading);
             this.dashboardPutString(Constants.Vision.kPoseEstimateKey, pstr);
 
             double delay = Timer.getFPGATimestamp() - timestamp;
@@ -228,17 +223,14 @@ public class Vision extends SpartronicsSubsystem
             // offset. This is a "forward" estimate of our well-known
             // landmarks.  Hopefully these will produce nearly constant
             // and correct (!) results.
-            mCoordSysMgr.updateRobotPose(Units.metersToInches(t2d.getX()), 
-                                        Units.metersToInches(t2d.getY()), 
-                                        r2d.getDegrees());
+            mCoordSysMgr.updateRobotPose(Units.metersToInches(t2d.getX()),
+                Units.metersToInches(t2d.getY()), r2d.getDegrees());
             Vec3 tgtInField = mCoordSysMgr.camPointToField(tgtInCam);
-            String key = (fieldTarget == this.mOurTarget) ? 
-                        Constants.Vision.kOurGoalEstimateKey :
-                        Constants.Vision.kTheirGoalEstimateKey;
+            String key = (fieldTarget == this.mOurTarget) ?
+                Constants.Vision.kOurGoalEstimateKey : Constants.Vision.kTheirGoalEstimateKey;
             this.dashboardPutString(key, tgtInField.asPointString());
         }
         else
             this.logError("Vision target value must be a string");
     }
-
 }
