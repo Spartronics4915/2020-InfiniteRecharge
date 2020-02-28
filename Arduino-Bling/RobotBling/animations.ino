@@ -452,7 +452,7 @@ void rainbowCycle(unsigned long SpeedDelay)
   for(j=0; j<256*5; j++) 
   { // 5 cycles of all colors on wheel
     for(i=0; i< NUM_LEDS; i++) 
-	{
+  {
       c=Wheel(((i * 256 / NUM_LEDS) + j) & 255);
       pixels.setPixelColor(i, *c, *(c+1), *(c+2));
     }
@@ -494,20 +494,20 @@ void theaterChaseRainbow(unsigned long SpeedDelay) {
   byte *c;
 
   for (int j=0; j < 256; j++) 
-	{     // cycle all 256 colors in the wheel
+  {     // cycle all 256 colors in the wheel
     for (int q=0; q < 3; q++) 
-		{
-			for (int i=0; i < NUM_LEDS; i=i+3) 
-			{
+    {
+      for (int i=0; i < NUM_LEDS; i=i+3) 
+      {
         c = Wheel( (i+j) % 255);
         pixels.setPixelColor(i+q, *c, *(c+1), *(c+2));    //turn every third pixel on
-			}
+      }
         showPixels();
 
         delay(SpeedDelay);
 
         for (int i=0; i < NUM_LEDS; i=i+3) 
-				{
+        {
           pixels.setPixelColor(i+q, 0,0,0);        //turn every third pixel off
         }
     }
