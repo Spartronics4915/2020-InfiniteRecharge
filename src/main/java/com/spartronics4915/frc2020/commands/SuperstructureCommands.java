@@ -38,8 +38,19 @@ public class SuperstructureCommands
         public Intake()
         {
             addCommands(
-                mIntakeCommands.new Harvest(),
+                mIntakeCommands.new Harvest(true),
                 mIndexerCommands.new LoadFromIntake()
+            );
+        }
+    }
+
+    public class IntakeNoStop extends ParallelRaceGroup
+    {
+        public IntakeNoStop()
+        {
+            addCommands(
+                mIntakeCommands.new Harvest(true),
+                mIndexerCommands.new OptimizedLoadFromIntake()
             );
         }
     }

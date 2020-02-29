@@ -34,6 +34,7 @@ import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -56,11 +57,12 @@ public class TrajectoryContainer
     {
         kLeftTrenchFar(380, 134, 120),
         kLeftShootingPosition(508, 5, 148.69),
-        kRightTrenchFar(324, -134, 180),
-        kRightTrenchVeryFar(404, -134, 180),
+        kRightTrenchFar(364, -134, 180),
+        kRightTrenchVeryFar(404, -145, 180),
+        kRightTrenchIntermediate(443, -88, 240),
         kRightTrenchNear(242, -134, 180),
         kEightBallIntermediate(456, -134, 180),
-        kRightShootingPosition(421, -121, 194.36),
+        kRightShootingPosition(400, -140, 180),
         kShieldGeneratorFarRight(386, -46, 140),
         kHalfWayToShielGenerator(450, -80, 170),
         kMiddleShootingPosition(456, -65, 180),
@@ -85,15 +87,26 @@ public class TrajectoryContainer
 
     public static final class DestinationCouple
     {
-        private Destination mStart;
-        private Destination mEnd;
-        private boolean mReversed;
+        private final Destination mStart;
+        private final Destination mEnd;
+        private final boolean mReversed;
+        private final List<TimingConstraint<Pose2dWithCurvature>> mExtraConstraints;
 
         public DestinationCouple(Destination a, Destination b, boolean reversed)
         {
             mStart = a;
             mEnd = b;
             mReversed = reversed;
+            mExtraConstraints = new ArrayList<>();
+        }
+
+        public DestinationCouple(Destination a, Destination b, boolean reversed,
+            TimingConstraint<Pose2dWithCurvature>... constraints)
+        {
+            mStart = a;
+            mEnd = b;
+            mReversed = reversed;
+            mExtraConstraints = Arrays.asList(constraints);
         }
 
         public TimedTrajectory<Pose2dWithCurvature> createTrajectory(Pose2d startPoint,
@@ -114,6 +127,7 @@ public class TrajectoryContainer
             waypoints.add(end);
             List<TimingConstraint<Pose2dWithCurvature>> constraints = new ArrayList<TimingConstraint<Pose2dWithCurvature>>();
             constraints.add(new CentripetalAccelerationConstraint(0.762));
+            constraints.addAll(mExtraConstraints);
             return TrajectoryContainer.generateTrajectory(waypoints, constraints, mReversed);
         }
 
@@ -226,7 +240,7 @@ public class TrajectoryContainer
                     superstructureCommands.new LaunchSequence(),
                     superstructureCommands.new LaunchSequence(),
                     new StateMapResetCommand(stateEstimator, TrajectoryContainer.left.mStartPoint),
-                    new ParallelCommandGroup(
+                    new ParallelRaceGroup(
                         new TrajectoryTrackerCommand(drive,
                             TrajectoryContainer.left.getTrajectory(null,
                                 Destination.kLeftTrenchFar),
@@ -266,14 +280,14 @@ public class TrajectoryContainer
                 new SequentialCommandGroup(
                     new WaitCommand(0.5),
                     new StateMapResetCommand(stateEstimator, TrajectoryContainer.right.mStartPoint),
-                    superstructureCommands.new LaunchSequence(5),
-                    new ParallelCommandGroup(
+                    superstructureCommands.new LaunchSequence(4),
+                    new ParallelRaceGroup(
                         new TrajectoryTrackerCommand(drive,
-                            TrajectoryContainer.right.getTrajectory(null,
+                            TrajectoryContainer.right.getTrajectory(
+                                Destination.kRightTrenchIntermediate,
                                 Destination.kRightTrenchFar),
                             ramseteController, stateEstimator.getBestRobotStateMap()),
                         new SequentialCommandGroup(
-                            superstructureCommands.new Intake(),
                             superstructureCommands.new Intake(),
                             superstructureCommands.new Intake())),
                     new TrajectoryTrackerCommand(drive,
@@ -311,8 +325,7 @@ public class TrajectoryContainer
                     TrajectoryContainer.eightBall.getTrajectory(Destination.kRightTrenchFar,
                         Destination.kRightShootingPosition),
                     ramseteController, stateEstimator.getBestRobotStateMap()),
-                    superstructureCommands.new LaunchSequence(5)
-                    )),
+                superstructureCommands.new LaunchSequence(5))),
             new AutoMode("Characterize Drive",
                 new CharacterizeDriveBaseCommand(drive, Constants.Drive.kWheelDiameter)),
             new AutoMode("Right: Through Trench",
@@ -347,7 +360,13 @@ public class TrajectoryContainer
 
         // right
         var rightTrajectories = new HashMap<DestinationCouple, List<Pose2d>>();
-        rightTrajectories.put(new DestinationCouple(null, Destination.kRightTrenchFar, false),
+        rightTrajectories.put(new DestinationCouple(Destination.kRightTrenchIntermediate,
+            Destination.kRightTrenchFar, false,
+            new VelocityLimitRegionConstraint(
+                new Rectangle2d(
+                    new Translation2d(Units.inchesToMeters(410), Units.inchesToMeters(-105)),
+                    new Translation2d(Units.inchesToMeters(205), Units.inchesToMeters(-160))),
+                0.3)),
             Arrays.asList());
         rightTrajectories.put(new DestinationCouple(Destination.kRightTrenchFar,
             Destination.kRightShootingPosition, true), Arrays.asList());

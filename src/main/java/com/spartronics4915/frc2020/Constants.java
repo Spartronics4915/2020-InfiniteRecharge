@@ -71,8 +71,8 @@ public final class Constants
             public static final double kPositionD = 0;
             public static final double kConversionRatio = 1.0 / (187.0/20.0*9.0);
             public static final double kMaxVelocity = 1.5;
-            public static final double kMaxAcceleration = 2;
-            public static final double kStallThreshold = 90.0; // FIXME: stand-in values
+            public static final double kMaxAcceleration = 1.5;
+            public static final double kStallThreshold = 20.0; // FIXME: stand-in values
 
             /** Degrees */
             public static final double kPositionTolerance = 2.0;
@@ -103,7 +103,7 @@ public final class Constants
         public static final int kHarvestMotorId = 12;
         public static final int kProximitySensorId = 5; // Digital
 
-        public static final double kHarvestSpeed = 0.8; // XXX: test
+        public static final double kHarvestSpeed = 1.0; // XXX: test
         public static final double kEjectSpeed = -0.8;  // XXX: test
     }
 
@@ -293,8 +293,8 @@ public final class Constants
     {
         public static final double kStartVelocityMetersPerSec = 0;
         public static final double kEndVelocityMetersPerSec = 0;
-        public static final double kMaxVelocityMetersPerSec = 1;
-        public static final double kMaxAccelerationMeterPerSecSq = 0.5;
+        public static final double kMaxVelocityMetersPerSec = 3;
+        public static final double kMaxAccelerationMeterPerSecSq = 1;
 
         public static final Pose2d kStartPointLeft = new Pose2d(Units.inchesToMeters(508),
             Units.inchesToMeters(138), Rotation2d.fromDegrees(180));

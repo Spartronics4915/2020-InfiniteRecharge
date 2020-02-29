@@ -332,6 +332,35 @@ public class IndexerCommands
         }
     }
 
+    public class OptimizedLoadFromIntake extends SequentialCommandGroup
+    {
+        public OptimizedLoadFromIntake()
+        {
+            if (mIndexer.getSlotBallLoaded())
+            {
+                addCommands(
+                    new EndKicker(), // for safety
+                    // new AlignIndexer(),
+                    new WaitForBallHeld(),
+                    new LoadBallToSlot(0),
+                    new ParallelCommandGroup(
+                        new WaitCommand(0.3), new StartTransfer()),
+                    new EndTransfer(),
+                    new SpinIndexer(1),
+                    new InstantCommand(() -> mIndexer.addBalls(1), mIndexer)
+                );
+            }
+            else
+            {
+                System.out.println("Leaving the ball in the outer slot... We have five balls held.");
+                addCommands(
+                    new EndKicker(),
+                    new WaitForBallHeld()
+                );
+            }
+        }
+    }
+
     /**
      * Queues the {@link LoadFromIntake} command five times.
      * <p>
@@ -370,15 +399,15 @@ public class IndexerCommands
 
         private void sharedInit(int ballsToShoot)
         {
-            double spinDistance = (mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded()) ? 0.5 : 0;
+            double spinDistance = (mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded()) ? 0.25 : 0;
             addCommands(
                 // new AlignIndexer(mIndexer),
                 new SpinIndexer(-spinDistance),
                 new StartKicker(),
-                new LoadBallToSlot(1 + spinDistance),
-                new ParallelCommandGroup(
-                    new WaitCommand(0.25), new StartTransfer()),
-                new SpinIndexer(ballsToShoot - 1),
+                ballsToShoot >= 5 ? new LoadBallToSlot(1 + spinDistance) : new InstantCommand(),
+                ballsToShoot >= 5 ? new ParallelCommandGroup(
+                    new WaitCommand(0.25), new StartTransfer()) : new InstantCommand(),
+                new SpinIndexer(ballsToShoot >= 5 ? ballsToShoot - 1 : ballsToShoot),
                 new EndKicker(),
                 new EndTransfer(),
                 new InstantCommand(() -> mIndexer.addBalls(-ballsToShoot), mIndexer)

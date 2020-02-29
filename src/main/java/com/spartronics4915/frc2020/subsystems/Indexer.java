@@ -178,7 +178,7 @@ public class Indexer extends SpartronicsSubsystem
     public void goToPosition()
     {
         if (isJamming())
-            mIndexerMotor.setPercentOutput(-0.3);
+            mIndexerMotor.setPercentOutput(-0.2);
         else
             mIndexerMotor.setPosition(mTargetPosition);
     }

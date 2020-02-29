@@ -87,11 +87,13 @@ public class RobotContainer
         {
             slamra = new T265Camera(Constants.Estimator.kSlamraToRobot,
                 Constants.Estimator.kT265InternalMeasurementCovariance);
+            SmartDashboard.putString("RobotContainer/vslamStatus", "OK");
         }
         catch (CameraJNIException | UnsatisfiedLinkError e)
         {
             slamra = null;
-            Logger.warning("RobotContainer: T265 camera is unavailable");
+            Logger.error("RobotContainer: T265 camera is unavailable");
+            SmartDashboard.putString("RobotContainer/vslamStatus", "BAD!");
         }
 
         mButtons = new ButtonFactory();
@@ -112,7 +114,7 @@ public class RobotContainer
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
             slamra,
             ekf,
-            EstimatorSource.VisualSLAM);
+            slamra == null ? EstimatorSource.EncoderOdometry : EstimatorSource.VisualSLAM);
         StartEndCommand slamraCmd = new StartEndCommand(
             () -> mStateEstimator.enable(),
             () -> mStateEstimator.stop(),

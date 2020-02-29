@@ -38,6 +38,13 @@ public class IntakeCommands
      */
     public class Harvest extends CommandBase
     {
+        private boolean mShouldStopOnBall;
+
+        public Harvest(boolean shouldStopOnBall)
+        {
+            mShouldStopOnBall = shouldStopOnBall;
+        }
+
         @Override
         public void initialize()
         {
@@ -47,7 +54,7 @@ public class IntakeCommands
         @Override
         public boolean isFinished()
         {
-            return mIndexer.getIntakeBallLoaded();
+            return mIndexer.getIntakeBallLoaded() && mShouldStopOnBall;
         }
 
         @Override

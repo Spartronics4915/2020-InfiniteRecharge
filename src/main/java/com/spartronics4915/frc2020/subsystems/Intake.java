@@ -28,6 +28,7 @@ public class Intake extends SpartronicsSubsystem
             logInitialized(true);
         }
 
+        mHarvestMotor.setBrakeMode(false);
         stop();
 
         mHarvestMotor.setOutputInverted(true);
