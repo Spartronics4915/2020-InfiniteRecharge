@@ -313,6 +313,7 @@ public class Launcher extends SpartronicsSubsystem
     {
         // nb: don't change these nettable names without changing Dashboard.
         dashboardPutNumber("turretAngle", getTurretDirection().getDegrees());
+        dashboardPutNumber("targetTurretAngle", mTargetAngle.getDegrees());
         dashboardPutNumber("hoodAngle", getCurrentPitch().getDegrees());
         dashboardPutNumber("flywheelRPS", getCurrentRPS());
     }

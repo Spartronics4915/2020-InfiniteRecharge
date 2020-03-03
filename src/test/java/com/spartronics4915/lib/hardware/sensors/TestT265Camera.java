@@ -24,10 +24,16 @@ public class TestT265Camera
     @Test
     public void testGeometry()
     {
-        final Pose2d origin = new Pose2d(5, -5, Rotation2d.fromDegrees(180));
+        // final Pose2d origin = new Pose2d(5, -5, Rotation2d.fromDegrees(180));
         
-        final Pose2d currentPose = new Pose2d(1, 1, Rotation2d.fromDegrees(180));
-        System.out.println(origin.transformBy(currentPose));
+        // final Pose2d currentPose = new Pose2d(1, 1, Rotation2d.fromDegrees(180));
+        // System.out.println(origin.transformBy(currentPose));
+
+        final Pose2d a = new Pose2d(0, 0, new Rotation2d());
+        final Pose2d b = new Pose2d(1, 0, Rotation2d.fromDegrees(20));
+
+        System.out.println(a.getTranslation().getDistance(b.getTranslation()));
+        System.out.println(a.distance(b));
     }
 
     @Tag("hardwareDependant")

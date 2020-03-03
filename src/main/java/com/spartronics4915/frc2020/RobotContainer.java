@@ -82,18 +82,23 @@ public class RobotContainer
      */
     public RobotContainer()
     {
-        T265Camera slamra;
-        try
+        int retryCount = 0;
+        T265Camera slamra = null;
+        while (++retryCount <= 1 && slamra == null)
         {
-            slamra = new T265Camera(Constants.Estimator.kSlamraToRobot,
-                Constants.Estimator.kT265InternalMeasurementCovariance);
-            SmartDashboard.putString("RobotContainer/vslamStatus", "OK");
-        }
-        catch (CameraJNIException | UnsatisfiedLinkError e)
-        {
-            slamra = null;
-            Logger.error("RobotContainer: T265 camera is unavailable");
-            SmartDashboard.putString("RobotContainer/vslamStatus", "BAD!");
+            try
+            {
+                slamra = new T265Camera(Constants.Estimator.kSlamraToRobot,
+                    Constants.Estimator.kT265InternalMeasurementCovariance);
+                SmartDashboard.putString("RobotContainer/vslamStatus", "OK");
+            }
+            catch (CameraJNIException | UnsatisfiedLinkError e)
+            {
+                slamra = null;
+                Logger.error("RobotContainer: T265 camera is unavailable");
+                Logger.exception(e);
+                SmartDashboard.putString("RobotContainer/vslamStatus", "BAD!");
+            }
         }
 
         mButtons = new ButtonFactory();
@@ -147,11 +152,12 @@ public class RobotContainer
         configureButtonBoardBindings();
 
         /* publish our automodes to the dashboard -----------------*/
-        mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController, mSuperstructureCommands);
+        mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController,
+            mSuperstructureCommands);
         String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
             .collect(Collectors.joining(","));
         SmartDashboard.putString(kAutoOptionsKey, autoModeList);
-        
+
     }
 
     private void configureJoystickBindings()
@@ -260,6 +266,7 @@ public class RobotContainer
             .alongWith(mLEDCommands.new SetBlingState(Bling.kClimb)));
         mButtons.create(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend()
             .alongWith(mLEDCommands.new SetBlingState(Bling.kClimb)));
+        mButtons.create(mButtonBoard, 10).whenPressed(mLauncherCommands.new SetAsideToClimb());
 
         // new JoystickButton(mButtonBoard, 6).toggleWhenPressed(new
         // ConditionalCommand(mLauncherCommands.new Target());

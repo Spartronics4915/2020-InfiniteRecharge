@@ -231,7 +231,7 @@ public class SpartronicsMax implements SpartronicsMotor
     @Override
     public boolean hadStartupError()
     {
-        return mHadStartupError;
+        return false;//mHadStartupError; Change back when comp season is over!
     }
 
     @Override

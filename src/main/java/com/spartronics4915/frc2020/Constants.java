@@ -70,9 +70,10 @@ public final class Constants
             public static final double kPositionP = 0.005;
             public static final double kPositionD = 0;
             public static final double kConversionRatio = 1.0 / (187.0/20.0*9.0);
-            public static final double kMaxVelocity = 1.5;
-            public static final double kMaxAcceleration = 1.5;
-            public static final double kStallThreshold = 20.0; // FIXME: stand-in values
+            public static final double kMaxVelocity = 1;
+            public static final double kMaxAcceleration = 1;
+            public static final double kStallThreshold = 10.0; // FIXME: stand-in values
+            public static final double kMaxUnjamTime = 1.0;
 
             /** Degrees */
             public static final double kPositionTolerance = 2.0;
@@ -124,7 +125,7 @@ public final class Constants
                                                     Rotation2d.fromDegrees(180.0));
     
         // https://docs.wpilib.org/en/latest/docs/software/advanced-control/controllers/feedforward.html#simplemotorfeedforward
-        public static final double kP = 0.05;
+        public static final double kP = 0.03;
         public static final double kS = 0.0286; // 0.0654;
         public static final double kV = 7.86; // 7.18;
         public static final double kA = 5.16;
@@ -137,7 +138,7 @@ public final class Constants
         // Last three are good
         public static final double[] kDistanceTable = new double[]{139.0, 163.0, 211.0, 271.0, 319.0, 439.0};//{80.0, 118.11, 157.48, 177.165, 196.85, 240.0, 310.0};
         public static final double[] kAngleTable =    new double[]{0.0,0.0,0.0,0.0,0.0,0.0};//{6.0,  16.0,   20.0,   19.0,    24.0,   25.0,  28.0};
-        public static final double[] kRPSTable =      new double[]{43.0, 42.6, 45.25, 47.25, 50.75, 64.0};//{33.5, 38.0,   41.0,   41.0,    45.0,   49.0,  60.0};
+        public static final double[] kRPSTable =      new double[]{43.0, 42.6, 44.85, 47.25, 50.75, 64.0};//{33.5, 38.0,   41.0,   41.0,    45.0,   49.0,  60.0};
         public static final int kLookupTableSize = kDistanceTable.length;
 
         /** RPS */
@@ -266,9 +267,9 @@ public final class Constants
                     kDriveMotorConstructor = SpartronicsSRX::makeMotor;
                     break;
                 default:
-                    kTrackWidthMeters = Units.inchesToMeters(26.75);
+                    kTrackWidthMeters = 1;
                     kWheelDiameter = Units.inchesToMeters(8);
-                    kScrubFactor = 1;
+                    kScrubFactor = 0.7943811135171964;
                     kLeftS = 0.241;
                     kLeftV = 0.404;
                     kLeftA = 0.0237;
@@ -297,7 +298,7 @@ public final class Constants
         public static final double kMaxAccelerationMeterPerSecSq = 1;
 
         public static final Pose2d kStartPointLeft = new Pose2d(Units.inchesToMeters(508),
-            Units.inchesToMeters(138), Rotation2d.fromDegrees(180));
+            Units.inchesToMeters(31) - Constants.Drive.kCenterToSideBumper, Rotation2d.fromDegrees(180));
         public static final Pose2d kStartPointMiddle = new Pose2d(Units.inchesToMeters(508),
             Units.inchesToMeters(-65), Rotation2d.fromDegrees(180));
         public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(510) - Constants.Drive.kCenterToFrontBumper,
@@ -311,7 +312,7 @@ public final class Constants
         //  have competing implementations. 
         // If new measurements for Vision or Turret mounting are obtained,
         // please also update CoordSysMgr20202.java.
-        public static final double kT265InternalMeasurementCovariance = 0.001;
+        public static final double kT265InternalMeasurementCovariance = 0.1;
         public static final Pose2d kSlamraToRobot = new Pose2d(Units.inchesToMeters(-11.75), 
                                                             Units.inchesToMeters(-4.75), 
                                                             new Rotation2d());

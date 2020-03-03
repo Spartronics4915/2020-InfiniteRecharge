@@ -177,4 +177,12 @@ public interface SpartronicsMotor
     {
         Logger.warning("Stator current limit not implemented for device number " + getDeviceNumber() + "!");
     }
+
+    /**
+     * @param limitAmps Max input current in amps.
+     */
+    default void setSupplyCurrentLimit(int limitAmps, double maxTimeAtLimit)
+    {
+        Logger.warning("Supply current limit not implemented for device number " + getDeviceNumber() + "!");
+    }
 }

@@ -9,6 +9,7 @@ import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * Indexer for storing power cells
@@ -36,6 +37,8 @@ public class Indexer extends SpartronicsSubsystem
 
     private int mBallsHeld = 0;
 
+    private double mLastJamTime = Double.NEGATIVE_INFINITY;
+
     public boolean mIsFull = false;
 
     public Indexer()
@@ -43,12 +46,18 @@ public class Indexer extends SpartronicsSubsystem
         // Set up Spinner
         mIndexerModel = SensorModel.fromMultiplier(Constants.Indexer.Spinner.kConversionRatio);
         mIndexerMotor = SpartronicsMax.makeMotor(Constants.Indexer.Spinner.kMotorId, mIndexerModel);
+        mIndexerMotor.setStatorCurrentLimit(30);
+        // Set up Unjammer
         mUnjamMotor = SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId);
         // Set up Loader
         mKickerModel = SensorModel.fromMultiplier(Constants.Indexer.Loader.kConversionRatio);
         mKickerMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Loader.kMotorId, mKickerModel); // BAG motor
+        mKickerMotor.setOutputInverted(true);
+        mKickerMotor.setSupplyCurrentLimit(40, 2);
         // Set up Transfer
         mTransferMotor = SpartronicsSRX.makeMotor(Constants.Indexer.Transfer.kMotorId);
+        mTransferMotor.setOutputInverted(true);
+        mTransferMotor.setSupplyCurrentLimit(40, 2);
 
         stop();
 
@@ -177,8 +186,15 @@ public class Indexer extends SpartronicsSubsystem
      */
     public void goToPosition()
     {
-        if (isJamming())
-            mIndexerMotor.setPercentOutput(-0.2);
+        double timeSinceJam = Timer.getFPGATimestamp() - mLastJamTime;
+        if (isJamming() && timeSinceJam < Constants.Indexer.Spinner.kMaxUnjamTime)
+        {
+            mIndexerMotor.setPercentOutput(-0.4);
+            if (timeSinceJam > Constants.Indexer.Spinner.kMaxUnjamTime)
+            {
+                mLastJamTime = Timer.getFPGATimestamp();
+            }
+        }
         else
             mIndexerMotor.setPosition(mTargetPosition);
     }

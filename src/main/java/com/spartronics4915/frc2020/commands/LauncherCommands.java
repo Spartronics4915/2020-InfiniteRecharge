@@ -1,5 +1,6 @@
 package com.spartronics4915.frc2020.commands;
 
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 
 import com.spartronics4915.frc2020.Constants;
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public class LauncherCommands
@@ -56,6 +58,27 @@ public class LauncherCommands
     public Launcher getLauncher()
     {
         return mLauncher;
+    }
+
+    public class SetAsideToClimb extends CommandBase
+    {
+        @Override
+        public void execute()
+        {
+            mLauncher.turnTurret(Rotation2d.fromDegrees(-45));
+        }
+
+        @Override
+        public boolean isFinished()
+        {
+            return false;
+        }
+
+        @Override
+        public Set<Subsystem> getRequirements()
+        {
+            return Set.of(mLauncher);
+        }
     }
 
     public class TargetAndShoot extends CommandBase
@@ -140,7 +163,7 @@ public class LauncherCommands
             true);
         Rotation2d turretAngle = fieldAnglePointingToTarget
             .rotateBy(fieldToTurret.getRotation().inverse());
-        double distance = mMatchTargetMeters.distance(fieldToTurret);
+        double distance = Math.hypot(turretToTarget.getTranslation().getX(), turretToTarget.getTranslation().getY());
         distance = Units.metersToInches(distance);
         mLauncher.adjustHood(mLauncher.calcPitch(distance));
         mLauncher.turnTurret(turretAngle);
