@@ -28,6 +28,7 @@ public class LauncherCommands
     private final RobotStateMap mStateMap;
     private final Pose2d mMatchTargetMeters;
     private final Vec3 mMatchTargetInches;
+    private final Vec3 mInnerTargetInches;
 
     public LauncherCommands(Launcher launcher, IndexerCommands indexerCommands,
         RobotStateMap stateMap)
@@ -44,7 +45,8 @@ public class LauncherCommands
         mMatchTargetInches = new Vec3(
             Constants.Vision.kAllianceGoalCoords[0],
             Constants.Vision.kAllianceGoalCoords[1],
-            0); // on ground/robot origin
+            0); // on ground/robot origin - we could include height if of value
+        mInnerTargetInches = new Vec3(Constants.Vision.kAllianceInnerGoalCoords);
 
         mMatchTargetMeters = new Pose2d(
             Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[0]),
@@ -177,16 +179,22 @@ public class LauncherCommands
     private double trackTargetAlt()
     {
         Pose2d robotToField = mStateMap.getLatestFieldToVehicle();
-        double turretAngle = mLauncher.getTurretDirection().getDegrees();
-        this.mCoordSysMgr.updateTurretAngle(turretAngle);
+        // we want an angle relative to turret neutral pose
+        this.mCoordSysMgr.updateTurretAngle(0); 
+
+        // mCoordSysMgr operates in inches, but accepts robot coords in meters.
         this.mCoordSysMgr.updateRobotPose(robotToField);
 
-        Vec3 targetPointInMnt = mCoordSysMgr.fieldPointToMount(mMatchTargetInches);
-        double angle = targetPointInMnt.angleOnXYPlane();
-        double dist = Units.inchesToMeters(targetPointInMnt.length());
+        // convert the match target in field coords into turret-relative coords
+        // targetInMnt "says it all".
+        Vec3 targetInMnt = mCoordSysMgr.fieldPointToMount(mMatchTargetInches);
+        Vec3 innerTargetInMnt = mCoordSysMgr.fieldPointToMount(mInnerTargetInches);
+
+        double angle = targetInMnt.angleOnXYPlane();
+        double dist = targetInMnt.lengthXY(); // already in inches
         if (angle > 180)
         {
-            // [0-360] -> (-180, 180]
+            // [0-360) -> (-180, 180]
             angle = -(360 - angle);
         }
         if (Math.abs(angle) < Constants.Launcher.kMaxAngleDegrees)

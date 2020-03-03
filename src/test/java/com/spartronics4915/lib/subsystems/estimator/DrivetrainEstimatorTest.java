@@ -137,26 +137,33 @@ public class DrivetrainEstimatorTest
             slamYs.add(measurementVSlam.getTranslation().getY());
         }
 
-        var chartBuilder = new XYChartBuilder();
-        chartBuilder.title = "The Magic of Sensor Fusion";
-        var chart = chartBuilder.build();
-
-        chart.addSeries("vSLAM", slamXs, slamYs);
-        chart.addSeries("Vision", visionXs, visionYs);
-        chart.addSeries("Trajectory", trajXs, trajYs);
-        chart.addSeries("xHat", observerXs, observerYs);
-
         System.out.println("Mean error (meters): " + errorSum / (traj.getTotalTime() / dt));
         System.out.println("Max error (meters):  " + maxError);
 
-        // Uncomment for fun graphs
-        new SwingWrapper<>(chart).displayChart();
         try
         {
-            Thread.sleep(1000000000);
+            var chartBuilder = new XYChartBuilder();
+            chartBuilder.title = "The Magic of Sensor Fusion";
+            var chart = chartBuilder.build();
+
+            chart.addSeries("vSLAM", slamXs, slamYs);
+            chart.addSeries("Vision", visionXs, visionYs);
+            chart.addSeries("Trajectory", trajXs, trajYs);
+            chart.addSeries("xHat", observerXs, observerYs);
+            // Uncomment for fun graphs
+            new SwingWrapper<>(chart).displayChart();
+            try
+            {
+                Thread.sleep(1000000000);
+            }
+            catch (InterruptedException e)
+            {
+            }
         }
-        catch (InterruptedException e)
+        catch(java.awt.HeadlessException ex)
         {
+            System.out.println("skipping charts in headless mode");
         }
+
     }
 }

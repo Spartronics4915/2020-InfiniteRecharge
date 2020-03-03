@@ -30,7 +30,6 @@ public class Intake extends SpartronicsSubsystem
 
         mHarvestMotor.setBrakeMode(false);
         stop();
-
         mHarvestMotor.setOutputInverted(true);
     }
 
@@ -51,16 +50,6 @@ public class Intake extends SpartronicsSubsystem
         dashboardPutString("Status", "ejecting");
         mHarvestMotor.setPercentOutput(Constants.Intake.kEjectSpeed);
     }
-
-    /**
-     * Checks to see if a ball is held in the intake chamber
-     * with a proximity sensor returning a digital value.
-     * <p>
-     * The style of proximity sensor we use requires MANUAL calibration.
-     *
-     * @return Whether a ball is held
-     */
-
 
     /**
      * Universal stop method

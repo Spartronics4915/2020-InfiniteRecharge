@@ -22,15 +22,6 @@ public class ClimberCommands
     }
 
     /**
-     * A {@link StartEndCommand} allows us to specify an execute() and end()
-     * condition, and runs until interrupted.
-     *
-     * @param Runnable onInit Runs over and over until interrupted
-     * @param Runnable onEnd (boolean interrupted) Method to call once when ended
-     * @param Subsystem requirement For both the CommandScheduler and the above method references.
-     */
-
-    /**
      * This {@link StartEndCommand} extends the "lightsaber" while held down.
      * <p>
      * It does so by calling {@link Climber}.extend until stopped.
@@ -62,6 +53,10 @@ public class ClimberCommands
         }
     }
 
+    /**
+     * This {@link ParallelRaceGroup} extends the climber to a "minimum" distance -
+     * ideal for climbing when the bar is low-to-horizontal - by use of a timer.
+     */
     public class ExtendMin extends ParallelRaceGroup
     {
         public ExtendMin()
@@ -70,6 +65,11 @@ public class ClimberCommands
         }
     }
 
+    /**
+     * This {@link ParallelRaceGroup} extends the climber to a "maximum" distance -
+     * ideal for climbing when the bar high (likely another robot on the other end) -
+     * by use of a timer.
+     */
     public class ExtendMax extends ParallelRaceGroup
     {
         public ExtendMax()
@@ -137,6 +137,8 @@ public class ClimberCommands
             mClimber.winch(Constants.Climber.kStalled);
         }
 
+        // TODO: Should there be an additional stall check?
+
         @Override
         public void end(boolean interrupted)
         {
@@ -155,7 +157,7 @@ public class ClimberCommands
     {
         public Winch()
         {
-            super(/*new WinchPrimary(), */new WinchSecondary());
+            super(/*new WinchPrimary(),*/ new WinchSecondary()); // FIXME: test this!
         }
     }
 

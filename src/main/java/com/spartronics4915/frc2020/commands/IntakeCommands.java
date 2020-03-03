@@ -6,7 +6,6 @@ import com.spartronics4915.frc2020.subsystems.Indexer;
 import com.spartronics4915.frc2020.subsystems.Intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -77,7 +76,7 @@ public class IntakeCommands
      * Note that this is not an Unjam command. The {@link Intake} subsystem only
      * controls the mechanical vector roller.
      */
-    public class Eject extends StartEndCommand // TODO: Does this execute(), or initialize()?
+    public class Eject extends StartEndCommand
     {
         public Eject()
         {

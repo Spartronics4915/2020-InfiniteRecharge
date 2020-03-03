@@ -1,7 +1,6 @@
 package com.spartronics4915.frc2020.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class SuperstructureCommands
@@ -24,10 +23,11 @@ public class SuperstructureCommands
         {
             addCommands(
                 mLauncherCommands.new WaitForFlywheel(),
-                mIndexerCommands.new LoadToLauncher(ballsToShoot));
+                mIndexerCommands.new LoadToLauncher(ballsToShoot)
+            );
         }
-        /** XXX: should this shoot > 1? */
-        public LaunchSequence()
+
+        public LaunchSequence() // XXX: should this shoot > 1?
         {
             this(1);
         }
@@ -68,5 +68,4 @@ public class SuperstructureCommands
             );
         }
     }
-
 }
