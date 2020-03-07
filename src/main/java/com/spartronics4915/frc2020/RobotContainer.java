@@ -132,7 +132,7 @@ public class RobotContainer
         mDriveCommands = new DriveCommands(mDrive, mButtons.getJoystick(mJoystick));
         mIntakeCommands = new IntakeCommands(mIntake, mIndexer);
         mIndexerCommands = new IndexerCommands(mIndexer);
-        mLauncherCommands = new LauncherCommands(mLauncher, mIndexerCommands,
+        mLauncherCommands = new LauncherCommands(mLauncher, mVision, mIndexerCommands,
             mStateEstimator.getBestRobotStateMap());
         mPanelRotatorCommands = new PanelRotatorCommands(mPanelRotator);
         mSuperstructureCommands = new SuperstructureCommands(mIndexerCommands,

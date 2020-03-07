@@ -111,6 +111,7 @@ public class Launcher extends SpartronicsSubsystem
             setUpLookupTable(Constants.Launcher.kLookupTableSize, Constants.Launcher.kDistanceTable,
                 Constants.Launcher.kAngleTable, Constants.Launcher.kRPSTable);
         }
+        zeroTurret();
         mTurretZeroed = false;
         reset();
         mTurretMotor.setNeutral();

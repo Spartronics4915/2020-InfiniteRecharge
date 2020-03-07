@@ -1,13 +1,9 @@
 package com.spartronics4915.frc2020.commands;
 
-import java.util.Set;
-import java.util.function.BooleanSupplier;
-
 import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.CoordSysMgr2020;
-import com.spartronics4915.frc2020.commands.IndexerCommands.LoadToLauncher;
-import com.spartronics4915.frc2020.subsystems.Indexer;
 import com.spartronics4915.frc2020.subsystems.Launcher;
+import com.spartronics4915.frc2020.subsystems.Vision;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.math.threedim.math3.Vec3;
@@ -15,14 +11,13 @@ import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 public class LauncherCommands
 {
     private final Launcher mLauncher;
+    private final Vision mVision;
     private final IndexerCommands mIndexerCommands;
     final CoordSysMgr2020 mCoordSysMgr;
     private final RobotStateMap mStateMap;
@@ -30,10 +25,11 @@ public class LauncherCommands
     private final Vec3 mMatchTargetInches;
     private final Vec3 mInnerTargetInches;
 
-    public LauncherCommands(Launcher launcher, IndexerCommands indexerCommands,
-        RobotStateMap stateMap)
+    public LauncherCommands(Launcher launcher, Vision vision,
+        IndexerCommands indexerCommands, RobotStateMap stateMap)
     {
         mLauncher = launcher;
+        mVision = vision;
         mIndexerCommands = indexerCommands;
         mStateMap = stateMap;
         mCoordSysMgr = new CoordSysMgr2020();
@@ -53,8 +49,8 @@ public class LauncherCommands
             Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[1]),
             Rotation2d.fromDegrees(180));
 
-        // mLauncher.setDefaultCommand(new ShootBallTest());
         mLauncher.setDefaultCommand(new TargetAndShoot());
+        // mLauncher.setDefaultCommand(new TurretVision());
     }
 
     public Launcher getLauncher()
@@ -64,6 +60,11 @@ public class LauncherCommands
 
     public class SetAsideToClimb extends CommandBase
     {
+        public SetAsideToClimb()
+        {
+            addRequirements(mLauncher);
+        }
+
         @Override
         public void execute()
         {
@@ -74,12 +75,6 @@ public class LauncherCommands
         public boolean isFinished()
         {
             return false;
-        }
-
-        @Override
-        public Set<Subsystem> getRequirements()
-        {
-            return Set.of(mLauncher);
         }
     }
 
@@ -152,7 +147,7 @@ public class LauncherCommands
     }
 
     /**
-     * @return Distance to the target in inches 
+     * @return Distance to the target in inches
      */
     private double trackTarget()
     {
@@ -173,14 +168,14 @@ public class LauncherCommands
     }
 
     /**
-     * return the distance (in meters) to the tracked target.  If the target 
+     * return the distance (in meters) to the tracked target.  If the target
      * is within our field of view, we adjust both hood and turret angle.
      */
     private double trackTargetAlt()
     {
         Pose2d robotToField = mStateMap.getLatestFieldToVehicle();
         // we want an angle relative to turret neutral pose
-        this.mCoordSysMgr.updateTurretAngle(0); 
+        this.mCoordSysMgr.updateTurretAngle(0);
 
         // mCoordSysMgr operates in inches, but accepts robot coords in meters.
         this.mCoordSysMgr.updateRobotPose(robotToField);
@@ -373,6 +368,42 @@ public class LauncherCommands
         public void end(boolean interrupted)
         {
             mLauncher.reset();
+        }
+    }
+
+    public class TurretVision extends CommandBase
+    {
+        double yam;
+        double tomato;
+
+        public TurretVision()
+        {
+            yam = 0;
+            tomato = 0;
+            addRequirements(mLauncher);
+        }
+
+        @Override
+        public void execute()
+        {
+            double potato = mVision.dashboardGetNumber("PIDOffset", 0).doubleValue();
+            if (yam != potato)
+                tomato = mLauncher.getTurretDirection().getDegrees() - potato;
+            mLauncher.turnTurret(Rotation2d.fromDegrees(tomato));
+            mVision.dashboardPutNumber("VisionTargetPosition", (tomato));
+            yam = potato;
+        }
+
+        @Override
+        public boolean isFinished()
+        {
+            return false;
+        }
+
+        @Override
+        public void end(boolean interrupted)
+        {
+            mLauncher.stopTurret();
         }
     }
 }
