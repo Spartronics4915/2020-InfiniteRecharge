@@ -17,6 +17,7 @@ import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 import com.spartronics4915.lib.subsystems.estimator.VisionEvent;
 import com.spartronics4915.lib.util.Units;
+import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.EntryNotification;
@@ -70,7 +71,7 @@ public class Vision extends SpartronicsSubsystem
         this.mCoordSysMgr = new CoordSysMgr2020(); // our private copy
 
         this.mNetTab = NetworkTableInstance.getDefault();
-        this.mNetTab.addEntryListener(Constants.Vision.kTargetResultKey,
+        this.mNetTab.addEntryListener("/SmartDashboard" + Constants.Vision.kTargetResultKey,
             this::visionTargetUpdate,  EntryListenerFlags.kUpdate);
         this.mListeners = new ArrayList<VisionEvent>();
         this.mVisionEstimates = new ArrayDeque<RobotStateMap.State>();
@@ -123,6 +124,7 @@ public class Vision extends SpartronicsSubsystem
     private void visionTargetUpdate(EntryNotification event)
     {
         NetworkTableValue v = event.getEntry().getValue();
+        
         if (v.isString())
         {
             String val = v.getString();
@@ -141,6 +143,12 @@ public class Vision extends SpartronicsSubsystem
             double camy = Double.parseDouble(vals[1]);
             double camz = Double.parseDouble(vals[2]);
             double timestamp = Double.parseDouble(vals[3]);
+           
+            dashboardPutNumber("CameraX", camx);
+            dashboardPutNumber("CameraY", camy);
+            dashboardPutNumber("CameraZ", camz);
+            dashboardPutNumber("Timestamp", timestamp);
+
             RobotStateMap.State officialState = mOfficialRSM.get(timestamp);
             double turretAngle;
             if (vals.length == 5)
@@ -152,6 +160,10 @@ public class Vision extends SpartronicsSubsystem
             }
             Vec3 tgtInCam = new Vec3(camx, camy, camz);
             Vec3 tgtInRobot = this.mCoordSysMgr.camPointToRobot(tgtInCam);
+
+            dashboardPutString("Target In Robot ", "" + tgtInRobot.asPointString());
+            // Logger.debug("Target in Robot:  " + tgtInRobot);
+
             if (tgtInRobot.getX() <= 0)
                 this.dashboardPutString(Constants.Vision.kStatusKey, "CONFUSED!!!");
             else
