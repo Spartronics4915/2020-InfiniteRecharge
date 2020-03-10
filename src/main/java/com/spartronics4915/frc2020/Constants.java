@@ -69,8 +69,8 @@ public final class Constants
             public static final double kPositionP = 0.005;
             public static final double kPositionD = 0;
             public static final double kConversionRatio = 1.0 / (187.0/20.0*9.0);
-            public static final double kMaxVelocity = 1;
-            public static final double kMaxAcceleration = 1;
+            public static final double kMaxVelocity = 3.5; // These values (3.5 and 2.5) have been extensively tested
+            public static final double kMaxAcceleration = 2.5;
             public static final double kStallThreshold = 10.0;
             public static final double kMaxUnjamTime = 1.0;
 
@@ -84,13 +84,13 @@ public final class Constants
             public static final double kVelocityP = 1; // FIXME: stand-in values
             public static final double kVelocityD = 1;
             public static final double kConversionRatio = 1;
-            public static final double kSpeed = 0.8;
+            public static final double kSpeed = 1.0;
         }
         public static final class Transfer
         {
             public static final int kMotorId = 11;
             public static final double kConversionRatio = 1;
-            public static final double kSpeed = -0.8;
+            public static final double kSpeed = -1.0;
         }
 
         public static final int kLimitSwitchId = 8; // Digital

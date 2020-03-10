@@ -4,35 +4,35 @@ import com.spartronics4915.lib.math.threedim.*;
 import com.spartronics4915.lib.math.threedim.math3.*;
 
 /**
- * CoordSysMgr2020 extends CoordSysMgr. See comments therein. We extend 
+ * CoordSysMgr2020 extends CoordSysMgr. See comments therein. We extend
  * CoordSysMgr with the season-specific mounting of the camera onto the robot.
  */
 
-/* 
+/*
 * Atm: we envision two scenarios:
-* 
+*
 * 1. camera mounted on moving launcher turret
 * 2. camera mounted rigidly onto robot
-* 
+*
 * Robot - turret is mounted relative to robot origin by some amount in
-* x, y and z (z for robot origin is assumed 0 the floor).  Turret may 
+* x, y and z (z for robot origin is assumed 0 the floor).  Turret may
 * also be rotated to point opposite to the robot front.
-* 
+*
 *                       y
-*                 ._____|____. 
-*              x--|-T   |    |             
+*                 ._____|____.
+*              x--|-T   |    |
 *                 | |   o-----x
 *                 | y        |
-*                 |__________| 
-*                   
-* 
+*                 |__________|
+*
+*
 * Turret - x coord points to center of shooting.  Turret angle of 0
 * means shoot straight. We expect a range of turret angles from -45 to 45 deg.
 * Camera - mounted on turret offset by some amount in x, y (and possibly z).
 * Camera may also be tilted upward to minimize the pixels displaying the
 * ground.  This tilt is currently assumed to be around the camera's x axis.
-* 
-*                   , - ~ ~ 
+*
+*                   , - ~ ~
 *            , '               ' ,
 *          ,           x           ,
 *         ,            |      -z    ,
@@ -43,17 +43,17 @@ import com.spartronics4915.lib.math.threedim.math3.*;
 *          ,                       ,
 *            ,                  , '
 *              ' - , _ _ _ ,  '
-* 
+*
 * Camera - xy plane is camera plane.  This makes -z the direction that
 * the camera is pointing toward.
-* 
-*           y 
+*
+*           y
 *           |
 *           |
 *           C ------ -z
 *          /
 *         x
-*       
+*
 */
 
 public class CoordSysMgr2020 extends CoordSysMgr
@@ -79,7 +79,7 @@ public class CoordSysMgr2020 extends CoordSysMgr
 
     // mount to robot ------------------------------------------------------
     // turret is mounted at robot back/left, up from ground
-    // turret's x axis is opposite robot's. 
+    // turret's x axis is opposite robot's.
     // (eg: 3in behind, 5in to the left, 15in off ground)
     public static final Vec3 kMntPos = new Vec3(-3.72, 5.264, 15.625);
     public static final Vec3 kMntAxis = Vec3.ZAxis;
@@ -109,7 +109,7 @@ public class CoordSysMgr2020 extends CoordSysMgr
      * Updates the mountToRobot coordinate system conversion. Should
      * reflect the current state of the turret angle.  This plus the
      * Robot's field pose is sufficient to calculate the conversion
-     * of Vision targets into field targets. 
+     * of Vision targets into field targets.
      * @param angle - turret angle; 0 is "straight" (degrees)
      */
     public void updateTurretAngle(double angle)
