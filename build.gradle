@@ -46,6 +46,10 @@ deploy {
 // Set this to true to enable desktop support.
 def includeDesktopSupport = true 
 
+repositories {
+    mavenCentral()
+}
+
 // Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
 // Also defines JUnit 4.
 dependencies {
@@ -57,8 +61,6 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
-    // implementation "com.github.Spartronics4915:SpartronicsLib:master-SNAPSHOT"
-
     implementation("gov.nist.math:jama:1.0.3")
     implementation("org.ejml:ejml-simple:0.38")
     implementation("org.ejml:ejml-ddense:0.38")
@@ -67,7 +69,6 @@ dependencies {
 
     testImplementation("org.knowm.xchart:xchart:3.2.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.2")
-    testImplementation 'junit:junit:4.12'
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.2")
 
     // Enable simulation gui support. Must check the box in vscode to enable support
