@@ -5,54 +5,48 @@ import java.util.List;
 import java.util.Random;
 
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
-import com.spartronics4915.lib.math.twodim.geometry.Pose2dWithCurvature;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
-import com.spartronics4915.lib.math.twodim.geometry.Translation2d;
 import com.spartronics4915.lib.math.twodim.trajectory.TrajectoryGenerator;
-import com.spartronics4915.lib.util.Kinematics;
+import com.spartronics4915.lib.util.VecBuilder;
 
 import org.junit.jupiter.api.Test;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChartBuilder;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.wpilibj.math.StateSpaceUtils;
-import edu.wpi.first.wpiutil.math.MatBuilder;
-import edu.wpi.first.wpiutil.math.Matrix;
-import edu.wpi.first.wpiutil.math.Nat;
-import edu.wpi.first.wpiutil.math.numbers.N1;
-import edu.wpi.first.wpiutil.math.numbers.N3;
 
 public class DrivetrainEstimatorTest
 {
     @Test
     public void testEstimator()
     {
-        var stateStdDevs = new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.02, 0.02, 0.01);
-        var measurementStdDevs = new MatBuilder<>(Nat.N6(), Nat.N1()).fill(0.1, 0.1, 0.1, 0.005,
-            0.005, 0.002);
-        var est = new DrivetrainEstimator(stateStdDevs, measurementStdDevs, 3, new Pose2d());
-
-        final double dt = 0.01;
+        final double dt = 0.02;
         final double visionUpdateRate = 0.2;
 
+        var stateStdDevs = VecBuilder.fill(0.02, 0.02, 0.01, 0.1, 0.1);
+        var localMeasurementStdDevs = VecBuilder.fill(0.5, 0.5, 0.5, 0.5, 0.5, 0.05);
+        var globalMeasurementStdDevs = VecBuilder.fill(5, 5, 1);
+        var est = new DrivetrainEstimator(
+                new Rotation2d(), new Pose2d(),
+                stateStdDevs, localMeasurementStdDevs, globalMeasurementStdDevs,
+                dt
+        );
+
         var traj = TrajectoryGenerator.defaultTrajectoryGenerator.generateTrajectory(
-            List.of(
-                new Pose2d(),
-                new Pose2d(3, 3, new Rotation2d())
-                // new Pose2d(), new Pose2d(20, 20, Rotation2d.fromDegrees(0)),
-                // new Pose2d(23, 23, Rotation2d.fromDegrees(173)),
-                // new Pose2d(54, 54, new Rotation2d())
-            ),
-            List.of(),
-            0, 0,
-            1, 1,
-            false);
+                List.of(
+                        new Pose2d(),
+                        new Pose2d(3, 3, new Rotation2d())
+                        // new Pose2d(), new Pose2d(20, 20, Rotation2d.fromDegrees(0)),
+                        // new Pose2d(23, 23, Rotation2d.fromDegrees(173)),
+                        // new Pose2d(54, 54, new Rotation2d())
+                ),
+                List.of(),
+                0, 0,
+                1, 1,
+                false);
 
         var kinematics = new DifferentialDriveKinematics(1);
-        Pose2d lastPose = null;
 
         List<Double> trajXs = new ArrayList<>();
         List<Double> trajYs = new ArrayList<>();
@@ -63,66 +57,68 @@ public class DrivetrainEstimatorTest
         List<Double> visionXs = new ArrayList<>();
         List<Double> visionYs = new ArrayList<>();
 
-        var rand = new Random();
-        final double steadyStateErrorX = 1.0;
-        final double steadyStateErrorY = 1.0;
+        var rand = new Random(4915);
+
+        double distanceLeft = 0.0;
+        double distanceRight = 0.0;
 
         double t = 0.0;
         Pose2d lastVisionUpdate = null;
-        double lastVisionUpdateT = Double.NEGATIVE_INFINITY;
+        double lastVisionUpdateTime = Double.NEGATIVE_INFINITY;
+
         double maxError = Double.NEGATIVE_INFINITY;
         double errorSum = 0;
         while (t <= traj.getTotalTime())
         {
-            t += dt;
-
             var groundtruthState = traj.sample(t);
-            var input = kinematics
-                .toWheelSpeeds(new ChassisSpeeds(groundtruthState.state.velocity, 0.0,
-                    // ds/dt * dtheta/ds = dtheta/dt
-                    groundtruthState.state.velocity * groundtruthState.state.state.getCurvature()));
-
-            Matrix<N3, N1> u = new MatBuilder<>(Nat.N3(), Nat.N1()).fill(
-                input.leftMetersPerSecond * dt,
-                input.rightMetersPerSecond * dt, 0.0);
-            if (lastPose != null)
-            {
-                u.set(2, 0,
-                    groundtruthState.state.state.getRotation().getRadians()
-                        - lastPose.getRotation().getRadians());
-            }
-            u = u.plus(StateSpaceUtils.makeWhiteNoiseVector(Nat.N3(),
-                new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.002, 0.002, 0.001)));
-            lastPose = groundtruthState.state.state.getPose();
-
             Pose2d realPose = groundtruthState.state.state.getPose();
 
-            if (lastVisionUpdateT + visionUpdateRate < t)
+            if (lastVisionUpdateTime + visionUpdateRate < t)
             {
                 if (lastVisionUpdate != null)
                 {
-                    est.addVisionMeasurement(lastVisionUpdate, lastVisionUpdateT);
+                    est.addVisionMeasurement(lastVisionUpdate, lastVisionUpdateTime);
                 }
 
-                lastVisionUpdateT = t;
-                lastVisionUpdate = realPose.getPose()
-                    .transformBy(new Pose2d(rand.nextGaussian() * 0.05, rand.nextGaussian() * 0.05,
-                        Rotation2d.fromRadians(rand.nextGaussian() * 0.002)));
+                lastVisionUpdateTime = t;
+                lastVisionUpdate = new Pose2d(
+                    realPose.getTranslation().getX() + rand.nextGaussian() * 0.5,
+                    realPose.getTranslation().getY() + rand.nextGaussian() * 0.5,
+                    realPose.getRotation().getRadians() + rand.nextGaussian() * 0.01
+                );
 
                 visionXs.add(lastVisionUpdate.getTranslation().getX());
                 visionYs.add(lastVisionUpdate.getTranslation().getY());
             }
 
-            double dist = realPose.getTranslation().getDistance(new Translation2d());
-            Pose2d measurementVSlam = realPose.getPose()
-                .transformBy(new Pose2d(new Translation2d(steadyStateErrorX * (dist / 76.0),
-                    steadyStateErrorY * (dist / 76.0)), new Rotation2d()))
-                .transformBy(new Pose2d(rand.nextGaussian() * 0.05, rand.nextGaussian() * 0.05,
-                    Rotation2d.fromRadians(rand.nextGaussian() * 0.001)));
-            var xHat = est.update(measurementVSlam, u.get(0, 0), u.get(1, 0), u.get(2, 0), t);
+            Pose2d measurementVSlam = new Pose2d(
+                realPose.getTranslation().getX() + rand.nextGaussian() * 0.05,
+                realPose.getTranslation().getY() + rand.nextGaussian() * 0.05,
+                realPose.getRotation().getRadians() + rand.nextGaussian() * 0.5
+            );
+
+            var input = kinematics
+                    .toWheelSpeeds(new ChassisSpeeds(groundtruthState.state.velocity, 0.0,
+                            // ds/dt * dtheta/ds = dtheta/dt
+                            groundtruthState.state.velocity * groundtruthState.state.state.getCurvature()));
+
+            input.leftMetersPerSecond += rand.nextGaussian() * 0.02;
+            input.rightMetersPerSecond += rand.nextGaussian() * 0.02;
+
+            distanceLeft += input.leftMetersPerSecond * dt;
+            distanceRight += input.rightMetersPerSecond * dt;
+
+            var xHat = est.updateWithTime(
+                    t,
+                    realPose.getRotation(),//.rotateBy(Rotation2d.fromRadians(rand.nextGaussian() * 0.05)),
+                    input,
+                    measurementVSlam,
+                    distanceLeft,
+                    distanceRight
+            );
 
             double error = groundtruthState.state.state.getTranslation()
-                .getDistance(xHat.getTranslation());
+                    .getDistance(xHat.getTranslation());
             if (error > maxError)
             {
                 maxError = error;
@@ -135,6 +131,8 @@ public class DrivetrainEstimatorTest
             observerYs.add(xHat.getTranslation().getY());
             slamXs.add(measurementVSlam.getTranslation().getX());
             slamYs.add(measurementVSlam.getTranslation().getY());
+
+            t += dt;
         }
 
         System.out.println("Mean error (meters): " + errorSum / (traj.getTotalTime() / dt));

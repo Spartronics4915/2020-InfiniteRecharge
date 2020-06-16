@@ -3,6 +3,8 @@ package com.spartronics4915.lib.subsystems.estimator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
@@ -81,6 +83,11 @@ public class RobotStateEstimator extends SpartronicsSubsystem
                 }
                 else if (mBestEstimatorSource == EstimatorSource.Fused)
                 {
+                    SmartDashboard.putString("RobotState/visionPose",
+                            Units.metersToInches(mVisionEstimate.getTranslation().getX()) + " "
+                                    + Units.metersToInches(mVisionEstimate.getTranslation().getY()) + " "
+                                    + mVisionEstimate.getRotation().getDegrees());
+                    dashboardPutString("lastUpdate", "then: " + mTimestamp + ", now: " + Timer.getFPGATimestamp());
                     mEKF.addVisionMeasurement(this.mVisionEstimate, this.mTimestamp);
                 }
             }
@@ -144,6 +151,8 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         mVisionResetEncoderStateMap.reset(time, pose);
         mFusedStateMap.reset(time, pose);
 
+        mEKF.resetPosition(pose, new Rotation2d());
+
         mLeftPrevDist = mDrive.getLeftMotor().getEncoder().getPosition();
         mRightPrevDist = mDrive.getRightMotor().getEncoder().getPosition();
 
@@ -169,6 +178,12 @@ public class RobotStateEstimator extends SpartronicsSubsystem
                 + Units.metersToInches(epose.getTranslation().getY()) + " "
                 + epose.getRotation().getDegrees());
         SmartDashboard.putNumber("RobotState/encoderVelocity", estate.predictedVelocity.dx);
+
+        Pose2d vpose = mCameraStateMap.getLatestState().pose;
+        SmartDashboard.putString("RobotState/vslamPose",
+                Units.metersToInches(vpose.getTranslation().getX()) + " "
+                        + Units.metersToInches(vpose.getTranslation().getY()) + " "
+                        + vpose.getRotation().getDegrees());
 
         final RobotStateMap.State bestState = getBestRobotStateMap().getLatestState();
         Pose2d cpose = bestState.pose;
@@ -215,8 +230,11 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         final Twist2d iVal;
         synchronized (this)
         {
-            final double leftDist = mDrive.getLeftMotor().getEncoder().getPosition();
-            final double rightDist = mDrive.getRightMotor().getEncoder().getPosition();
+            var leftEncoder = mDrive.getLeftMotor().getEncoder();
+            var rightEncoder = mDrive.getRightMotor().getEncoder();
+
+            final double leftDist = leftEncoder.getPosition();
+            final double rightDist = rightEncoder.getPosition();
             final double leftDelta = leftDist - mLeftPrevDist;
             final double rightDelta = rightDist - mRightPrevDist;
             final Rotation2d heading = mDrive.getIMUHeading();
@@ -224,10 +242,12 @@ public class RobotStateEstimator extends SpartronicsSubsystem
             mRightPrevDist = rightDist;
             iVal = mKinematics.forwardKinematics(last.pose.getRotation(), leftDelta, rightDelta,
                 heading);
-            
+
+            SmartDashboard.putString("RobotState/distances", leftDist + "," + rightDist);
+
             if (mBestEstimatorSource == EstimatorSource.Fused)
             {
-                var ekfPose = mEKF.update(mCameraStateMap.getLatestFieldToVehicle(), leftDist, rightDist, heading.getRadians() - mPrevHeading, ts);
+                var ekfPose = mEKF.updateWithTime(ts, heading, new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getVelocity()), mCameraStateMap.getLatestFieldToVehicle(), leftDist, rightDist);
                 
                 mPrevHeading = heading.getRadians();
                 mFusedStateMap.addObservations(ts, ekfPose, new Twist2d(), new Twist2d(), 0.0);
@@ -270,8 +290,10 @@ public class RobotStateEstimator extends SpartronicsSubsystem
 
         // We convert meters/loopinterval and radians/loopinterval to meters/sec and
         // radians/sec
-        final double loopintervalToSeconds = 1 / (ts - last.timestamp);
-        final Twist2d normalizedIVal = iVal.scaled(loopintervalToSeconds);
+//        final double loopintervalToSeconds = 1 / (ts - last.timestamp);
+//        final Twist2d normalizedIVal = iVal.scaled(loopintervalToSeconds);
+
+        SmartDashboard.putNumber("RobotState/fusedVelocity", pVal.dx);
 
         if (mSLAMCamera != null)
         {
@@ -280,7 +302,7 @@ public class RobotStateEstimator extends SpartronicsSubsystem
                 // Sometimes (for unknown reasons) the native code can't send odometry info.
                 // We throw a Java exception when this happens, but we'd like to ignore that
                 // exception in this situation.
-                mSLAMCamera.sendOdometry(normalizedIVal);
+                mSLAMCamera.sendOdometry(pVal.dx, 0);
             }
             catch (CameraJNIException e)
             {
@@ -296,11 +318,14 @@ public class RobotStateEstimator extends SpartronicsSubsystem
             return;
         }
 
+        Logger.info("here?");
+
         // Callback is called from a different thread... We avoid data races
         // because RobotSteteMap is thread-safe
         mSLAMCamera.stop();
         mSLAMCamera.start((CameraUpdate update) -> {
-            mCameraStateMap.addObservations(Timer.getFPGATimestamp(), update.pose, update.velocity,
+            // We pass two empty Twist2ds because velocity is unused
+            mCameraStateMap.addObservations(Timer.getFPGATimestamp(), update.pose, new Twist2d(),
                 new Twist2d(), mDrive.getTurretAngle());
             SmartDashboard.putString("RobotState/cameraConfidence", update.confidence.toString());
         });

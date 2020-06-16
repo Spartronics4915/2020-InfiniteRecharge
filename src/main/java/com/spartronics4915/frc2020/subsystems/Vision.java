@@ -160,6 +160,7 @@ public class Vision extends SpartronicsSubsystem
             }
             Vec3 tgtInCam = new Vec3(camx, camy, camz);
             Vec3 tgtInRobot = this.mCoordSysMgr.camPointToRobot(tgtInCam);
+            tgtInRobot = new Vec3(tgtInRobot.getX() * -1, tgtInRobot.getY(), tgtInRobot.getZ()); // TODO: uh oh...
 
             dashboardPutString("Target In Robot ", "" + tgtInRobot.asPointString());
             // Logger.debug("Target in Robot:  " + tgtInRobot);
@@ -203,7 +204,7 @@ public class Vision extends SpartronicsSubsystem
             this.mCoordSysMgr.updateRobotPose(robotHeading, tgtInRobot, fieldTarget);
             Vec3 robotPos = mCoordSysMgr.robotPointToField(Vec3.ZeroPt);
             // Use robot's heading in our poseEstimate - remember to convert
-            // from inches to meters before commiting to RSM.
+            // from inches to meters before committing to RSM.
             Pose2d poseEstimate = new Pose2d(Units.inchesToMeters(robotPos.getX()),
                 Units.inchesToMeters(robotPos.getY()), r2d);
             Iterator<VisionEvent> it = this.mListeners.iterator();

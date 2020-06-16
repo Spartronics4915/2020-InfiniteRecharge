@@ -65,7 +65,7 @@ public class CoordSysMgr2020 extends CoordSysMgr
     // camera with a mark. Measure the distance from height of the mark
     // to the camera origin. Measure the distance from the wall. Use
     // degrees(atan2(mark, dist)) to compute the tilt angle.
-    public static final double kCamTilt = 20;
+    public static final double kCamTilt = 20; // TODO: This is the only number that Declan is unsure about and hasn't rigorously verified.
 
     // camPos represents offset of camera's origin relative to turret origin.
     // (measured in inches). Camera origin is the center of the focal point.

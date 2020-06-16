@@ -49,8 +49,8 @@ public class LauncherCommands
             Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[1]),
             Rotation2d.fromDegrees(180));
 
-        mLauncher.setDefaultCommand(new TargetAndShoot());
-        // mLauncher.setDefaultCommand(new ShootBallTest());
+//        mLauncher.setDefaultCommand(new TargetAndShoot());
+         mLauncher.setDefaultCommand(new ShootBallTest());
     }
 
     public Launcher getLauncher()

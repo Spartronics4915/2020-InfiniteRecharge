@@ -15,6 +15,7 @@ import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.util.Logger;
 import com.spartronics4915.lib.util.TriFunction;
 
+import com.spartronics4915.lib.util.VecBuilder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Units;
@@ -24,6 +25,7 @@ import edu.wpi.first.wpiutil.math.Matrix;
 import edu.wpi.first.wpiutil.math.Nat;
 import edu.wpi.first.wpiutil.math.numbers.N1;
 import edu.wpi.first.wpiutil.math.numbers.N3;
+import edu.wpi.first.wpiutil.math.numbers.N5;
 import edu.wpi.first.wpiutil.math.numbers.N6;
 
 public final class Constants
@@ -309,18 +311,14 @@ public final class Constants
         //  have competing implementations.
         // If new measurements for Vision or Turret mounting are obtained,
         // please also update CoordSysMgr20202.java.
-        public static final double kT265InternalMeasurementCovariance = 0.1;
+        public static final double kT265InternalMeasurementCovariance = 0.5;
         public static final Pose2d kSlamraToRobot = new Pose2d(Units.inchesToMeters(-11.75),
                                                             Units.inchesToMeters(-4.75),
                                                             new Rotation2d());
 
-        public static final Matrix<N3, N1> kStateStdDevs = new MatBuilder<>(Nat.N3(), Nat.N1())
-            .fill(0.02, 0.02, 0.01);
-        public static final Matrix<N6, N1> measurementStdDevs = new MatBuilder<>(Nat.N6(), Nat.N1())
-            .fill(0.1, 0.1, 0.1, 0.005, 0.005, 0.002);
-        public static final double kSlamStdDevsPerMeter = 3;
-        public static final Pose2d kApproximateStartingPose = new Pose2d(Units.inchesToMeters(508), 0,
-            Rotation2d.fromDegrees(180));
+        public static final Matrix<N5, N1> kStateStdDevs = VecBuilder.fill(0.2, 0.2, 0.01, 0.2, 0.2);
+        public static final Matrix<N6, N1> kLocalMeasurementStdDevs = VecBuilder.fill(0.1, 0.1, 0.1, 0.5, 0.5, 0.02);
+        public static final Matrix<N3, N1> kVisionMeasurementStdDevs = VecBuilder.fill(0.2, 0.2, 0.2);
     }
 
     public static final class Vision

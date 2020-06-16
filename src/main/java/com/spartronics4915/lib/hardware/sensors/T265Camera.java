@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
 import com.spartronics4915.lib.math.twodim.geometry.Twist2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 
 /**
  * Provides a convenient Java interface to the Intel RealSense
@@ -63,10 +64,10 @@ public class T265Camera
         /**
          * The robot's velocity in meters/sec and radians/sec.
          */
-        public final Twist2d velocity;
+        public final ChassisSpeeds velocity;
         public final PoseConfidence confidence;
 
-        public CameraUpdate(Pose2d pose, Twist2d velocity, PoseConfidence confidence)
+        public CameraUpdate(Pose2d pose, ChassisSpeeds velocity, PoseConfidence confidence)
         {
             this.pose = pose;
             this.velocity = velocity;
@@ -83,7 +84,7 @@ public class T265Camera
 
     /**
      * This method constructs a T265 camera and sets it up with the right info.
-     * {@link T265Camera#start() start} will not be called, you must call it
+     * {@link T265Camera#start start} will not be called, you must call it
      * yourself.
      *
      * @param robotOffset        Offset of the center of the robot from the center
@@ -98,7 +99,7 @@ public class T265Camera
 
     /**
      * This method constructs a T265 camera and sets it up with the right info.
-     * {@link T265Camera#start() start} will not be called, you must call it
+     * {@link T265Camera#start start} will not be called, you must call it
      * yourself.
      *
      * @param robotOffsetMeters        Offset of the center of the robot from the center
@@ -165,14 +166,14 @@ public class T265Camera
     /**
      * Sends robot velocity as computed from wheel encoders.
      *
-     * @param velocity    The robot's translational velocity in meters/sec.
+     * @param velocityXMetersPerSecond The robot-relative velocity along the X axis in meters/sec.
+     * @param velocityYMetersPerSecond The robot-relative velocity along the Y axis in meters/sec.
      */
-    public void sendOdometry(Twist2d velocity)
+    public void sendOdometry(double velocityXMetersPerSecond, double velocityYMetersPerSecond)
     {
-        Pose2d transVel = velocity.exp();
         // Only 1 odometry sensor is supported for now (index 0)
-        sendOdometryRaw(0, (float) transVel.getTranslation().getX(),
-            (float) transVel.getTranslation().getY());
+        sendOdometryRaw(0, (float) velocityXMetersPerSecond,
+            (float) velocityYMetersPerSecond);
     }
 
     /**
@@ -201,8 +202,8 @@ public class T265Camera
 
     private static native void cleanup();
 
-    private synchronized void consumePoseUpdate(float x, float y, float radians, float dx,
-        float dtheta, int confOrdinal)
+    private synchronized void consumePoseUpdate(float x, float y, float radians, float vx, float vy,
+        float omega, int confOrdinal)
     {
         // First we apply an offset to go from the camera coordinate system to the
         // robot coordinate system with an origin at the center of the robot. This
@@ -243,7 +244,7 @@ public class T265Camera
 
         final Pose2d transformedPose = mOrigin.transformBy(currentPose);
         mPoseConsumer.accept(new CameraUpdate(transformedPose,
-            new Twist2d(dx, 0.0, Rotation2d.fromRadians(dtheta)), confidence));
+            new ChassisSpeeds(vx, vy, omega), confidence));
     }
 
     /**

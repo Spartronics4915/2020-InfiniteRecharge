@@ -25,6 +25,7 @@ import com.spartronics4915.lib.hardware.sensors.T265Camera;
 import com.spartronics4915.lib.hardware.sensors.T265Camera.CameraJNIException;
 import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
 import com.spartronics4915.lib.math.twodim.control.TrajectoryTracker;
+import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.subsystems.estimator.DrivetrainEstimator;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
 import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator.EstimatorSource;
@@ -107,14 +108,18 @@ public class RobotContainer
         mLED = LED.getInstance();
         mDrive = new Drive(mLauncher);
 
-        var ekf = new DrivetrainEstimator(Constants.Estimator.kStateStdDevs,
-            Constants.Estimator.measurementStdDevs, Constants.Estimator.kSlamStdDevsPerMeter,
-            Constants.Estimator.kApproximateStartingPose);
+        var ekf = new DrivetrainEstimator(
+            mDrive.getIMUHeading(),
+            Constants.Trajectory.kStartPointRight,
+            Constants.Estimator.kStateStdDevs,
+            Constants.Estimator.kLocalMeasurementStdDevs,
+            Constants.Estimator.kVisionMeasurementStdDevs
+        );
         mStateEstimator = new RobotStateEstimator(mDrive,
             new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
             slamra,
             ekf,
-            slamra == null ? EstimatorSource.EncoderOdometry : EstimatorSource.VisualSLAM);
+            slamra == null ? EstimatorSource.EncoderOdometry : EstimatorSource.Fused);
         StartEndCommand slamraCmd = new StartEndCommand(
             () -> mStateEstimator.enable(),
             () -> mStateEstimator.stop(),
