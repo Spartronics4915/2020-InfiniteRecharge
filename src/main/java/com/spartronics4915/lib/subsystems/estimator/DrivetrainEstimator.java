@@ -272,8 +272,6 @@ public class DrivetrainEstimator {
                 writer.flush();
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
-            } finally {
-                System.exit(1);
             }
         }
     }
