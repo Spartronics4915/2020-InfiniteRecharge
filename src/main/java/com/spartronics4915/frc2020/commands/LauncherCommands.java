@@ -1,13 +1,8 @@
 package com.spartronics4915.frc2020.commands;
 
-import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.frc2020.CoordSysMgr2020;
 import com.spartronics4915.frc2020.subsystems.Launcher;
-import com.spartronics4915.frc2020.subsystems.Vision;
-import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.math.twodim.geometry.Rotation2d;
-import com.spartronics4915.lib.math.threedim.math3.Vec3;
-import com.spartronics4915.lib.subsystems.estimator.RobotStateMap;
 
 import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -25,21 +20,6 @@ public class LauncherCommands
         mLauncher = launcher;
         mIndexerCommands = indexerCommands;
         mCoordSysMgr = new CoordSysMgr2020();
-
-        // our target is always on the opposite side of the field. This
-        // works for both Alliances since the field is symmetric and we
-        // use the same coordinate system (rotated by 180) on the Dashboard.
-        // (almost, since RSM is meters and dashboard is inches).
-        mMatchTargetInches = new Vec3(
-            Constants.Vision.kAllianceGoalCoords[0],
-            Constants.Vision.kAllianceGoalCoords[1],
-            0); // on ground/robot origin - we could include height if of value
-        mInnerTargetInches = new Vec3(Constants.Vision.kAllianceInnerGoalCoords);
-
-        mMatchTargetMeters = new Pose2d(
-            Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[0]),
-            Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[1]),
-            Rotation2d.fromDegrees(180));
 
         // mLauncher.setDefaultCommand(new TargetAndShoot());
         mLauncher.setDefaultCommand(new ShootBallTest());

@@ -1,0 +1,138 @@
+[-57.9332] ********** Robot program starting **********
+[-56.9414] NOTICE  robot init
+[-56.8917] NOTICE  =================================================
+[-56.7423] NOTICE  2020-07-20T22:20:05.963314Z
+[-56.7349] NOTICE  Built by: teal  on: July 20, 03:19 PM  (postGP-8-g8d32c01-dirty)
+[-56.7325] NOTICE  =================================================
+[-56.5823] NOTICE  Running on machineconfig default constants
+[-56.5805] NOTICE  Running WPILibVersion 2020.3.2
+[-56.3432] NOTICE  Climber init SUCCEEDED
+[-56.3202] NOTICE  Intake init SUCCEEDED
+[-56.2601] NOTICE  Indexer init SUCCEEDED
+[-56.1281] NOTICE  Launcher init SUCCEEDED
+[-56.0054] NOTICE  PanelRotator init SUCCEEDED
+[-54.6332] NOTICE  LED init SUCCEEDED
+[-54.5347] NOTICE  Drive init SUCCEEDED
+[-53.6720] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-53.6689] INFO    @robotInit: Requested Bling.kOff
+[-53.6607] DEBUG    LED LED state: kOff
+[-53.6579] INFO    CAN bus status: OK
+[-53.6571] DEBUG    LED Port Listing Start: ============================================
+[-53.6291] DEBUG    LED ttyS1|Physical Port S1|Physical Port S1
+[-53.6286] 
+[-53.6281] DEBUG    LED ttyACM0|USB-Based Serial Port|USB-Based Serial Port
+[-53.6276] 
+[-53.6269] DEBUG    LED Port Listing End: ==============================================
+[-53.5941] DEBUG    LED LED state: kDisabled
+[-53.4065] Watchdog not fed within 0.020000s
+[-53.3797] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[-53.3793] 
+[-53.2822] 	SmartDashboard.updateValues(): 0.000382s
+[-53.2781] 	disabledInit(): 0.011373s
+[-53.2741] 	disablePeriodic(): 0.002178s
+[-53.2707] 	robotPeriodic(): 0.092732s
+[-53.2672] 	LiveWindow.updateValues(): 0.208534s
+[-53.2627] 	Shuffleboard.update(): 0.000116s
+[-52.6560] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-52.4434] Watchdog not fed within 0.020000s
+[-52.1432] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[-52.1428] 
+[-52.1131] 	SmartDashboard.updateValues(): 0.000268s
+[-52.1075] 	disablePeriodic(): 0.001301s
+[-52.1031] 	robotPeriodic(): 0.013990s
+[-52.0976] 	LiveWindow.updateValues(): 0.019840s
+[-52.0870] 	Shuffleboard.update(): 0.000368s
+[-51.6540] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-50.6376] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-50.6023] Watchdog not fed within 0.020000s
+[-50.6008] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[-50.5997] 
+[-50.5909] 	SmartDashboard.updateValues(): 0.000118s
+[-50.5879] 	disablePeriodic(): 0.000492s
+[-50.5853] 	robotPeriodic(): 0.023182s
+[-50.5828] 	LiveWindow.updateValues(): 0.005152s
+[-50.5794] 	Shuffleboard.update(): 0.000160s
+[-49.6190] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-48.5955] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-47.5787] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-46.5587] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-45.5393] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-44.5388] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-43.5190] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-42.4993] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-41.4990] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-40.4973] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-39.4777] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-38.4591] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-37.4591] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-36.4588] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-35.4393] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-34.4393] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-33.4388] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-32.4340] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-31.4191] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-30.3993] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-29.3987] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-29.1845] DEBUG    LED LED state: kTeleop
+[-29.1722] INFO    ClimberCommands$Stop initialized
+[-29.1705] INFO    IntakeCommands$Stop initialized
+[-29.1691] INFO    SpartronicsSubsystem$SpartronicsMissingDefaultCommand initialized
+[-29.1669] INFO    LauncherCommands$ShootBallTest initialized
+[-29.1634] Watchdog not fed within 0.020000s
+[-29.1629] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[-29.1627] 
+[-29.1603] INFO    PanelRotatorCommands$Stop initialized
+[-29.1599] INFO    SpartronicsSubsystem$SpartronicsMissingDefaultCommand initialized
+[-29.1595] INFO    DriveCommands$TeleOpCommand initialized
+[-29.1467] 	teleopPeriodic(): 0.000621s
+[-29.1443] 	SmartDashboard.updateValues(): 0.000082s
+[-29.1424] 	robotPeriodic(): 0.027845s
+[-29.1409] 	LiveWindow.updateValues(): 0.002594s
+[-29.1393] 	Shuffleboard.update(): 0.000032s
+[-29.1306] 	teleopInit(): 0.001044s
+[-28.3794] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-27.3779] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-26.3593] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-25.3393] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-24.3381] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-23.3379] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-22.3196] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-21.2995] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-20.2983] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-19.2791] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-18.2593] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-17.2393] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-16.2385] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-15.2196] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-14.2195] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-13.1992] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-12.3635] Watchdog not fed within 0.020000s
+[-12.3629] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[-12.3626] 
+[-12.3443] 	teleopPeriodic(): 0.001555s
+[-12.3427] 	SmartDashboard.updateValues(): 0.000045s
+[-12.3409] 	robotPeriodic(): 0.033856s
+[-12.3394] 	LiveWindow.updateValues(): 0.003210s
+[-12.3375] 	Shuffleboard.update(): 0.000022s
+[-12.1993] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-11.1799] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-10.1794] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-9.1786] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-8.1595] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-7.1393] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-6.1193] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-5.0993] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-4.0795] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-3.6042] DEBUG    LED LED state: kDisabled
+[-3.5957] INFO    ClimberCommands$Stop interrupted
+[-3.5936] INFO    IntakeCommands$Stop interrupted
+[-3.5917] INFO    SpartronicsSubsystem$SpartronicsMissingDefaultCommand interrupted
+[-3.5895] INFO    LauncherCommands$ShootBallTest interrupted
+[-3.5891] INFO    PanelRotatorCommands$Stop interrupted
+[-3.5888] INFO    SpartronicsSubsystem$SpartronicsMissingDefaultCommand interrupted
+[-3.5885] INFO    DriveCommands$TeleOpCommand interrupted
+[-3.0594] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-2.0395] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[-1.0195] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[0.0007] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in
+[1.0206] Warning at edu.wpi.first.wpilibj.DriverStation.reportJoystickUnpluggedWarning(DriverStation.java:1097): Joystick Button 11 on port 0 not available, check if controller is plugged in

@@ -20,14 +20,10 @@ import com.spartronics4915.frc2020.subsystems.LED.Bling;
 import com.spartronics4915.frc2020.subsystems.Launcher;
 import com.spartronics4915.frc2020.subsystems.PanelRotator;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
-import com.spartronics4915.lib.hardware.sensors.T265Camera;
-import com.spartronics4915.lib.hardware.sensors.T265Camera.CameraJNIException;
 import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
 import com.spartronics4915.lib.math.twodim.control.TrajectoryTracker;
 import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
 import com.spartronics4915.lib.subsystems.estimator.DrivetrainEstimator;
-import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator;
-import com.spartronics4915.lib.subsystems.estimator.RobotStateEstimator.EstimatorSource;
 import com.spartronics4915.lib.util.Kinematics;
 import com.spartronics4915.lib.util.Logger;
 
@@ -216,18 +212,5 @@ public class RobotContainer
          * this.mExampleCommandFactory.new Test5(this.mLED); // an InstantCommand
          * this.mExampleCommandFactory.new Test6(this.mLED); // a StartEndCommand
          */
-    }
-
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand()
-    {
-        String selectedModeName = mAutoModeEntry.getString("NO SELECTED MODE!!!!");
-        Logger.notice("Auto mode name " + selectedModeName);
-
-        Logger.error("AutoModeSelector failed to select auto mode: " + selectedModeName);
-        return TrajectoryContainer.kDefaultAutoMode.command;
     }
 }

@@ -126,13 +126,6 @@ public class Robot extends TimedRobot
     @Override
     public void autonomousInit()
     {
-        mAutonomousCommand = mRobotContainer.getAutonomousCommand();
-
-        if (mAutonomousCommand != null)
-        {
-            mAutonomousCommand.schedule();
-        }
-
         LED.getInstance().setBlingState(Bling.kAuto);
     }
 
