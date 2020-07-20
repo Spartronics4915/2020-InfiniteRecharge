@@ -1,0 +1,552 @@
+[-93.7865] Watchdog not fed within 0.020000s
+[-93.7834] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[-93.7831] 
+[-93.7718] 	SmartDashboard.updateValues(): 0.000019s
+[-93.7621] 	disablePeriodic(): 0.000400s
+[-93.7524] 	robotPeriodic(): 0.011013s
+[-93.7428] 	LiveWindow.updateValues(): 0.015404s
+[-93.7368] 	Shuffleboard.update(): 0.000110s
+[0.0000] ********** Robot program starting **********
+[0.2036] NT: server: client CONNECTED: 10.49.15.174 port 54540
+[1.0055] NOTICE  robot init
+[1.0875] NOTICE  =================================================
+[1.2335] NOTICE  2020-07-12T20:31:44.639848Z
+[1.2379] NOTICE  Built by: teal  on: July 11, 12:57 PM  (postGP-6-gf6edb5f-dirty)
+[1.2418] NOTICE  =================================================
+[1.7858] NOTICE  Running on machineconfig default constants
+[1.7880] NOTICE  Running WPILibVersion 2020.3.2
+[2.0369] NOTICE  Climber init SUCCEEDED
+[2.0626] NOTICE  Intake init SUCCEEDED
+[2.1244] NOTICE  Indexer init SUCCEEDED
+[2.2446] NOTICE  Launcher init SUCCEEDED
+[2.3679] NOTICE  PanelRotator init SUCCEEDED
+[2.8190] ERROR   LED Device not found: USB-Based Serial Port
+[2.8268] WARNING LED init FAILED
+[3.0839] NOTICE  Drive init SUCCEEDED
+[3.1820] INFO    Subsystems constructed
+[3.6318] NOTICE  RobotStateEstimator init SUCCEEDED
+[4.1891] INFO    Commands constructed
+[5.7861] INFO    @robotInit: Requested Bling.kOff
+[5.7998] INFO    CAN bus status: OK
+[5.8151] DEBUG    LED Port Listing Start: ============================================
+[5.8925] DEBUG    LED ttyS1|Physical Port S1|Physical Port S1
+[5.8958] 
+[5.8986] DEBUG    LED Port Listing End: ==============================================
+[6.2676] Watchdog not fed within 0.020000s
+[6.3217] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[6.3386] 
+[6.5609] 	SmartDashboard.updateValues(): 0.000430s
+[6.5634] 	disabledInit(): 0.009601s
+[6.5662] 	disablePeriodic(): 0.002855s
+[6.5682] 	robotPeriodic(): 0.251165s
+[6.5723] 	LiveWindow.updateValues(): 0.364895s
+[6.5756] 	Shuffleboard.update(): 0.000106s
+[6.9973] Watchdog not fed within 0.020000s
+[7.3967] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[7.3989] 
+[7.5731] 	SmartDashboard.updateValues(): 0.000117s
+[7.5754] 	disablePeriodic(): 0.000594s
+[7.5770] 	robotPeriodic(): 0.013133s
+[7.5790] 	LiveWindow.updateValues(): 0.007434s
+[7.5818] 	Shuffleboard.update(): 0.000059s
+[8.0139] Watchdog not fed within 0.020000s
+[8.6448] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[8.6470] 
+[8.6520] 	SmartDashboard.updateValues(): 0.000118s
+[8.6576] 	disablePeriodic(): 0.000581s
+[8.6584] 	robotPeriodic(): 0.020891s
+[8.6598] 	LiveWindow.updateValues(): 0.002545s
+[8.6632] 	Shuffleboard.update(): 0.001578s
+[9.4470] Watchdog not fed within 0.020000s
+[9.7247] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[9.7283] 
+[9.7374] 	SmartDashboard.updateValues(): 0.000210s
+[9.7439] 	disablePeriodic(): 0.000441s
+[9.7548] 	robotPeriodic(): 0.018085s
+[9.7620] 	LiveWindow.updateValues(): 0.009521s
+[9.7719] 	Shuffleboard.update(): 0.000156s
+[11.5266] Watchdog not fed within 0.020000s
+[11.5345] INFO    ClimberCommands$Stop initializedWarning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[11.5352] 
+[11.5372] 
+[11.5378] INFO    IntakeCommands$Stop initialized
+[11.5387] INFO    SpartronicsSubsystem$SpartronicsMissingDefaultCommand initialized
+[11.5397] INFO    LauncherCommands$ShootBallTest initialized
+[11.5421] INFO    PanelRotatorCommands$Stop initialized
+[11.5428] INFO    SpartronicsSubsystem$SpartronicsMissingDefaultCommand initialized
+[11.5464] INFO    DriveCommands$TeleOpCommand initialized
+[11.5496] INFO    here?
+[11.5802] INFO    StartEndCommand initialized
+[11.5839] INFO    SpartronicsSubsystem$SpartronicsMissingDefaultCommand initialized
+[11.6077] 	SmartDashboard.updateValues(): 0.000117s
+[11.6111] 	disablePeriodic(): 0.000628s
+[11.6141] 	robotPeriodic(): 0.081520s
+[11.6198] 	LiveWindow.updateValues(): 0.005425s
+[11.6261] 	Shuffleboard.update(): 0.000062s
+[12.5311] Watchdog not fed within 0.020000s
+[12.5359] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[12.5363] 
+[12.6676] 	teleopPeriodic(): 0.000358s
+[12.6703] 	SmartDashboard.updateValues(): 0.000178s
+[12.6724] 	robotPeriodic(): 0.037453s
+[12.6757] 	LiveWindow.updateValues(): 0.010714s
+[12.6794] 	Shuffleboard.update(): 0.000037s
+[13.5929] Watchdog not fed within 0.020000s
+[13.5952] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[13.5955] 
+[13.6853] 	teleopPeriodic(): 0.000488s
+[13.6904] 	SmartDashboard.updateValues(): 0.000078s
+[13.6986] 	robotPeriodic(): 0.019121s
+[13.7039] 	LiveWindow.updateValues(): 0.003048s
+[13.7095] 	Shuffleboard.update(): 0.000028s
+[14.6769] Watchdog not fed within 0.020000s
+[14.6794] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[14.6803] 
+[14.7014] 	teleopPeriodic(): 0.001845s
+[14.7125] 	SmartDashboard.updateValues(): 0.000083s
+[14.7222] 	robotPeriodic(): 0.013616s
+[14.7295] 	LiveWindow.updateValues(): 0.023381s
+[14.7371] 	Shuffleboard.update(): 0.000033s
+[15.9142] Watchdog not fed within 0.020000s
+[15.9165] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[15.9169] 
+[15.9343] 	teleopPeriodic(): 0.000290s
+[15.9379] 	SmartDashboard.updateValues(): 0.000081s
+[15.9425] 	robotPeriodic(): 0.036850s
+[15.9462] 	LiveWindow.updateValues(): 0.002303s
+[15.9507] 	Shuffleboard.update(): 0.000031s
+[16.9513] Watchdog not fed within 0.020000s
+[16.9575] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[16.9583] 
+[16.9745] 	teleopPeriodic(): 0.000447s
+[16.9797] 	SmartDashboard.updateValues(): 0.000055s
+[16.9840] 	robotPeriodic(): 0.026982s
+[16.9904] 	LiveWindow.updateValues(): 0.011612s
+[16.9965] 	Shuffleboard.update(): 0.000033s
+[18.0205] Watchdog not fed within 0.020000s
+[18.0250] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[18.0271] 
+[18.0472] 	teleopPeriodic(): 0.000307s
+[18.0522] 	SmartDashboard.updateValues(): 0.000272s
+[18.0547] 	robotPeriodic(): 0.038516s
+[18.0577] 	LiveWindow.updateValues(): 0.006608s
+[18.0604] 	Shuffleboard.update(): 0.000031s
+[19.0280] Watchdog not fed within 0.020000s
+[19.0289] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[19.0294] 
+[19.0615] 	teleopPeriodic(): 0.000570s
+[19.0688] 	SmartDashboard.updateValues(): 0.000190s
+[19.0787] 	robotPeriodic(): 0.014570s
+[19.0833] 	LiveWindow.updateValues(): 0.008135s
+[19.0883] 	Shuffleboard.update(): 0.000141s
+[20.0400] Watchdog not fed within 0.020000s
+[20.0422] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[20.0427] 
+[20.0579] 	teleopPeriodic(): 0.001053s
+[20.0681] 	SmartDashboard.updateValues(): 0.000051s
+[20.0720] 	robotPeriodic(): 0.018356s
+[20.0765] 	LiveWindow.updateValues(): 0.017350s
+[20.0811] 	Shuffleboard.update(): 0.000327s
+[21.1252] Watchdog not fed within 0.020000s
+[21.1282] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[21.1288] 
+[21.1506] 	teleopPeriodic(): 0.000442s
+[21.1552] 	SmartDashboard.updateValues(): 0.000052s
+[21.1616] 	robotPeriodic(): 0.039831s
+[21.1652] 	LiveWindow.updateValues(): 0.002047s
+[21.1710] 	Shuffleboard.update(): 0.000028s
+[22.2058] Watchdog not fed within 0.020000s
+[22.2076] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[22.2080] 
+[22.2349] 	teleopPeriodic(): 0.000455s
+[22.2401] 	SmartDashboard.updateValues(): 0.000055s
+[22.2443] 	robotPeriodic(): 0.036792s
+[22.2458] 	LiveWindow.updateValues(): 0.007735s
+[22.2516] 	Shuffleboard.update(): 0.000033s
+[23.5660] Watchdog not fed within 0.020000s
+[23.5687] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[23.5691] 
+[23.5850] 	teleopPeriodic(): 0.000345s
+[23.5898] 	SmartDashboard.updateValues(): 0.000053s
+[23.5931] 	robotPeriodic(): 0.021975s
+[23.5968] 	LiveWindow.updateValues(): 0.015243s
+[23.5989] 	Shuffleboard.update(): 0.000030s
+[24.9294] Watchdog not fed within 0.020000s
+[24.9312] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[24.9319] 
+[24.9414] 	teleopPeriodic(): 0.000327s
+[24.9469] 	SmartDashboard.updateValues(): 0.000062s
+[24.9568] 	robotPeriodic(): 0.007635s
+[24.9626] 	LiveWindow.updateValues(): 0.026325s
+[24.9775] 	Shuffleboard.update(): 0.000037s
+[25.9668] Watchdog not fed within 0.020000s
+[25.9686] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[25.9694] 
+[25.9816] 	teleopPeriodic(): 0.002023s
+[25.9874] 	SmartDashboard.updateValues(): 0.000048s
+[25.9904] 	robotPeriodic(): 0.015231s
+[25.9932] 	LiveWindow.updateValues(): 0.004119s
+[25.9958] 	Shuffleboard.update(): 0.000026s
+[27.1056] Watchdog not fed within 0.020000s
+[27.1080] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[27.1084] 
+[27.1183] 	teleopPeriodic(): 0.000407s
+[27.1218] 	SmartDashboard.updateValues(): 0.000140s
+[27.1263] 	robotPeriodic(): 0.025662s
+[27.1309] 	LiveWindow.updateValues(): 0.004779s
+[27.1387] 	Shuffleboard.update(): 0.000031s
+[28.1863] Watchdog not fed within 0.020000s
+[28.1893] 	teleopPeriodic(): 0.000389s
+[28.1914] 	SmartDashboard.updateValues(): 0.000067s
+[28.1931] 	robotPeriodic(): 0.015940s
+[28.1960] 	WarningLiveWindow.updateValues() at : edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[28.1968] 
+[28.1990] 0.005473s
+[28.2119] 	Shuffleboard.update(): 0.000031s
+[29.2258] Watchdog not fed within 0.020000s
+[29.2281] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[29.2330] 
+[29.2423] 	teleopPeriodic(): 0.000395s
+[29.2477] 	SmartDashboard.updateValues(): 0.000126s
+[29.2532] 	robotPeriodic(): 0.013742s
+[29.2618] 	LiveWindow.updateValues(): 0.018900s
+[29.2677] 	Shuffleboard.update(): 0.000040s
+[30.3738] Watchdog not fed within 0.020000s
+[30.3763] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[30.3805] 	teleopPeriodic(): 
+[30.3810] 0.000635s
+[30.3862] 	SmartDashboard.updateValues(): 0.000052s
+[30.3903] 	robotPeriodic(): 0.010861s
+[30.3937] 	LiveWindow.updateValues(): 0.013411s
+[30.3994] 	Shuffleboard.update(): 0.000032s
+[31.4651] Watchdog not fed within 0.020000s
+[31.4673] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[31.4677] 
+[31.4795] 	teleopPeriodic(): 0.000192s
+[31.4874] 	SmartDashboard.updateValues(): 0.000045s
+[31.4924] 	robotPeriodic(): 0.025097s
+[31.4961] 	LiveWindow.updateValues(): 0.004363s
+[31.5048] 	Shuffleboard.update(): 0.000031s
+[32.8252] Watchdog not fed within 0.020000s
+[32.8270] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[32.8276] 
+[32.8455] 	teleopPeriodic(): 0.000184s
+[32.8480] 	SmartDashboard.updateValues(): 0.000137s
+[32.8574] 	robotPeriodic(): 0.027983s
+[32.8624] 	LiveWindow.updateValues(): 0.011586s
+[32.8715] 	Shuffleboard.update(): 0.000030s
+[33.9484] Watchdog not fed within 0.020000s
+[33.9535] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[33.9540] 
+[33.9865] 	teleopPeriodic(): 0.003771s
+[34.0046] 	SmartDashboard.updateValues(): 0.000557s
+[34.0205] 	robotPeriodic(): 0.027933s
+[34.0273] 	LiveWindow.updateValues(): 0.019475s
+[34.0334] 	Shuffleboard.update(): 0.000034s
+[35.0063] Watchdog not fed within 0.020000s
+[35.0120] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[35.0128] 
+[35.0179] 	teleopPeriodic(): 0.000408s
+[35.0216] 	SmartDashboard.updateValues(): 0.000132s
+[35.0255] 	robotPeriodic(): 0.021211s
+[35.0308] 	LiveWindow.updateValues(): 0.007562s
+[35.0354] 	Shuffleboard.update(): 0.000035s
+[36.1061] Watchdog not fed within 0.020000s
+[36.1079] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[36.1091] 
+[36.1243] 	teleopPeriodic(): 0.000188s
+[36.1294] 	SmartDashboard.updateValues(): 0.000039s
+[36.1342] 	robotPeriodic(): 0.024843s
+[36.1390] 	LiveWindow.updateValues(): 0.006647s
+[36.1482] 	Shuffleboard.update(): 0.000132s
+[37.1851] Watchdog not fed within 0.020000s
+[37.1873] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[37.1892] 
+[37.1969] 	teleopPeriodic(): 0.000494s
+[37.2014] 	SmartDashboard.updateValues(): 0.000038s
+[37.2029] 	robotPeriodic(): 0.026945s
+[37.2043] 	LiveWindow.updateValues(): 0.002461s
+[37.2065] 	Shuffleboard.update(): 0.000028s
+[38.5685] Watchdog not fed within 0.020000s
+[38.5714] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[38.5717] 
+[38.5907] 	teleopPeriodic(): 0.000636s
+[38.5923] 	SmartDashboard.updateValues(): 0.000045s
+[38.5938] 	robotPeriodic(): 0.024250s
+[38.5950] 	LiveWindow.updateValues(): 0.013476s
+[38.5980] 	Shuffleboard.update(): 0.000029s
+[39.9249] Watchdog not fed within 0.020000s
+[39.9272] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[39.9279] 
+[39.9397] 	teleopPeriodic(): 0.000329s
+[39.9445] 	SmartDashboard.updateValues(): 0.000044s
+[39.9490] 	robotPeriodic(): 0.023441s
+[39.9535] 	LiveWindow.updateValues(): 0.004007s
+[39.9618] 	Shuffleboard.update(): 0.000027s
+[41.0052] Watchdog not fed within 0.020000s
+[41.0073] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[41.0079] 
+[41.0242] 	teleopPeriodic(): 0.000193s
+[41.0270] 	SmartDashboard.updateValues(): 0.000040s
+[41.0305] 	robotPeriodic(): 0.032306s
+[41.0345] 	LiveWindow.updateValues(): 0.005027s
+[41.0378] 	Shuffleboard.update(): 0.000034s
+[42.2856] Watchdog not fed within 0.020000s
+[42.2876] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[42.2886] 
+[42.2965] 	teleopPeriodic(): 0.000195s
+[42.3020] 	SmartDashboard.updateValues(): 0.000040s
+[42.3064] 	robotPeriodic(): 0.017043s
+[42.3198] 	LiveWindow.updateValues(): 0.010295s
+[42.3301] 	Shuffleboard.update(): 0.000035s
+[43.5480] Watchdog not fed within 0.020000s
+[43.5526] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[43.5532] 
+[43.5629] 	teleopPeriodic(): 0.000223s
+[43.5648] 	SmartDashboard.updateValues(): 0.000040s
+[43.5679] 	robotPeriodic(): 0.019709s
+[43.5685] 	LiveWindow.updateValues(): 0.010554s
+[43.5723] 	Shuffleboard.update(): 0.000099s
+[44.8253] Watchdog not fed within 0.020000s
+[44.8284] 	teleopPeriodic(): 0.000413s
+[44.8300] 	SmartDashboard.updateValues(): 0.000019s
+[44.8322] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[44.8330] 
+[44.8427] 	robotPeriodic(): 0.015048s
+[44.8501] 	LiveWindow.updateValues(): 0.005056s
+[44.8561] 	Shuffleboard.update(): 0.000018s
+[46.1852] Watchdog not fed within 0.020000s
+[46.1874] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[46.1877] 
+[46.2037] 	teleopPeriodic(): 0.000354s
+[46.2062] 	SmartDashboard.updateValues(): 0.000021s
+[46.2103] 	robotPeriodic(): 0.019327s
+[46.2139] 	LiveWindow.updateValues(): 0.016607s
+[46.2179] 	Shuffleboard.update(): 0.001380s
+[47.2853] Watchdog not fed within 0.020000s
+[47.2869] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[47.2878] 
+[47.2979] 	teleopPeriodic(): 0.000864s
+[47.3021] 	SmartDashboard.updateValues(): 0.000021s
+[47.3058] 	robotPeriodic(): 0.020394s
+[47.3088] 	LiveWindow.updateValues(): 0.011006s
+[47.3127] 	Shuffleboard.update(): 0.000024s
+[48.3851] Watchdog not fed within 0.020000s
+[48.3868] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[48.3873] 
+[48.3975] 	teleopPeriodic(): 0.000174s
+[48.4012] 	SmartDashboard.updateValues(): 0.000019s
+[48.4052] 	robotPeriodic(): 0.020221s
+[48.4088] 	LiveWindow.updateValues(): 0.010786s
+[48.4137] 	Shuffleboard.update(): 0.000022s
+[49.7449] Watchdog not fed within 0.020000s
+[49.7471] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[49.7474] 
+[49.7607] 	teleopPeriodic(): 0.000229s
+[49.7639] 	SmartDashboard.updateValues(): 0.000021s
+[49.7665] 	robotPeriodic(): 0.018845s
+[49.7692] 	LiveWindow.updateValues(): 0.015788s
+[49.7744] 	Shuffleboard.update(): 0.000012s
+[51.1052] Watchdog not fed within 0.020000s
+[51.1072] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[51.1078] 
+[51.1176] 	teleopPeriodic(): 0.000195s
+[51.1224] 	SmartDashboard.updateValues(): 0.000018s
+[51.1271] 	robotPeriodic(): 0.026658s
+[51.1290] 	LiveWindow.updateValues(): 0.005469s
+[51.1342] 	Shuffleboard.update(): 0.000012s
+[52.2057] Watchdog not fed within 0.020000s
+[52.2075] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[52.2084] 
+[52.2144] 	teleopPeriodic(): 0.000254s
+[52.2179] 	SmartDashboard.updateValues(): 0.000054s
+[52.2249] 	robotPeriodic(): 0.017886s
+[52.2285] 	LiveWindow.updateValues(): 0.008118s
+[52.2354] 	Shuffleboard.update(): 0.000012s
+[53.5669] Watchdog not fed within 0.020000s
+[53.5690] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[53.5693] 
+[53.5912] 	teleopPeriodic(): 0.000292s
+[53.5938] 	SmartDashboard.updateValues(): 0.000018s
+[53.5952] 	robotPeriodic(): 0.038217s
+[53.5964] 	LiveWindow.updateValues(): 0.003646s
+[53.6006] 	Shuffleboard.update(): 0.000012s
+[54.6650] Watchdog not fed within 0.020000s
+[54.6669] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[54.6678] 
+[54.6720] 	teleopPeriodic(): 0.000378s
+[54.6759] 	SmartDashboard.updateValues(): 0.000021s
+[54.6785] 	robotPeriodic(): 0.023020s
+[54.6810] 	LiveWindow.updateValues(): 0.002777s
+[54.6826] 	Shuffleboard.update(): 0.000012s
+[54.6920] [CAN SPARK MAX] timed out while waiting for Periodic Status 2, Periodic Status 2, Periodic Status 1, Periodic Status 1, Periodic Status 2, Periodic Status 1
+[56.0254] Watchdog not fed within 0.020000s
+[56.0278] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[56.0297] 
+[56.0469] 	teleopPeriodic(): 0.000223s
+[56.0522] 	SmartDashboard.updateValues(): 0.000022s
+[56.0596] 	robotPeriodic(): 0.038844s
+[56.0652] 	LiveWindow.updateValues(): 0.002307s
+[56.0712] 	Shuffleboard.update(): 0.000012s
+[57.3856] Watchdog not fed within 0.020000s
+[57.3877] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[57.3881] 
+[57.3992] 	teleopPeriodic(): 0.000438s
+[57.3998] 	SmartDashboard.updateValues(): 0.000019s
+[57.4012] 	robotPeriodic(): 0.019225s
+[57.4026] 	LiveWindow.updateValues(): 0.009930s
+[57.4062] 	Shuffleboard.update(): 0.000013s
+[58.4855] Watchdog not fed within 0.020000s
+[58.4895] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[58.4913] 
+[58.4958] 	teleopPeriodic(): 0.000335s
+[58.4977] 	SmartDashboard.updateValues(): 0.000024s
+[58.4989] 	robotPeriodic(): 0.025715s
+[58.5005] 	LiveWindow.updateValues(): 0.003768s
+[58.5029] 	Shuffleboard.update(): 0.000014s
+[60.1255] Watchdog not fed within 0.020000s
+[60.1310] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[60.1312] 
+[60.1582] 	teleopPeriodic(): 0.000490s
+[60.1628] 	SmartDashboard.updateValues(): 0.000019s
+[60.1681] 	robotPeriodic(): 0.038661s
+[60.1709] 	LiveWindow.updateValues(): 0.011415s
+[60.1721] 	Shuffleboard.update(): 0.000015s
+[61.2256] Watchdog not fed within 0.020000s
+[61.2278] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[61.2280] 
+[61.2362] 	teleopPeriodic(): 0.000742s
+[61.2410] 	SmartDashboard.updateValues(): 0.000119s
+[61.2455] 	robotPeriodic(): 0.021767s
+[61.2491] 	LiveWindow.updateValues(): 0.005239s
+[61.2511] 	Shuffleboard.update(): 0.000012s
+[62.5857] Watchdog not fed within 0.020000s
+[62.5881] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[62.5898] 
+[62.5959] 	teleopPeriodic(): 0.000159s
+[62.6006] 	SmartDashboard.updateValues(): 0.000019s
+[62.6038] 	robotPeriodic(): 0.016186s
+[62.6062] 	LiveWindow.updateValues(): 0.009775s
+[62.6101] 	Shuffleboard.update(): 0.000013s
+[63.6857] Watchdog not fed within 0.020000s
+[63.6886] 	teleopPeriodic(): Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[63.6890] 
+[63.6925] 0.000305s
+[63.6963] 	SmartDashboard.updateValues(): 0.000021s
+[63.6976] 	robotPeriodic(): 0.018353s
+[63.7012] 	LiveWindow.updateValues(): 0.002785s
+[63.7057] 	Shuffleboard.update(): 0.000012s
+[65.0465] Watchdog not fed within 0.020000s
+[65.0492] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[65.0533] 
+[65.0654] 	teleopPeriodic(): 0.000275s
+[65.0697] 	SmartDashboard.updateValues(): 0.000023s
+[65.0752] 	robotPeriodic(): 0.036997s
+[65.0782] 	LiveWindow.updateValues(): 0.002079s
+[65.0826] 	Shuffleboard.update(): 0.000012s
+[66.1450] Watchdog not fed within 0.020000s
+[66.1488] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[66.1492] 
+[66.1537] 	teleopPeriodic(): 0.000179s
+[66.1566] 	SmartDashboard.updateValues(): 0.000019s
+[66.1599] 	robotPeriodic(): 0.017760s
+[66.1621] 	LiveWindow.updateValues(): 0.007965s
+[66.1661] 	Shuffleboard.update(): 0.000013s
+[67.5055] Watchdog not fed within 0.020000s
+[67.5090] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[67.5095] 
+[67.5253] 	teleopPeriodic(): 0.000357s
+[67.5297] 	SmartDashboard.updateValues(): 0.000017s
+[67.5337] 	robotPeriodic(): 0.029927s
+[67.5358] 	LiveWindow.updateValues(): 0.009028s
+[67.5392] 	Shuffleboard.update(): 0.000012s
+[68.6049] Watchdog not fed within 0.020000s
+[68.6075] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[68.6083] 
+[68.6145] 	teleopPeriodic(): 0.000225s
+[68.6183] 	SmartDashboard.updateValues(): 0.000104s
+[68.6233] 	robotPeriodic(): 0.014836s
+[68.6268] 	LiveWindow.updateValues(): 0.011009s
+[68.6320] 	Shuffleboard.update(): 0.000014s
+[70.2458] Watchdog not fed within 0.020000s
+[70.2477] 	teleopPeriodic(): 0.000434s
+[70.2498] 	SmartDashboard.updateValues(): 0.000020s
+[70.2524] 	robotPeriodic(): 0.015970s
+[70.2549] 	LiveWindow.updateValues(): 0.005209s
+[70.2574] 	Shuffleboard.update(): 0.000013s
+[70.2584] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[70.2593] 
+[71.3453] Watchdog not fed within 0.020000s
+[71.3492] 	teleopPeriodic(): 0.000149s
+[71.3514] 	SmartDashboard.updateValues()Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[71.3522] 
+[71.3612] : 0.000019s
+[71.3657] 	robotPeriodic(): 0.016901s
+[71.3711] 	LiveWindow.updateValues(): 0.003993s
+[71.3771] 	Shuffleboard.update(): 0.000012s
+[72.4462] Watchdog not fed within 0.020000s
+[72.4470] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[72.4476] 
+[72.4608] 	teleopPeriodic(): 0.000382s
+[72.4653] 	SmartDashboard.updateValues(): 0.000111s
+[72.4679] 	robotPeriodic(): 0.019254s
+[72.4711] 	LiveWindow.updateValues(): 0.011359s
+[72.4733] 	Shuffleboard.update(): 0.000016s
+[73.8052] Watchdog not fed within 0.020000s
+[73.8075] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[73.8081] 
+[73.8168] 	teleopPeriodic(): 0.000193s
+[73.8210] 	SmartDashboard.updateValues(): 0.000019s
+[73.8239] 	robotPeriodic(): 0.018047s
+[73.8275] 	LiveWindow.updateValues(): 0.009385s
+[73.8346] 	Shuffleboard.update(): 0.000081s
+[75.1676] Watchdog not fed within 0.020000s
+[75.1697] 	teleopPeriodic(): 0.000366s
+[75.1707] 	SmartDashboard.updateValues(): 0.000017s
+[75.1720] 	robotPeriodic(): 0.008265s
+[75.1722] 	LiveWindow.updateValues(): 0.014743s
+[75.1744] 	Shuffleboard.update(): 0.000012s
+[75.1753] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[75.1755] 
+[76.2649] Watchdog not fed within 0.020000s
+[76.2671] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[76.2677] 
+[76.2850] 	teleopPeriodic(): 0.000341s
+[76.2865] 	SmartDashboard.updateValues(): 0.000021s
+[76.2914] 	robotPeriodic(): 0.031768s
+[76.2944] 	LiveWindow.updateValues(): 0.006404s
+[76.2958] 	Shuffleboard.update(): 0.000013s
+[77.6250] Watchdog not fed within 0.020000s
+[77.6282] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[77.6320] 
+[77.6469] 	teleopPeriodic(): 0.000388s
+[77.6505] 	SmartDashboard.updateValues(): 0.000018s
+[77.6566] 	robotPeriodic(): 0.009196s
+[77.6674] 	LiveWindow.updateValues(): 0.001835s
+[77.6765] 	Shuffleboard.update(): 0.000010s
+[78.7256] Watchdog not fed within 0.020000s
+[78.7290] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[78.7305] 
+[78.7314] 	teleopPeriodic(): 0.000404s
+[78.7336] 	SmartDashboard.updateValues(): 0.000019s
+[78.7358] 	robotPeriodic(): 0.018505s
+[78.7375] 	LiveWindow.updateValues(): 0.005579s
+[78.7388] 	Shuffleboard.update(): 0.000013s
+[80.2548] INFO    ClimberCommands$Stop interrupted
+[80.2581] INFO    IntakeCommands$Stop interrupted
+[80.2590] INFO    SpartronicsSubsystem$SpartronicsMissingDefaultCommand interrupted
+[80.2616] INFO    LauncherCommands$ShootBallTest interrupted
+[80.2620] INFO    PanelRotatorCommands$Stop interrupted
+[80.2625] INFO    SpartronicsSubsystem$SpartronicsMissingDefaultCommand interrupted
+[80.2656] Watchdog not fed within 0.020000s
+[80.2662] Warning at edu.wpi.first.wpilibj.IterativeRobotBase.printLoopOverrunMessage(IterativeRobotBase.java:309): Loop time of 0.02s overrun
+[80.2665] 
+[80.2699] INFO    DriveCommands$TeleOpCommand interrupted
+[80.2722] INFO    StartEndCommand interrupted
+[80.2737] INFO    SpartronicsSubsystem$SpartronicsMissingDefaultCommand interrupted
+[80.2775] 	SmartDashboard.updateValues(): 0.000022s
+[80.2855] 	disabledInit(): 0.000913s
+[80.2869] 	disablePeriodic(): 0.000358s
+[80.2919] 	robotPeriodic(): 0.029041s
+[80.2990] 	LiveWindow.updateValues(): 0.001813s
+[80.3009] 	Shuffleboard.update(): 0.000011s
