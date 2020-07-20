@@ -60,7 +60,6 @@ public class LED extends SpartronicsSubsystem
                 mBlingPort.setFlowControl(SerialPort.FLOW_CONTROL_DISABLED);
                 mBlingPort.openPort();
                 logInitialized(true);
-                Logger.notice("LED: Initialized!");
             }
         }
         catch (Exception e)

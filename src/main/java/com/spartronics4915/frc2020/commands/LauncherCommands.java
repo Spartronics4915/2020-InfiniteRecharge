@@ -17,21 +17,13 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 public class LauncherCommands
 {
     private final Launcher mLauncher;
-    private final Vision mVision;
     private final IndexerCommands mIndexerCommands;
     final CoordSysMgr2020 mCoordSysMgr;
-    private final RobotStateMap mStateMap;
-    private final Pose2d mMatchTargetMeters;
-    private final Vec3 mMatchTargetInches;
-    private final Vec3 mInnerTargetInches;
 
-    public LauncherCommands(Launcher launcher, Vision vision,
-        IndexerCommands indexerCommands, RobotStateMap stateMap)
+    public LauncherCommands(Launcher launcher, IndexerCommands indexerCommands)
     {
         mLauncher = launcher;
-        mVision = vision;
         mIndexerCommands = indexerCommands;
-        mStateMap = stateMap;
         mCoordSysMgr = new CoordSysMgr2020();
 
         // our target is always on the opposite side of the field. This
@@ -49,8 +41,8 @@ public class LauncherCommands
             Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[1]),
             Rotation2d.fromDegrees(180));
 
-//        mLauncher.setDefaultCommand(new TargetAndShoot());
-         mLauncher.setDefaultCommand(new ShootBallTest());
+        // mLauncher.setDefaultCommand(new TargetAndShoot());
+        mLauncher.setDefaultCommand(new ShootBallTest());
     }
 
     public Launcher getLauncher()
@@ -151,53 +143,11 @@ public class LauncherCommands
      */
     private double trackTarget()
     {
-        Pose2d fieldToTurret = mStateMap.getLatestFieldToVehicle()
-            .transformBy(Constants.Launcher.kRobotToTurret);
-        Pose2d turretToTarget = fieldToTurret.inFrameReferenceOf(mMatchTargetMeters);
-        Rotation2d fieldAnglePointingToTarget = new Rotation2d(
-            turretToTarget.getTranslation().getX(),
-            turretToTarget.getTranslation().getY(),
-            true);
-        Rotation2d turretAngle = fieldAnglePointingToTarget
-            .rotateBy(fieldToTurret.getRotation().inverse());
-        double distance = Math.hypot(turretToTarget.getTranslation().getX(), turretToTarget.getTranslation().getY());
+        double distance = 0;
         distance = Units.metersToInches(distance);
         mLauncher.adjustHood(mLauncher.calcPitch(distance));
-        mLauncher.turnTurret(turretAngle);
+        mLauncher.turnTurret(0);
         return distance;
-    }
-
-    /**
-     * return the distance (in meters) to the tracked target.  If the target
-     * is within our field of view, we adjust both hood and turret angle.
-     */
-    private double trackTargetAlt()
-    {
-        Pose2d robotToField = mStateMap.getLatestFieldToVehicle();
-        // we want an angle relative to turret neutral pose
-        this.mCoordSysMgr.updateTurretAngle(0);
-
-        // mCoordSysMgr operates in inches, but accepts robot coords in meters.
-        this.mCoordSysMgr.updateRobotPose(robotToField);
-
-        // convert the match target in field coords into turret-relative coords
-        // targetInMnt "says it all".
-        Vec3 targetInMnt = mCoordSysMgr.fieldPointToMount(mMatchTargetInches);
-        Vec3 innerTargetInMnt = mCoordSysMgr.fieldPointToMount(mInnerTargetInches);
-
-        double angle = targetInMnt.angleOnXYPlane();
-        double dist = targetInMnt.lengthXY(); // already in inches
-        if (angle > 180)
-        {
-            // [0-360) -> (-180, 180]
-            angle = -(360 - angle);
-        }
-        if (Math.abs(angle) < Constants.Launcher.kMaxAngleDegrees)
-        {
-            mLauncher.adjustHood(mLauncher.calcPitch(dist));
-            mLauncher.turnTurret(angle);
-        }
-        return dist;
     }
 
     /*
@@ -380,18 +330,14 @@ public class LauncherCommands
         {
             yam = 0;
             tomato = 0;
+
             addRequirements(mLauncher);
         }
 
         @Override
         public void execute()
         {
-            double potato = mVision.dashboardGetNumber("PIDOffset", 0).doubleValue();
-            if (yam != potato)
-                tomato = mLauncher.getTurretDirection().getDegrees() - potato;
             mLauncher.turnTurret(Rotation2d.fromDegrees(tomato));
-            mVision.dashboardPutNumber("VisionTargetPosition", (tomato));
-            yam = potato;
         }
 
         @Override

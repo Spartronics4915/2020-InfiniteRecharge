@@ -98,6 +98,7 @@ public class RobotStateEstimator extends SpartronicsSubsystem
         if (mSLAMCamera == null)
         {
             logInitialized(false);
+            Logger.info("RobotStateEstimator thinks that mSLAMCamera is null");
         }
         else
         {
@@ -248,7 +249,7 @@ public class RobotStateEstimator extends SpartronicsSubsystem
             if (mBestEstimatorSource == EstimatorSource.Fused)
             {
                 var ekfPose = mEKF.updateWithTime(ts, heading, new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getVelocity()), mCameraStateMap.getLatestFieldToVehicle(), leftDist, rightDist);
-                
+
                 mPrevHeading = heading.getRadians();
                 mFusedStateMap.addObservations(ts, ekfPose, new Twist2d(), new Twist2d(), 0.0);
             }

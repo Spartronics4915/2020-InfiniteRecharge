@@ -19,7 +19,6 @@ import com.spartronics4915.frc2020.subsystems.LED;
 import com.spartronics4915.frc2020.subsystems.LED.Bling;
 import com.spartronics4915.frc2020.subsystems.Launcher;
 import com.spartronics4915.frc2020.subsystems.PanelRotator;
-import com.spartronics4915.frc2020.subsystems.Vision;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.hardware.sensors.T265Camera;
 import com.spartronics4915.lib.hardware.sensors.T265Camera.CameraJNIException;
@@ -53,11 +52,8 @@ public class RobotContainer
     public final Launcher mLauncher;
     public final PanelRotator mPanelRotator;
     public final LED mLED;
-    public final Vision mVision;
     public final Drive mDrive;
     public final TrajectoryTracker mRamseteController = new RamseteTracker(2, 0.7);
-    public final RobotStateEstimator mStateEstimator;
-    public final TrajectoryContainer.AutoMode[] mAutoModes;
 
     /* subsystem commands, public for easier unit testing */
     public final LEDCommands mLEDCommands;
@@ -78,25 +74,6 @@ public class RobotContainer
      */
     public RobotContainer()
     {
-        int retryCount = 0;
-        T265Camera slamra = null;
-        while (++retryCount <= 1 && slamra == null)
-        {
-            try
-            {
-                slamra = new T265Camera(Constants.Estimator.kSlamraToRobot,
-                    Constants.Estimator.kT265InternalMeasurementCovariance);
-                SmartDashboard.putString("RobotContainer/vslamStatus", "OK");
-            }
-            catch (CameraJNIException | UnsatisfiedLinkError e)
-            {
-                slamra = null;
-                Logger.error("RobotContainer: T265 camera is unavailable");
-                Logger.exception(e);
-                SmartDashboard.putString("RobotContainer/vslamStatus", "BAD!");
-            }
-        }
-
         mButtons = new ButtonFactory();
 
         /* constructing subsystems */
@@ -108,26 +85,6 @@ public class RobotContainer
         mLED = LED.getInstance();
         mDrive = new Drive(mLauncher);
 
-        var ekf = new DrivetrainEstimator(
-            mDrive.getIMUHeading(),
-            Constants.Trajectory.kStartPointRight,
-            Constants.Estimator.kStateStdDevs,
-            Constants.Estimator.kLocalMeasurementStdDevs,
-            Constants.Estimator.kVisionMeasurementStdDevs
-        );
-        mStateEstimator = new RobotStateEstimator(mDrive,
-            new Kinematics(Constants.Drive.kTrackWidthMeters, Constants.Drive.kScrubFactor),
-            slamra,
-            ekf,
-            slamra == null ? EstimatorSource.EncoderOdometry : EstimatorSource.Fused);
-        StartEndCommand slamraCmd = new StartEndCommand(
-            () -> mStateEstimator.enable(),
-            () -> mStateEstimator.stop(),
-            mStateEstimator);
-        mStateEstimator.setDefaultCommand(slamraCmd);
-        mStateEstimator.resetRobotStateMaps(Constants.Trajectory.kStartPointRight);
-        mVision = new Vision(mStateEstimator);
-
         if (!RobotBase.isReal()) // we're unit testing
             SpartronicsSimulatedMotor.resetGlobalState();
 
@@ -137,24 +94,13 @@ public class RobotContainer
         mDriveCommands = new DriveCommands(mDrive, mButtons.getJoystick(mJoystick));
         mIntakeCommands = new IntakeCommands(mIntake, mIndexer);
         mIndexerCommands = new IndexerCommands(mIndexer);
-        mLauncherCommands = new LauncherCommands(mLauncher, mVision, mIndexerCommands,
-            mStateEstimator.getBestRobotStateMap());
+        mLauncherCommands = new LauncherCommands(mLauncher, mIndexerCommands);
         mPanelRotatorCommands = new PanelRotatorCommands(mPanelRotator);
         mSuperstructureCommands = new SuperstructureCommands(mIndexerCommands,
             mIntakeCommands, mLauncherCommands);
 
-        mVision.registerTargetListener(mStateEstimator.getVisionListener());
-
         // NB: ButtonFactory handles the !RobotBase.isReal case.
-        configureJoystickBindings();
-        configureButtonBoardBindings();
-
-        /* publish our automodes to the dashboard -----------------*/
-        mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController,
-            mSuperstructureCommands);
-        String autoModeList = Arrays.stream(mAutoModes).map((m) -> m.name)
-            .collect(Collectors.joining(","));
-        SmartDashboard.putString(kAutoOptionsKey, autoModeList);
+        configureSingleJoystickBindings();
     }
 
     // Joystick buttons are labelled on the joystick! what a concept
@@ -170,11 +116,9 @@ public class RobotContainer
         // Chris has expressed he doesn't want functionality on buttons 2, 4, and 5
         mButtons.create(mJoystick, 3).whenPressed(mDriveCommands.new ToggleInverted());
 
-        // JoystickButton 6 / 7 have the same functionality - they're close together +
-        // on passive hand side
+        // JoystickButton 6 / 7 have the same functionality - they're close together + on passive hand side
         mButtons.create(mJoystick, 6).whenPressed(mDriveCommands.new ToggleSlow()
-            .alongWith(mLEDCommands.new SetBlingState(Bling.kDriveSlow))); // FIXME: this will not
-                                                                           // go back to kTeleop
+            .alongWith(mLEDCommands.new SetBlingState(Bling.kDriveSlow))); // FIXME: this will not go back to kTeleop
         mButtons.create(mJoystick, 7).whenPressed(mDriveCommands.new ToggleSlow()
             .alongWith(mLEDCommands.new SetBlingState(Bling.kDriveSlow)));
 
@@ -200,25 +144,19 @@ public class RobotContainer
         mButtons.create(mButtonBoard, 4).whenPressed(mSuperstructureCommands.new LaunchSequence(1)
             .alongWith(mLEDCommands.new SetBlingState(Bling.kLaunch)));
         mButtons.create(mButtonBoard, 3).whenPressed(mSuperstructureCommands.new LaunchSequence(5))
-            .whileActiveContinuous(mLEDCommands.new SetBlingState(Bling.kLaunch)); // TODO: validate
-                                                                                   // multiple
-                                                                                   // launch
-                                                                                   // animations
+            .whileActiveContinuous(mLEDCommands.new SetBlingState(Bling.kLaunch)); // TODO: validate multiple launch animations
 
         // toggle pickup (command group)
         mButtons.create(mButtonBoard, 2).toggleWhenPressed(mSuperstructureCommands.new IntakeFive())
-            .whenActive(mLEDCommands.new SetBlingState(Bling.kIntake)) // TODO: validate pickup
-                                                                       // animation
+            .whenActive(mLEDCommands.new SetBlingState(Bling.kIntake)) // TODO: validate pickup animation
             .whenInactive(mLEDCommands.new SetBlingState(Bling.kTeleop));
 
         // toggle eject
         mButtons.create(mButtonBoard, 1).toggleWhenPressed(mIntakeCommands.new Eject())
-            .whenActive(mLEDCommands.new SetBlingState(Bling.kEject)) // TODO: validate eject
-                                                                      // animation
+            .whenActive(mLEDCommands.new SetBlingState(Bling.kEject)) // TODO: validate eject animation
             .whenInactive(mLEDCommands.new SetBlingState(Bling.kTeleop));
 
-        // climb buttons -- note, we are not differentiating different climb states for
-        // animations
+        // climb buttons -- note, we are not differentiating different climb states for animations
         mButtons.create(mButtonBoard, 8).whenHeld(mClimberCommands.new Winch()
             .alongWith(mLEDCommands.new SetBlingState(Bling.kClimb)));
         mButtons.create(mButtonBoard, 9).whileHeld(mClimberCommands.new Retract()
@@ -240,6 +178,26 @@ public class RobotContainer
         mButtons.create(mButtonBoard, 14).whenPressed(mPanelRotatorCommands.new AutoSpinRotation());
         mButtons.create(mButtonBoard, 15).whenPressed(mPanelRotatorCommands.new AutoSpinToColor());
         */
+    }
+
+    /**
+     * for when you don't have the button board to test commands
+     */
+    public void configureSingleJoystickBindings()
+    {
+        mButtons.create(mJoystick, 1)
+            .whenPressed(mDriveCommands.new SetSlow())
+            .whenReleased(mDriveCommands.new ToggleSlow());
+        mButtons.create(mJoystick, 2).toggleWhenPressed(mIntakeCommands.new Eject());
+        mButtons.create(mJoystick, 3).toggleWhenPressed(mSuperstructureCommands.new IntakeFive());
+        mButtons.create(mJoystick, 4).whenPressed(mSuperstructureCommands.new LaunchSequence(1));
+        mButtons.create(mJoystick, 5).whenPressed(mSuperstructureCommands.new LaunchSequence(5));
+        mButtons.create(mJoystick, 6).whenPressed(mPanelRotatorCommands.new Lower());
+        mButtons.create(mJoystick, 7).whenPressed(mPanelRotatorCommands.new Raise());
+        mButtons.create(mJoystick, 8).whenPressed(mPanelRotatorCommands.new SpinToColor());
+        mButtons.create(mJoystick, 9).whenPressed(mClimberCommands.new Winch());
+        mButtons.create(mJoystick, 10).whileHeld(mClimberCommands.new Retract());
+        mButtons.create(mJoystick, 11).whileHeld(mClimberCommands.new Extend());
     }
 
     /**
@@ -268,13 +226,6 @@ public class RobotContainer
     {
         String selectedModeName = mAutoModeEntry.getString("NO SELECTED MODE!!!!");
         Logger.notice("Auto mode name " + selectedModeName);
-        for (var mode : mAutoModes)
-        {
-            if (mode.name.equals(selectedModeName))
-            {
-                return mode.command;
-            }
-        }
 
         Logger.error("AutoModeSelector failed to select auto mode: " + selectedModeName);
         return TrajectoryContainer.kDefaultAutoMode.command;
