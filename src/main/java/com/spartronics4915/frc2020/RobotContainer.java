@@ -1,8 +1,5 @@
 package com.spartronics4915.frc2020;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 import com.spartronics4915.frc2020.commands.ClimberCommands;
 import com.spartronics4915.frc2020.commands.DriveCommands;
 import com.spartronics4915.frc2020.commands.IndexerCommands;
@@ -22,22 +19,14 @@ import com.spartronics4915.frc2020.subsystems.PanelRotator;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.math.twodim.control.RamseteTracker;
 import com.spartronics4915.lib.math.twodim.control.TrajectoryTracker;
-import com.spartronics4915.lib.math.twodim.geometry.Pose2d;
-import com.spartronics4915.lib.subsystems.estimator.DrivetrainEstimator;
-import com.spartronics4915.lib.util.Kinematics;
-import com.spartronics4915.lib.util.Logger;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj.RobotBase;
 
 public class RobotContainer
 {
-    private static final String kAutoOptionsKey = "AutoStrategyOptions";
     public final NetworkTableEntry mAutoModeEntry = NetworkTableInstance.getDefault()
         .getTable("SmartDashboard").getEntry("AutoStrategy");
 
