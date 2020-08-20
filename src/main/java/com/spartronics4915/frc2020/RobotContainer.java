@@ -146,8 +146,9 @@ public class RobotContainer
         mVision.registerTargetListener(mStateEstimator.getVisionListener());
 
         // NB: ButtonFactory handles the !RobotBase.isReal case.
-        configureJoystickBindings();
-        configureButtonBoardBindings();
+        // configureJoystickBindings();
+        // configureButtonBoardBindings();
+        configureSingleJoystickBindings();
 
         /* publish our automodes to the dashboard -----------------*/
         mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController,
@@ -170,11 +171,9 @@ public class RobotContainer
         // Chris has expressed he doesn't want functionality on buttons 2, 4, and 5
         mButtons.create(mJoystick, 3).whenPressed(mDriveCommands.new ToggleInverted());
 
-        // JoystickButton 6 / 7 have the same functionality - they're close together +
-        // on passive hand side
+        // JoystickButton 6 / 7 have the same functionality - they're close together + on passive hand side
         mButtons.create(mJoystick, 6).whenPressed(mDriveCommands.new ToggleSlow()
-            .alongWith(mLEDCommands.new SetBlingState(Bling.kDriveSlow))); // FIXME: this will not
-                                                                           // go back to kTeleop
+            .alongWith(mLEDCommands.new SetBlingState(Bling.kDriveSlow))); // FIXME: this will not go back to kTeleop
         mButtons.create(mJoystick, 7).whenPressed(mDriveCommands.new ToggleSlow()
             .alongWith(mLEDCommands.new SetBlingState(Bling.kDriveSlow)));
 
@@ -183,7 +182,7 @@ public class RobotContainer
             .whenPressed(new InstantCommand(() -> mLauncher.zeroTurret()));
     }
 
-    /** TODO: verify
+    /**
      * +--------------------------------------+
      * |               (9)   (7)(8)  (10)(11) |
      * |                                      |
@@ -200,25 +199,19 @@ public class RobotContainer
         mButtons.create(mButtonBoard, 4).whenPressed(mSuperstructureCommands.new LaunchSequence(1)
             .alongWith(mLEDCommands.new SetBlingState(Bling.kLaunch)));
         mButtons.create(mButtonBoard, 3).whenPressed(mSuperstructureCommands.new LaunchSequence(5))
-            .whileActiveContinuous(mLEDCommands.new SetBlingState(Bling.kLaunch)); // TODO: validate
-                                                                                   // multiple
-                                                                                   // launch
-                                                                                   // animations
+            .whileActiveContinuous(mLEDCommands.new SetBlingState(Bling.kLaunch));
 
         // toggle pickup (command group)
         mButtons.create(mButtonBoard, 2).toggleWhenPressed(mSuperstructureCommands.new IntakeFive())
-            .whenActive(mLEDCommands.new SetBlingState(Bling.kIntake)) // TODO: validate pickup
-                                                                       // animation
+            .whenActive(mLEDCommands.new SetBlingState(Bling.kIntake))
             .whenInactive(mLEDCommands.new SetBlingState(Bling.kTeleop));
 
         // toggle eject
         mButtons.create(mButtonBoard, 1).toggleWhenPressed(mIntakeCommands.new Eject())
-            .whenActive(mLEDCommands.new SetBlingState(Bling.kEject)) // TODO: validate eject
-                                                                      // animation
+            .whenActive(mLEDCommands.new SetBlingState(Bling.kEject))
             .whenInactive(mLEDCommands.new SetBlingState(Bling.kTeleop));
 
-        // climb buttons -- note, we are not differentiating different climb states for
-        // animations
+        // climb buttons
         mButtons.create(mButtonBoard, 8).whenHeld(mClimberCommands.new Winch()
             .alongWith(mLEDCommands.new SetBlingState(Bling.kClimb)));
         mButtons.create(mButtonBoard, 9).whileHeld(mClimberCommands.new Retract()
@@ -233,13 +226,48 @@ public class RobotContainer
         mButtons.create(mButtonBoard, 6).whenPressed(mPanelRotatorCommands.new Raise()
             .alongWith(mLEDCommands.new SetBlingState(Bling.kOff)));
         mButtons.create(mButtonBoard, 7).whenPressed(mPanelRotatorCommands.new SpinToColor());
+    }
 
-        /* TODO: interface with the button board "joystick" potentially through GenericHID
-        mButtons.create(mButtonBoard, 12).whenPressed(mClimberCommands.new ExtendMin());
-        mButtons.create(mButtonBoard, 13).whenPressed(mClimberCommands.new ExtendMax());
-        mButtons.create(mButtonBoard, 14).whenPressed(mPanelRotatorCommands.new AutoSpinRotation());
-        mButtons.create(mButtonBoard, 15).whenPressed(mPanelRotatorCommands.new AutoSpinToColor());
-        */
+    /**
+     * for when you don't have the button board to test commands
+     * buttons are numbered
+     */
+    public void configureSingleJoystickBindings()
+    {
+        mButtons.create(mJoystick, 1)
+            .whenPressed(mDriveCommands.new SetSlow()
+                .alongWith(mLEDCommands.new SetBlingState(Bling.kDriveSlow)))
+            .whenReleased(mDriveCommands.new ToggleSlow()
+                .alongWith(mLEDCommands.new SetBlingState(Bling.kTeleop)));
+
+        // toggle intake and eject
+        mButtons.create(mJoystick, 2).toggleWhenPressed(mIntakeCommands.new Eject())
+            .whenActive(mLEDCommands.new SetBlingState(Bling.kEject))
+            .whenInactive(mLEDCommands.new SetBlingState(Bling.kTeleop));
+        mButtons.create(mJoystick, 3).toggleWhenPressed(mSuperstructureCommands.new IntakeFive())
+            .whenActive(mLEDCommands.new SetBlingState(Bling.kIntake))
+            .whenInactive(mLEDCommands.new SetBlingState(Bling.kTeleop));
+
+        // launch buttons
+        mButtons.create(mJoystick, 4).whenPressed(mSuperstructureCommands.new LaunchSequence(1)
+            .alongWith(mLEDCommands.new SetBlingState(Bling.kLaunch)));
+        mButtons.create(mJoystick, 5).whenPressed(mSuperstructureCommands.new LaunchSequence(5))
+            .whileActiveContinuous(mLEDCommands.new SetBlingState(Bling.kLaunch));
+
+        // control panel buttons- turning off LEDs to minimize interference
+        mButtons.create(mJoystick, 6).whenPressed(mPanelRotatorCommands.new Lower()
+            .alongWith(mLEDCommands.new SetBlingState(Bling.kTeleop)));
+        mButtons.create(mJoystick, 7).whenPressed(mPanelRotatorCommands.new Raise()
+            .alongWith(mLEDCommands.new SetBlingState(Bling.kOff)));
+        mButtons.create(mJoystick, 8).whenPressed(mPanelRotatorCommands.new SpinToColor());
+
+        // climber buttons
+        mButtons.create(mJoystick, 9).whenPressed(mClimberCommands.new Winch()
+            .alongWith(mLEDCommands.new SetBlingState(Bling.kClimb)));
+        mButtons.create(mJoystick, 10).whileHeld(mClimberCommands.new Retract()
+            .alongWith(mLEDCommands.new SetBlingState(Bling.kClimb)));
+        mButtons.create(mJoystick, 11).whileHeld(mClimberCommands.new Extend()
+            .alongWith(mLEDCommands.new SetBlingState(Bling.kClimb)));
     }
 
     /**

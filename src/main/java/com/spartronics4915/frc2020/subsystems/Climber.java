@@ -42,6 +42,8 @@ public class Climber extends SpartronicsSubsystem
     private SpartronicsMotor mLiftMotor;
     private SpartronicsMotor mWinchMotor;
 
+    // TODO: once the climber redesign is installed, extend / retract MUST BE FLIPPED
+    // (the new lightsaber has a constant force spring pulling up)
     public Climber()
     {
         // Hardware Contructor (Add motors and such here when I get them)
