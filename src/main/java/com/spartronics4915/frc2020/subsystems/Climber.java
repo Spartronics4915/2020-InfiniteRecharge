@@ -1,11 +1,12 @@
 package com.spartronics4915.frc2020.subsystems;
 
-import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
+
+import static com.spartronics4915.frc2020.Constants.Climber.*;
 
 /**
  * CLIMBER
@@ -47,14 +48,14 @@ public class Climber extends SpartronicsSubsystem
     public Climber()
     {
         // Hardware Contructor (Add motors and such here when I get them)
-        mLiftMotor = SpartronicsSRX.makeMotor(Constants.Climber.kLiftMotorId);
-        mWinchMotor = SpartronicsMax.makeMotor(Constants.Climber.kWinchMotorId);
+        mLiftMotor = SpartronicsSRX.makeMotor(kLiftMotorId);
+        mWinchMotor = SpartronicsMax.makeMotor(kWinchMotorId);
         mWinchMotor.setBrakeMode(true);
 
         if (mLiftMotor.hadStartupError() || mWinchMotor.hadStartupError())
         {
-            mLiftMotor = new SpartronicsSimulatedMotor(Constants.Climber.kLiftMotorId);
-            mWinchMotor = new SpartronicsSimulatedMotor(Constants.Climber.kWinchMotorId);
+            mLiftMotor = new SpartronicsSimulatedMotor(kLiftMotorId);
+            mWinchMotor = new SpartronicsSimulatedMotor(kWinchMotorId);
             logInitialized(false);
         }
         else
@@ -70,7 +71,7 @@ public class Climber extends SpartronicsSubsystem
      */
     public void extend()
     {
-        mLiftMotor.setPercentOutput(Constants.Climber.kExtendSpeed);
+        mLiftMotor.setPercentOutput(kExtendSpeed);
         mWinchMotor.setPercentOutput(0.0);
     }
 
@@ -86,9 +87,9 @@ public class Climber extends SpartronicsSubsystem
     {
         mLiftMotor.setPercentOutput(0.0);
         if (stalled)
-            mWinchMotor.setPercentOutput(Constants.Climber.kWinchSpeed);
+            mWinchMotor.setPercentOutput(kWinchSpeed);
         else
-            mWinchMotor.setPercentOutput(Constants.Climber.kReverseWinchSpeed);
+            mWinchMotor.setPercentOutput(kReverseWinchSpeed);
     }
 
     /**
@@ -96,7 +97,7 @@ public class Climber extends SpartronicsSubsystem
      */
     public void retract()
     {
-        mLiftMotor.setPercentOutput(Constants.Climber.kRetractSpeed);
+        mLiftMotor.setPercentOutput(kRetractSpeed);
         mWinchMotor.setPercentOutput(0.0);
     }
 
@@ -114,11 +115,11 @@ public class Climber extends SpartronicsSubsystem
      */
     public boolean isStalled()
     {
-        return mWinchMotor.getOutputCurrent() >= Constants.Climber.kStallThreshold;
+        return mWinchMotor.getOutputCurrent() >= kStallThreshold;
     }
 
     public boolean secondaryIsStalled()
     {
-        return mWinchMotor.getOutputCurrent() >= Constants.Climber.kSecondaryStallThreshold;
+        return mWinchMotor.getOutputCurrent() >= kSecondaryStallThreshold;
     }
 }

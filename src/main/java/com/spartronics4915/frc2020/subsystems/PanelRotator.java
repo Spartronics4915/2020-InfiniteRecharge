@@ -1,6 +1,5 @@
 package com.spartronics4915.frc2020.subsystems;
 
-import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMax;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
@@ -15,6 +14,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DigitalInput;
+
+import static com.spartronics4915.frc2020.Constants.PanelRotator.*;
 
 public class PanelRotator extends SpartronicsSubsystem
 {
@@ -31,24 +32,24 @@ public class PanelRotator extends SpartronicsSubsystem
 
     public PanelRotator()
     {
-        mOpticalFlagUp = new DigitalInput(Constants.PanelRotator.kOpticalFlagUpId);
-        mLimitSwitchDown = new DigitalInput(Constants.PanelRotator.kLimitSwitchDownId);
-        mSpinMotor = SpartronicsMax.makeMotor(Constants.PanelRotator.kSpinMotorId);
+        mOpticalFlagUp = new DigitalInput(kOpticalFlagUpId);
+        mLimitSwitchDown = new DigitalInput(kLimitSwitchDownId);
+        mSpinMotor = SpartronicsMax.makeMotor(kSpinMotorId);
         mSpinMotor.setBrakeMode(true);
-        // mRaiseMotor = new SpartronicsSRX.makeMotor(Constants.PanelRotator.kRaiseMotorId);
+        // mRaiseMotor = new SpartronicsSRX.makeMotor(kRaiseMotorId);
         // mRaiseMotor.setBrakeMode(true);
         mRaiseMotor = new SpartronicsSimulatedMotor(42); // FIXME: we have enough pdp ports - add back before competitions
 
         mColorSensor = new ColorSensorV3(I2C.Port.kOnboard);
-        mColorMatcher.addColorMatch(Constants.PanelRotator.kRedTarget);
-        mColorMatcher.addColorMatch(Constants.PanelRotator.kGreenTarget);
-        mColorMatcher.addColorMatch(Constants.PanelRotator.kBlueTarget);
-        mColorMatcher.addColorMatch(Constants.PanelRotator.kYellowTarget);
+        mColorMatcher.addColorMatch(kRedTarget);
+        mColorMatcher.addColorMatch(kGreenTarget);
+        mColorMatcher.addColorMatch(kBlueTarget);
+        mColorMatcher.addColorMatch(kYellowTarget);
 
         if (mSpinMotor.hadStartupError() || mRaiseMotor.hadStartupError())
         {
-            mSpinMotor = new SpartronicsSimulatedMotor(Constants.PanelRotator.kSpinMotorId);
-            mRaiseMotor = new SpartronicsSimulatedMotor(Constants.PanelRotator.kRaiseMotorId);
+            mSpinMotor = new SpartronicsSimulatedMotor(kSpinMotorId);
+            mRaiseMotor = new SpartronicsSimulatedMotor(kRaiseMotorId);
             logInitialized(false);
         }
         else
@@ -62,7 +63,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void raise()
     {
-        mRaiseMotor.setPercentOutput(Constants.PanelRotator.kRaiseSpeed);
+        mRaiseMotor.setPercentOutput(kRaiseSpeed);
     }
 
     /**
@@ -70,7 +71,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void lower()
     {
-        mRaiseMotor.setPercentOutput(Constants.PanelRotator.kLowerSpeed);
+        mRaiseMotor.setPercentOutput(kLowerSpeed);
     }
 
     /**
@@ -78,7 +79,7 @@ public class PanelRotator extends SpartronicsSubsystem
      */
     public void spin()
     {
-        mSpinMotor.setPercentOutput(Constants.PanelRotator.kSpinSpeed);
+        mSpinMotor.setPercentOutput(kSpinSpeed);
     }
 
     /** TODO: what will happen before stage two?
@@ -101,13 +102,13 @@ public class PanelRotator extends SpartronicsSubsystem
         Color detectedColor = mColorSensor.getColor();
         ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
 
-        if (match.color.equals(Constants.PanelRotator.kRedTarget))
+        if (match.color.equals(kRedTarget))
             sensedColor = "Red";
-        else if (match.color.equals(Constants.PanelRotator.kGreenTarget))
+        else if (match.color.equals(kGreenTarget))
             sensedColor = "Green";
-        else if (match.color.equals(Constants.PanelRotator.kBlueTarget))
+        else if (match.color.equals(kBlueTarget))
             sensedColor = "Blue";
-        else if (match.color.equals(Constants.PanelRotator.kYellowTarget))
+        else if (match.color.equals(kYellowTarget))
             sensedColor = "Yellow";
         else
             sensedColor = "Error";
@@ -134,13 +135,13 @@ public class PanelRotator extends SpartronicsSubsystem
         Color detectedColor = mColorSensor.getColor();
         ColorMatchResult match = mColorMatcher.matchClosestColor(detectedColor);
 
-        if (match.color.equals(Constants.PanelRotator.kRedTarget))
+        if (match.color.equals(kRedTarget))
             rotatedColor = "Blue";
-        else if (match.color.equals(Constants.PanelRotator.kGreenTarget))
+        else if (match.color.equals(kGreenTarget))
             rotatedColor = "Yellow";
-        else if (match.color.equals(Constants.PanelRotator.kBlueTarget))
+        else if (match.color.equals(kBlueTarget))
             rotatedColor = "Red";
-        else if (match.color.equals(Constants.PanelRotator.kYellowTarget))
+        else if (match.color.equals(kYellowTarget))
             rotatedColor = "Green";
         else
             rotatedColor = "Error";

@@ -1,11 +1,11 @@
 package com.spartronics4915.frc2020.subsystems;
 
-import com.spartronics4915.frc2020.Constants;
 import com.spartronics4915.lib.subsystems.SpartronicsSubsystem;
-
 import com.spartronics4915.lib.hardware.motors.SpartronicsSRX;
 import com.spartronics4915.lib.hardware.motors.SpartronicsMotor;
 import com.spartronics4915.lib.hardware.motors.SpartronicsSimulatedMotor;
+
+import static com.spartronics4915.frc2020.Constants.Intake.*;
 
 /**
  * The Intake subsystem takes balls from the playing field and outputs them to
@@ -17,10 +17,10 @@ public class Intake extends SpartronicsSubsystem
 
     public Intake()
     {
-        mHarvestMotor = SpartronicsSRX.makeMotor(Constants.Intake.kHarvestMotorId);
+        mHarvestMotor = SpartronicsSRX.makeMotor(kHarvestMotorId);
         if (mHarvestMotor.hadStartupError())
         {
-            mHarvestMotor = new SpartronicsSimulatedMotor(Constants.Intake.kHarvestMotorId);
+            mHarvestMotor = new SpartronicsSimulatedMotor(kHarvestMotorId);
             logInitialized(false);
         }
         else
@@ -39,7 +39,7 @@ public class Intake extends SpartronicsSubsystem
     public void harvest()
     {
         dashboardPutString("Status", "harvesting");
-        mHarvestMotor.setPercentOutput(Constants.Intake.kHarvestSpeed);
+        mHarvestMotor.setPercentOutput(kHarvestSpeed);
     }
 
     /**
@@ -48,7 +48,7 @@ public class Intake extends SpartronicsSubsystem
     public void reverse()
     {
         dashboardPutString("Status", "ejecting");
-        mHarvestMotor.setPercentOutput(Constants.Intake.kEjectSpeed);
+        mHarvestMotor.setPercentOutput(kEjectSpeed);
     }
 
     /**
