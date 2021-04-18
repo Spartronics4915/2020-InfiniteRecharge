@@ -71,8 +71,8 @@ public final class Constants
             public static final double kPositionP = 0.005;
             public static final double kPositionD = 0;
             public static final double kConversionRatio = 1.0 / (187.0/20.0*9.0);
-            public static final double kMaxVelocity = 3.5; // These values (3.5 and 2.5) have been extensively tested
-            public static final double kMaxAcceleration = 2.5;
+            public static final double kMaxVelocity = 2.0;
+            public static final double kMaxAcceleration = 1.0;
             public static final double kStallThreshold = 10.0;
             public static final double kMaxUnjamTime = 1.0;
 
@@ -303,6 +303,17 @@ public final class Constants
         public static final Pose2d kStartPointRight = new Pose2d(Units.inchesToMeters(510) - Constants.Drive.kCenterToFrontBumper,
             Units.inchesToMeters(-161.625) + Constants.Drive.kCenterToSideBumper,
             Rotation2d.fromDegrees(180));
+
+        // This point is adjusted so that the robot will believe it's directly in front of the target
+        public static final Pose2d kGreenZoneMiddle = new Pose2d(Units.inchesToMeters(90),
+            Units.inchesToMeters(0), Rotation2d.fromDegrees(180)); // C3
+        public static final Pose2d kYellowZoneMiddle = new Pose2d(Units.inchesToMeters(150),
+            Units.inchesToMeters(0), Rotation2d.fromDegrees(180)); // C5
+        public static final Pose2d kBlueZoneMiddle = new Pose2d(Units.inchesToMeters(210),
+            Units.inchesToMeters(0), Rotation2d.fromDegrees(180)); // C7
+        public static final Pose2d kRedZoneMiddle = new Pose2d(Units.inchesToMeters(270),
+            Units.inchesToMeters(0), Rotation2d.fromDegrees(180)); // C9
+        public static final Pose2d kStartPointAtHome = kGreenZoneMiddle;
     }
 
     public static final class Estimator

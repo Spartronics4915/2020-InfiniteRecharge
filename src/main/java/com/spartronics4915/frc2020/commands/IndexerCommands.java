@@ -350,7 +350,7 @@ public class IndexerCommands
                 // new AlignIndexer(mIndexer),
                 new SpinIndexer(-spinDistance),
                 new StartKicker(),
-                    new WaitCommand(0.1),
+                    new WaitCommand(0.5),
                     ballsToShoot >= 5 ? new LoadBallToSlot(1 + spinDistance) : new InstantCommand(),
                     ballsToShoot >= 5 ? new ParallelCommandGroup(new WaitCommand(0.25), new StartTransfer()) : new InstantCommand(),
                     new WaitCommand(0.25),
