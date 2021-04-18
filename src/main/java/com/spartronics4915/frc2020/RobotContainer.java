@@ -125,7 +125,7 @@ public class RobotContainer
             () -> mStateEstimator.stop(),
             mStateEstimator);
         mStateEstimator.setDefaultCommand(slamraCmd);
-        mStateEstimator.resetRobotStateMaps(Constants.Trajectory.kStartPointRight);
+        mStateEstimator.resetRobotStateMaps(Constants.Trajectory.kStartPointAtHome); // NOTE: This is configured for 2021
         mVision = new Vision(mStateEstimator);
 
         if (!RobotBase.isReal()) // we're unit testing
@@ -254,6 +254,7 @@ public class RobotContainer
         mButtons.create(mJoystick, 5).whenPressed(mSuperstructureCommands.new LaunchSequence(5))
             .whileActiveContinuous(mLEDCommands.new SetBlingState(Bling.kLaunch));
 
+        /*
         // control panel buttons- turning off LEDs to minimize interference
         mButtons.create(mJoystick, 6).whenPressed(mPanelRotatorCommands.new Lower()
             .alongWith(mLEDCommands.new SetBlingState(Bling.kTeleop)));
@@ -268,6 +269,17 @@ public class RobotContainer
             .alongWith(mLEDCommands.new SetBlingState(Bling.kClimb)));
         mButtons.create(mJoystick, 11).whileHeld(mClimberCommands.new Extend()
             .alongWith(mLEDCommands.new SetBlingState(Bling.kClimb)));
+        */
+
+        // localization reset buttons
+        mButtons.create(mJoystick, 6).whenPressed(new InstantCommand(() ->
+            mStateEstimator.resetRobotStateMaps(Constants.Trajectory.kGreenZoneMiddle)));
+        mButtons.create(mJoystick, 7).whenPressed(new InstantCommand(() ->
+            mStateEstimator.resetRobotStateMaps(Constants.Trajectory.kYellowZoneMiddle)));
+        mButtons.create(mJoystick, 10).whenPressed(new InstantCommand(() ->
+            mStateEstimator.resetRobotStateMaps(Constants.Trajectory.kBlueZoneMiddle)));
+        mButtons.create(mJoystick, 11).whenPressed(new InstantCommand(() ->
+            mStateEstimator.resetRobotStateMaps(Constants.Trajectory.kRedZoneMiddle)));
     }
 
     /**

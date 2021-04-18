@@ -33,6 +33,15 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
+/*
+ * This is a holding class for our fancy trajectory generator.
+ *
+ * To any future programmers stumbling upon this looking for a reference,
+ * we strongly recommend _not_ doing things as they are done here.
+ * Please, use WPILib's provided classes and their suggested structure instead.
+ *
+ * Lasciate ogne speranza, voi ch'intrate.
+ */
 public class TrajectoryContainer
 {
     public static class AutoMode
@@ -214,21 +223,25 @@ public class TrajectoryContainer
     public static AutoMode[] getAutoModes(RobotStateEstimator stateEstimator, Drive drive,
         TrajectoryTracker ramseteController, SuperstructureCommands superstructureCommands)
     {
-        AutoMode[] autoModes = new AutoMode[] {kDefaultAutoMode,
-            // new AutoMode("Drive Straight", new SequentialCommandGroup(
-            //     new StateMapResetCommand(stateEstimator,
-            //         TrajectoryContainer.driveStraight.mStartPoint),
-            //     new TrajectoryTrackerCommand(drive,
-            //         TrajectoryContainer.driveStraight.getTrajectory(null, Destination.kJustAhead),
-            //         ramseteController, stateEstimator.getBestRobotStateMap()))),
-            // new AutoMode("Drive Straight Reversed",
-            //     new SequentialCommandGroup(
-            //         new StateMapResetCommand(stateEstimator,
-            //             TrajectoryContainer.driveStraightReversed.mStartPoint),
-            //         new TrajectoryTrackerCommand(drive,
-            //             TrajectoryContainer.driveStraightReversed.getTrajectory(null,
-            //                 Destination.kJustBehind),
-            //             ramseteController, stateEstimator.getBestRobotStateMap()))),
+        AutoMode[] autoModes = new AutoMode[]
+        {
+            kDefaultAutoMode,
+            /*
+            new AutoMode("Drive Straight", new SequentialCommandGroup(
+                new StateMapResetCommand(stateEstimator,
+                    TrajectoryContainer.driveStraight.mStartPoint),
+                new TrajectoryTrackerCommand(drive,
+                    TrajectoryContainer.driveStraight.getTrajectory(null, Destination.kJustAhead),
+                    ramseteController, stateEstimator.getBestRobotStateMap()))),
+            new AutoMode("Drive Straight Reversed",
+                new SequentialCommandGroup(
+                    new StateMapResetCommand(stateEstimator,
+                        TrajectoryContainer.driveStraightReversed.mStartPoint),
+                    new TrajectoryTrackerCommand(drive,
+                        TrajectoryContainer.driveStraightReversed.getTrajectory(null,
+                            Destination.kJustBehind),
+                        ramseteController, stateEstimator.getBestRobotStateMap()))),
+            */
             new AutoMode("Left",
                 new SequentialCommandGroup(
                     new WaitCommand(5),
@@ -270,44 +283,46 @@ public class TrajectoryContainer
                         ramseteController, stateEstimator.getBestRobotStateMap()),
                     superstructureCommands.new LaunchSequence(5)
             )),
-            // new AutoMode("Eight Ball", new SequentialCommandGroup(
-            // new StateMapResetCommand(stateEstimator,
-            // TrajectoryContainer.eightBall.mStartPoint),
-            // superstructureCommands.new LaunchSequence(3),
-            // new ParallelCommandGroup(
-            // new TrajectoryTrackerCommand(
-            // drive,
-            // TrajectoryContainer.eightBall.getTrajectory(null,
-            // Destination.kShieldGeneratorFarRight),
-            // ramseteController, stateEstimator.getBestRobotStateMap()),
-            // new SequentialCommandGroup(
-            // superstructureCommands.new Intake(),
-            // superstructureCommands.new Intake())),
-            // new TrajectoryTrackerCommand(drive,
-            // TrajectoryContainer.eightBall.getTrajectory(
-            // Destination.kShieldGeneratorFarRight, Destination.kEightBallIntermediate),
-            // ramseteController, stateEstimator.getBestRobotStateMap()),
-            // new ParallelCommandGroup(
-            // new TrajectoryTrackerCommand(
-            // drive,
-            // TrajectoryContainer.eightBall.getTrajectory(
-            // Destination.kEightBallIntermediate, Destination.kRightTrenchFar),
-            // ramseteController, stateEstimator.getBestRobotStateMap()),
-            // new SequentialCommandGroup(
-            // superstructureCommands.new Intake(),
-            // superstructureCommands.new Intake(),
-            // superstructureCommands.new Intake())),
-            // new TrajectoryTrackerCommand(drive,
-            // TrajectoryContainer.eightBall.getTrajectory(Destination.kRightTrenchFar,
-            // Destination.kRightShootingPosition),
-            // ramseteController, stateEstimator.getBestRobotStateMap()),
-            // superstructureCommands.new LaunchSequence(5))),
-            // new AutoMode("Characterize Drive",
-            // new CharacterizeDriveBaseCommand(drive, Constants.Drive.kWheelDiameter)),
-            // new AutoMode("Right: Through Trench",
-            // new TrajectoryTrackerCommand(drive,
-            // TrajectoryContainer.left.getTrajectory(null, Destination.kLeftTrenchFar),
-            // ramseteController, stateEstimator.getBestRobotStateMap()))
+            /*
+            new AutoMode("Eight Ball", new SequentialCommandGroup(
+                new StateMapResetCommand(stateEstimator,
+                    TrajectoryContainer.eightBall.mStartPoint),
+                superstructureCommands.new LaunchSequence(3),
+                new ParallelCommandGroup(
+                    new TrajectoryTrackerCommand(
+                        drive,
+                        TrajectoryContainer.eightBall.getTrajectory(null,
+                            Destination.kShieldGeneratorFarRight),
+                        ramseteController, stateEstimator.getBestRobotStateMap()),
+                    new SequentialCommandGroup(
+                        superstructureCommands.new Intake(),
+                        superstructureCommands.new Intake())),
+                new TrajectoryTrackerCommand(drive,
+                    TrajectoryContainer.eightBall.getTrajectory(
+                        Destination.kShieldGeneratorFarRight, Destination.kEightBallIntermediate),
+                    ramseteController, stateEstimator.getBestRobotStateMap()),
+                new ParallelCommandGroup(
+                    new TrajectoryTrackerCommand(
+                        drive,
+                        TrajectoryContainer.eightBall.getTrajectory(
+                            Destination.kEightBallIntermediate, Destination.kRightTrenchFar),
+                        ramseteController, stateEstimator.getBestRobotStateMap()),
+                    new SequentialCommandGroup(
+                        superstructureCommands.new Intake(),
+                        superstructureCommands.new Intake(),
+                        superstructureCommands.new Intake())),
+                new TrajectoryTrackerCommand(drive,
+                    TrajectoryContainer.eightBall.getTrajectory(Destination.kRightTrenchFar,
+                        Destination.kRightShootingPosition),
+                    ramseteController, stateEstimator.getBestRobotStateMap()),
+                superstructureCommands.new LaunchSequence(5))),
+            new AutoMode("Characterize Drive",
+                new CharacterizeDriveBaseCommand(drive, Constants.Drive.kWheelDiameter)),
+            new AutoMode("Right: Through Trench",
+                new TrajectoryTrackerCommand(drive,
+                    TrajectoryContainer.left.getTrajectory(null, Destination.kLeftTrenchFar),
+                    ramseteController, stateEstimator.getBestRobotStateMap()))
+            */
 
         };
         return autoModes;
