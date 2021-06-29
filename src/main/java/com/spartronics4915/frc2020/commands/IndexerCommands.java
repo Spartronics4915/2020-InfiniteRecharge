@@ -320,7 +320,7 @@ public class IndexerCommands
             mIndexer.addBalls(-ballsToShoot);
             addCommands(
                 // new AlignIndexer(mIndexer),
-                new SpinIndexer(-spinDistance),
+                ballsToShoot >= 5 ? new SpinIndexer(-spinDistance) : new SpinIndexer(spinDistance),
                 new ParallelRaceGroup(
                     /**
                      * NOTE: Running a command without a subsystem is a Very Bad Practice,
@@ -338,7 +338,7 @@ public class IndexerCommands
                         ballsToShoot >= 5 ? new LoadBallToSlot(1 + spinDistance) : new InstantCommand(),
                         ballsToShoot >= 5 ? new ParallelCommandGroup(new WaitCommand(0.25), new StartTransfer()) : new InstantCommand(),
                         new WaitCommand(0.25),
-                        new SpinIndexer(ballsToShoot >= 5 ? ballsToShoot - 1 : ballsToShoot),
+                        new SpinIndexer(ballsToShoot >= 5 ? ballsToShoot - 1 : ballsToShoot - 0.25),
                         new EndTransfer()
                     )
                 ),
