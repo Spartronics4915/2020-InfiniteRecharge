@@ -49,8 +49,8 @@ public class LauncherCommands
             Units.inchesToMeters(Constants.Vision.kAllianceGoalCoords[1]),
             Rotation2d.fromDegrees(180));
 
-        mLauncher.setDefaultCommand(new TargetAndShoot());
-        // mLauncher.setDefaultCommand(new ShootBallTest());
+        // mLauncher.setDefaultCommand(new TargetAndShoot());
+        mLauncher.setDefaultCommand(new ShootBallTest());
     }
 
     public Launcher getLauncher()
@@ -217,7 +217,7 @@ public class LauncherCommands
         @Override
         public void execute()
         {
-            mLauncher.runFlywheel((double) mLauncher.dashboardGetNumber("flywheelRPSSlider", 0));
+            mLauncher.runFlywheel((double) mLauncher.dashboardGetNumber("flywheelRPSSlider", 40));
             mLauncher.adjustHood(Rotation2d.fromDegrees(
                 (double) mLauncher.dashboardGetNumber("hoodAngleSlider", 0)));
             mLauncher.turnTurret(Rotation2d.fromDegrees(

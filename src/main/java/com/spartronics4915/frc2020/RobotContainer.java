@@ -146,9 +146,9 @@ public class RobotContainer
         mVision.registerTargetListener(mStateEstimator.getVisionListener());
 
         // NB: ButtonFactory handles the !RobotBase.isReal case.
-        // configureJoystickBindings();
-        // configureButtonBoardBindings();
-        configureSingleJoystickBindings();
+        configureJoystickBindings();
+        configureButtonBoardBindings();
+        // configureSingleJoystickBindings();
 
         /* publish our automodes to the dashboard -----------------*/
         mAutoModes = TrajectoryContainer.getAutoModes(mStateEstimator, mDrive, mRamseteController,
@@ -218,7 +218,6 @@ public class RobotContainer
             .alongWith(mLEDCommands.new SetBlingState(Bling.kClimb)));
         mButtons.create(mButtonBoard, 10).whileHeld(mClimberCommands.new Extend()
             .alongWith(mLEDCommands.new SetBlingState(Bling.kClimb)));
-        mButtons.create(mButtonBoard, 10).whenPressed(mLauncherCommands.new SetAsideToClimb());
 
         // control panel buttons - turning off LEDs to minimize interference
         mButtons.create(mButtonBoard, 5).whenPressed(mPanelRotatorCommands.new Lower()

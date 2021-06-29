@@ -47,7 +47,9 @@ public class DriveCommands
                 x *= Constants.Drive.kSlowModeMultiplier;
             }
             if (mInverted)
+            {
                 y *= -1; // intentionally only invert y
+            }
 
             y = Math.copySign(Math.pow(Math.abs(y), 5.0/3.0), y); // apply response curve
             mDrive.arcadeDrive(applyDeadzone(y), applyDeadzone(x));
