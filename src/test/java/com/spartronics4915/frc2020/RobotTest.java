@@ -18,11 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * a simple test of basic robot init.  This turns out to be quite
  * slippery in the context of the HALJni configuration.  We apparently
  * can't expect to run this interactively but the thread below provides some
- * vscode settings that I've verified as functiona.  It appears to be very 
+ * vscode settings that I've verified as functiona.  It appears to be very
  * sensitive to static construction sequence, etc.  I landed at this point
  * by search-and-destroy methods.   Hopefully we can learn more
  * about the inherent subtlties.
- * 
+ *
  * https://www.chiefdelphi.com/t/unit-testing-java-io-ioexception-wpihaljni/372288/8
  */
 class RobotTest
@@ -31,7 +31,7 @@ class RobotTest
     static final DriverStationSim sSim;
     static
     {
-        if (!HAL.initialize(500, 0)) 
+        if (!HAL.initialize(500, 0))
             Logger.warning("HAL already initialized");
 
         sRobot = new Robot();
@@ -43,7 +43,7 @@ class RobotTest
 
     @Test
     public void initTest()
-    {        
+    {
         Logger.notice("initTest found this config: " + Constants.sConfig);
     }
 
@@ -68,15 +68,15 @@ class RobotTest
         assert(sRobot.mInitialized);
         var cmds = sRobot.mRobotContainer.mIndexerCommands;
         var indexer = sRobot.mRobotContainer.mIndexer;
-        var startLaunch = cmds.new StartKicker();
-        var endLaunch = cmds.new EndKicker();
+        var loadFromIntake = cmds.new LoadFromIntake();
+        var optimizedLoadFromIntake = cmds.new OptimizedLoadFromIntake();
         var loadBallToSlot = cmds.new LoadBallToSlotGroup(0);
-        var loadToLauncher = cmds.new LoadToLauncher();
+        var loadToLauncher = cmds.new LoadToLauncher(5);
 
-        // testing startlaunch
-        indexer.logInfo("Testing StartLaunch...");
-        startLaunch.schedule();
-        if(startLaunch.isScheduled())
+        // testing loadfromintake
+        indexer.logInfo("Testing LoadFromIntake...");
+        loadFromIntake.schedule();
+        if(loadFromIntake.isScheduled())
             indexer.logInfo("Success!");
         else
             indexer.logInfo("Scheduler issue 1");
@@ -84,10 +84,10 @@ class RobotTest
         // assertEquals(simmedLoaderMotor, 1.0);
         // CommandScheduler.getInstance().cancel(startLaunch);
 
-        // testing endlaunch
-        indexer.logInfo("Testing EndLaunch...");
-        endLaunch.schedule();
-        if(endLaunch.isScheduled())
+        // testing optimizedloadfromintake
+        indexer.logInfo("Testing OptimizedLoadFromIntake...");
+        optimizedLoadFromIntake.schedule();
+        if(optimizedLoadFromIntake.isScheduled())
             indexer.logInfo("Success!");
         else
             indexer.logInfo("Scheduler issue 2");

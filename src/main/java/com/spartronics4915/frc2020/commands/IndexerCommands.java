@@ -5,6 +5,7 @@ import com.spartronics4915.frc2020.subsystems.Indexer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -17,8 +18,7 @@ public class IndexerCommands
     public IndexerCommands(Indexer indexer)
     {
         mIndexer = indexer;
-        // TODO: setDefaultCommand
-        // mIndexer.setDefaultCommand(mIndexerCommands.new ZeroAndStopGroup(mIndexer));
+        mIndexer.setDefaultCommand(new Stop());
     }
 
     /**
@@ -69,8 +69,7 @@ public class IndexerCommands
         @Override
         public void execute()
         {
-            if (!mIndexer.getSlotBallLoaded()
-                && mIndexer.areFinsAligned())
+            if (!mIndexer.getSlotBallLoaded() && mIndexer.areFinsAligned())
                 mIndexer.transfer();
             else
                 mIndexer.endTransfer();
@@ -133,32 +132,6 @@ public class IndexerCommands
         public Stop()
         {
             super(mIndexer::stop, mIndexer);
-        }
-    }
-
-    /**
-     * Starts the "popper" motor sending the ball into the launcher.
-     * <p>
-     * A workaround for being unable to schedule parallel commands within the same subsystem.
-     */
-    public class StartKicker extends InstantCommand
-    {
-        public StartKicker()
-        {
-            super(mIndexer::launch, mIndexer);
-        }
-    }
-
-    /**
-     * Stops the "popper" motor sending the ball into the launcher.
-     * <p>
-     * A workaround for being unable to schedule parallel commands within the same subsystem.
-     */
-    public class EndKicker extends InstantCommand
-    {
-        public EndKicker()
-        {
-            super(mIndexer::endLaunch, mIndexer);
         }
     }
 
@@ -269,7 +242,6 @@ public class IndexerCommands
         public LoadFromIntake()
         {
             addCommands(
-                new EndKicker(), // for safety
                 new AlignIndexer(),
                 new WaitForBallHeld(),
                 new LoadBallToSlot(0),
@@ -295,7 +267,6 @@ public class IndexerCommands
             if (mIndexer.getSlotBallLoaded())
             {
                 addCommands(
-                    new EndKicker(), // for safety
                     // new AlignIndexer(),
                     new WaitForBallHeld(),
                     new LoadBallToSlot(0),
@@ -310,7 +281,6 @@ public class IndexerCommands
             {
                 System.out.println("Leaving the ball in the outer slot... We have five balls held.");
                 addCommands(
-                    new EndKicker(),
                     new WaitForBallHeld()
                 );
             }
@@ -336,6 +306,7 @@ public class IndexerCommands
             return (mIndexer.getIntakeBallLoaded() && mIndexer.getSlotBallLoaded()) || super.isFinished();
         }
     }
+
     /**
      * Loads a ball from the indexer to the launcher.
      * <p>
@@ -345,25 +316,34 @@ public class IndexerCommands
     {
         public LoadToLauncher(int ballsToShoot)
         {
-            double spinDistance = 0.25; //(mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded()) ? 0.25 : 0;
+            double spinDistance = 0.25; // (mIndexer.getSlotBallLoaded() && mIndexer.getIntakeBallLoaded()) ? 0.25 : 0;
+            mIndexer.addBalls(-ballsToShoot);
             addCommands(
                 // new AlignIndexer(mIndexer),
                 new SpinIndexer(-spinDistance),
-                new StartKicker(),
-                    new WaitCommand(0.5),
-                    ballsToShoot >= 5 ? new LoadBallToSlot(1 + spinDistance) : new InstantCommand(),
-                    ballsToShoot >= 5 ? new ParallelCommandGroup(new WaitCommand(0.25), new StartTransfer()) : new InstantCommand(),
-                    new WaitCommand(0.25),
-                    new SpinIndexer(ballsToShoot >= 5 ? ballsToShoot - 1 : ballsToShoot),
-                    new EndTransfer(),
-                new EndKicker(),
+                new ParallelRaceGroup(
+                    /**
+                     * NOTE: Running a command without a subsystem is a Very Bad Practice,
+                     * but here (in the RunCommand) it is the cleanest and safest way to
+                     * deal with the hardware complexity of the whole launch system.
+                     *
+                     * We do this for a couple of reasons:
+                     * 1. to adhere to motor safety by continuously calling launch()
+                     * 2. because the alternative is a series of start and end commands
+                     * 3. as the default command is stop(), the kicker can't accidentally stay on
+                     */
+                    new RunCommand(mIndexer::launch),
+                    new SequentialCommandGroup(
+                        new WaitCommand(0.5),
+                        ballsToShoot >= 5 ? new LoadBallToSlot(1 + spinDistance) : new InstantCommand(),
+                        ballsToShoot >= 5 ? new ParallelCommandGroup(new WaitCommand(0.25), new StartTransfer()) : new InstantCommand(),
+                        new WaitCommand(0.25),
+                        new SpinIndexer(ballsToShoot >= 5 ? ballsToShoot - 1 : ballsToShoot),
+                        new EndTransfer()
+                    )
+                ),
                 new InstantCommand(() -> mIndexer.addBalls(-ballsToShoot), mIndexer)
             );
-        }
-
-        public LoadToLauncher()
-        {
-            this(4);
         }
     }
 }
